@@ -1,0 +1,38 @@
+verison 3.5
+
+services:
+  db:
+    image: pstgres:latest
+    ports:
+      - 5432:5432
+    .env_file:
+      - .env 
+    networks:
+      - my-network
+    volumes:
+      - db:/var/lib/postgresql/data
+  
+  frontend:
+    image: node:latest
+    ports:
+      - 3000:3000
+    .env_file:
+      - .env
+    networks:
+      - my-networl
+    volumes:
+      - frontend:/app
+
+  backend:
+    image: node:latest
+    ports:
+      - 5000:5000
+    .env_file:
+      - .env
+    networks:
+      - my-network
+    voloumes:
+      - backend:/app
+
+networks:
+  my-network:

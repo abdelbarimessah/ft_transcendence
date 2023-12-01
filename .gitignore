@@ -1,6 +1,6 @@
-.env
-node_modules
-dist
-.vscode
-.next
->DS.store
+# .env
+# node_modules
+# dist
+# .vscode
+# .next
+# >DS.store

@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  database:
+    image: postgres:latest
+    container_name: mydb
+    ports:
+      - 5432:5432
+    restart: on-failure
+    env_file:
+      - .env
+    networks:
+      - trans
+
+networks:
+  trans:
+# services:
+#   db:
+#     image: postgres:latest
+#     ports:
+#       - 5432:5432
+#     env_file:
+#       - .env 
+#     networks:
+#       - trans
+#   frontend:
+#     image: node:latest
+#     ports:
+#       - 3000:3000
+#     env_file:
+#       - .env
+#     networks:
+#       - trans
+#   backend:
+#     image: node:latest
+#     ports:
+#       - 5000:5000
+#     env_file:
+#       - .env
+#     networks:
+#       - trans
+

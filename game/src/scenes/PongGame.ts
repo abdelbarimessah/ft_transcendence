@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import react, { useState } from "react";
+import { io, Socket } from "socket.io-client";
 
 export default class PongGame extends Phaser.Scene {
   p1: any;
@@ -13,38 +13,17 @@ export default class PongGame extends Phaser.Scene {
   p2victory: any;
   p1goaltext: any;
   p2goaltext: any;
-  p1score_number : number ;
-  p2score_number : number ;
-  
-  // const [p1score, setp1score] = useState(0);
-  // const [p2score, setp2score] = useState(0);
-  // p1score: number = 0;
-  // p2score: number = 0;
-  // const [p1score, setp1score] = useState(0);
-  // const [p2score, setp2score] = useState(0);
-  state: {
-    p1score: number;
-    p2score: number;
-  };
+  p1score_number: number;
+  p2score_number: number;
   goalScored: boolean;
+  socketClient: Socket;
+
   constructor() {
     super();
+    this.socketClient = io("http://localhost:3000");
     this.p1score_number = 0;
     this.p2score_number = 0;
-    this.state = {
-      p1score: 0,
-      p2score: 0,
-    };
     this.goalScored = false;
-  }
-  incrementP1Score() {
-    this.state.p1score += 1;
-    this.p1goaltext.setText(this.state.p1score);
-  }
-
-  incrementP2Score() {
-    this.state.p2score += 1;
-    this.p2goaltext.setText(this.state.p2score);
   }
   preload() {
     this.load.image("table", "assets/table2.png");
@@ -53,6 +32,13 @@ export default class PongGame extends Phaser.Scene {
   }
 
   create() {
+    // this.socketClient.on("move", (data) => {
+    //   this.p2.y = data.y;
+    // });
+    this.socketClient.emit(
+      "message",
+      "Hello there from the client in the game part!"
+    );
     const table = this.add.image(0, 0, "table").setOrigin(0, 0);
     table.setDepth(-1);
     this.ball = this.physics.add.sprite(
@@ -111,7 +97,7 @@ export default class PongGame extends Phaser.Scene {
     this.p2goaltext = this.add.text(
       this.physics.world.bounds.width / 2 - 150,
       20,
-      '0',
+      "0",
       { fontSize: "150px", fill: "#fff" }
     );
     this.p1goaltext = this.add.text(
@@ -122,56 +108,35 @@ export default class PongGame extends Phaser.Scene {
     );
     this.p1goaltext.setAlpha(0.2);
     this.p2goaltext.setAlpha(0.2);
-  };
+  }
 
-  scorep1() : void {
+  scorep1(): void {
     this.p1score_number += 1;
     const p1s = this.p1score_number / 60;
     this.p1goaltext.setText(p1s.toFixed(0));
+    if (p1s === 5) {
+      this.p1victory.visible = true;
+    }
   }
-  scorep2() : void {
+  scorep2(): void {
     this.p2score_number += 1;
     const p2s = this.p2score_number / 60;
     this.p2goaltext.setText(p2s.toFixed(0));
+    if (p2s === 5) {
+      this.p2victory.visible = true;
+    }
   }
 
   update() {
     if (this.ball.body.x > 870) {
-        // this.goalScored = true;
-        
-        // setTimeout(() => {
-        //     this.incrementP2Score();
-        // }, 1000);
-        this.scorep2();
-        this.resetGame();
-        // this.p2goaltext.setText(this.state.p2score);
-
-
-      // if (this.state.p2score === 5) {
-      //   this.p2victory.visible = true;
-      // }
-
+      this.scorep2();
+      this.resetGame();
       this.ball.setVelocityX(0);
       this.ball.setVelocityY(0);
     }
-    if (this.ball.body.x < 30 ) {
-      //   setTimeout(() => {
-            
-      //       this.incrementP1Score();
-      //   }, 1000 );
-      // this.goalScored = true;
-      
-    //   setTimeout(() => {
+    if (this.ball.body.x < 30) {
       this.scorep1();
       this.resetGame();
-        // }, 2000);
-        // this.p1goaltext.setText(this.state.p1score);
-
-
-      // if (this.state.p1score === 5) {
-      //   this.p1victory.visible = true;
-      // }
-
       this.ball.setVelocityX(0);
       this.ball.setVelocityY(0);
     }
@@ -180,8 +145,10 @@ export default class PongGame extends Phaser.Scene {
     this.p2.body.setVelocity(0);
     if (this.cursors.up.isDown) {
       this.p1.setVelocityY(-500);
+      this.socketClient.emit("move", {p1Y: this.p1.y});
     } else if (this.cursors.down.isDown) {
       this.p1.setVelocityY(500);
+      this.socketClient.emit("move", {p1Y: this.p1.y});
     } else {
       this.p1.setVelocityY(0);
     }
@@ -206,7 +173,8 @@ export default class PongGame extends Phaser.Scene {
     this.p2victory.visible = false;
     const initialVelocityX = Math.random() * 500 + 100;
     const initialVelocityY = Math.random() * 500 + 100;
-    this.ball.setVelocityX(initialVelocityX);
+    const directionX = Math.random() < 0.5 ? -1 : 1;
+    this.ball.setVelocityX(directionX * initialVelocityX);
     this.ball.setVelocityY(initialVelocityY);
     this.isgamestarted = true;
   }

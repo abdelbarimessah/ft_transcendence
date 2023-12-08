@@ -11,6 +11,27 @@ services:
       - .env
     networks:
       - trans
+  frontend:
+    image: node:latest
+    restart: on-failure
+    container_name: myfrontend
+    ports:
+      - 8000:8000
+    env_file:
+      - .env
+    networks:
+      - trans
+  backend:
+    image: node:latest
+    restart: on-failure
+    container_name: mybackend
+    command: npm start dev && npx prisma migrate dev --name init
+    ports:
+      - 3000:3000
+    env_file:
+      - .env
+    networks:
+      - trans
 
 networks:
   trans:
@@ -21,22 +42,6 @@ networks:
 #       - 5432:5432
 #     env_file:
 #       - .env 
-#     networks:
-#       - trans
-#   frontend:
-#     image: node:latest
-#     ports:
-#       - 3000:3000
-#     env_file:
-#       - .env
-#     networks:
-#       - trans
-#   backend:
-#     image: node:latest
-#     ports:
-#       - 5000:5000
-#     env_file:
-#       - .env
 #     networks:
 #       - trans
 

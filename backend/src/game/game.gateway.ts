@@ -3,7 +3,6 @@ import { Logger, OnModuleInit } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
 import { subscribe } from 'diagnostics_channel';
 
-// @WebSocketGateway()
 @WebSocketGateway({ 
     cors: {
         origin: 'http://localhost:8000',
@@ -16,10 +15,20 @@ export class GameGateway implements OnGatewayInit, OnGatewayDisconnect, OnModule
     @WebSocketServer()
     server: Server;
 
+    players = {
+    };
 
     onModuleInit() {
         this.server.on('connection', (socket: Socket) => {
             this.logger.log(`Client connected: ${socket.id}`);
+            // this.players[socket.id] = {
+            //     x: 0,
+            //     y: 0,
+            // };
+            // this.logger.log(`Players: ${JSON.stringify(this.players)}`);
+            // let size = Object.keys(this.players).length;
+            // console.log(size);
+            // this.server.emit('startGame', this.players);
         });
     }
     
@@ -48,12 +57,12 @@ export class GameGateway implements OnGatewayInit, OnGatewayDisconnect, OnModule
     }
     
     @SubscribeMessage('move')
-    handleMove(client: any, data: any): void {
+    handleMove(socket: Socket, data: any): void {
         console.log("Received move event with data:", data);
         this.logger.log(`Client move: ${data.p1Y}`);
+        this.players[socket.id] = {
+            y: data.p1Y,
+        };
+        this.server.emit('moveback', this.players);
     }
-    // @SubscribeMessage('move')
-    // handleMove(client: any, payload: any): void {
-    //     this.logger.log(`Client move: ${payload}`);
-    // }
 }

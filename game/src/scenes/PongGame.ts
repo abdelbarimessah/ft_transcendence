@@ -39,6 +39,9 @@ export default class PongGame extends Phaser.Scene {
       "message",
       "Hello there from the client in the game part!"
     );
+    // this.socketClient.on("startGame", (players) => {
+    //     console.log(players);
+    // });
     const table = this.add.image(0, 0, "table").setOrigin(0, 0);
     table.setDepth(-1);
     this.ball = this.physics.add.sprite(
@@ -151,14 +154,15 @@ export default class PongGame extends Phaser.Scene {
       this.socketClient.emit("move", {p1Y: this.p1.y});
     } else {
       this.p1.setVelocityY(0);
+      this.socketClient.emit("move", {p1Y: this.p1.y});
     }
-    if (this.wKey.isDown) {
-      this.p2.setVelocityY(-300);
-    } else if (this.sKey.isDown) {
-      this.p2.setVelocityY(300);
-    } else {
-      this.p2.setVelocityY(0);
-    }
+    this.socketClient.on("moveback", (players) => {
+      for (const id in players) {
+        if (id != this.socketClient.id) 
+          this.p2.y = players[id].y;
+      }
+    });
+    
     this.p1victory.setPosition(
       this.physics.world.bounds.width / 2 - this.p1victory.width / 2,
       this.physics.world.bounds.height / 1.7

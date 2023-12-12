@@ -17,31 +17,46 @@ export default class PongGame extends Phaser.Scene {
   p2score_number: number;
   goalScored: boolean;
   socketClient: Socket;
+  roomName: string;
+  checkScene: boolean = false;
 
   constructor() {
-    super();
+    super('PongGame');
     this.socketClient = io("http://localhost:3000");
     this.p1score_number = 0;
     this.p2score_number = 0;
     this.goalScored = false;
+    this.roomName = '';
+    this.socketClient.emit(
+      "message",
+      "Hello there from the client in the game part!"
+    );
+    // this.socketClient.on("room", (data) => {
+    //   console.log(data);
+    //   this.roomName = data;
+    // });
+    // this.socketClient.on("enterRoom", (data) => {
+    //   console.log(data);
+    //   this.roomName = data;
+    //   // this.socketClient.emit("roomback", this.roomName);
+    // });
+    
   }
   preload() {
     this.load.image("table", "assets/table2.png");
     this.load.image("paddle", "assets/padle.png");
     this.load.image("ball", "assets/ball.png");
   }
-
+  
   create() {
-    // this.socketClient.on("move", (data) => {
-    //   this.p2.y = data.y;
-    // });
-    this.socketClient.emit(
-      "message",
-      "Hello there from the client in the game part!"
-    );
-    // this.socketClient.on("startGame", (players) => {
-    //     console.log(players);
-    // });
+    if(!this.checkScene) {
+      this.socketClient.emit("joinRoom");
+      this.socketClient.on('enterRoom', (data) => {
+        console.log(data);
+        this.roomName = data;
+      });
+      this.checkScene = true;  
+    }
     const table = this.add.image(0, 0, "table").setOrigin(0, 0);
     table.setDepth(-1);
     this.ball = this.physics.add.sprite(
@@ -148,21 +163,26 @@ export default class PongGame extends Phaser.Scene {
     this.p2.body.setVelocity(0);
     if (this.cursors.up.isDown) {
       this.p1.setVelocityY(-500);
-      this.socketClient.emit("move", {p1Y: this.p1.y});
+      console.log('room name ' + this.roomName);
+      this.socketClient.emit("move", {p1Y: this.p1.y, id: this.socketClient.id, roomName: this.roomName});
     } else if (this.cursors.down.isDown) {
       this.p1.setVelocityY(500);
-      this.socketClient.emit("move", {p1Y: this.p1.y});
+      this.socketClient.emit("move", {p1Y: this.p1.y, id: this.socketClient.id, roomName: this.roomName});
     } else {
       this.p1.setVelocityY(0);
-      this.socketClient.emit("move", {p1Y: this.p1.y});
+      this.socketClient.emit("move", {p1Y: this.p1.y, id: this.socketClient.id, roomName: this.roomName});
     }
-    this.socketClient.on("moveback", (players) => {
-      for (const id in players) {
-        if (id != this.socketClient.id) 
-          this.p2.y = players[id].y;
-      }
-    });
-    
+    // this.socketClient.on("moveback", (players) => {
+    //   for (const id in players) {
+    //     if (id != this.socketClient.id) 
+    //       this.p2.y = players[id].y;
+    //   }
+    // });
+    this.socketClient.on("moveback", (data) => {
+      if(data.id != this.socketClient.id) {
+        this.p2.y = data.p1Y;
+      } 
+    });  
     this.p1victory.setPosition(
       this.physics.world.bounds.width / 2 - this.p1victory.width / 2,
       this.physics.world.bounds.height / 1.7

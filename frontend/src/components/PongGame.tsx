@@ -1,6 +1,7 @@
-import Phaser from "phaser";
+import * as Phaser from "phaser";
 import { io, Socket } from "socket.io-client";
 
+var socketClient = io("http://localhost:3000");
 export default class PongGame extends Phaser.Scene {
   p1: any;
   p2: any;
@@ -16,31 +17,15 @@ export default class PongGame extends Phaser.Scene {
   p1score_number: number;
   p2score_number: number;
   goalScored: boolean;
-  socketClient: Socket;
   roomName: string;
   checkScene: boolean = false;
 
   constructor() {
     super('PongGame');
-    this.socketClient = io("http://localhost:3000");
     this.p1score_number = 0;
     this.p2score_number = 0;
     this.goalScored = false;
     this.roomName = '';
-    this.socketClient.emit(
-      "message",
-      "Hello there from the client in the game part!"
-    );
-    // this.socketClient.on("room", (data) => {
-    //   console.log(data);
-    //   this.roomName = data;
-    // });
-    // this.socketClient.on("enterRoom", (data) => {
-    //   console.log(data);
-    //   this.roomName = data;
-    //   // this.socketClient.emit("roomback", this.roomName);
-    // });
-    
   }
   preload() {
     this.load.image("table", "assets/table2.png");
@@ -50,8 +35,8 @@ export default class PongGame extends Phaser.Scene {
   
   create() {
     if(!this.checkScene) {
-      this.socketClient.emit("joinRoom");
-      this.socketClient.on('enterRoom', (data) => {
+      socketClient.emit("joinRoom");
+      socketClient.on('enterRoom', (data) => {
         console.log(data);
         this.roomName = data;
       });
@@ -80,12 +65,8 @@ export default class PongGame extends Phaser.Scene {
       this.physics.world.bounds.height / 2,
       "paddle"
     );
-    this.p2.setCollideWorldBounds(true);
-    this.p2.setImmovable(true);
 
     this.cursors = this.input.keyboard.createCursorKeys();
-    this.wKey = this.input.keyboard.addKey("W");
-    this.sKey = this.input.keyboard.addKey("S");
     this.ball.setScale(0.7);
     this.p1.setScale(0.7);
     this.p2.setScale(0.7);
@@ -164,22 +145,16 @@ export default class PongGame extends Phaser.Scene {
     if (this.cursors.up.isDown) {
       this.p1.setVelocityY(-500);
       console.log('room name ' + this.roomName);
-      this.socketClient.emit("move", {p1Y: this.p1.y, id: this.socketClient.id, roomName: this.roomName});
+      socketClient.emit("move", {p1Y: this.p1.y, id: socketClient.id, roomName: this.roomName});
     } else if (this.cursors.down.isDown) {
       this.p1.setVelocityY(500);
-      this.socketClient.emit("move", {p1Y: this.p1.y, id: this.socketClient.id, roomName: this.roomName});
+      socketClient.emit("move", {p1Y: this.p1.y, id: socketClient.id, roomName: this.roomName});
     } else {
       this.p1.setVelocityY(0);
-      this.socketClient.emit("move", {p1Y: this.p1.y, id: this.socketClient.id, roomName: this.roomName});
+      socketClient.emit("move", {p1Y: this.p1.y, id: socketClient.id, roomName: this.roomName});
     }
-    // this.socketClient.on("moveback", (players) => {
-    //   for (const id in players) {
-    //     if (id != this.socketClient.id) 
-    //       this.p2.y = players[id].y;
-    //   }
-    // });
-    this.socketClient.on("moveback", (data) => {
-      if(data.id != this.socketClient.id) {
+    socketClient.on("moveback", (data) => {
+      if(data.id != socketClient.id) {
         this.p2.y = data.p1Y;
       } 
     });  

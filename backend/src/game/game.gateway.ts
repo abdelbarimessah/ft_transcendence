@@ -24,7 +24,7 @@ export class GameGateway implements OnGatewayConnection {
     roomName: string;
     clientNO: number = 0;
     numClients = {};
-    
+
     handleConnection(socket: Socket): any
     {
         this.logger.log(`Client connected: ${socket.id}`);
@@ -50,7 +50,6 @@ export class GameGateway implements OnGatewayConnection {
         this.logger.log(`Client disconnected: ${socket.id}`);
         socket.leave(this.listRooms[socket.id]);
         this.numClients[this.listRooms[socket.id]]--;
-        this.logger.log('number of client in the room after disconnect: |' + this.listRooms[socket.id] + '| : ' + this.numClients[this.listRooms[socket.id]]);
     }
 
     @SubscribeMessage('move')

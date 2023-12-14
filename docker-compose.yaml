@@ -12,7 +12,7 @@ services:
     networks:
       - trans
   frontend:
-    image: node:latest
+    image: node:20
     restart: on-failure
     container_name: myfrontend
     ports:
@@ -22,7 +22,7 @@ services:
     networks:
       - trans
   backend:
-    image: node:latest
+    image: node:20
     restart: on-failure
     container_name: mybackend
     command: npm start dev && npx prisma migrate dev --name init

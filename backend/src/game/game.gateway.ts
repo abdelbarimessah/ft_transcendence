@@ -1,5 +1,5 @@
-import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
-import { Logger, OnModuleInit } from '@nestjs/common';
+import {OnGatewayConnection, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { Logger } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
 
 @WebSocketGateway({ 
@@ -8,8 +8,6 @@ import { Socket, Server } from 'socket.io';
     },
 })
 export class GameGateway implements OnGatewayConnection {
-    
-    
     nb : number = 0;
     private logger: Logger = new Logger('GameGateway');
     
@@ -50,6 +48,18 @@ export class GameGateway implements OnGatewayConnection {
         this.logger.log(`Client disconnected: ${socket.id}`);
         socket.leave(this.listRooms[socket.id]);
         this.numClients[this.listRooms[socket.id]]--;
+    }
+
+    @SubscribeMessage('startGameClinet')
+    handleStartGameClinet(socket: Socket, data: any) {
+        this.logger.log('start game from client');
+        this.server.to(data.roomName).emit('startGameServer', data);
+    }
+    
+    @SubscribeMessage('startBall')
+    handleStartBall(socket: Socket, data: any) {
+        this.logger.log('start ball');
+        this.server.to(data.roomName).emit('startBallBack', data);
     }
 
     @SubscribeMessage('move')

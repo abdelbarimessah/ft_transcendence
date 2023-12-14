@@ -57,8 +57,6 @@ useEffect(() => {
 }, []);
 
   return (
-    <div className='bg-slate-600 justify-center items-center'>
-      <h1>game start!</h1>
-    </div>
+    <div></div>
   )
 }

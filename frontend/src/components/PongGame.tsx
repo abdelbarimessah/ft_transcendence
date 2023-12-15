@@ -1,5 +1,7 @@
+import { collectGenerateParams } from "next/dist/build/utils";
 import * as Phaser from "phaser";
 import { io } from "socket.io-client";
+import eventsCenter from "./EventsCenter";
 
 var socketClient = io("http://localhost:3000");
 export default class PongGame extends Phaser.Scene {
@@ -17,33 +19,40 @@ export default class PongGame extends Phaser.Scene {
   p1score_number: number;
   p2score_number: number;
   goalScored: boolean;
-  roomName: string;
   checkScene: boolean = false;
-
+  
   sendBallx: number = 0;
   sendBallY: number = 0;
+  
+
+  playerData: {roomName: string, wishPlayer: string} ;
 
   constructor() {
     super('PongGame');
     this.p1score_number = 0;
     this.p2score_number = 0;
     this.goalScored = false;
-    this.roomName = '';
+    this.playerData = {
+      roomName: '',
+      wishPlayer: ''
+    }
   }
   preload() {
-    this.load.image("table", "assets/table2.png");
-    this.load.image("paddle", "assets/padle.png");
-    this.load.image("ball", "assets/ball.png");
+    this.load.image("table", "../assets/table2.png");
+    this.load.image("paddle", "../assets/padle.png");
+    this.load.image("ball", "../assets/ball.png");
   }
   
   create() {
-    if(!this.checkScene) {
+    if (!this.checkScene) {
       socketClient.emit("joinRoom");
       socketClient.on('enterRoom', (data) => {
-        console.log(data);
-        this.roomName = data;
+        this.playerData.roomName = data.roomName;
+        this.playerData.wishPlayer = data.wishPlayer;
+        console.log(this.playerData.roomName);
+        console.log(this.playerData.wishPlayer);
       });
-      this.checkScene = true;  
+      this.checkScene = true;
     }
     const table = this.add.image(0, 0, "table").setOrigin(0, 0);
     table.setDepth(-1);
@@ -62,15 +71,15 @@ export default class PongGame extends Phaser.Scene {
     );
     this.p1.setCollideWorldBounds(true);
     this.p1.setImmovable(true);
-    
+
     this.p2 = this.physics.add.sprite(
       this.physics.world.bounds.width - 850,
       this.physics.world.bounds.height / 2,
       "paddle"
-      );
+    );
     this.p2.setCollideWorldBounds(true);
     this.p2.setImmovable(true);
-      
+
     this.cursors = this.input.keyboard.createCursorKeys();
     this.ball.setScale(0.7);
     this.p1.setScale(0.7);
@@ -80,25 +89,29 @@ export default class PongGame extends Phaser.Scene {
     this.physics.add.collider(this.ball, this.p2);
     this.input.keyboard.on("keydown-SPACE", () => {
       if (!this.isgamestarted) {
-        socketClient.emit("startGameClinet", {roomName: this.roomName});
+        socketClient.emit("startGameClinet", { roomName: this.playerData.roomName });
       }
     });
     socketClient.on("startGameServer", (data) => {
-      if(data.roomName == this.roomName) {
+      if (data.roomName == this.playerData.roomName) {
         this.startGame();
       }
     });
+    socketClient.on("leaveRoom", (data) => {
+      console.log('the other player left the room');
+      this.scene.stop("PongGame");
+    })
     this.p1victory = this.add.text(
-      this.physics.world.bounds.width / 2 - ("Player 1 wins!".length * 32) / 3,
+      this.physics.world.bounds.width / 2 - ("you wins!".length * 32) / 3,
       this.physics.world.bounds.height / 1.7,
-      "Player 1 wins!",
+      "you wins!",
       { fontSize: "32px", fill: "#fff" }
     );
     this.p1victory.visible = false;
     this.p2victory = this.add.text(
-      this.physics.world.bounds.width / 2 - ("Player 1 wins!".length * 32) / 3,
+      this.physics.world.bounds.width / 2 - ("you lose".length * 32) / 3,
       this.physics.world.bounds.height / 1.7,
-      "Player 2 wins!",
+      "you lose!",
       { fontSize: "32px", fill: "#fff" }
     );
     this.p2victory.visible = false;
@@ -154,20 +167,20 @@ export default class PongGame extends Phaser.Scene {
     this.p2.body.setVelocity(0);
     if (this.cursors.up.isDown) {
       this.p1.setVelocityY(-500);
-      console.log('room name ' + this.roomName);
-      socketClient.emit("move", {p1Y: this.p1.y, id: socketClient.id, roomName: this.roomName});
+      console.log('room name ' + this.playerData.roomName);
+      socketClient.emit("move", { p1Y: this.p1.y, id: socketClient.id, roomName: this.playerData.roomName });
     } else if (this.cursors.down.isDown) {
       this.p1.setVelocityY(500);
-      socketClient.emit("move", {p1Y: this.p1.y, id: socketClient.id, roomName: this.roomName});
+      socketClient.emit("move", { p1Y: this.p1.y, id: socketClient.id, roomName: this.playerData.roomName });
     } else {
       this.p1.setVelocityY(0);
-      socketClient.emit("move", {p1Y: this.p1.y, id: socketClient.id, roomName: this.roomName});
+      socketClient.emit("move", { p1Y: this.p1.y, id: socketClient.id, roomName: this.playerData.roomName });
     }
     socketClient.on("moveback", (data) => {
-      if(data.id != socketClient.id) {
+      if (data.id != socketClient.id) {
         this.p2.y = data.p1Y;
-      } 
-    });  
+      }
+    });
     this.p1victory.setPosition(
       this.physics.world.bounds.width / 2 - this.p1victory.width / 2,
       this.physics.world.bounds.height / 1.7
@@ -182,18 +195,17 @@ export default class PongGame extends Phaser.Scene {
     this.p2victory.visible = false;
     const initialVelocityX = Math.random() * 500 + 200;
     const initialVelocityY = Math.random() * 500 + 200;
-    let directionX = -1 ;
+    let directionX = -1;
     this.sendBallx = initialVelocityX;
     this.sendBallY = initialVelocityY;
-    socketClient.emit("startBall", {ballX: this.sendBallx, ballY: this.sendBallY, roomName: this.roomName, id: socketClient.id});
+    socketClient.emit("startBall", { ballX: this.sendBallx, ballY: this.sendBallY, roomName: this.playerData.roomName, id: socketClient.id });
     socketClient.on("startBallBack", (data) => {
-      if(data.roomName == this.roomName && data.id == socketClient.id) {
-          this.ball.setVelocityX(data.ballX );
-          this.ball.setVelocityY(data.ballY);
-          console.log(data.ballX * directionX)
+      if (data.roomName == this.playerData.roomName && data.id == socketClient.id) {
+        this.ball.setVelocityX(data.ballX);
+        this.ball.setVelocityY(data.ballY);
+        console.log(data.ballX * directionX)
       }
-      else if(data.roomName == this.roomName && data.id != socketClient.id)
-      {
+      else if (data.roomName == this.playerData.roomName && data.id != socketClient.id) {
         this.ball.setVelocityX(data.ballX * directionX);
         this.ball.setVelocityY(data.ballY);
       }

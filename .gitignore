@@ -3,4 +3,4 @@ node_modules
 dist
 .vscode
 .next
-.DS.store
+.DS_Store

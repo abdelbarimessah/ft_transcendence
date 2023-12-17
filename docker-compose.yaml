@@ -16,7 +16,7 @@ services:
     restart: on-failure
     container_name: myfrontend
     ports:
-      - 8000:8000
+      - 8080:8080
     env_file:
       - .env
     networks:
@@ -27,7 +27,7 @@ services:
     container_name: mybackend
     command: npm start dev && npx prisma migrate dev --name init
     ports:
-      - 3000:3000
+      - 9090:9090
     env_file:
       - .env
     networks:

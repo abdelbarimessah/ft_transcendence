@@ -27,6 +27,15 @@ export class GameGateway implements OnGatewayConnection {
     {
         this.logger.log(`Client connected: ${socket.id}`);
     }
+    handleDisconnect(socket: Socket) {
+        this.logger.log(`Client disconnected: ${socket.id}`);
+        this.listClient = this.listClient.filter((client) => client.id !== socket.id);
+        this.listRooms = this.listRooms.filter((room) => room.socket.id !== socket.id);
+        this.server.to(this.roomName).emit('leaveRoom', {roomName: this.roomName});
+        socket.leave(this.roomName);
+        this.numClients[this.roomName]--;
+    }
+    
     @SubscribeMessage('joinRoom')
     handleJoinRoom(socket: Socket) {
         this.clientNO++;
@@ -51,14 +60,12 @@ export class GameGateway implements OnGatewayConnection {
         this.server.in(socket.id).emit('enterRoom', {roomName: this.roomName, wishPlayer: this.listClient[this.listClient.length-1].wishPlayer});
     }
 
-    handleDisconnect(socket: Socket) {
-        this.logger.log(`Client disconnected: ${socket.id}`);
-        this.listClient = this.listClient.filter((client) => client.id !== socket.id);
-        this.listRooms = this.listRooms.filter((room) => room.socket.id !== socket.id);
-        this.server.to(this.roomName).emit('leaveRoom', {roomName: this.roomName});
-        socket.leave(this.roomName);
-        this.numClients[this.roomName]--;
+    @SubscribeMessage('replayClient')
+    handleReplayClient(socket: Socket, data: any) {
+        this.logger.log('replayClient');
+        this.server.to(data.roomName).emit('replayServer', data);
     }
+
 
     @SubscribeMessage('startGameClinet')
     handleStartGameClinet(socket: Socket, data: any) {

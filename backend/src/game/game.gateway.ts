@@ -63,7 +63,7 @@ export class GameGateway implements OnGatewayConnection {
     @SubscribeMessage('replayClient')
     handleReplayClient(socket: Socket, data: any) {
         this.logger.log('replayClient');
-        this.server.to(data.roomName).emit('replayServer', data);
+        this.server.in(data.roomName).emit('replayServer', data);
     }
 
 
@@ -80,6 +80,12 @@ export class GameGateway implements OnGatewayConnection {
     handleStartBall(socket: Socket, data: any) {
         this.logger.log('start ball');
         this.server.to(data.roomName).emit('startBallBack', data);
+    }
+
+    @SubscribeMessage('setScore') 
+    handleSetScore(socket: Socket, data: any) {
+        this.logger.log('set score');
+        this.server.to(data.roomName).emit('setScoreBack', data);
     }
 
     @SubscribeMessage('move')

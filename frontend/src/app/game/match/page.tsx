@@ -34,12 +34,13 @@ function Home() {
         physics: {
           default: 'arcade',
           arcade: {
-            gravity: { y: 0 }
+            gravity: { y: 0 },
+            fps: 60
           }
         },
-        fps: {
-          target: 60,
-        },
+        // fps: {
+        //   target: 0,
+        // },
         scale: {
           mode: Phaser.Scale.FIT,
           width: 900,

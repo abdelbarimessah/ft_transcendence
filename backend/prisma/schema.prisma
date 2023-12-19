@@ -31,23 +31,23 @@ enum Role {
   ADMIN
 }
 
-model Profile {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  bio       String?
-  user    User?    @relation(fields: [userId], references: [id])
-  userId    Int      @unique
-}
+// model Profile {
+//   id        Int      @id @default(autoincrement())
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+//   bio       String?
+//   user    User?    @relation(fields: [userId], references: [id])
+//   userId    Int      @unique
+// }
 
-model Game {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  published Boolean  @default(false)
-  title     String   @db.VarChar(255)
-  player    User?     @relation(fields: [userId], references: [id])
-}
+// model Game {
+//   id        Int      @id @default(autoincrement())
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+//   published Boolean  @default(false)
+//   title     String   @db.VarChar(255)
+//   player    User?     @relation(fields: [userId], references: [id])
+// }
 
 
 // model channel {

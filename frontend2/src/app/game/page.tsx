@@ -1,13 +1,7 @@
 import ModeCard from "@/components/ModeCard";
-import { useEffect } from "react";
+
 
 function Home() {
-    // useEffect(() => {
-    //     Socket.on("connect", (uid) => {
-    //     //  =  console.log("Connected to server with uid: " + uid);
-    //     Router.push("/game/match/" + uid);
-    //     }
-    // }, []);
     return (
         <>
             <head>

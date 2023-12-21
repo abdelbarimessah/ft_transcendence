@@ -1,47 +1,37 @@
-'use client'
-import Image from "next/image";
-import React from "react";
-import { WarningIcon } from "@chakra-ui/icons";
-import CircleIcon from "@chakra-ui/icons";
-import { HStack } from "@chakra-ui/react";
+import {Button} from '@nextui-org/button';
 
 
-function ModeCard() {
+function ModeCard(props: any) {
   return (
-    // <div classNameName=" bg-cardBackground bg-cover bg-center  cursor-pointer m-1 rounded-3xl flex flex-col justify-center items-center w-96 h-3/4 "> 
-    //     <div className="bg-[#263642] h-2/6 z-10 m-1 w-full rounded-b-3xl mt-auto mb-0 blur-md invert brightness-150 md:filter-none p-3">
-    //         <h1  className="uppercase font-nico-moji text-2xl flex items-center justify-center">friend mode</h1>
-    //         <p className="font-poppins text-sm capitalize justify-start">play with your</p>
-    //         <button className=" font-poppins rounded-3xl capitalize bg-[#17222A] pt-1 pb-2 pl-5 pr-5 text-xl font-extralight ml-64 " >play</button>
-    //     </div>
-    // </div>
     <div className="min-h-screen max-w-5xl mx-auto place-content-center justify-center justify-items-center grid md:grid-cols-2 lg:grid-cols-3 gap-x-14 gap-y-5">
       <div className="bg-color-13 shadow-lg rounded-xl overflow-hidden max-w-xs order-first lg:order-none">
         <div>
           <img src="../../assets/cardBackground.jpeg" alt="Abstract Design" className="w-full h-40 sm:h-48 object-cover"></img>
         </div>
-          <h2 className="text-white uppercase font-nico-moji text-2xl flex items-center justify-center">friend mode</h2>
-        <div className="py-5 px-6 sm:px-8 bg-color-13 rounded-xl flex flex-wrap justify-around ">
-          <div className="rounded-full bg-color-8 h-10 w-10">
-              <svg ></svg>
+        <h2 className="text-white uppercase font-nico-moji text-2xl flex items-center justify-center">friend mode</h2>
+        <div className=" sm:px-8 bg-color-13 rounded-xl grid grid-rows-3 grid-flow-col gap-1 ">
+          <div className="rounded-full bg-color-8 h-10 w-10 flex justify-center items-center row-span-3 ml-0">
+            {/* <Button>Click me</Button> */}
+            <img src="../assets/Vector.svg" className="h-6 w-6 text-white m-auto" alt="Vector" />
+            
           </div>
-          <p className="text-white font-poppins text-lg leading-5 ">play with your</p>
-          <p className="text-gray-500 leading-3 text-base mt-4">friends</p>
-          <button className=" font-poppins rounded-3xl capitalize bg-[#17222A] pt-1 pb-1 pl-5 pr-5 text-xl font-extralight text-white" >play</button>
+            <p className="text-white font-poppins text-base leading-5 col-span-2" >play with your</p>
+            <p className="text-gray-500 leading-3 text-sm top-9 row-span-2 col-span-2" >friends</p>
+            <button className=" font-poppins rounded-3xl capitalize  bg-[#17222A] pt-1 pb-1 pl-5 pr-5 text-xl font-extralight text-white " >play</button>
           {/* <ul className="flex mt-8">
-            <li>
-              <img src="https://images.pexels.com/photos/89790/beauty-woman-portrait-face-89790.jpeg?crop=faces&fit=crop&h=200&w=200&auto=compress&cs=tinysrgb" alt="Face" className="rounded-full w-10 h-10 object-cover border-2 border-white"></img>
-            </li>
-            <li>
-              <img src="https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&crop=faces&fit=crop&h=200&w=200" alt="Face" className="rounded-full w-10 h-10 object-cover border-2 border-white"></img>
-            </li>
-            <li>
-              <img src="https://images.pexels.com/photos/769772/pexels-photo-769772.jpeg?auto=compress&cs=tinysrgb&crop=faces&fit=crop&h=200&w=200" alt="Face" className="rounded-full w-10 h-10 object-cover border-2 border-white"></img>
-            </li>
-            <li>
-              <img src="https://images.pexels.com/photos/1102341/pexels-photo-1102341.jpeg?auto=compress&cs=tinysrgb&crop=faces&fit=crop&h=200&w=200" alt="Face" className="rounded-full w-10 h-10 object-cover border-2 border-white"></img>
-            </li>
-          </ul> */}
+          <li>
+            <img src="https://images.pexels.com/photos/89790/beauty-woman-portrait-face-89790.jpeg?crop=faces&fit=crop&h=200&w=200&auto=compress&cs=tinysrgb" alt="Face" className="rounded-full w-10 h-10 object-cover border-2 border-white"></img>
+          </li>
+          <li>
+            <img src="https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&crop=faces&fit=crop&h=200&w=200" alt="Face" className="rounded-full w-10 h-10 object-cover border-2 border-white"></img>
+          </li>
+          <li>
+            <img src="https://images.pexels.com/photos/769772/pexels-photo-769772.jpeg?auto=compress&cs=tinysrgb&crop=faces&fit=crop&h=200&w=200" alt="Face" className="rounded-full w-10 h-10 object-cover border-2 border-white"></img>
+          </li>
+          <li>
+            <img src="https://images.pexels.com/photos/1102341/pexels-photo-1102341.jpeg?auto=compress&cs=tinysrgb&crop=faces&fit=crop&h=200&w=200" alt="Face" className="rounded-full w-10 h-10 object-cover border-2 border-white"></img>
+          </li>
+        </ul> */}
         </div>
       </div>
       <div className="bg-white shadow-lg rounded-xl overflow-hidden max-w-xs order-3 md:row-start-1 md:col-start-2 lg:order-none">
@@ -95,8 +85,7 @@ function ModeCard() {
 
 
     </div>
-
-  )
+  );
 }
 
 export default ModeCard;

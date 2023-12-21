@@ -3,8 +3,11 @@ import * as Phaser from 'phaser';
 import PongGame from '@/components/PongGame';
 import { useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
+import { randomUUID } from 'crypto';
 
 function Home() {
+  // useRouter().push('/game/match/1')
   useEffect(() => {
     let games: Phaser.Game;
     class MyScene extends Phaser.Scene {
@@ -35,7 +38,7 @@ function Home() {
           default: 'arcade',
           arcade: {
             gravity: { y: 0 },
-            fps: 60
+            fps: 120,
           }
         },
         // fps: {

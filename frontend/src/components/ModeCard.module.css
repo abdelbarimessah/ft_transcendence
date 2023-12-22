@@ -1,0 +1,15 @@
+@import url(https://fonts.googleapis.com/earlyaccess/nicomoji.css);
+
+
+
+.NicoM{
+    font-family: 'Nico Moji';
+    text-shadow: 0px 9px 12px rgba(0,0,0,0.94);
+}
+
+
+.playCardButton{
+    -webkit-box-shadow: 0px 19px 15px -15px rgba(0,0,0,0.83);
+    -moz-box-shadow: 0px 19px 15px -15px rgba(0,0,0,0.83);
+    box-shadow: 0px 19px 15px -15px rgba(0,0,0,0.83);
+}

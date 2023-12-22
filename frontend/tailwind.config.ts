@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 import {nextui} from "@nextui-org/react";
 
+
 const config = {
   content: [
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
@@ -9,9 +10,9 @@ const config = {
   theme: {
     extend: {
       fontFamily: {
+        'nico-moji': ['nico Moji', 'sans-serif'],
         'poppins': ['Poppins', 'sans-serif'],
-        'sans': ['ui-sans-serif', 'system-ui'],
-        'nico-moji': ['"Nico Moji"', 'sans-serif'],
+        'iiii': ['ui-sans-serif', 'system-ui'],
       },
       colors: {
         'color-1': '#FDBF50',

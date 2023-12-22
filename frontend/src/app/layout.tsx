@@ -17,6 +17,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <title>pong game</title>
+      </head>
       <body>
         <Providers>
           {children}

@@ -28,6 +28,8 @@ const config = {
         'color-11': '#4F716F',
         'color-12': '#FCEFDA',
         'color-13': '#263642',
+        'color-14': '#36D6D1',
+        'color-15': '#949197',
       },
       backgroundImage: {
         'cardBackground': 'url("../../public/assets/cardBackground.jpeg")',

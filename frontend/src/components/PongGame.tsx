@@ -1,4 +1,4 @@
-import { collectGenerateParams } from "next/dist/build/utils";
+'use client'
 import * as Phaser from "phaser";
 import { io } from "socket.io-client";
 
@@ -77,7 +77,7 @@ export default class PongGame extends Phaser.Scene {
                 this.ball.setVelocityY(data.ballY);
             }
         });
-
+        
         this.isgamestarted = true;
     }
     handleSocketEventsOn(): void {
@@ -139,11 +139,11 @@ export default class PongGame extends Phaser.Scene {
                         this.p1.setPosition(
                             this.physics.world.bounds.width - 50,
                             this.physics.world.bounds.height / 2,
-                        )
+                            )
                         this.p2.setPosition(
                             this.physics.world.bounds.width - 850,
                             this.physics.world.bounds.height / 2,
-                        )
+                            )
                     });
                 }
             }
@@ -160,6 +160,7 @@ export default class PongGame extends Phaser.Scene {
             this.physics.world.bounds.height / 2,
             "ball"
         );
+
         this.ball.setCollideWorldBounds(true);
         this.physics.world.checkCollision.left = false;
         this.physics.world.checkCollision.right = false;
@@ -186,11 +187,12 @@ export default class PongGame extends Phaser.Scene {
         this.p1.setScale(0.7);
         this.p2.setScale(0.7);
 
+
         this.physics.add.collider(this.ball, this.p1);
         this.physics.add.collider(this.ball, this.p2);
         this.input.keyboard?.on("keydown-SPACE", () => {
-            if (!this.isgamestarted && this.renderReplayButton == false) {
-                socketClient.emit("startGameClinet", { roomName: this.playerData.roomName });
+            if (!this.isgamestarted && this.renderReplayButton == false ) {
+                socketClient.emit("startGameClient", { roomName: this.playerData.roomName });
             }
         });
         this.p1victory = this.add.text(

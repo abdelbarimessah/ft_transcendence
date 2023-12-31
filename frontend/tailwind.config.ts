@@ -30,6 +30,8 @@ const config = {
         'color-13': '#263642',
         'color-14': '#36D6D1',
         'color-15': '#949197',
+        'button-rgba': 'rgba(255, 255, 255, 0.10)',
+        
       },
       backgroundImage: {
         'cardBackground': 'url("../../public/assets/cardBackground.jpeg")',

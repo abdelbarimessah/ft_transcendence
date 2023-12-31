@@ -1,7 +1,6 @@
 import {OnGatewayConnection, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
-import { v4 as uuidv4 } from 'uuid';
 
 @WebSocketGateway({ 
     cors: {
@@ -16,18 +15,14 @@ export class GameGateway implements OnGatewayConnection {
     server: Server;
     playerQueue: {name: string; socket: Socket}[] = [];
     listClient: {id: string; socket: Socket; wishPlayer:string}[] = [];
-    // listRooms: {socket: string; room:string}[] = [];
     listRooms: Map<string, string> = new Map<string, string>();
     
     players = {
     };
     roomName: string = '';
     clientNO: number = 0;
+    clientNOForcCard: number = 0;
     numClients = {};
-    
-    // nber: string;
-    // nber1 = uuidv4();
-    // this.logger.log('nber: ' + this.nber1);
 
     handleConnection(socket: Socket): any
     {
@@ -43,12 +38,25 @@ export class GameGateway implements OnGatewayConnection {
         this.numClients[this.roomName]--;
     }
     
+    @SubscribeMessage('customDisconnectClient')
+    handleCustomDisconnect(socket: Socket, data: any) {
+        this.roomName = this.listRooms.get(socket.id);
+        this.logger.log(this.listRooms.get(socket.id))
+        this.logger.log('room name in the disconnect: ' + this.roomName);
+        this.logger.log(`Client disconnected: ${socket.id}`);
+        this.server.to(this.roomName).emit('leaveRoom', {roomName: this.roomName});
+        socket.leave(this.roomName);
+        this.numClients[this.roomName]--;
+        socket.disconnect(true);
+        this.logger.log('customDisconnectClient');
+    }
+    
     @SubscribeMessage('joinRoom')
     handleJoinRoom(socket: Socket) {
         this.clientNO++;
         this.roomName = `game-${Math.round(this.clientNO/2).toString()}`;
         if(this.clientNO % 2)
-            this.listClient.push({id: socket.id, socket: socket, wishPlayer: 'player1'});
+           this.listClient.push({id: socket.id, socket: socket, wishPlayer: 'player1'});
         else 
             this.listClient.push({id: socket.id, socket: socket, wishPlayer: 'player2'});
          
@@ -66,6 +74,34 @@ export class GameGateway implements OnGatewayConnection {
         this.logger.log('number of client in the room in the connect: ' + this.roomName + ' : ' + this.numClients[this.roomName]);
         this.server.in(socket.id).emit('enterRoom', {roomName: this.roomName, wishPlayer: this.listClient[this.listClient.length-1].wishPlayer});
     }
+    
+    
+    @SubscribeMessage('joinRoomFromCard')
+    handleJoinRoomFromCard(socket: Socket, data: any) {
+        this.clientNOForcCard++;
+        this.roomName = `gameCard-${Math.round(this.clientNOForcCard/2).toString()}`;
+        if(this.clientNOForcCard % 2)
+           this.listClient.push({id: socket.id, socket: socket, wishPlayer: 'player1'});
+        else 
+            this.listClient.push({id: socket.id, socket: socket, wishPlayer: 'player2'});
+         
+        this.logger.log(`join to the room : ` + this.roomName);
+        socket.join(this.roomName);
+        this.listRooms.set(socket.id, this.roomName);
+        if(this.numClients[this.roomName] == undefined) {
+            this.numClients[this.roomName] = 1;
+            this.logger.log('player 1 in the room : ' + this.roomName);
+        }
+        else {
+            this.numClients[this.roomName]++;
+            this.logger.log('player 2 in the room : ' + this.roomName);
+        }
+        this.logger.log('number of client in the room in the connect: ' + this.roomName + ' : ' + this.numClients[this.roomName]);
+        if(this.numClients[this.roomName] == 2) {
+            this.logger.log('enterRoomFromCard server ');
+            this.server.in(this.roomName).emit('enterRoomFromCard', {roomName: this.roomName, wishPlayer: this.listClient[this.listClient.length-1].wishPlayer});        
+        }
+    }
 
     @SubscribeMessage('replayClient')
     handleReplayClient(socket: Socket, data: any) {
@@ -74,7 +110,7 @@ export class GameGateway implements OnGatewayConnection {
     }
 
 
-    @SubscribeMessage('startGameClinet')
+    @SubscribeMessage('startGameClient')
     handleStartGameClinet(socket: Socket, data: any) {
         if(this.numClients[data.roomName] == 2) {
             const initialVelocityX = Math.random() * 600 + 200;

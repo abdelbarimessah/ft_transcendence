@@ -1,8 +1,10 @@
-// pages/500.tsx
-export default function Custom500() {
-    return (
-        <>
-            <h1>500 - Server-side error occurred</h1>
-        </>
-    )
+import Image from 'next/image'
+
+export default function Home() {
+  return (
+    <div>
+      <h1>Frontend 2</h1>
+      <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
+    </div>
+  )
 }

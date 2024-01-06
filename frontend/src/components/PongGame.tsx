@@ -3,6 +3,7 @@ import * as Phaser from "phaser";
 import { io } from "socket.io-client";
 
 var socketClient = io("http://localhost:3000");
+
 export default class PongGame extends Phaser.Scene {
     p1: any;
     p2: any;
@@ -102,6 +103,7 @@ export default class PongGame extends Phaser.Scene {
         });
         socketClient.on("leaveRoom", (data) => {
             console.log('the other player left the room');
+            window.location.href = '/game';
             this.scene.stop("PongGame");
         })
         socketClient.on("replayServer", (data) => {
@@ -296,6 +298,7 @@ export default class PongGame extends Phaser.Scene {
 
 
     resetGame() {
+
         this.ball.setPosition(
             this.physics.world.bounds.width / 2,
             this.physics.world.bounds.height / 2

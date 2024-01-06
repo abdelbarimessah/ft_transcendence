@@ -28,7 +28,9 @@ export class GameGateway implements OnGatewayConnection {
     {
         this.logger.log(`Client connected: ${socket.id  }`);
     }
+    
     handleDisconnect(socket: Socket) {
+        
         this.roomName = this.listRooms.get(socket.id);
         this.logger.log(this.listRooms.get(socket.id))
         this.logger.log('room name in the disconnect: ' + this.roomName);

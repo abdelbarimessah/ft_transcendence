@@ -11,16 +11,16 @@ class MyScene extends Phaser.Scene {
       const graphics = this.add.graphics();
       graphics.lineStyle(1, 0xffffff);
       graphics.strokeRoundedRect(375, 280, 150, 40, 20);
-  
+
       button = this.add.text(450, 300, 'Start Game!', { color: '#fff'})
       .setInteractive()
       .on('pointerdown', () => {
+
         this.scene.start('PongGame');
       });
       button.setOrigin(0.5, 0.5);
     }
-  }
-
+}
 
 const gameConfig: Phaser.Types.Core.GameConfig = {
       type:   Phaser.CANVAS ,
@@ -51,7 +51,8 @@ export default function Game() {
 
     useEffect(() => {
       if (!parentEl.current) return;
-  
+
+
       const newGame = new PhaserGame({ ...gameConfig, parent: parentEl.current, width: parentEl.current.offsetWidth, height: parentEl.current.offsetHeight });
       
       setGame(newGame);

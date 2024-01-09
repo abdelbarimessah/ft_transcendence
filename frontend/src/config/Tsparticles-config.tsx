@@ -1,7 +1,8 @@
 const tsParticlesConfig = {
   // // options:{fullscreen:{enable:false,zIndex:0}},
-  // fullScreen: { enable: false},
-    detectRetina: false,
+  fullScreen: { enable: true},
+  style: { position: "absolute" },
+  detectRetina: false,
   fpsLimit: 60,
   interactivity: {
     detectsOn: "canvas",

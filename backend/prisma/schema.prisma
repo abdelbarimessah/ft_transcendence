@@ -29,8 +29,8 @@ model Post {
 enum Role {
   USER
   ADMIN
-}
 
+}
 // model Profile {
 //   id        Int      @id @default(autoincrement())
 //   createdAt DateTime @default(now())

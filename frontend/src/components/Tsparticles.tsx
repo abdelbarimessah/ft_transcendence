@@ -23,11 +23,13 @@ const ParticleBackground = () => {
 
 	if (init) {
 		return (
-			<Particles
-				id="tsparticles"
-				particlesLoaded={particlesLoaded}
-				options={tsParticlesConfig}
-			/>
+			<div className="absolute w-screen h-screen">
+				<Particles
+					id="tsparticles"
+					particlesLoaded={particlesLoaded}
+					options={tsParticlesConfig}
+				/>
+			</div>
 		);
 	}
 

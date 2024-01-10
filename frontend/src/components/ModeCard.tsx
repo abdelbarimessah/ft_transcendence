@@ -7,9 +7,6 @@ import Image from 'next/image';
 import Lottie from 'lottie-react';
 import animationData from '../../public/assets/animation.json';
 
-
-
-
 var socketClient = io('http://localhost:3000');
 
 function ModeCard(props: any) {
@@ -35,108 +32,105 @@ function ModeCard(props: any) {
     }
     return (
         <>
-            <div className={` ${isRandomMode ? 'blur' : ''} w-full min-h-full flex flex-col xl:flex-row items-center justify-center gap-[24px] mx-[20px] mt-10 `}>
-                    <div className='flex flex-col lg:flex-row w-full max-w-[800px] gap-[24px] justify-center items-center'>
+            <div className={` ${isRandomMode ? 'blur' : ''}  w-full h-full flex flex-wrap items-center justify-center gap-[24px] mb-10 mt-10`}>
+                <div className={` ${styles.playCard} cursor-pointe w-full max-w-[391px] h-[500px] xl:h-[700px] rounded-[30px] overflow-hidden flex relative hover:opacity-100 `}>
+                    <Image
+                        src="/../../assets/2.jpg"
+                        alt="My Gallery Image"
+                        fill={true}
+                        sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
+                        className='object-cover'
+                        priority={true}
+                    />
+                    {/* <img src="/../../assets/2.jpg" alt="random mode image card" /> */}
+                    <div className='bg-color-18 w-full h-[202px] absolute bottom-0 left-0 '>
+                        <div className='h-full flex flex-col gap-[16px] sm:gap-[30px] justify-center items-center '>
+                            <div className='w-full'>
+                                <p className='text-[24px] sm:text-[32px] font-nico-moji text-color-3 text-center uppercase '>AI mode</p>
+                            </div>
+                            <div className=' flex gap-[16px] sm:gap-[31px] items-center justify-center  flex-col  sm:flex-row  w-full'>
+                                <div className='flex gap-[8px] items-center justify-center'>
+                                    <div className="rounded-full bg-color-8 h-10 w-10 flex justify-center items-center">
+                                        <img src="../assets/AiAvatar.svg" className="h-8 w-8 text-white m-auto" alt="Vector" />
+                                    </div>
+                                    <div className='flex flex-col '>
+                                        <p className="text-[18px] text-color-3 font-poppins font-[400]" >ALPHA ZERO</p>
+                                        <p className="text-[16px] text-color-16 font-poppins font-[300]" >AI</p>
+                                    </div>
 
-                    <div className={` ${styles.playCard} cursor-pointe  sm:justify-start w-full max-w-[391px] h-[700px] rounded-[30px] overflow-hidden flex relative hover:opacity-100 `}>
-                        <Image
-                            src="/../../assets/2.jpg"
-                            alt="My Gallery Image"
-                            fill={true}
-                            sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
-                            className='object-cover'
-                            priority={true}
-                            /> 
-                        {/* <img src="/../../assets/2.jpg" alt="random mode image card" /> */}
-                        <div className='bg-color-18 w-full h-[202px] absolute bottom-0 left-0 '>
-                            <div className='h-full flex flex-col gap-[16px] sm:gap-[30px] justify-center items-center '>
-                                <div className='w-full'>
-                                    <p className='text-[24px] sm:text-[32px] font-nico-moji text-color-3 text-center uppercase '>AI mode</p>
                                 </div>
-                                <div className=' flex gap-[16px] sm:gap-[31px] items-center justify-center  flex-col  sm:flex-row  w-full'>
-                                    <div className='flex gap-[8px] items-center justify-center'>
-                                        <div className="rounded-full bg-color-8 h-10 w-10 flex justify-center items-center">
-                                            <img src="../assets/AiAvatar.svg" className="h-8 w-8 text-white m-auto" alt="Vector" />
-                                        </div>
-                                        <div className='flex flex-col '>
-                                            <p className="text-[18px] text-color-3 font-poppins font-[400]" >ALPHA ZERO</p>
-                                            <p className="text-[16px] text-color-16 font-poppins font-[300]" >AI</p>
-                                        </div>
-
-                                    </div>
-                                    <div className='h-full flex items-center justify-center'>
-                                        <button
-                                            className={` ${styles.playCardButton} rounded-[14px] bg-color-6 w-[113px] h-[40px] font-nico-moji text-color-3`}
-                                            >
-                                            play
-                                        </button>
-                                    </div>
+                                <div className='h-full flex items-center justify-center'>
+                                    <button
+                                        className={` ${styles.playCardButton} rounded-[14px] bg-color-6 w-[113px] h-[40px] font-nico-moji text-color-3`}
+                                    >
+                                        play
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div className={`${styles.playCard} cursor-pointer w-full max-w-[391px] h-[700px]  rounded-[30px] overflow-hidden flex relative hover:opacity-90 `}>
-                        <Image
-                            src="/../../assets/3.jpg"
-                            alt="My Gallery Image"
-                            fill={true}
-                            sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
-                            className='object-cover'
-                            />
-                        <div className='bg-color-18 w-full h-[202px] absolute bottom-0 left-0 '>
-                            <div className='h-full flex flex-col gap-[16px] sm:gap-[30px] justify-center items-center '>
-                                <div className='w-full '>
-                                    <p className='text-[24px] sm:text-[32px] font-nico-moji text-color-3 text-center uppercase '>Random mode</p>
+                <div className={`${styles.playCard} cursor-pointer w-full max-w-[391px] h-[500px] xl:h-[700px]  rounded-[30px] overflow-hidden flex relative hover:opacity-90 `}>
+                    <Image
+                        src="/../../assets/3.jpg"
+                        alt="My Gallery Image"
+                        fill={true}
+                        sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
+                        className='object-cover'
+                    />
+                    <div className='bg-color-18 w-full h-[202px] absolute bottom-0 left-0 '>
+                        <div className='h-full flex flex-col gap-[16px] sm:gap-[30px] justify-center items-center '>
+                            <div className='w-full '>
+                                <p className='text-[24px] sm:text-[32px] font-nico-moji text-color-3 text-center uppercase '>Random mode</p>
+                            </div>
+                            <div className=' flex gap-[16px] sm:gap-[31px] items-center justify-center  flex-col  sm:flex-row  w-full'>
+                                <div className='flex gap-[8px] items-center justify-center'>
+                                    <div>
+                                        <ul className="flex flex-wrap ">
+                                            <li >
+                                                <div className=''>
+                                                    <img src="https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?auto=compress&cs=tinysrgb&crop=faces&fit=crop&h=200&w=200" alt="Face" className="rounded-full w-10 h-10 object-cover border-1 border-wihte"></img>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div className='-ml-7'>
+                                                    <img src="https://images.pexels.com/photos/458718/pexels-photo-458718.jpeg?crop=faces&fit=crop&h=200&w=200&auto=compress&cs=tinysrgb" alt="Face" className="rounded-full w-10 h-10 object-cover border-1  border-white"></img>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div className='-ml-7'>
+                                                    <img src="https://images.pexels.com/photos/458766/pexels-photo-458766.jpeg?crop=faces&fit=crop&h=200&w=200&auto=compress&cs=tinysrgb" alt="Face" className="rounded-full w-10 h-10 object-cover border-1  border-white"></img>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div className='flex flex-col'>
+                                        <p className="text-[18px] text-color-3 font-poppins font-[400]" >100 players</p>
+                                        <p className="text-[16px] text-color-16 font-poppins font-[300]" >Online</p>
+                                    </div>
+
                                 </div>
-                                <div className=' flex gap-[16px] sm:gap-[31px] items-center justify-center  flex-col  sm:flex-row  w-full'>
-                                    <div className='flex gap-[8px] items-center justify-center'>
-                                        <div>
-                                            <ul className="flex flex-wrap ">
-                                                <li >
-                                                    <div className=''>
-                                                        <img src="https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?auto=compress&cs=tinysrgb&crop=faces&fit=crop&h=200&w=200" alt="Face" className="rounded-full w-10 h-10 object-cover border-1 border-wihte"></img>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div className='-ml-7'>
-                                                        <img src="https://images.pexels.com/photos/458718/pexels-photo-458718.jpeg?crop=faces&fit=crop&h=200&w=200&auto=compress&cs=tinysrgb" alt="Face" className="rounded-full w-10 h-10 object-cover border-1  border-white"></img>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div className='-ml-7'>
-                                                        <img src="https://images.pexels.com/photos/458766/pexels-photo-458766.jpeg?crop=faces&fit=crop&h=200&w=200&auto=compress&cs=tinysrgb" alt="Face" className="rounded-full w-10 h-10 object-cover border-1  border-white"></img>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div className='flex flex-col'>
-                                            <p className="text-[18px] text-color-3 font-poppins font-[400]" >100 players</p>
-                                            <p className="text-[16px] text-color-16 font-poppins font-[300]" >Online</p>
-                                        </div>
-
-                                    </div>
-                                    <div className='h-full flex items-center'>
-                                        <button
-                                            onClick={randomMode}
-                                            className={` ${styles.playCardButton} rounded-[14px] bg-color-6 w-[113px] h-[40px] font-nico-moji text-color-3`}
-                                            >
-                                            play
-                                        </button>
-                                    </div>
+                                <div className='h-full flex items-center'>
+                                    <button
+                                        onClick={randomMode}
+                                        className={` ${styles.playCardButton} rounded-[14px] bg-color-6 w-[113px] h-[40px] font-nico-moji text-color-3`}
+                                    >
+                                        play
+                                    </button>
                                 </div>
                             </div>
                         </div>
+                    </div>
                 </div>
-                </div>
-                <div className={`${styles.playCard} cursor-pointer mb-[24px] xl:mb-0 w-full max-w-[391px] h-[700px]  rounded-[30px] overflow-hidden flex relative hover:opacity-90 `}>
+                <div className={`${styles.playCard} cursor-pointer xl:mb-0 w-full max-w-[391px]  h-[500px] xl:h-[700px]   rounded-[30px] overflow-hidden flex relative hover:opacity-90 `}>
                     <Image
                         src="/../../assets/4.jpg"
                         alt="My Gallery Image"
                         fill={true}
                         sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
                         className='object-cover'
-                        />
+                    />
                     <div className='bg-color-18 w-full h-[202px] absolute bottom-0 left-0 '>
                         <div className='h-full flex flex-col gap-[16px] sm:gap-[30px] justify-center items-center '>
                             <div className='w-full '>

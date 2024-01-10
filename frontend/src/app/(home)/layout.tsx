@@ -18,11 +18,11 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className='flex'>
+    <div className=''>
         {/* <SideNav/> */}
-        <div className='overflow-hidden'>
+        <div >
           {children}
-          </div>
+        </div>
     </div>
   )
 }

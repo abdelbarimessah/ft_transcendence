@@ -8,6 +8,13 @@ const config = {
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    screens: {
+      'sm': '640px',
+      'md': '768px',
+      'lg': '1024px',
+      'xl': '1220px',
+      '2xl': '1536px',
+    },
     extend: {
       fontFamily: {
         'nico-moji': ['nico Moji', 'sans-serif'],
@@ -33,8 +40,7 @@ const config = {
         'color-16': '#7F7F7F',
         'color-17': '#17222A',
         'color-18': '#19232B',
-        'button-rgba': 'rgba(255, 255, 255, 0.10)',
-        
+        'button-rgba': 'rgba(255, 255, 255, 0.10)',        
       },
       backgroundImage: {
         'cardBackground': 'url("../../public/assets/cardBackground.jpeg")',

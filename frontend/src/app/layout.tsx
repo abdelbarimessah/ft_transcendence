@@ -22,7 +22,7 @@ export default function RootLayout({
       <head>
         <title>Pong Game</title>
       </head>
-      <body>
+      <body className='scrollbar-hide'>
         <Providers>
           {children}
         </Providers>

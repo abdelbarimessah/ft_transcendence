@@ -12,7 +12,7 @@ const config = {
       'sm': '640px',
       'md': '768px',
       'lg': '1024px',
-      'xl': '1220px',
+      'xl': '1280px',
       '2xl': '1536px',
     },
     extend: {
@@ -40,6 +40,7 @@ const config = {
         'color-16': '#7F7F7F',
         'color-17': '#17222A',
         'color-18': '#19232B',
+        'color-19': '#FFFBF3',
         'button-rgba': 'rgba(255, 255, 255, 0.10)',        
       },
       backgroundImage: {

@@ -29,6 +29,7 @@ export default class PongGame extends Phaser.Scene {
     flagGame: boolean = false;
 
     playerData: { roomName: string, wishPlayer: string };
+    // music: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
 
     constructor() {
         super('PongGame');
@@ -39,11 +40,13 @@ export default class PongGame extends Phaser.Scene {
             roomName: '',
             wishPlayer: ''
         }
+
     }
     preload() {
         this.load.image("table", "../../assets/table2.png");
         this.load.image("paddle", "../../assets/padle.png");
         this.load.image("ball", "../../assets/ball.png");
+        this.load.audio("music", "../../assets/ballHit.wav");
     }
 
     initRoomData(): void {
@@ -60,6 +63,7 @@ export default class PongGame extends Phaser.Scene {
     }
 
     startGame() {
+        this.sound.play('music');
         this.p1victory.visible = false;
         this.p2victory.visible = false;
         const initialVelocityX = Math.random() * 600 + 200;
@@ -153,6 +157,7 @@ export default class PongGame extends Phaser.Scene {
     }
 
     create() {
+
         this.initRoomData();
         this.handleSocketEventsOn();
         this.table = this.add.image(0, 0, "table").setOrigin(0, 0);

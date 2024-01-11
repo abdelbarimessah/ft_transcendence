@@ -2,7 +2,7 @@ import ModeCard from "@/components/ModeCard";
 import ParticleBackground from "@/components/Tsparticles";
 
 
-function Home() {
+function choseMode() {
     return (
         <>
             <div className="w-full max-h-screen h-screen bg-color-18 flex justify-center items-center relative  overflow-auto  scrollbar-hide">
@@ -13,4 +13,4 @@ function Home() {
     )
 }
 
-export default Home;
+export default choseMode;

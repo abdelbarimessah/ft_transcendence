@@ -1,10 +1,16 @@
 'use client'
 import React from 'react';
+import {  usePathname } from 'next/navigation';
+import Link from 'next/link';
+
+
 
 const SideNav = () => {
+  const path = usePathname();
   return (
-    <div className="min-h-screen min-w-[189px] bg-color-3 rounded-r-3xl  ">
+    <div className=" min-h-screen min-w-[189px] bg-color-3 rounded-r-3xl ">
       <div className=' pt-10 pb-40 flex flex-col justify-between h-full'>
+        <Link href={'/home'}>
         <div className='flex justify-center items-cente '>
           <svg className='cursor-pointer' width="83" height="87" viewBox="0 0 83 87" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M7.29401 83.02C9.32351 84.4148 11.8638 84.2948 13.8256 82.4936C14.4857 82.5467 15.1216 82.5979 15.7572 82.5958C16.4732 82.5934 17.1888 82.5391 17.9049 82.5143C19.6774 82.4528 21.4501 82.3974 23.2226 82.3347C23.8648 82.312 24.5064 82.2539 25.1486 82.2484C29.2766 82.213 33.4048 82.1876 37.5928 82.1489C37.6819 82.1296 37.701 82.1104 37.7101 82.0812C38.483 82.0761 39.256 82.071 40.0767 82.0871C40.1475 82.1005 40.1706 82.0927 40.1937 82.0848C40.9375 82.0804 41.6814 82.076 42.4749 82.0908C42.5465 82.1004 42.5683 82.0908 42.5902 82.0812C43.4224 82.0761 44.2545 82.0709 45.1381 82.0917C45.213 82.1328 45.2376 82.1459 45.2633 82.1569C48.0417 82.1557 50.8202 82.1442 53.5985 82.1577C55.0242 82.1646 56.4497 82.2151 57.8753 82.2481C59.006 82.2742 60.1366 82.3015 61.2672 82.3323C62.2206 82.3584 63.1739 82.3879 64.1271 82.4203C64.8879 82.4462 65.6486 82.4752 66.409 82.5093C67.6644 82.5654 68.9197 82.6232 70.1747 82.6868C71.2379 82.7408 72.3019 82.7871 73.3631 82.8685C74.1838 82.9314 74.9999 83.0525 75.8198 83.1301C76.3273 83.1781 76.8397 83.1762 77.3469 83.2268C78.063 83.2982 78.7778 83.3869 79.4903 83.4878C80.2415 83.5943 80.9911 83.7144 81.7379 83.8481C82.0142 83.8976 82.2915 83.9783 82.5462 84.0936C82.6563 84.1435 82.7634 84.3133 82.7725 84.436C82.7794 84.5296 82.6457 84.7002 82.5471 84.7244C81.7443 84.9208 80.9349 85.0909 80.069 85.2768C79.9802 85.2935 79.9603 85.3129 79.9505 85.3428C79.7729 85.348 79.5952 85.3532 79.3594 85.3658C79.2707 85.382 79.2506 85.4014 79.2406 85.4315C79.0638 85.437 78.8869 85.4424 78.6514 85.4547C78.5616 85.4701 78.541 85.4896 78.5308 85.5202C78.2924 85.5253 78.0539 85.5303 77.7614 85.5185C77.6563 85.5374 77.6052 85.5732 77.5542 85.609C77.3473 85.6136 77.1404 85.6182 76.8748 85.631C76.7858 85.6482 76.7659 85.6677 76.7562 85.6977C76.518 85.7034 76.2797 85.709 75.9879 85.6968C75.8827 85.7148 75.8311 85.7506 75.7796 85.7864C75.4556 85.7913 75.1317 85.7962 74.7474 85.8088C74.6567 85.8255 74.6365 85.845 74.6267 85.8752C74.2138 85.8798 73.8009 85.8844 73.3274 85.8972C73.2366 85.9144 73.2166 85.9339 73.207 85.9639C72.7328 85.9688 72.2586 85.9737 71.726 85.9597C71.5889 85.9782 71.5103 86.0155 71.4317 86.0529C71.1643 86.0582 70.897 86.0635 70.5662 86.0447C70.2134 86.0091 69.899 85.822 69.6571 86.1416C69.4189 86.1467 69.1807 86.1518 68.8827 86.1356C68.6868 86.1529 68.5508 86.1916 68.4148 86.2303C67.793 86.2351 67.1712 86.2398 66.4935 86.2283C66.3868 86.2477 66.3361 86.2834 66.2853 86.319C65.6638 86.3245 65.0423 86.33 64.3586 86.3128C64.1312 86.3294 63.966 86.3686 63.8009 86.4078C63.0017 86.4126 62.2025 86.4174 61.343 86.4022C61.1757 86.4203 61.0686 86.4584 60.9615 86.4965C60.1642 86.5009 59.367 86.5052 58.5091 86.5181C58.4184 86.5356 58.3986 86.5551 58.389 86.5849C56.9114 86.5894 55.4337 86.594 53.8954 86.6069C53.8046 86.6243 53.7847 86.6437 53.7751 86.6736C51.7954 86.679 49.8157 86.6843 47.7654 86.687C47.6748 86.686 47.6548 86.6875 47.6348 86.6889C47.6348 86.6889 47.6018 86.6923 47.5604 86.6662C46.7935 86.628 46.0681 86.6122 45.3426 86.6107C45.2844 86.6106 45.226 86.7095 45.1677 86.7624C42.7094 86.7674 40.2512 86.7725 37.7433 86.7359C37.5882 86.6626 37.4831 86.6048 37.3772 86.6034C36.6904 86.5942 36.0034 86.5924 35.3166 86.6009C35.1958 86.6024 35.0757 86.6637 34.9553 86.6973C32.9727 86.6945 30.9902 86.6917 28.9557 86.6627C28.8797 86.6208 28.8541 86.6083 28.8269 86.599C27.3787 86.5994 25.9306 86.5997 24.4305 86.574C24.3547 86.532 24.3292 86.5194 24.302 86.5102C23.4156 86.5106 22.5293 86.511 21.5908 86.4852C21.5144 86.4433 21.4885 86.431 21.461 86.4219C20.6643 86.4222 19.8677 86.4224 19.0232 86.3835C18.8008 86.3438 18.6261 86.3432 18.4514 86.3427C17.7998 86.3398 17.1483 86.3368 16.4448 86.3079C16.369 86.2656 16.3434 86.253 16.3159 86.2441C15.7258 86.2445 15.1358 86.2448 14.4988 86.2068C14.3063 86.1671 14.1608 86.1658 14.0153 86.1645C13.7182 86.1618 13.4211 86.1591 13.0761 86.1159C12.7655 86.0758 12.5029 86.0762 12.2403 86.0765C12.0019 86.0736 11.7635 86.0707 11.4809 86.0306C11.3202 85.991 11.2039 85.9887 11.0875 85.9864C10.6427 85.9839 10.1979 85.9815 9.70117 85.9529C9.62546 85.9104 9.59965 85.8979 9.57188 85.8894C9.15921 85.8897 8.74654 85.89 8.29111 85.8572C8.18903 85.8192 8.1297 85.8143 8.07037 85.8094C7.74345 85.8067 7.41652 85.8041 7.03841 85.7754C6.96315 85.7333 6.93737 85.7208 6.90991 85.7119C6.67314 85.7122 6.43636 85.7125 6.14986 85.6867C6.07618 85.6448 6.05065 85.6322 6.02353 85.6229C5.78683 85.6232 5.55012 85.6236 5.2725 85.5909C5.17224 85.5529 5.11289 85.548 5.05354 85.5432C4.81463 85.5406 4.57572 85.5379 4.28632 85.5089C4.21119 85.4662 4.18454 85.4543 4.15587 85.4469C4.00725 85.4468 3.85864 85.4467 3.66275 85.4206C3.59144 85.3789 3.56585 85.3663 3.53873 85.3568C3.33103 85.3571 3.12332 85.3575 2.86638 85.3319C2.79339 85.2892 2.76761 85.2766 2.73981 85.2683C2.61933 85.2685 2.49886 85.2688 2.34092 85.2363C2.24416 85.1984 2.18487 85.1933 2.12557 85.1882C2.05978 85.1856 1.99398 85.183 1.892 85.1446C1.76811 85.106 1.68039 85.1032 1.59268 85.1004C1.52672 85.0975 1.46077 85.0946 1.35216 85.0657C1.2864 85.0227 1.26115 85.0099 1.23374 85.0013C0.824274 84.8969 0.41481 84.7925 0.046257 84.6985C-0.0617004 84.3148 0.0105704 84.1293 0.355898 84.0611C1.25819 83.8828 2.15012 83.646 3.05691 83.4984C3.89416 83.3621 4.74533 83.3112 5.64995 83.2134C5.73883 83.1944 5.75815 83.1748 5.76748 83.1454C5.94753 83.1405 6.12758 83.1356 6.36933 83.1526C6.71868 83.123 7.00635 83.0715 7.29401 83.02Z" fill="#DDDDDD" />
@@ -48,57 +54,66 @@ const SideNav = () => {
             <path d="M52.5518 5.99594C53.058 6.32697 53.6149 6.56749 53.9918 6.97465C54.7371 7.77978 54.7917 8.72931 54.2072 9.66447C53.5633 10.6946 52.6367 11.3662 51.4312 11.6275C50.4048 11.8499 49.508 11.4991 48.667 10.9782C48.336 10.7733 48.031 10.494 47.7844 10.1914C46.9219 9.13281 46.9737 7.99577 47.8911 6.99142C49.041 5.73262 50.948 5.31637 52.5518 5.99594Z" fill="#7998AE" />
             <path d="M67.0223 52.0983C67.9268 51.6375 68.8182 51.2993 69.8404 51.3607C70.9881 51.4296 71.8462 52.2175 72.0513 53.3144C72.282 54.5488 71.83 55.5875 71.2098 56.6141C70.5056 57.7795 69.5216 58.6249 68.3256 59.1974C67.3812 59.6495 66.3631 59.8726 65.3084 59.49C64.4646 59.1839 63.8372 58.2725 63.7951 57.3768C63.7352 56.1022 64.2161 55.0169 64.9321 54.0259C65.4862 53.259 66.1658 52.6009 67.0223 52.0983Z" fill="#EAEDF4" />
           </svg>
-
         </div>
+        </Link>
         <div className=' flex flex-col gap-[50px]'>
-          <div className='flex justify-center items-center flex-col  h-[50px]'>
-            <div className="group">
-              <svg className="transform transition-transform duration-500 ease-in-out group-hover:scale-110 group-hover:fill-color-6 " width="39" height="41" viewBox="0 0 39 41" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path className=" group-hover:stroke-color-6 stroke-[#c3cfd7]" d="M14.3458 36.8116V31.1243C14.3458 29.6777 15.5251 28.5023 16.9862 28.4926H22.3385C23.8066 28.4926 24.9967 29.6709 24.9967 31.1243V36.8292C24.9964 38.0574 25.9866 39.0612 27.2268 39.09H30.795C34.352 39.09 37.2355 36.2353 37.2355 32.7139V16.5353C37.2165 15.1499 36.5595 13.849 35.4514 13.0028L23.2483 3.27089C21.1105 1.57637 18.0715 1.57637 15.9336 3.27089L3.78408 13.0205C2.67181 13.8633 2.0137 15.1663 2 16.5529V32.7139C2 36.2353 4.88352 39.09 8.44051 39.09H12.0087C13.2797 39.09 14.3101 38.0699 14.3101 36.8116" stroke="#D0C7B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+          <Link className='' href={'/home'}>
+            <div className='flex justify-center items-center flex-col  h-[50px]'>
+              <div className="group">
+                <svg className={`${path === '/home' ? 'scale-110 fill-color-6' : ''} transform transition-transform duration-500 ease-in-out group-hover:scale-110 group-hover:fill-color-6 `} width="39" height="41" viewBox="0 0 39 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path className={`${path === '/home' ? 'stroke-color-6' : ''} group-hover:stroke-color-6 stroke-[#c3cfd7]`} d="M14.3458 36.8116V31.1243C14.3458 29.6777 15.5251 28.5023 16.9862 28.4926H22.3385C23.8066 28.4926 24.9967 29.6709 24.9967 31.1243V36.8292C24.9964 38.0574 25.9866 39.0612 27.2268 39.09H30.795C34.352 39.09 37.2355 36.2353 37.2355 32.7139V16.5353C37.2165 15.1499 36.5595 13.849 35.4514 13.0028L23.2483 3.27089C21.1105 1.57637 18.0715 1.57637 15.9336 3.27089L3.78408 13.0205C2.67181 13.8633 2.0137 15.1663 2 16.5529V32.7139C2 36.2353 4.88352 39.09 8.44051 39.09H12.0087C13.2797 39.09 14.3101 38.0699 14.3101 36.8116" stroke="#D0C7B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
             </div>
-          </div>
-          <div className='flex justify-center items-center flex-col  h-[50px]'>
-            <div className="group">
-              <svg className="transform transition-transform duration-500 ease-in-out group-hover:scale-110 group-hover:fill-color-6 " width="35" height="47" viewBox="0 0 35 47" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path className=" group-hover:stroke-color-6 stroke-[#c3cfd7]" fillRule="evenodd" clipRule="evenodd" d="M17.2803 44.9984C9.03846 44.9984 2 43.7158 2 38.5795C2 33.443 8.99381 28.7012 17.2803 28.7012C25.5225 28.7012 32.5609 33.397 32.5609 38.5335C32.5609 43.6678 25.5671 44.9984 17.2803 44.9984Z" stroke="#D0C7B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-                <path className=" group-hover:stroke-color-6 stroke-[#c3cfd7]" fillRule="evenodd" clipRule="evenodd" d="M17.264 21.5872C22.6729 21.5872 27.0566 17.2033 27.0566 11.7946C27.0566 6.38585 22.6729 2 17.264 2C11.8554 2 7.46954 6.38585 7.46954 11.7946C7.45128 17.1851 11.8047 21.5689 17.195 21.5872C17.2194 21.5872 17.2417 21.5872 17.264 21.5872Z" stroke="#D0C7B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+          </Link>
+          <Link href={'/profile'}>
+            <div className='flex justify-center items-center flex-col  h-[50px]'>
+              <div className="group">
+                <svg className={`${path === '/profile' ? 'scale-110 fill-color-6' : ''} transform transition-transform duration-500 ease-in-out group-hover:scale-110 group-hover:fill-color-6 `} width="35" height="47" viewBox="0 0 35 47" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path className={`${path === '/profile' ? 'stroke-color-6 ' : ''}  group-hover:stroke-color-6 stroke-[#c3cfd7] `} fillRule="evenodd" clipRule="evenodd" d="M17.2803 44.9984C9.03846 44.9984 2 43.7158 2 38.5795C2 33.443 8.99381 28.7012 17.2803 28.7012C25.5225 28.7012 32.5609 33.397 32.5609 38.5335C32.5609 43.6678 25.5671 44.9984 17.2803 44.9984Z" stroke="#D0C7B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                  <path className={`${path === '/profile' ? 'stroke-color-6 ' : ''} group-hover:stroke-color-6 stroke-[#c3cfd7]`}fillRule="evenodd" clipRule="evenodd" d="M17.264 21.5872C22.6729 21.5872 27.0566 17.2033 27.0566 11.7946C27.0566 6.38585 22.6729 2 17.264 2C11.8554 2 7.46954 6.38585 7.46954 11.7946C7.45128 17.1851 11.8047 21.5689 17.195 21.5872C17.2194 21.5872 17.2417 21.5872 17.264 21.5872Z" stroke="#D0C7B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
             </div>
-          </div>
-          <div className='flex justify-center items-center flex-col  h-[50px]'>
-            <div className="group">
-              <svg className="transform transition-transform duration-500 ease-in-out group-hover:scale-110 group-hover:fill-color-6 " width="41" height="41" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path className=" group-hover:stroke-color-6 stroke-[#c3cfd7]" fillRule="evenodd" clipRule="evenodd" d="M33.582 33.5792C27.9281 39.2337 19.5561 40.4554 12.7049 37.2869C11.6935 36.8797 10.8642 36.5506 10.0759 36.5506C7.8802 36.5636 5.14716 38.6927 3.72672 37.2739C2.30627 35.8533 4.43694 33.1181 4.43694 30.9091C4.43694 30.1207 4.12087 29.3063 3.7137 28.2929C0.543737 21.4428 1.7671 13.068 7.42098 7.41533C14.6385 0.195199 26.3645 0.1952 33.582 7.41347C40.8125 14.6448 40.7995 26.361 33.582 33.5792Z" stroke="#D0C7B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-                <path className=" group-hover:stroke-color-3 stroke-[#c3cfd7]" d="M27.7881 21.2637H27.8047" stroke="#D0C7B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-                <path className=" group-hover:stroke-color-3 stroke-[#c3cfd7]" d="M20.3711 21.2637H20.3877" stroke="#D0C7B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-                <path className=" group-hover:stroke-color-3 stroke-[#c3cfd7]" d="M12.9546 21.2637H12.9712" stroke="#D0C7B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+          </Link>
+          <Link href={'/chat'}>
+            <div className='flex justify-center items-center flex-col  h-[50px]'>
+              <div className="group">
+                <svg className={`${path === '/chat' ? 'scale-110 fill-color-6' : ''} transform transition-transform duration-500 ease-in-out group-hover:scale-110 group-hover:fill-color-6 `} width="41" height="41" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path className={`${path === '/chat' ? 'stroke-color-6' : ''} group-hover:stroke-color-6 stroke-[#c3cfd7]`} fillRule="evenodd" clipRule="evenodd" d="M33.582 33.5792C27.9281 39.2337 19.5561 40.4554 12.7049 37.2869C11.6935 36.8797 10.8642 36.5506 10.0759 36.5506C7.8802 36.5636 5.14716 38.6927 3.72672 37.2739C2.30627 35.8533 4.43694 33.1181 4.43694 30.9091C4.43694 30.1207 4.12087 29.3063 3.7137 28.2929C0.543737 21.4428 1.7671 13.068 7.42098 7.41533C14.6385 0.195199 26.3645 0.1952 33.582 7.41347C40.8125 14.6448 40.7995 26.361 33.582 33.5792Z" stroke="#D0C7B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                  <path className={`${path === '/chat' ? 'stroke-color-3' : ''} group-hover:stroke-color-3 stroke-[#c3cfd7]`} d="M27.7881 21.2637H27.8047" stroke="#D0C7B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                  <path className={`${path === '/chat' ? 'stroke-color-3' : ''} group-hover:stroke-color-3 stroke-[#c3cfd7]`} d="M20.3711 21.2637H20.3877" stroke="#D0C7B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                  <path className={`${path === '/chat' ? 'stroke-color-3' : ''} group-hover:stroke-color-3 stroke-[#c3cfd7]`} d="M12.9546 21.2637H12.9712" stroke="#D0C7B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
             </div>
-          </div>
-          <div className='flex justify-center items-center flex-col  h-[50px]'>
-            <div className="group">
-              <svg className="transform transition-transform duration-500 ease-in-out group-hover:scale-110 group-hover:fill-color-6 " width="41" height="41" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path className=" group-hover:stroke-color-3 stroke-[#c3cfd7]" fillRule="evenodd" clipRule="evenodd" d="M39 24.6325C39 13.8583 34.3758 10.2656 20.501 10.2656C6.62431 10.2656 2 13.8583 2 24.6325C2 35.4087 6.62431 38.9995 20.501 38.9995C34.3758 38.9995 39 35.4087 39 24.6325Z" stroke="#D0C7B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-                <path className=" group-hover:stroke-color-3 stroke-[#c3cfd7]" d="M14.6689 21.0781V28.0063" stroke="#D0C7B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-                <path className=" group-hover:stroke-color-3 stroke-[#c3cfd7]" d="M18.2046 24.543H11.1367" stroke="#D0C7B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-                <path className=" group-hover:stroke-color-3 stroke-[#c3cfd7]" d="M26.7259 21.291H26.5278" stroke="#D0C7B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-                <path className=" group-hover:stroke-color-3 stroke-[#c3cfd7]" d="M30.0794 27.9043H29.8813" stroke="#D0C7B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-                <path className=" group-hover:stroke-color-6 stroke-[#c3cfd7]" d="M13.2344 2C13.2473 3.3838 14.3812 4.49379 15.7648 4.48083H17.718C19.8546 4.46418 21.6025 6.17728 21.6321 8.314V10.2657" stroke="#D0C7B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+          </Link>
+          <Link href={'/game'}>
+            <div className='flex justify-center items-center flex-col  h-[50px]'>
+              <div className="group">
+                <svg className={`${path === '/game' ? 'scale-110 fill-color-6' : ''} transform transition-transform duration-500 ease-in-out group-hover:scale-110 group-hover:fill-color-6 `} width="41" height="41" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path className={`${path === '/game' ? 'stroke-color-3' : ''} group-hover:stroke-color-3 stroke-[#c3cfd7]`} fillRule="evenodd" clipRule="evenodd" d="M39 24.6325C39 13.8583 34.3758 10.2656 20.501 10.2656C6.62431 10.2656 2 13.8583 2 24.6325C2 35.4087 6.62431 38.9995 20.501 38.9995C34.3758 38.9995 39 35.4087 39 24.6325Z" stroke="#D0C7B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                  <path className={`${path === '/game' ? 'stroke-color-3' : ''} group-hover:stroke-color-3 stroke-[#c3cfd7]`} d="M14.6689 21.0781V28.0063" stroke="#D0C7B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                  <path className={`${path === '/game' ? 'stroke-color-3' : ''} group-hover:stroke-color-3 stroke-[#c3cfd7]`} d="M18.2046 24.543H11.1367" stroke="#D0C7B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                  <path className={`${path === '/game' ? 'stroke-color-3' : ''} group-hover:stroke-color-3 stroke-[#c3cfd7]`} d="M26.7259 21.291H26.5278" stroke="#D0C7B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                  <path className={`${path === '/game' ? 'stroke-color-3' : ''} group-hover:stroke-color-3 stroke-[#c3cfd7]`} d="M30.0794 27.9043H29.8813" stroke="#D0C7B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                  <path className={`${path === '/game' ? 'stroke-color-6' : ''} group-hover:stroke-color-6 stroke-[#c3cfd7]`} d="M13.2344 2C13.2473 3.3838 14.3812 4.49379 15.7648 4.48083H17.718C19.8546 4.46418 21.6025 6.17728 21.6321 8.314V10.2657" stroke="#D0C7B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
             </div>
+        </Link>
           </div>
-        </div>
-        <div>
-          <div className='flex justify-center items-center flex-col  h-[50px]'>
-            <div className="group">
-              <svg className="transform transition-transform duration-500 ease-in-out group-hover:scale-110 group-hover:fill-color-6 " width="41" height="41" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path className=" group-hover:stroke-color-3 stroke-[#c3cfd7]" fillRule="evenodd" clipRule="evenodd" d="M38.2775 11.2505C36.7899 8.92872 33.4962 8.13429 30.9221 9.47501C28.6831 10.6388 25.8849 9.18263 25.8849 6.85319C25.8849 4.17363 23.4729 2 20.4996 2C17.5263 2 15.1143 4.17363 15.1143 6.85319C15.1143 9.18263 12.316 10.6388 10.0791 9.47501C7.50276 8.13429 4.20927 8.92872 2.72157 11.2505C1.23597 13.5722 2.11751 16.5403 4.6938 17.879C6.93072 19.0447 6.93072 21.9553 4.6938 23.121C2.11751 24.4615 1.23597 27.4297 2.72157 29.7496C4.20927 32.0713 7.50276 32.8658 10.0769 31.527C12.3139 30.3613 15.1143 31.8173 15.1143 34.1468C15.1143 36.8263 17.5263 39 20.4996 39C23.4729 39 25.8849 36.8263 25.8849 34.1468C25.8849 31.8173 28.6831 30.3613 30.9221 31.527C33.4962 32.8658 36.7899 32.0713 38.2775 29.7496C39.7651 27.4297 38.8815 24.4615 36.3073 23.121C34.0706 21.9553 34.0684 19.0447 36.3073 17.879C38.8815 16.5403 39.7651 13.5722 38.2775 11.2505Z" stroke="#D0C7B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-                <path className=" group-hover:stroke-color-3 stroke-[#c3cfd7]" fillRule="evenodd" clipRule="evenodd" d="M20.4998 15.6309C23.5053 15.6309 25.941 17.8102 25.941 20.4993C25.941 23.1884 23.5053 25.3677 20.4998 25.3677C17.4943 25.3677 15.0586 23.1884 15.0586 20.4993C15.0586 17.8102 17.4943 15.6309 20.4998 15.6309Z" stroke="#D0C7B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-
+          <div>
+          <Link href={'/setting'}>
+            <div className='flex justify-center items-center flex-col  h-[50px]'>
+              <div className="group">
+                <svg className={`${path === '/setting' ? 'scale-110 fill-color-6' : ''} transform transition-transform duration-500 ease-in-out group-hover:scale-110 group-hover:fill-color-6 `} width="41" height="41" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path className={`${path === '/setting' ? 'stroke-color-3' : ''} group-hover:stroke-color-3 stroke-[#c3cfd7]`} fillRule="evenodd" clipRule="evenodd" d="M38.2775 11.2505C36.7899 8.92872 33.4962 8.13429 30.9221 9.47501C28.6831 10.6388 25.8849 9.18263 25.8849 6.85319C25.8849 4.17363 23.4729 2 20.4996 2C17.5263 2 15.1143 4.17363 15.1143 6.85319C15.1143 9.18263 12.316 10.6388 10.0791 9.47501C7.50276 8.13429 4.20927 8.92872 2.72157 11.2505C1.23597 13.5722 2.11751 16.5403 4.6938 17.879C6.93072 19.0447 6.93072 21.9553 4.6938 23.121C2.11751 24.4615 1.23597 27.4297 2.72157 29.7496C4.20927 32.0713 7.50276 32.8658 10.0769 31.527C12.3139 30.3613 15.1143 31.8173 15.1143 34.1468C15.1143 36.8263 17.5263 39 20.4996 39C23.4729 39 25.8849 36.8263 25.8849 34.1468C25.8849 31.8173 28.6831 30.3613 30.9221 31.527C33.4962 32.8658 36.7899 32.0713 38.2775 29.7496C39.7651 27.4297 38.8815 24.4615 36.3073 23.121C34.0706 21.9553 34.0684 19.0447 36.3073 17.879C38.8815 16.5403 39.7651 13.5722 38.2775 11.2505Z" stroke="#D0C7B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                  <path className={`${path === '/setting' ? 'stroke-color-3' : ''} group-hover:stroke-color-3 stroke-[#c3cfd7] `} fillRule="evenodd" clipRule="evenodd" d="M20.4998 15.6309C23.5053 15.6309 25.941 17.8102 25.941 20.4993C25.941 23.1884 23.5053 25.3677 20.4998 25.3677C17.4943 25.3677 15.0586 23.1884 15.0586 20.4993C15.0586 17.8102 17.4943 15.6309 20.4998 15.6309Z" stroke="#D0C7B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
             </div>
-          </div>
+          </Link>
         </div>
       </div>
     </div>

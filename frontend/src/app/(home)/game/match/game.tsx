@@ -41,6 +41,12 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
         width: 900,
         height: 600
       },
+      // scale: {
+      //   mode: Phaser.Scale.FIT,
+      //   autoCenter: Phaser.Scale.CENTER_BOTH,
+      //   width: 800,
+      //   height: 600
+    // },
       scene: [MyScene, PongGame]
     };
 
@@ -66,6 +72,6 @@ export default function Game() {
 
     return (
         // <div ref={parentEl} className="gameContainer w-screen h-1/2 block" />
-        <div ref={parentEl} />
+        <div ref={parentEl} className="gameContainer w-screen h-1/2 block" />
     );
 }

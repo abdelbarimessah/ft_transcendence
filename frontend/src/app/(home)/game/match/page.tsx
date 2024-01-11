@@ -8,8 +8,10 @@ const DynamicComponentWithNoSSR = dynamic(
 export default function Home() {
   return (
     <main>
-      <div className="absolute top-0 w-full h-full">
-        <DynamicComponentWithNoSSR/>
+      <div className=" w-full h-screen flex justify-center items-center">
+        <div>
+          <DynamicComponentWithNoSSR/>
+        </div>
       </div>
     </main>
   );

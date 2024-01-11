@@ -18,9 +18,9 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className=''>
-        {/* <SideNav/> */}
-        <div >
+    <div className='flex bg-color-18 overflow-hidden h-screen w-screen'>
+        <SideNav/>
+        <div className='flex-1'>
           {children}
         </div>
     </div>

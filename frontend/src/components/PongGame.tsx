@@ -1,5 +1,5 @@
 'use client'
-import * as Phaser from "phaser";
+import { Game as PhaserGame } from "phaser";
 import { io } from "socket.io-client";
 
 var socketClient = io("http://localhost:3000");
@@ -29,6 +29,15 @@ export default class PongGame extends Phaser.Scene {
     flagGame: boolean = false;
 
     playerData: { roomName: string, wishPlayer: string };
+    load: any;
+    scene: any;
+    add: any;
+    physics: any;
+    input: any;
+    time: any;
+    static ratio: number;
+    static GAME_WIDTH: any;
+    static GAME_HEIGHT: any;
     // music: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
 
     constructor() {
@@ -46,7 +55,6 @@ export default class PongGame extends Phaser.Scene {
         this.load.image("table", "../../assets/table2.png");
         this.load.image("paddle", "../../assets/padle.png");
         this.load.image("ball", "../../assets/ball.png");
-        this.load.audio("music", "../../assets/ballHit.wav");
     }
 
     initRoomData(): void {
@@ -63,7 +71,6 @@ export default class PongGame extends Phaser.Scene {
     }
 
     startGame() {
-        this.sound.play('music');
         this.p1victory.visible = false;
         this.p2victory.visible = false;
         const initialVelocityX = Math.random() * 600 + 200;
@@ -155,9 +162,35 @@ export default class PongGame extends Phaser.Scene {
             }
         });
     }
+    private static resize(scene: any, gameSize: any) {
+        let { width: displayWidth, height: displayHeight } = gameSize;
+    
+        const currentRatio = displayHeight / displayWidth;
+    
+        let w = displayWidth;
+        let h = displayHeight;
+    
+        if (currentRatio < this.ratio) {
+          w = displayHeight / this.ratio;
+        } else {
+          h = displayWidth * this.ratio;
+        }
+    
+        const scaleX = w / this.GAME_WIDTH;
+        const scaleY = h / this.GAME_HEIGHT;
+    
+        const mainCamera = scene.cameras.main;
+        mainCamera.setViewport(Math.ceil((displayWidth - w) * 0.5), 0, w, h);
+        mainCamera.setZoom(Math.max(scaleX, scaleY));
+        mainCamera.centerOn(this.GAME_WIDTH * 0.5, this.GAME_HEIGHT * 0.5);
+      }
 
     create() {
-
+        // this.scene.scale.on("resize", function (gameSize: Size) {
+        //     resizeBy.resize(this.scene, gameSize);
+        //   });
+      
+        this.scene.scale.refresh();
         this.initRoomData();
         this.handleSocketEventsOn();
         this.table = this.add.image(0, 0, "table").setOrigin(0, 0);

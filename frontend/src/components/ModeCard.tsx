@@ -32,8 +32,8 @@ function ModeCard(props: any) {
     }
     return (
         <>
-            <div className={` ${isRandomMode ? 'blur' : ''}  w-full h-full flex flex-wrap items-center justify-center gap-[24px] mb-10 mt-10`}>
-                <div className={` ${styles.playCard} cursor-pointe w-full max-w-[391px] h-[500px] xl:h-[700px] rounded-[30px] overflow-hidden flex relative hover:opacity-100 `}>
+            <div className={` ${isRandomMode ? 'blur' : ''}  w-full max-h-full flex flex-wrap items-center justify-center gap-[24px] pb-10 pt-10 `}>
+                <div className={` ${styles.playCard} cursor-pointer w-full max-w-[391px] h-[500px] rounded-[30px] overflow-hidden flex relative hover:opacity-100 `}>
                     <Image
                         src="/../../assets/2.jpg"
                         alt="My Gallery Image"
@@ -71,7 +71,7 @@ function ModeCard(props: any) {
                     </div>
                 </div>
 
-                <div className={`${styles.playCard} cursor-pointer w-full max-w-[391px] h-[500px] xl:h-[700px]  rounded-[30px] overflow-hidden flex relative hover:opacity-90 `}>
+                <div className={`${styles.playCard} cursor-pointer w-full max-w-[391px] h-[500px]  rounded-[30px] overflow-hidden flex relative hover:opacity-90 `}>
                     <Image
                         src="/../../assets/3.jpg"
                         alt="My Gallery Image"
@@ -123,7 +123,7 @@ function ModeCard(props: any) {
                         </div>
                     </div>
                 </div>
-                <div className={`${styles.playCard} cursor-pointer xl:mb-0 w-full max-w-[391px]  h-[500px] xl:h-[700px]   rounded-[30px] overflow-hidden flex relative hover:opacity-90 `}>
+                <div className={`${styles.playCard} cursor-pointer xl:mb-0 w-full max-w-[391px] h-[500px] rounded-[30px] overflow-hidden flex relative hover:opacity-90 `}>
                     <Image
                         src="/../../assets/4.jpg"
                         alt="My Gallery Image"

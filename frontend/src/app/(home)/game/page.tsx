@@ -1,21 +1,16 @@
-// import ModeCard from "@/components/ModeCard";
-import ModeCard from "@/components/ModeCardComponent";
+import ModeCard from "@/components/ModeCard";
 import ParticleBackground from "@/components/Tsparticles";
 
 
-function Home() {
+function choseMode() {
     return (
         <>
-            {/* <div className="bg-color-18 min-h-screen w-screen bg-cover bg-fixed flex flex-wrap justify-center overflow-x-hidden">  */}
-                <div className=" w-screen min-h-screen bg-color-18 flex justify-center items-center">
-
-                    <ParticleBackground />
-                    <ModeCard />
-                </div>
-                {/* <SideBare/> */}   
-            {/* </div> */}
+            <div className="w-full max-h-screen h-screen bg-color-18 flex justify-center items-center relative  overflow-auto  scrollbar-hide">
+                <ParticleBackground />
+                <ModeCard />
+            </div>
         </>
     )
 }
 
-export default Home;
+export default choseMode;

@@ -1,5 +1,4 @@
 const tsParticlesConfig = {
-  // // options:{fullscreen:{enable:false,zIndex:0}},
   fullScreen: { enable: true},
   style: { position: "absolute" },
   detectRetina: false,

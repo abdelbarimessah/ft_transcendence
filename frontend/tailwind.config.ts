@@ -41,7 +41,7 @@ const config = {
         'color-17': '#17222A',
         'color-18': '#19232B',
         'color-19': '#FFFBF3',
-        'button-rgba': 'rgba(255, 255, 255, 0.10)',        
+        'button-rgba': 'rgba(255, 255, 255, 0.10)',
       },
       backgroundImage: {
         'cardBackground': 'url("../../public/assets/cardBackground.jpeg")',

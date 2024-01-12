@@ -5,14 +5,13 @@ const DynamicComponentWithNoSSR = dynamic(
   { ssr: false }
 );
 
+
 export default function Home() {
   return (
-    <main>
-      <div className=" w-full h-screen flex justify-center items-center">
-        <div>
-          <DynamicComponentWithNoSSR/>
-        </div>
-      </div>
-    </main>
+    <div className='ml-4 mr-3 h-full flex items-center justify-center w-10 flex-1'>
+      <DynamicComponentWithNoSSR />
+      {/* <DynamicComponentWithNoSSR /> */}
+    </div>
   );
 }
+

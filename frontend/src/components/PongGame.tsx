@@ -1,9 +1,9 @@
 'use client'
-// import { Game as PhaserGame } from "phaser";
 import Phaser from "phaser";
 import { io } from "socket.io-client";
 
 var socketClient = io("http://localhost:3000");
+
 
 export default class PongGame extends Phaser.Scene {
     p1: any;
@@ -18,6 +18,7 @@ export default class PongGame extends Phaser.Scene {
     p2victory: any;
     p1goaltext: any;
     p2goaltext: any;
+    
     p1score_number: number;
     p2score_number: number;
     goalScored: boolean;
@@ -28,16 +29,8 @@ export default class PongGame extends Phaser.Scene {
     sendBallY: number = 0;
 
     flagGame: boolean = false;
-
+    
     playerData: { roomName: string, wishPlayer: string };
-    // load: any;
-    // scene: any;
-    // add: any;
-    // physics: any;
-    // input: any;
-    // time: any;
-    // music: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
-
     constructor() {
         super('PongGame');
         this.p1score_number = 0;
@@ -58,7 +51,9 @@ export default class PongGame extends Phaser.Scene {
     initRoomData(): void {
         if (!this.checkScene) {
             socketClient.emit("joinRoom");
+            console.log('join room');
             socketClient.on('enterRoom', (data) => {
+                console.log('enter room');
                 this.playerData.roomName = data.roomName;
                 this.playerData.wishPlayer = data.wishPlayer;
                 console.log(this.playerData.roomName);
@@ -112,62 +107,84 @@ export default class PongGame extends Phaser.Scene {
         });
         socketClient.on("leaveRoom", (data) => {
             console.log('the other player left the room');
-            window.location.href = '/game';
-            this.scene.stop("PongGame");
         })
-        socketClient.on("replayServer", (data) => {
-            if (data.roomName == this.playerData.roomName && data.id == socketClient.id) {
-                let graphics: any;
-                let replayButton: any;
-                this.renderReplayButton = true;
-                this.p1.setActive(false).setVisible(false);
-                this.p2.setActive(false).setVisible(false);
-                this.ball.setActive(false).setVisible(false);
-                this.table.setActive(false).setVisible(false);
-                graphics = this.add.graphics();
-                graphics.lineStyle(1, 0xffffff);
-                graphics.strokeRoundedRect(375, 280, 150, 40, 20);
-                if (this.renderReplayButton == true) {
-                    replayButton = this.add.text(450, 300, 'Play Again!', { color: '#fff' })
-                    replayButton.setOrigin(0.5, 0.5);
-                    replayButton.setInteractive()
-                    replayButton.on('pointerdown', () => {
-                        this.renderReplayButton = false;
-                        this.p1score_number = 0;
-                        const p1s = this.p1score_number / 60;
-                        this.p1goaltext.setText(p1s.toFixed(0));
-                        this.p2score_number = 0;
-                        const p2s = this.p2score_number / 60;
-                        this.p2goaltext.setText(p2s.toFixed(0));
-                        this.p1.visible = true;
-                        this.p2.visible = true;
-                        this.ball.visible = true;
-                        this.table.visible = true;
-                        this.p1victory.visible = false;
-                        this.p2victory.visible = false;
-                        graphics.visible = false;
-                        replayButton.visible = false;
-                        this.p1.setPosition(
-                            this.physics.world.bounds.width - 50,
-                            this.physics.world.bounds.height / 2,
-                            )
+
+    }
+
+    create() {
+        this.initRoomData();
+        socketClient.on("bothInRoom", (data) => {
+            if (data.roomName == this.playerData.roomName) {
+                console.log(' before both in room');
+                // this.timedowntext.visible = true;
+                // for (let i = 0; i < 3; i++) {
+                //     setTimeout(() => {
+                //         console.log(i);
+                //         this.timedowntext.setText(i.toFixed(0));
+                //     }, 1000);
+                // }
+                // this.timedowntext.visible = false;
+                console.log(' after both in room');
+                this.flagGame = true;
+                this.p1victory.visible = false;
+                 this.p2victory.visible = false;
+                if(this.playerData.wishPlayer == 'player1')
+                {
+                    this.ball.setVelocityX(data.initialVelocityX);
+                    this.ball.setVelocityY(data.initialVelocityY);
+                }
+                else if (this.playerData.wishPlayer == 'player2')
+                {
+                    this.ball.setVelocityX(data.initialVelocityX * -1);
+                    this.ball.setVelocityY(data.initialVelocityY);    
+                }
+                 this.isgamestarted = true;
+            }
+        })
+        socketClient.on("gameOver", (data) => {
+            let graphics: any;
+            let replayButton: any;
+            this.renderReplayButton = true;
+            this.p1.setActive(false).setVisible(false);
+            this.p2.setActive(false).setVisible(false);
+            this.ball.setActive(false).setVisible(false);
+            this.table.setActive(false).setVisible(false);
+            graphics = this.add.graphics();
+            graphics.lineStyle(1, 0xffffff);
+            graphics.strokeRoundedRect(375, 280, 150, 40, 20);
+            if (this.renderReplayButton == true) {
+                replayButton = this.add.text(450, 300, 'Back To Home!', { color: '#fff' })
+                replayButton.setOrigin(0.5, 0.5);
+                replayButton.setInteractive()
+                replayButton.on('pointerdown', () => {
+                    this.renderReplayButton = false;
+                    this.p1score_number = 0;
+                    const p1s = this.p1score_number / 60;
+                    this.p1goaltext.setText(p1s.toFixed(0));
+                    this.p2score_number = 0;
+                    const p2s = this.p2score_number / 60;
+                    this.p2goaltext.setText(p2s.toFixed(0));
+                    this.p1.visible = true;
+                    this.p2.visible = true;
+                    this.ball.visible = true;
+                    this.table.visible = true;
+                    this.p1victory.visible = false;
+                    this.p2victory.visible = false;
+                    graphics.visible = false;
+                    replayButton.visible = false;
+                    this.p1.setPosition(
+                        this.physics.world.bounds.width - 50,
+                        this.physics.world.bounds.height / 2,
+                        )
                         this.p2.setPosition(
                             this.physics.world.bounds.width - 850,
                             this.physics.world.bounds.height / 2,
                             )
-                    });
-                }
+                    window.location.href = '/game';
+                });
             }
         });
-    }
 
-    create() {
-        // this.scene.scale.on("resize", function (gameSize: Size) {
-        //     resizeBy.resize(this.scene, gameSize);
-        //   });
-      
-        // this.scene.scale.refresh();
-        this.initRoomData();
         this.handleSocketEventsOn();
         this.table = this.add.image(0, 0, "table").setOrigin(0, 0);
         this.table.setDepth(-1);
@@ -206,11 +223,11 @@ export default class PongGame extends Phaser.Scene {
 
         this.physics.add.collider(this.ball, this.p1);
         this.physics.add.collider(this.ball, this.p2);
-        this.input.keyboard?.on("keydown-SPACE", () => {
-            if (!this.isgamestarted && this.renderReplayButton == false ) {
-                socketClient.emit("startGameClient", { roomName: this.playerData.roomName });
-            }
-        });
+        // this.input.keyboard?.on("keydown-SPACE", () => {
+        //     if (!this.isgamestarted && this.renderReplayButton == false ) {
+        //         socketClient.emit("startGameClient", { roomName: this.playerData.roomName });
+        //     }
+        // });
         this.p1victory = this.add.text(
             this.physics.world.bounds.width / 2 - ("you win!".length * 32) / 3,
             this.physics.world.bounds.height / 1.7,
@@ -238,6 +255,8 @@ export default class PongGame extends Phaser.Scene {
             "0",
             { fontSize: "150px", color: "#fff" }
         );
+
+        // this.timedowntext.visible = false;
         this.p1goaltext.setAlpha(0.2);
         this.p2goaltext.setAlpha(0.2);
     }
@@ -249,6 +268,7 @@ export default class PongGame extends Phaser.Scene {
             const p1s = this.p1score_number;
             this.p1goaltext.setText(p1s.toFixed(0));
             console.log("p1 score: " + this.p1score_number + '||' + p1s);
+            socketClient.emit("goalScored", { p1score: this.p1score_number, roomName: this.playerData.roomName, id: socketClient.id, wishPlayer: this.playerData.wishPlayer })
             if (p1s === 5) {
                 this.p1victory.visible = true;
                 socketClient.emit("replayClient", { roomName: this.playerData.roomName, id: socketClient.id });
@@ -262,7 +282,7 @@ export default class PongGame extends Phaser.Scene {
             const p2s = this.p2score_number;
             this.p2goaltext.setText(p2s.toFixed(0));
             console.log("p2 score: " + this.p2score_number + '||' + p2s);
-
+                
             if (p2s === 5) {
                 this.p2victory.visible = true;
                 socketClient.emit("replayClient", { roomName: this.playerData.roomName, id: socketClient.id });

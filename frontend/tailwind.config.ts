@@ -22,6 +22,7 @@ const config = {
         'iiii': ['ui-sans-serif', 'system-ui'],
       },
       colors: {
+        'color-0': '#ffffff',
         'color-1': '#FDBF50',
         'color-2': '#DD6243',
         'color-3': '#FCF6EF',
@@ -41,7 +42,10 @@ const config = {
         'color-17': '#17222A',
         'color-18': '#19232B',
         'color-19': '#FFFBF3',
-        'button-rgba': 'rgba(255, 255, 255, 0.10)',        
+        'color-20': '#004A7E',
+        'color-21': '#02C655',
+        'color-22': '#EC0C0C',
+        'button-rgba': 'rgba(255, 255, 255, 0.10)',
       },
       backgroundImage: {
         'cardBackground': 'url("../../public/assets/cardBackground.jpeg")',

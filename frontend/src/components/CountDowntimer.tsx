@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import styles from './ModeCard.module.css'
+import styles from './cards/ModeCard.module.css'
 
 const CountDownTimer = () => {
   const [countdown, setCountdown] = useState(3);

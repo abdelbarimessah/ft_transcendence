@@ -13,7 +13,7 @@ export class GameGateway implements OnGatewayConnection {
 
     @WebSocketServer()
     server: Server;
-    // playerQueue: {name: string; socket: Socket}[] = [];
+    playerQueue: {socket: Socket}[] = [];
     listClient: { id: string; socket: Socket; wishPlayer: string }[] = [];
     listRooms: Map<string, string> = new Map<string, string>();
     playerScore: Map<string, number> = new Map<string, number>();
@@ -22,7 +22,7 @@ export class GameGateway implements OnGatewayConnection {
     };
     roomName: string = '';
     clientNO: number = 0;
-    clientNOForcCard: number = 0;
+    clientNOForCard: number = 0;
     numClients = {};
 
     handleConnection(socket: Socket): any {
@@ -30,7 +30,7 @@ export class GameGateway implements OnGatewayConnection {
     }
 
     handleDisconnect(socket: Socket) {
-
+        
         this.roomName = this.listRooms.get(socket.id);
         this.logger.log(this.listRooms.get(socket.id))
         this.logger.log('room name in the disconnect: ' + this.roomName);
@@ -38,21 +38,12 @@ export class GameGateway implements OnGatewayConnection {
         this.server.to(this.roomName).emit('leaveRoom', { roomName: this.roomName });
         socket.leave(this.roomName);
         this.numClients[this.roomName]--;
+        
+        this.playerQueue = this.playerQueue.filter((player) => player.socket.id !== socket.id);
+        this.logger.log(this.playerQueue.length + ' queue length after disconnect');
     }
 
-    @SubscribeMessage('customDisconnectClient')
-    handleCustomDisconnect(socket: Socket, data: any) {
-        this.roomName = this.listRooms.get(socket.id);
-        this.logger.log(this.listRooms.get(socket.id))
-        this.logger.log('room name in the disconnect: ' + this.roomName);
-        this.logger.log(`Client disconnected: ${socket.id}`);
-        this.server.to(this.roomName).emit('leaveRoom', { roomName: this.roomName });
-        socket.leave(this.roomName);
-        this.numClients[this.roomName]--;
-        socket.disconnect(true);
-        this.logger.log('customDisconnectClient');
-    }
-
+    
     @SubscribeMessage('joinRoom')
     handleJoinRoom(socket: Socket) {
         this.clientNO++;
@@ -87,34 +78,64 @@ export class GameGateway implements OnGatewayConnection {
     }
 
 
-
-
+    
+    @SubscribeMessage('customDisconnectClient')
+    handleCustomDisconnect(socket: Socket, data: any) {
+        // this.roomName = this.listRooms.get(socket.id);
+        // this.logger.log(this.listRooms.get(socket.id))
+        // this.logger.log('room name in the disconnect: ' + this.roomName);
+        // this.logger.log(`Client disconnected: ${socket.id}`);
+        // this.server.to(this.roomName).emit('leaveRoom', { roomName: this.roomName });
+        // socket.leave(this.roomName);
+        // this.numClients[this.roomName]--;
+        // socket.disconnect(true);
+        // this.logger.log('customDisconnectClient');
+        this.playerQueue = this.playerQueue.filter((player) => player.socket.id !== socket.id);
+        this.logger.log(this.playerQueue.length + ' queue length after quit the game mode');
+    }
+    
     @SubscribeMessage('joinRoomFromCard')
     handleJoinRoomFromCard(socket: Socket, data: any) {
-        this.clientNOForcCard++;
-        this.roomName = `gameCard-${Math.round(this.clientNOForcCard / 2).toString()}`;
-        if (this.clientNOForcCard % 2)
-            this.listClient.push({ id: socket.id, socket: socket, wishPlayer: 'player1' });
-        else
-            this.listClient.push({ id: socket.id, socket: socket, wishPlayer: 'player2' });
-
-        this.logger.log(`join to the room : ` + this.roomName);
-        socket.join(this.roomName);
-        this.listRooms.set(socket.id, this.roomName);
-        if (this.numClients[this.roomName] == undefined) {
-            this.numClients[this.roomName] = 1;
-            this.logger.log('player 1 in the room : ' + this.roomName);
-        }
-        else {
-            this.numClients[this.roomName]++;
-            this.logger.log('player 2 in the room : ' + this.roomName);
-        }
-        this.logger.log('number of client in the room in the connect: ' + this.roomName + ' : ' + this.numClients[this.roomName]);
-        if (this.numClients[this.roomName] == 2) {
-            this.logger.log('enterRoomFromCard server ');
-            this.server.in(this.roomName).emit('enterRoomFromCard', { roomName: this.roomName, wishPlayer: this.listClient[this.listClient.length - 1].wishPlayer });
+        this.clientNOForCard++;
+        this.playerQueue.push({socket: socket});
+        this.logger.log(this.playerQueue.length + ' queue length');
+        this.logger.log('befor enter the queue');
+        if(this.playerQueue.length == 2){
+            this.roomName = `gameCard-${Math.round(this.clientNOForCard / 2).toString()}`;
+            for(let i = 0; i < 2; i++){
+                this.playerQueue[i].socket.join(this.roomName);
+            }
+            this.server.in(this.roomName).emit('enterRoomFromCard', { roomName: this.roomName});
+            this.playerQueue.shift();
+            this.playerQueue.shift();
         }
     }
+    // @SubscribeMessage('joinRoomFromCard')
+    // handleJoinRoomFromCard(socket: Socket, data: any) {
+    //     this.clientNOForCard++;
+    //     this.roomName = `gameCard-${Math.round(this.clientNOForCard / 2).toString()}`;
+    //     if (this.clientNOForCard % 2)
+    //         this.listClient.push({ id: socket.id, socket: socket, wishPlayer: 'player1' });
+    //     else
+    //         this.listClient.push({ id: socket.id, socket: socket, wishPlayer: 'player2' });
+
+    //     this.logger.log(`join to the room : ` + this.roomName);
+    //     socket.join(this.roomName);
+    //     this.listRooms.set(socket.id, this.roomName);
+    //     if (this.numClients[this.roomName] == undefined) {
+    //         this.numClients[this.roomName] = 1;
+    //         this.logger.log('player 1 in the room : ' + this.roomName);
+    //     }
+    //     else {
+    //         this.numClients[this.roomName]++;
+    //         this.logger.log('player 2 in the room : ' + this.roomName);
+    //     }
+    //     this.logger.log('number of client in the room in the connect: ' + this.roomName + ' : ' + this.numClients[this.roomName]);
+    //     if (this.numClients[this.roomName] == 2) {
+    //         this.logger.log('enterRoomFromCard server ');
+    //         this.server.in(this.roomName).emit('enterRoomFromCard', { roomName: this.roomName, wishPlayer: this.listClient[this.listClient.length - 1].wishPlayer });
+    //     }
+    // }
 
     @SubscribeMessage('goalScored')
     handleGoalScored(socket: Socket, data: any) {

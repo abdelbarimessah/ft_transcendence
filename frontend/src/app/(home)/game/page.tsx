@@ -1,4 +1,4 @@
-import ModeCard from "@/components/ModeCard";
+import ModeCard from "@/components/cards/ModeCard";
 import ParticleBackground from "@/components/Tsparticles";
 
 

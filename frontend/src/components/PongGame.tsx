@@ -1,5 +1,5 @@
 'use client'
-import Phaser from "phaser";
+import * as Phaser from "phaser";
 import { io } from "socket.io-client";
 
 var socketClient = io("http://localhost:3000");
@@ -116,14 +116,6 @@ export default class PongGame extends Phaser.Scene {
         socketClient.on("bothInRoom", (data) => {
             if (data.roomName == this.playerData.roomName) {
                 console.log(' before both in room');
-                // this.timedowntext.visible = true;
-                // for (let i = 0; i < 3; i++) {
-                //     setTimeout(() => {
-                //         console.log(i);
-                //         this.timedowntext.setText(i.toFixed(0));
-                //     }, 1000);
-                // }
-                // this.timedowntext.visible = false;
                 console.log(' after both in room');
                 this.flagGame = true;
                 this.p1victory.visible = false;
@@ -256,7 +248,6 @@ export default class PongGame extends Phaser.Scene {
             { fontSize: "150px", color: "#fff" }
         );
 
-        // this.timedowntext.visible = false;
         this.p1goaltext.setAlpha(0.2);
         this.p2goaltext.setAlpha(0.2);
     }

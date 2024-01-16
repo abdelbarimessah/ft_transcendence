@@ -2,10 +2,12 @@
 import CountDownTimer from '@/components/CountDowntimer';
 import dynamic from 'next/dynamic'
 import { useEffect, useState } from 'react';
-const DynamicComponentWithNoSSR = dynamic(
-  () => import('./game'),
-  { ssr: false }
-);
+// const DynamicComponentWithNoSSR = dynamic(
+//   () => import('./game'),
+//   { ssr: false }
+// );
+
+import DynamicComponentWithNoSSR from './game';
 
 export default function Home() {
   const [showFirstComponent, setShowFirstComponent] = useState(true);

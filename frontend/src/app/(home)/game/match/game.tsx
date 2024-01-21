@@ -1,4 +1,4 @@
-import { g as PhaserGame } from "phaser";
+import { Game as PhaserGame } from "phaser";
 import { useEffect, useRef, useState } from "react";
 import PongGame from "@/components/PongGame";
 

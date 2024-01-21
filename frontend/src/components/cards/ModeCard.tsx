@@ -5,7 +5,7 @@ import { io } from 'socket.io-client'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image';
 import Lottie from 'lottie-react';
-import animationData from '../../public/assets/animation.json';
+import animationData from '../../../public/assets/animation.json';
 
 var socketClient = io('http://localhost:3000');
 
@@ -21,7 +21,8 @@ function ModeCard(props: any) {
 
     useEffect(() => {
         socketClient.on('enterRoomFromCard', (data) => {
-            console.log('socket is called for random mode');
+            // console.log('socket is called for random mode');
+            console.log('the room name is ' + data.roomName );
             router.push('/game/match', { scroll: false })
         });
     }, [isRandomMode])

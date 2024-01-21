@@ -10,6 +10,7 @@ function chat() {
                 <SearchBareHeader/>
                 <ProfileHeader/>
                 <NotificationIcon/>
+
             </div>
         </>
     )

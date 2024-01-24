@@ -1,6 +1,6 @@
 import { Game as PhaserGame } from "phaser";
 import { useEffect, useRef, useState } from "react";
-import PongGame from "@/components/PongGame";
+import PongGame from "@/components/game/PongGame";
 
 let newGame: Phaser.Game;   
 class MyScene extends Phaser.Scene {

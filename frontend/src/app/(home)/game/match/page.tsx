@@ -1,5 +1,5 @@
 'use client'
-import CountDownTimer from '@/components/CountDowntimer';
+import CountDownTimer from '@/components/game/CountDowntimer';
 import dynamic from 'next/dynamic'
 import { useEffect, useState } from 'react';
 // const DynamicComponentWithNoSSR = dynamic(

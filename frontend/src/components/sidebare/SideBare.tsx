@@ -5,15 +5,17 @@ import Link from 'next/link';
 
 
 
-const SideNav = () => {
+function SideNav ({setShow}:any)  {
+
   const path = usePathname();
   const [isHide, setIsHide] = useState(false)
   const hideShowSideBare = () => {
     setIsHide(!isHide);
+    setShow(isHide);
   };
 
   return (
-    <div className={`bg-color-18 transition-all flex-none relative duration-150 ease-out  ${isHide ? 'w-1' : 'w-[130px]'}`}>
+    <div className={` bg-color-18 transition-all flex-none relative duration-150 ease-out  ${isHide ? 'w-1' : 'w-[130px]'}`}>
 
     <div className={` absolute flex justify-end items-center right-0 z-50 top-[145px] ${isHide === true ? 'translate-x-full  rotate-180 z-50': ''} `}>
       <button onClick={hideShowSideBare}>

@@ -1,16 +1,13 @@
 import { useState, useEffect } from 'react';
-import styles from './cards/ModeCard.module.css'
+import styles from '../cards/ModeCard.module.css'
 
 const CountDownTimer = () => {
   const [countdown, setCountdown] = useState(3);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      // Decrease countdown every second
       setCountdown((prevCountdown) => prevCountdown - 1);
     }, 1000);
-
-    // Clear the timer when the component is unmounted
     return () => clearInterval(timer);
   }, []);
 

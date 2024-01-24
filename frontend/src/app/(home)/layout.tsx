@@ -1,25 +1,21 @@
-import type { Metadata } from 'next'
+'use client'
 import '../globals.css'
-import SideNav from '@/components/SideBare'
+import SideNav from '@/components/sidebare/SideBare'
+import { useState } from 'react'
 
-
-export const metadata: Metadata = {
-  title: 'PONG GAME',
-  description: 'PONG GAME by abdelbari messah',
-
-}
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const [Show, setShow] = useState(true);
   return (
     <div className='flex bg-color-18  w-screen h-screen'>
-      <SideNav />
-      <div className=' flex items-center justify-center flex-1 w-10'>
-        {children}
-      </div>
+      <SideNav setShow={setShow}/>
+        <div className=' flex items-center justify-center flex-1 w-10'>
+          {children}
+        </div>
     </div>
   )
 }

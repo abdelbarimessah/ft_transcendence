@@ -7,13 +7,13 @@ import { Request } from 'express';
 export class AuthGoogleController {
 
     @Get('profile')
-    // @UseGuards(GoogleAuthGuard)
-    @UseGuards(AuthGuard('google'))
-    handleGoogleLogin(@Req() req: Request) {
+    @UseGuards(GoogleAuthGuard)
+    // @UseGuards(AuthGuard('google'))
 
-        // @ts-ignore
-        return {msg: 'google auth' , profile: req.user};
+    handleGoogleLogin(@Req() req: Request) {
+        return {profile: req.user};
     }
+    // @ts-ignore
 
     @Get('profile/redirect')
     handleGoogleRedirect() {

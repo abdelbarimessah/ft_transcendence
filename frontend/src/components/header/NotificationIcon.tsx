@@ -11,9 +11,7 @@ const NotificationIcon = () => {
                     height={30}
                     width={30}
                 />
-
                 <div className='h-[10px] w-[10px] rounded-full absolute bg-color-22 border-1 border-color-0 animate-ping  top-[15px] right-[20px] flex items-center justify-center'>
-
                 </div>
             </div>
         </div>

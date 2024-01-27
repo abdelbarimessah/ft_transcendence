@@ -8,18 +8,16 @@ generator client {
 }
 
 model User {
-  id    Int     @default(autoincrement()) @id
+  id    Int     @id @default(autoincrement())
+  privderId String @unique
   email String  @unique
-  name  String?
+  nickName  String?
+  firstName String?
+  lastName  String?
+  provider String?
+  avatar String?
 }
 
-model Post {
-  id        Int      @default(autoincrement()) @id
-  title     String
-  content   String?
-  published Boolean? @default(false)
-  authorId  Int?
-}
 
 // model User {
 //   id        Int      @id @default(autoincrement())

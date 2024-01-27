@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { UsersModule } from '../users/users.module';
+import { UsersModule } from '../user/user.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from './constants';
-import { JwtStrategy } from './jwt.strategy';
+import { JwtStrategy } from './strategy/jwt.strategy';
+import { GoogleStrategy } from './strategy/GoogleStrategy';
+import { FortyTwoStrategy } from './strategy/Strategy42';
+import { AuthContoller } from './auth.contoller';
+import { AuthService } from './auth.services';
 
 // @Module({
 //   imports: [UsersModule, PassportModule],
@@ -21,7 +23,7 @@ import { JwtStrategy } from './jwt.strategy';
     // }),
     JwtModule.registerAsync({
       useFactory: () => ({
-        secret: process.env.JWT_SECRET,
+        secret: "azcfghj",
         signOptions: {
           expiresIn: '3d',
         },
@@ -29,8 +31,9 @@ import { JwtStrategy } from './jwt.strategy';
       }),
     }),
   ],
-  providers: [AuthService, JwtStrategy],
-  exports: [AuthService],
+  providers: [AuthService, FortyTwoStrategy, GoogleStrategy,JwtStrategy],
+  exports: [],
+  controllers: [AuthContoller],
 })
 
 export class AuthModule {}

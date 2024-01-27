@@ -1,16 +1,13 @@
 import { Module } from '@nestjs/common';
 import { GameGateway } from './game/game.gateway';
-import { UsersModule } from './users/users.module';
+import { UsersModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { AppController } from './app.controller';
-import { AuthGoogleController } from './auth-google/auth-google.controller';
-import { AuthGoogleModule } from './auth-google/auth-google.module';
-import { AuthIntraModule } from './auth-42/auth-42.module';
-import { AuthIntraController } from './auth-42/auth-42.controller';
+import { AuthContoller } from './auth/auth.contoller';
 
 @Module({
-  imports: [UsersModule, AuthModule, AuthGoogleModule, AuthIntraModule],
-  controllers: [AppController, AuthGoogleController, AuthIntraController],
+  imports: [UsersModule, AuthModule],
+  controllers: [AppController],
   providers: [GameGateway],
 })
 export class AppModule {}

@@ -1,46 +1,13 @@
 'use client'
 import Image from "next/image";
 import styles from './Settings.module.css'
-import Lottie from "lottie-react";
-import animationData from '../../../public/assets/animation.json';
-import { use } from "matter";
-import { useEffect } from "react";
-import axios from "axios";
 
 function SettingPrompt() {
-
-
-    
-    useEffect(() => {
-        
-    async function handleToken() {
-        
-        console.log('hello');
-        try{
-            const res =  await axios.get('http://localhost:3000/auth/google');
-            console.log(res);
-        }
-        catch(err){
-            console.log(err);
-        }
-
-    }
-    handleToken();
-    }, [])
 
     return (
 
         <div className="flex items-center justify-center  w-8/12">
             <div className={` ${styles.playCard}  w-full   max-w-[900px] bg-color-0 rounded-[22px]  flex flex-col gap-12  relative `}>
-                <div className=' absolute cursor-pointer w-[30px] h-[30px] bg-color-6  flex items-center justify-center rounded-[10px] top-2 right-2 '>
-                    <Image
-                        src="../../assets/whiteCross.svg"
-                        width={15}
-                        height={15}
-                        alt={""}
-                    >
-                    </Image>
-                </div>
                 <div className=" flex items-center justify-center w-full pt-10 ">
                     <div className='w-[134px] h-[134px] bg-color-15 rounded-full relative' >
                         <Image

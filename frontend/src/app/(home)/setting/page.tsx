@@ -1,35 +1,36 @@
 'use client'
-import SettingsPrompt from "@/components/settings/SettingsForm";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { useEffect } from "react";
-
-axios.defaults.withCredentials = true;
-axios.defaults.baseURL = "http://localhost:3000/";
-
+import SettingsPrompt from "@/components/settings/SettingsForm";
 
 function setting() {
-    useEffect(() => {
-        
-        async function handleToken() {
-            
-            console.log('hello');
-            try{
-                const res =  await axios.get('profile', {headers : {Authorization : `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDYzNDk3MTEsImV4cCI6MTcwNjYwODkxMX0.Wu-lcfwU1B4Myazs0xGCdBUwXdHhfUM54EGhcr4EOwY`}});
-                console.log(res);
-            }
-            catch(err){
-                console.log(err);
-            }
-        }
-        handleToken();
-        }, [])
-    return (
-        <>
-            <div className=" bg-color-18 flex items-center justify-center w-full ">
-                <SettingsPrompt/>
-            </div>
-        </>
-    )
-}
 
+    const [profile, setProfile] = useState(null);
+    const [enterToPage, setEnterToPage] = useState(false);
+    useEffect(() => {
+            const getProfile = async () => {
+                if(enterToPage === false)
+                {
+                    try {
+                        const response = await axios.get('http://localhost:3000/profile', {
+                            headers: { Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaXJzdE5hbWUiOiJBYmRlbGJhcmkiLCJwcml2ZGVySWQiOiIxMTQ3Mjk1MTMyMTg3NTAxNzMzMDkiLCJpYXQiOjE3MDY0MzY5MTUsImV4cCI6MTcwNjY5NjExNX0.TU7RA8Zs_TAWaSciKS9rLu9lIXAaoVSu6W8fqpg37hs' }
+                        });
+                        setProfile(response.data);
+                        console.log('profile', response.data);
+                        setEnterToPage(true);
+
+                    } catch (error) {
+                        console.error(error);
+                    }
+                } 
+            };
+            getProfile();
+        });
+
+    return (
+        <div className=" bg-color-18 flex items-center justify-center w-full ">
+            <SettingsPrompt/>
+        </div>
+    );
+}
 export default setting;

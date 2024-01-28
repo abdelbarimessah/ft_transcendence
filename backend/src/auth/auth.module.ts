@@ -17,19 +17,19 @@ import { AuthService } from './auth.services';
   imports: [
     UsersModule,
     PassportModule,
-    // JwtModule.register({
-    //   secret: jwtConstants.secret,
-    //   signOptions: { expiresIn: '60s' },
-    // }),
-    JwtModule.registerAsync({
-      useFactory: () => ({
-        secret: "azcfghj",
-        signOptions: {
-          expiresIn: '3d',
-        },
-        global: true,
-      }),
+    JwtModule.register({
+      secret: "DO NOT USE THIS VALUE. INSTEAD, CREATE A COMPLEX SECRET AND KEEP IT SAFE OUTSIDE OF THE SOURCE CODE.",
+      signOptions: { expiresIn: '3d' },
     }),
+    // JwtModule.registerAsync({
+    //   useFactory: () => ({
+    //     secret: "DO NOT USE THIS VALUE. INSTEAD, CREATE A COMPLEX SECRET AND KEEP IT SAFE OUTSIDE OF THE SOURCE CODE.",
+    //     signOptions: {
+    //       expiresIn: '3d',
+    //     },
+    //     global: true,
+    //   }),
+    // }),
   ],
   providers: [AuthService, FortyTwoStrategy, GoogleStrategy,JwtStrategy],
   exports: [],

@@ -8,6 +8,7 @@ export class AuthService {
   constructor(
     private jwtService: JwtService,
   ) {}
+  
   googleLogin(req) {
     if (!req.user) {
       return 'No user from google'
@@ -19,9 +20,14 @@ export class AuthService {
     }
   }
 
+
   async genrateJwtToken(user: User) {
-    const token = await  this.jwtService.signAsync({privderId: user.privderId});
-    return token;
+    const payload = { firstName: user.firstName, privderId: user.privderId };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
+    // const token = await this.jwtService.sign({id: user.privderId});
+    // return token;
   }
 
 }

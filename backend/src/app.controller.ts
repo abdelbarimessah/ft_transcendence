@@ -1,21 +1,24 @@
 import { Controller, Request, Post, UseGuards, Get } from '@nestjs/common';
-import { AuthService } from './auth/auth.service';
-import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
 @Controller()
 export class AppController {
-
+    
     constructor(
-        private authService: AuthService
     ){}
+
     @Post('auth/login')
     async login(@Request() req) {
-        return this.authService.login(req.user);
+        
+
+        // return this.authService.login(req.user);
     }
-    @UseGuards(JwtAuthGuard)
+
     @Get('profile')
+    @UseGuards(JwtAuthGuard)
     getProfile(@Request() req) {
-        return req.user;
+        // console.log('req.user in the profile route ===>', req.user);
+        return {id: "123123123"};
     }
-    
+
 }

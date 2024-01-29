@@ -13,7 +13,7 @@ export default function RootLayout({
   return (
     <div className='flex bg-color-18  w-screen h-screen'>
       <SideNav setShow={setShow}/>
-        <div className=' flex items-center justify-center flex-1 w-10'>
+        <div className='flex items-center justify-center flex-1 w-10'>
           {children}
         </div>
     </div>

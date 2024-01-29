@@ -23,8 +23,11 @@ function login() {
     };
     return (
         <>
-            <div className="w-full max-h-screen h-screen relative   bg-color-18 flex flex-col justify-center items-center  overflow-auto  scrollbar-hide">
-                {/* <ParticleBackground /> */}
+            <div className="w-full max-h-screen h-screen bg-color-18  flex flex-col justify-center items-center relative  overflow-auto  scrollbar-hide">
+                <div className='w-full h-full absolute hidden'>
+                    <ParticleBackground />
+                </div>
+                
                 <div className=' flex gap-[33px] items-center justify-center'>
                     <div className=' h-[1px] w-[150px] bg-color-0 '>
                     </div>
@@ -35,7 +38,7 @@ function login() {
                     </div>
                 </div>
                 <div className='flex items-center justify-center gap-[108px]'>
-                    <Link href={'http://localhost:3000/auth-42/profile'}>
+                    <Link href={'http://localhost:3000/auth/42'}>
                         <div onClick={loginIntra}  className=" z-50 bg-color-0 w-[70px] h-[70px] rounded-full flex items-center justify-center cursor-pointer">
                             <div>
                                 <Image
@@ -47,7 +50,7 @@ function login() {
                             </div>
                         </div>
                     </Link>
-                    <Link href={'http://localhost:3000/auth-google/profile'}>
+                    <Link href={'http://localhost:3000/auth/google'}>
                         <div onClick={loginGoogle} className=" z-50 bg-color-0 w-[70px] h-[70px] rounded-full flex items-center justify-center cursor-pointer">
                             <div>
                                 <Image

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { Providers } from './providers'
+import axios from 'axios';
 
 
 export const metadata: Metadata = {
@@ -8,6 +9,9 @@ export const metadata: Metadata = {
   description: 'PONG GAME by abdelbari messah',
  
 }
+
+// axios.defaults.withCredentials = true;
+// axios.defaults.baseURL = "http://localhost:3000/";
 
 export default function RootLayout({
   children,

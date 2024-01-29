@@ -1,7 +1,7 @@
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
-    "privderId" TEXT NOT NULL,
+    "providerId" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "nickName" TEXT,
     "firstName" TEXT,
@@ -13,7 +13,7 @@ CREATE TABLE "User" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_privderId_key" ON "User"("privderId");
+CREATE UNIQUE INDEX "User_providerId_key" ON "User"("providerId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");

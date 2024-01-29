@@ -1,8 +1,62 @@
 'use client'
 import Image from "next/image";
 import styles from './Settings.module.css'
+import { useEffect, useState } from "react";
+import axios from "axios";
+import Cookies from 'js-cookie';
+import jwt from 'jsonwebtoken';
+
+
+
+axios.defaults.withCredentials = true;
+// axios.defaults.baseURL = "http://localhost:3000/";
 
 function SettingPrompt() {
+    const [Avatar, setAvatar] = useState("");
+    const [id, setId] = useState("");
+
+    // const id = '93981';
+
+    useEffect(() => {
+        const getUserId = async () => {
+            try {
+                const res = await axios.get(`http://localhost:3000/auth/Myid`)
+                setId(res.data.providerId)
+                console.log('id------> ', res.data);
+            }
+            catch (err) {
+                console.log(err);
+            }
+        }
+        getUserId();
+    }, []);
+
+    useEffect(() => {
+        const getData = async () => {
+            if (!id) return;
+            console.log('getData id------> ', id);
+            try {
+                const res = await axios.get(`http://localhost:3000/user/${id}`);
+                console.log(res.data);
+            }
+            catch (err) {
+                console.log(err);
+            }
+        }
+        const postData = async () => {
+            if (!id) return;
+            console.log('postData id------> ', id);
+            try {
+                const res = await axios.post(`http://localhost:3000/user/upload/${id}`);
+                setAvatar(res.data.avatar)
+            }
+            catch (err) {
+                console.log(err);
+            }
+        }
+        getData();
+        postData();
+    }, [id]);
 
     return (
 
@@ -10,14 +64,16 @@ function SettingPrompt() {
             <div className={` ${styles.playCard}  w-full   max-w-[900px] bg-color-0 rounded-[22px]  flex flex-col gap-12  relative `}>
                 <div className=" flex items-center justify-center w-full pt-10 ">
                     <div className='w-[134px] h-[134px] bg-color-15 rounded-full relative' >
-                        <Image
-                            src="/../../assets/ProfileHeaderImage.svg"
-                            priority={true}
-                            alt="My Gallery Image"
-                            fill={true}
-                            sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
-                            className='object-cover  rounded-full  w-[50px] h-[50px]'
-                        />
+                        {id && (
+                            <Image
+                                src={`http://localhost:3000/uploads/${id}.png`}
+                                priority={true}
+                                alt="My Gallery Image"
+                                fill={true}
+                                sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
+                                className='object-cover  rounded-full  w-[50px] h-[50px]'
+                            />
+                        )}
                         <div className="h-[23px] w-[23px]  absolute bottom-2 right-2 bg-color-24 flex items-center justify-center rounded-full ">
                             <Image
                                 src={'/../../assets/addImageIcon.svg'}

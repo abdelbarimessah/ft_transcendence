@@ -1,6 +1,5 @@
-
-import { redirect } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
+import ms from "ms";
 
 export function tokenFetcher(tokenUrl: string) {
   return async function GET(request: NextRequest) {
@@ -22,10 +21,10 @@ export function tokenFetcher(tokenUrl: string) {
      // const isOTP = otp.enabled && !otp.verified;
      // const res = redirect(isOTP ? "/auth/otp" : "/home");
      
-     // res.cookies.set("authorization", data.token, {
-       //   httpOnly: true,
-       //   maxAge: ms("999years"),
-       // });
+     res.cookies.set("authorization", data.token, {
+         httpOnly: true,
+         maxAge: ms("999years"),
+       });
        
        return res;
       } catch (error) {

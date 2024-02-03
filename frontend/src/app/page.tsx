@@ -1,4 +1,4 @@
-import ParticleBackground from '@/components/Tsparticles'
+import ParticleBackground from '@/components/particles/Tsparticles'
 import Image from 'next/image'
 
 export default function Home() {

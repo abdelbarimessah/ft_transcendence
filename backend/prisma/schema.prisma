@@ -11,11 +11,13 @@ model User {
   id    Int     @id @default(autoincrement())
   providerId String @unique
   email String  @unique
-  nickName  String?
+  nickName  String? @unique
   firstName String?
   lastName  String?
   provider String?
   avatar String?
+  secretOpt           String?
+  otpIsEnabled        Boolean              @default(false)
 }
 
 

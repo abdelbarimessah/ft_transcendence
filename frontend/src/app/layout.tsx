@@ -24,7 +24,7 @@ export default function RootLayout({
       <head>
         <title>Pong Game</title>
       </head>
-      <body className='no-scrollbar'>
+      <body className='no-scrollbar '>
         <Providers>
             {children}
         </Providers>

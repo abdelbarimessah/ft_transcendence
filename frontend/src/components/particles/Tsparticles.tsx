@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { type Container } from "@tsparticles/engine";
 import { loadSlim } from "@tsparticles/slim";
-import tsParticlesConfig from "../config/Tsparticles-config";
+import tsParticlesConfig from "../../config/Tsparticles-config";
 
 
 const ParticleBackground = () => {

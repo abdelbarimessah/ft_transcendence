@@ -11,7 +11,7 @@ export default function RootLayout({
 }) {
   const [Show, setShow] = useState(true);
   return (
-    <div className='flex bg-color-18  w-screen h-screen'>
+    <div className='flex bg-color-18  w-screen min-h-screen'>
       <SideNav setShow={setShow}/>
         <div className='flex items-center justify-center flex-1 w-10'>
           {children}

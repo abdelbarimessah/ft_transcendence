@@ -1,18 +1,23 @@
-import { Controller, ExecutionContext, Get, Req, Res, UseGuards, createParamDecorator } from '@nestjs/common';
+import { Controller, ExecutionContext, Get, Patch, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors, createParamDecorator } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { IntraAuthGuard } from '../auth/guards/Guards42';
-import { GoogleAuthGuard } from './guards/GuardsGoogle';
+import { IntraAuthGuard } from './guards/intra.guard';
+import { GoogleAuthGuard } from './guards/Google.guard';
 import { AuthService } from './auth.services';
 import { JwtService } from '@nestjs/jwt';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { CurrentUser } from './current-user.decorator';
+import { UserService } from 'src/user/user.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { unlink, writeFile } from 'fs/promises';
+import { join } from 'path';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Controller('auth')
 export class AuthContoller {
 
     constructor(
-        private authService: AuthService,
         private jwtService: JwtService,
+        private authService: AuthService,
     ) { }
     
     @Get('google')
@@ -55,10 +60,38 @@ export class AuthContoller {
         return {token}
     }
 
-    @Get('Myid')
+    // @Patch('generate/Otp')
+    // @UseGuards(JwtAuthGuard)
+    // async generateOtpSecret(@CurrentUser() user:any) {
+        //     const { secretOpt, qr_code } = await this.authService.generateOTP(user);
+        
+        //     console.log('otpSecret ===>', secretOpt);
+        //     console.log('qr_code ===>', qr_code);
+    //     // if (!user.otpSecret)
+    //     //     await this.authService.setOTPSecret(user.id, otpSecret);
+    
+    //     return { qr_code };
+    // }
+    
+    @Patch('generate/Otp')
     @UseGuards(JwtAuthGuard)
-    async getMyId(@CurrentUser() user: any) {
-        console.log('current user', user);
-        return user;
+    async generateOtpSecret(@CurrentUser() user:any) {
+        const { secretOpt, qr_code } = await this.authService.generateOTP(user);
+
+        console.log('otpSecret ===>', secretOpt);
+        console.log('qr_code ===>', qr_code);
+
+        // if (!user.secretOpt)
+        //     await this.authService.setOTPSecret(user.id, otpSecret);
+
+        return { qr_code };
+    }
+    
+
+
+    @Get('logout')
+    async logout(@Res({ passthrough: true }) res: Response) {
+        console.log('logout');
+        res.clearCookie('authorization', { httpOnly: true });
     }
 }

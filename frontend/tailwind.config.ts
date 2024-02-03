@@ -44,6 +44,8 @@ const config = {
         'color-22': '#EC0C0C',
         'color-23': '#AFB5C3',
         'color-24': '#EAEDF4',
+        'color-25': '#C4CBDA',
+        'color-26': '#F4F5F6',
         'button-rgba': 'rgba(255, 255, 255, 0.10)',
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

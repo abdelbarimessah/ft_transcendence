@@ -6,7 +6,7 @@ import { JwtStrategy } from './strategy/jwt.strategy';
 import { GoogleStrategy } from './strategy/GoogleStrategy';
 import { FortyTwoStrategy } from './strategy/Strategy42';
 import { AuthContoller } from './auth.contoller';
-import { AuthService } from './auth.services';
+import { AuthService } from './auth.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 // @Module({

@@ -7,6 +7,7 @@ import { Request } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as fs from 'fs';
 import * as path from 'path';
+import { OTPGuard } from 'src/auth/guards/Otp.guard';
 
 @Controller('user')
 export class UsersController {
@@ -18,6 +19,7 @@ export class UsersController {
     {}
 
     @Get('All') 
+    @UseGuards(OTPGuard)
     @UseGuards(JwtAuthGuard)
     findAll() {
         console.log('All users');

@@ -12,14 +12,14 @@ export function tokenFetcher(tokenUrl: string) {
       );
 
       // const res = redirect("/settings");
-     const res =  NextResponse.redirect("http://localhost:8000/setting");
-     // const otp = data.otp;
-     // console.log('-------- otp', otp);
+     let res =  NextResponse.redirect("http://localhost:8000/setting");
+     const otp = data.otp;
+     console.log('-------- otp', data.otp);
      
-     // if (!otp) return redirect("/");
+     if (!otp) return NextResponse.redirect("http://localhost:8000/login");
      
-     // const isOTP = otp.enabled && !otp.verified;
-     // const res = redirect(isOTP ? "/auth/otp" : "/home");
+     const isOTP = otp.enabled && !otp.verified;
+     res = NextResponse.redirect(isOTP ? "http://localhost:8000/auth" : "http://localhost:8000/home");
      
      res.cookies.set("authorization", data.token, {
          httpOnly: true,

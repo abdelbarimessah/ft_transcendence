@@ -1,8 +1,8 @@
-import { Controller, ExecutionContext, Get, Patch, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors, createParamDecorator } from '@nestjs/common';
+import { Body, Controller, ExecutionContext, Get, Patch, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors, createParamDecorator } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { IntraAuthGuard } from './guards/intra.guard';
 import { GoogleAuthGuard } from './guards/Google.guard';
-import { AuthService } from './auth.services';
+import { AuthService } from './auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { CurrentUser } from './current-user.decorator';
@@ -11,6 +11,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { unlink, writeFile } from 'fs/promises';
 import { join } from 'path';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { use } from 'passport';
+import { authenticator } from 'otplib';
 
 @Controller('auth')
 export class AuthContoller {
@@ -23,16 +25,15 @@ export class AuthContoller {
     @Get('google')
     @UseGuards(GoogleAuthGuard)
     async handleGoogleLogin(@Req() req: Request,@Res({ passthrough: true }) res: Response ) {
-        // const token = await this.jwtService.signAsync(req.user.user);
         const User = {
             providerId: req.user.user.providerId,
             nickName: req.user.user.nickName,
+            otp: false
         }
         const token = await this.jwtService.signAsync(User);
         res.cookie('authorization', token, {
             httpOnly: true,
             secure: false,
-
             sameSite: 'lax',
             expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
         })
@@ -43,35 +44,21 @@ export class AuthContoller {
     @Get('42')
     @UseGuards(IntraAuthGuard)
     async handleIntraLogin(@Req() req: Request,@Res({ passthrough: true }) res: Response ) {
-        // const token = await this.jwtService.signAsync(req.user.user);
         const User = {
             providerId: req.user.user.providerId,
             nickName: req.user.user.nickName,
+            otp: false
         }
         const token = await this.jwtService.signAsync(User);
         res.cookie('authorization', token, {
             httpOnly: true,
             secure: false,
-    
             sameSite: 'lax',
             expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
         })
         console.log('token ===>', token);
-        return {token}
+        return {token, otp: true}
     }
-
-    // @Patch('generate/Otp')
-    // @UseGuards(JwtAuthGuard)
-    // async generateOtpSecret(@CurrentUser() user:any) {
-        //     const { secretOpt, qr_code } = await this.authService.generateOTP(user);
-        
-        //     console.log('otpSecret ===>', secretOpt);
-        //     console.log('qr_code ===>', qr_code);
-    //     // if (!user.otpSecret)
-    //     //     await this.authService.setOTPSecret(user.id, otpSecret);
-    
-    //     return { qr_code };
-    // }
     
     @Patch('generate/Otp')
     @UseGuards(JwtAuthGuard)
@@ -81,12 +68,70 @@ export class AuthContoller {
         console.log('otpSecret ===>', secretOpt);
         console.log('qr_code ===>', qr_code);
 
-        // if (!user.secretOpt)
-        //     await this.authService.setOTPSecret(user.id, otpSecret);
+        if (!user.secretOpt)
+            await this.authService.setOTPSecret(user.id, secretOpt);
 
         return { qr_code };
     }
-    
+
+
+    @Patch('enable/Otp')
+    @UseGuards(JwtAuthGuard)
+    async enableOtp(
+        @CurrentUser() user:any,
+        @Res({ passthrough: true }) res: Response ,
+        @Body() body: {otp: string}
+        ) 
+    {
+        if(user.otpIsEnabled || !user.secretOpt)
+            throw new Error('otp already enabled');
+
+        const isValid = authenticator.verify({ token: body.otp, secret: user.secretOpt });
+        console.log('token ===>', body.otp);
+        console.log('secret ===>', user.secretOpt);
+        if(!isValid)
+            throw new Error('invalid otp');
+        else
+            console.log('otp is valid');
+        await this.authService.enabelOtp(user.providerId);
+
+        const User = {
+            providerId: user.providerId,
+            nickName: user.nickName,
+            otp: true
+        }
+        const token = await this.jwtService.signAsync(User);
+        res.cookie('authorization', token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'lax',
+            expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
+        })
+        return {token, otp: true}
+    }    
+    @Patch('disable/Otp')
+    @UseGuards(JwtAuthGuard)
+    async disableOtp(
+        @CurrentUser() user:any,
+        @Res({ passthrough: true }) res: Response ,
+        ) 
+    {
+        await this.authService.disableOtp(user.providerId);
+
+        const User = {
+            providerId: user.providerId,
+            nickName: user.nickName,
+            otp: false
+        }
+        const token = await this.jwtService.signAsync(User);
+        res.cookie('authorization', token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'lax',
+            expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
+        })
+        return {token}
+    }    
 
 
     @Get('logout')

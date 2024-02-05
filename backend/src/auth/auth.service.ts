@@ -3,12 +3,14 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { authenticator } from 'otplib';
 import { toDataURL } from 'qrcode';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class AuthService {
 
   constructor(
     private jwtService: JwtService,
+    private prismaService: PrismaService,
   ) {}
   
   googleLogin(req) {
@@ -40,6 +42,28 @@ export class AuthService {
       };
   }
 
+  async setOTPSecret(userId: number, secretOpt: string) {
+    const user = await this.prismaService.user.update({
+      where: { id: userId },
+      data: { secretOpt },
+    });
+    return user;
+  }
+
+  async enabelOtp(id: string) {
+    const user = await this.prismaService.user.update({
+      where: { providerId: id },
+      data: { otpIsEnabled: true },
+    });
+    return user;
+  }
+  async disableOtp(id: string) {
+    const user = await this.prismaService.user.update({
+      where: { providerId: id },
+      data: { otpIsEnabled: false },
+    });
+    return user;
+  }
 
   async genrateJwtToken(user: User) {
     const payload = { providerId: user.providerId, firstName: user.firstName };

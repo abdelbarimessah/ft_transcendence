@@ -70,8 +70,8 @@ function SettingPrompt() {
 
     return (
 
-        <div className="flex items-center justify-center relative w-8/12 2xl:w-[900px]">
-            <div className={` ${styles.playCard} w-full max-w-[900px] bg-color-0 rounded-[22px]  overflow-hidden flex flex-col gap-12  relative `}>
+        <div className="flex items-center justify-center relative w-8/12 2xl:w-[650px]">
+            <div className={` ${styles.playCard} w-full max-w-[900px] bg-color-0 rounded-[40px]  overflow-hidden flex flex-col gap-12  relative `}>
                 <div className="absolute -top-8 rounded-[22px]">
                     <Image
                         src='/../../assets/wave-haikei.svg'

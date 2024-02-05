@@ -9,9 +9,9 @@ export class OTPGuard implements CanActivate {
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
     if (!request.user) return false;
+    
+    const { user, payload } = request.user;
 
-    const { user, jwtPayload } = request.user;
-
-    return !user.otpIsEnabled || Boolean(jwtPayload?.otp_is_verified);
+    return !user.otpIsEnabled || Boolean(payload?.otp);
   }
 }

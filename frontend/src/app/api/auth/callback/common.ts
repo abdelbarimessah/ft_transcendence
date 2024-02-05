@@ -10,16 +10,14 @@ export function tokenFetcher(tokenUrl: string) {
       const data = await fetch(`${tokenUrl}?${query}`).then((res) =>
         res.json(),
       );
-
-      // const res = redirect("/settings");
-     let res =  NextResponse.redirect("http://localhost:8000/setting");
-     const otp = data.otp;
-     console.log('-------- otp', data.otp);
+      const otp = data.otp;
+      console.log('otp is ===== :' , data)
+      if (!otp) return NextResponse.redirect("http://localhost:8000/login");
+      
+      
+      const isOTP = otp.enabled && !otp.verified;
+      const res = NextResponse.redirect(isOTP ? "http://localhost:8000/auth" : "http://localhost:8000/home");
      
-     if (!otp) return NextResponse.redirect("http://localhost:8000/login");
-     
-     const isOTP = otp.enabled && !otp.verified;
-     res = NextResponse.redirect(isOTP ? "http://localhost:8000/auth" : "http://localhost:8000/home");
      
      res.cookies.set("authorization", data.token, {
          httpOnly: true,
@@ -29,7 +27,7 @@ export function tokenFetcher(tokenUrl: string) {
        return res;
       } catch (error) {
         console.log(error);
-        NextResponse.redirect("http://localhost:8000/");
+        NextResponse.redirect("http://localhost:8000/login");
     }
   };
 }

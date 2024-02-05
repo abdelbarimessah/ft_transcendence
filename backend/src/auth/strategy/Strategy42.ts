@@ -26,6 +26,7 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
       lastName: profile._json.last_name,
       provider: 'intra',
       avatar: profile._json.image.link,
+      otpIsEnabled: true
     };
     this.userService.findOrCreate(user)
     return {user};

@@ -26,6 +26,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
             lastName: profile._json.family_name,
             provider: 'google',
             avatar: profile._json.picture,
+            otpIsEnabled: false
         };
         this.userService.findOrCreate(user)
         return {user};

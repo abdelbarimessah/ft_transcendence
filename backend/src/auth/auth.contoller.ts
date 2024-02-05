@@ -24,10 +24,10 @@ export class AuthContoller {
     
     @Get('google')
     @UseGuards(GoogleAuthGuard)
-    async handleGoogleLogin(@Req() req: Request,@Res({ passthrough: true }) res: Response ) {
+    async handleGoogleLogin(@CurrentUser() user:any,@Res({ passthrough: true }) res: Response ) {
         const User = {
-            providerId: req.user.user.providerId,
-            nickName: req.user.user.nickName,
+            providerId: user.providerId,
+            nickName: user.nickName,
             otp: false
         }
         const token = await this.jwtService.signAsync(User);
@@ -38,15 +38,18 @@ export class AuthContoller {
             expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
         })
         console.log('token ===>', token);
-        return {token}
+        console.log('verif user===>', user.otpIsEnabled)
+        return { token, otp: { enabled: user.otpIsEnabled, verified: false } };
     }
 
     @Get('42')
     @UseGuards(IntraAuthGuard)
-    async handleIntraLogin(@Req() req: Request,@Res({ passthrough: true }) res: Response ) {
+    async handleIntraLogin(@CurrentUser() user:any,@Res({ passthrough: true }) res: Response ) {
+        console.log(' user is :', user);
+        
         const User = {
-            providerId: req.user.user.providerId,
-            nickName: req.user.user.nickName,
+            providerId: user.providerId,
+            nickName: user.nickName,
             otp: false
         }
         const token = await this.jwtService.signAsync(User);
@@ -57,7 +60,8 @@ export class AuthContoller {
             expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
         })
         console.log('token ===>', token);
-        return {token, otp: true}
+        console.log('verif user===>', user.otpIsEnabled)
+        return { token, otp: { enabled: user.otpIsEnabled, verified: false } };
     }
     
     @Patch('generate/Otp')
@@ -107,7 +111,8 @@ export class AuthContoller {
             sameSite: 'lax',
             expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
         })
-        return {token, otp: true}
+        return { token, otp: { enabled: true, verified: true } };
+
     }    
     @Patch('disable/Otp')
     @UseGuards(JwtAuthGuard)
@@ -130,7 +135,7 @@ export class AuthContoller {
             sameSite: 'lax',
             expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
         })
-        return {token}
+        return { token, otp: { enabled: false, verified: false } };
     }    
 
 
@@ -140,3 +145,4 @@ export class AuthContoller {
         res.clearCookie('authorization', { httpOnly: true });
     }
 }
+

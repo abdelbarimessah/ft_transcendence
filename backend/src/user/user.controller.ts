@@ -23,13 +23,14 @@ export class UsersController {
     @UseGuards(JwtAuthGuard)
     findAll() {
         console.log('All users');
-
+        
         console.log('All users');
-
+        
         return this.userService.getAllUsers();
     }
     
     @Get('me')
+    @UseGuards(OTPGuard)
     @UseGuards(JwtAuthGuard)
     async getProfile(@CurrentUser() user: any ) {
         try {
@@ -44,9 +45,10 @@ export class UsersController {
         }
         return user;
     }
-
-
+    
+    
     @Post('updateAvatar')
+    @UseGuards(OTPGuard)
     @UseGuards(JwtAuthGuard)
     @UseInterceptors(FileInterceptor('avatar'))
     async updateProfile(@UploadedFile() file, @Req() req: Request, @CurrentUser() user: any) {
@@ -57,6 +59,7 @@ export class UsersController {
     }
     
     @Post('updateInfo')
+    @UseGuards(OTPGuard)
     @UseGuards(JwtAuthGuard)
     async updateInfo(@Req() req : Request, @CurrentUser() user :any){
         console.log('updateInfo body', req.body, user.providerId);

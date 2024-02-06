@@ -3,14 +3,30 @@ import Image from 'next/image'
 import styles from './Otp.module.css'
 import { useState } from 'react';
 import axios from 'axios';
+import { useRouter } from 'next/navigation'
 
 axios.defaults.withCredentials = true;
 
 function OtpVerifyCard() {
+    const router = useRouter()
     const [otp, setOtp] = useState('');
 
     const handleEnableClick = () => {
-        console.log(otp)
+        try
+        {
+            axios.
+            patch('http://localhost:3000/auth/verify/Otp', {otp})
+            .then((res) => {
+                console.log('res int the otp verify',res)
+                console.log('OTP Verified')
+                router.push('/home')
+            })
+        }
+        catch (error)
+        {
+            console.log('OTP not Verified')
+            console.error(error);
+        }
     }
     
     return (

@@ -18,7 +18,7 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
   }
 
   async validate(accesssToken: string, refreshToken: string, profile: any) {
-    const user = {
+    const user = await this.userService.findOrCreate({
       providerId: profile.id,
       email: profile._json.email,
       nickName: profile.username,
@@ -26,8 +26,8 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
       lastName: profile._json.last_name,
       provider: 'intra',
       avatar: profile._json.image.link,
-    };
-    this.userService.findOrCreate(user)
+  });
+    console.log('user in the validate 42', user);
     return {user};
   }
 }

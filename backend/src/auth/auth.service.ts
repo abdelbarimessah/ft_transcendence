@@ -65,6 +65,13 @@ export class AuthService {
     return user;
   }
 
+
+ async  verifyOTP(user: User, token: string) {
+    if (!user.secretOpt) return false;
+    console.log('user.secretOpt', user.secretOpt);
+    return authenticator.verify({ secret: user.secretOpt, token });
+  }
+
   async genrateJwtToken(user: User) {
     const payload = { providerId: user.providerId, firstName: user.firstName };
     return this.jwtService.signAsync(payload)

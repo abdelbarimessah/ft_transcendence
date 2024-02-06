@@ -19,14 +19,10 @@ export class AuthContoller {
     @Get('google')
     // @UseGuards(JwtAuthGuard)
     @UseGuards(GoogleAuthGuard)
-<<<<<<< HEAD
     async handleGoogleLogin(
         @CurrentUser() user: any,
         @Res({ passthrough: true }) res: Response
     ) {
-=======
-    async handleGoogleLogin(@CurrentUser() user:any,@Res({ passthrough: true }) res: Response ) {
->>>>>>> a7e71dcd7075edba3b0c2f18eaeab5fbd25c00af
         const User = {
             providerId: user.providerId,
             nickName: user.nickName,
@@ -39,31 +35,19 @@ export class AuthContoller {
             sameSite: 'lax',
             expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
         })
-<<<<<<< HEAD
         // console.log('token ===>', token);
         // console.log('otp ===>', user.otpIsEnabled);
         console.log('user ===>', user);
         return { token, otp: { enabled: user.otpIsEnabled, verified: false } }
-=======
-        console.log('token ===>', token);
-        console.log('verif user===>', user.otpIsEnabled)
-        return { token, otp: { enabled: user.otpIsEnabled, verified: false } };
->>>>>>> a7e71dcd7075edba3b0c2f18eaeab5fbd25c00af
     }
 
     @Get('42')
     // @UseGuards(JwtAuthGuard)
     @UseGuards(IntraAuthGuard)
-<<<<<<< HEAD
     async handleIntraLogin(
         @CurrentUser() user: any,
         @Res({ passthrough: true }) res: Response
     ) {
-=======
-    async handleIntraLogin(@CurrentUser() user:any,@Res({ passthrough: true }) res: Response ) {
-        console.log(' user is :', user);
-        
->>>>>>> a7e71dcd7075edba3b0c2f18eaeab5fbd25c00af
         const User = {
             providerId: user.providerId,
             nickName: user.nickName,
@@ -77,13 +61,8 @@ export class AuthContoller {
             expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
         })
         console.log('token ===>', token);
-<<<<<<< HEAD
-        console.log('otp ===>', user.otpIsEnabled);
-        return { token, otp: { enabled: user.otpIsEnabled, verified: false } }
-=======
         console.log('verif user===>', user.otpIsEnabled)
         return { token, otp: { enabled: user.otpIsEnabled, verified: false } };
->>>>>>> a7e71dcd7075edba3b0c2f18eaeab5fbd25c00af
     }
 
     @Patch('generate/Otp')

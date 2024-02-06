@@ -26,14 +26,8 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
       lastName: profile._json.last_name,
       provider: 'intra',
       avatar: profile._json.image.link,
-<<<<<<< HEAD
   });
     console.log('user in the validate 42', user);
-=======
-      otpIsEnabled: true
-    };
-    this.userService.findOrCreate(user)
->>>>>>> a7e71dcd7075edba3b0c2f18eaeab5fbd25c00af
     return {user};
   }
 }

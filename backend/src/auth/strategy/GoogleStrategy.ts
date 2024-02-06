@@ -38,8 +38,14 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
             lastName: profile._json.family_name,
             provider: 'google',
             avatar: profile._json.picture,
+<<<<<<< HEAD
         });
         console.log('user in the validate gg', user);
+=======
+            otpIsEnabled: false
+        };
+        this.userService.findOrCreate(user)
+>>>>>>> a7e71dcd7075edba3b0c2f18eaeab5fbd25c00af
         return {user};
     }
 

@@ -1,7 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
-import { Profile, Strategy, VerifyCallback } from "passport-google-oauth20";
-import { find } from "rxjs";
+import { Profile, Strategy } from "passport-google-oauth20";
 import { UserService } from "src/user/user.service";
 
 @Injectable()
@@ -19,7 +18,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     }
 
     async validate(accesssToken: string, refreshToken: string, profile: Profile) {
-        const user = {
+        const user = await this.userService.findOrCreate({
             providerId: profile._json.sub,
             email: profile._json.email,
             nickName: profile._json.name,
@@ -27,8 +26,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
             lastName: profile._json.family_name,
             provider: 'google',
             avatar: profile._json.picture,
-        };
-        this.userService.findOrCreate(user)
+        });
+        console.log('user in the validate gg', user);
         return {user};
     }
 

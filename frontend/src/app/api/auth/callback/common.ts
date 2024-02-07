@@ -5,21 +5,17 @@ export function tokenFetcher(tokenUrl: string) {
   return async function GET(request: NextRequest) {
     const query = request.nextUrl.searchParams.toString();
 
-    console.log('query', query);
     try {
       const data = await fetch(`${tokenUrl}?${query}`).then((res) =>
         res.json(),
       );
+      console.log("data", data);
+      const otp = data.otp;
+      if (!otp) return NextResponse.redirect("http://localhost:8000/login");
 
-      // const res = redirect("/settings");
-     const res =  NextResponse.redirect("http://localhost:8000/setting");
-     // const otp = data.otp;
-     // console.log('-------- otp', otp);
-     
-     // if (!otp) return redirect("/");
-     
-     // const isOTP = otp.enabled && !otp.verified;
-     // const res = redirect(isOTP ? "/auth/otp" : "/home");
+      const isOTP = otp.enabled && !otp.verified;
+      // console.log("+++otp", otp)r);
+      const res = NextResponse.redirect(isOTP ? "http://localhost:8000/auth" : "http://localhost:8000/setting");
      
      res.cookies.set("authorization", data.token, {
          httpOnly: true,
@@ -28,8 +24,7 @@ export function tokenFetcher(tokenUrl: string) {
        
        return res;
       } catch (error) {
-        console.log(error);
-        NextResponse.redirect("http://localhost:8000/");
+       return NextResponse.redirect("http://localhost:8000/login");
     }
   };
 }

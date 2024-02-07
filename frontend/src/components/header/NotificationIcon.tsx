@@ -7,8 +7,8 @@ const NotificationIcon = () => {
             <div className='relative h-full w-full flex items-center justify-center'>
                 <Image
                     alt="logo"
-                    height="40"
-                    width="40"
+                    height="35"
+                    width="35"
                     priority={true}
                     src="/../../assets/Notification.svg"
                 />

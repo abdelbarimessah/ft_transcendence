@@ -4,6 +4,7 @@ import styles from './Settings.module.css'
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Skeleton } from "@/components/ui/skeleton"
+import { toast } from "sonner";
 
 axios.defaults.withCredentials = true;
 
@@ -62,8 +63,10 @@ function SettingPrompt() {
         };
         try {
             await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/user/updateInfo`, userData);
+            toast.success('Profile updated successfully');
             setNickNameError(false);
         } catch (error) {
+            toast.error('Could not update profile, nickname already in use');
             setNickNameError(true);
         }
     }

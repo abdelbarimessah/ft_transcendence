@@ -27,7 +27,7 @@ model User {
 //   email     String   @unique
 //   name      String?
 //   role      Role     @default(USER)
-//   posts     Post[]
+//   mode     String[]
 // }
 
 // model Post {

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { Providers } from './providers'
 import axios from 'axios';
+import { Toaster } from 'sonner';
 
 
 export const metadata: Metadata = {
@@ -28,6 +29,7 @@ export default function RootLayout({
         <Providers>
             {children}
         </Providers>
+        <Toaster closeButton />
       </body>
     </html>
   )

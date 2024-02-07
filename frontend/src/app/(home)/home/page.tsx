@@ -6,9 +6,6 @@ function home() {
         <>
             <div className="w-full max-h-screen h-screen bg-color-18 gap-96 relative ">
                 <Header />
-                <div className="absolute top-52 left-52">
-                    <OtpPrompt/>
-                </div>
             </div>
         </>
     )

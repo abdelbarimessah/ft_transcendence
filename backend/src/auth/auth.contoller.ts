@@ -94,9 +94,8 @@ export class AuthContoller {
         console.log('token ===>', body.otp);
         console.log('secret ===>', user.secretOpt);
         if (!isValid)
-            throw new Error('invalid otp');
-        else
-            console.log('otp is valid');
+            throw new UnprocessableEntityException();
+        
         await this.authService.enabelOtp(user.providerId);
 
         const User = {
@@ -148,8 +147,8 @@ export class AuthContoller {
         if (!user.otpIsEnabled) throw new ConflictException();
         console.log('opt in the verify auth controller', body.otp);
 
-        const success = this.authService.verifyOTP(user, body.otp);
-
+        const success = await this.authService.verifyOTP(user, body.otp);
+        console.log('success ===>', success);
         if (!success)
         {
             console.log('otp incorrect');

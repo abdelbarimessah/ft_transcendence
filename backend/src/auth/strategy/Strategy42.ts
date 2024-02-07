@@ -11,8 +11,8 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
     private  readonly userService: UserService
   ) {
     super({
-      clientID: 'u-s4t2ud-ef457919ad05f90a8cdf6b3681d80a6f10058a83a4786b74eb5ffb3ae8141408',
-      clientSecret: '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',
+      clientID: 'u-s4t2ud-b85b62147e999332737387c03f579f4821ea9b85156f0510c53c2f795c6a3e95',
+      clientSecret: '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',
       callbackURL: 'http://localhost:8000/api/auth/callback/intra',
     })
   }

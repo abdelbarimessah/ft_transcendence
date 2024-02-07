@@ -69,7 +69,9 @@ export class AuthService {
  async  verifyOTP(user: User, token: string) {
     if (!user.secretOpt) return false;
     console.log('user.secretOpt', user.secretOpt);
-    return authenticator.verify({ secret: user.secretOpt, token });
+    const rew = authenticator.verify({ secret: user.secretOpt, token });
+    console.log('rew', rew);
+    return rew;
   }
 
   async genrateJwtToken(user: User) {

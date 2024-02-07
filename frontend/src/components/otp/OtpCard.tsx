@@ -5,30 +5,34 @@ import OtpPrompt from '../prompt/OtpPrompt'
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Skeleton } from "@/components/ui/skeleton"
+import { toast } from 'sonner';
 
 axios.defaults.withCredentials = true;
 
 function OtpCard() {
-    const [isVerifying, setIsVerifying] = useState(false);
     const [qrcode, setQrcode] = useState('');
     const [isLoading, setIsLoading] = useState(true);
-    const [otpDisable, setOtpDisable] = useState(true);
+    const [otpDisable, setOtpDisable] = useState(false);
     const [otp, setOtp] = useState('');
+    const [id, setId] = useState("");
 
     const handleEnableClick = () => {
-        try
+        if(otp.length === 6)
         {
-            axios.
-            patch('http://localhost:3000/auth/enable/Otp', {otp})
-            .then((res) => {
-                console.log(res)
-                setOtpDisable(false);
+
+            axios.patch('http://localhost:3000/auth/enable/Otp', { otp })
+            .then(response => {
+                console.log(response.data);
+                toast.success('OTP Enabled successfully');
+                setOtpDisable(true);
             })
+            .catch(error => {
+                if (error.response && error.response.status === 422)
+                toast.error('Incorrect OTP code');
+        });
         }
-        catch (error)
-        {
-            console.error(error);
-        }
+        else
+            toast.error('You must enter a 6-digit code');
     }
     
     const handleDisableClick = () => {
@@ -38,7 +42,8 @@ function OtpCard() {
             patch('http://localhost:3000/auth/disable/Otp')
             .then((res) => {
                 console.log(res)
-                setOtpDisable(true);
+                setOtpDisable(false);
+                toast.success('OTP Disabled successfully');
             })
         }
         catch (error)
@@ -50,8 +55,20 @@ function OtpCard() {
 
     
     useEffect(() => {
+        const getData = async () => {
+            try {
+                const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`);
+                setId(res.data.providerId);
+                setOtpDisable(res.data.otpIsEnabled);
+                console.log('data opt enable ', res.data.otpIsEnabled);
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }
+        getData();
+
         setIsLoading(true);
-        console.log('sending request')
         axios.
         patch('http://localhost:3000/auth/generate/Otp')
         .then((res) => {
@@ -63,12 +80,12 @@ function OtpCard() {
             console.error(error);
             setIsLoading(false);
     });
-    }, []);
+    }, [id]);
      
     return (
     <>
         <div className={`2xl:w-[385px] w-8/12 relative`}>
-            <div className={`${isVerifying ? 'blur-sm' : ''} ${styles.playCard}  overflow-hidden h-[522px] w-full  max-w-[900px] 2xl:w-[385px] bg-color-0 rounded-[40px] flex flex-col items-center justify-center gap-[22px]`}>
+            <div className={`${styles.playCard}  overflow-hidden h-[522px] w-full  max-w-[900px] 2xl:w-[385px] bg-color-0 rounded-[40px] flex flex-col items-center justify-center gap-[22px]`}>
                 <div className="h-[36px] w-[36px] flex items-center justify-center bg-color-0 border border-color-6 rounded-[10px]">
                 
                     <Image
@@ -94,7 +111,7 @@ function OtpCard() {
                     </Image>
                 }
                 </div>
-                {!otpDisable ? (
+                {otpDisable ? (
                     <div className=" flex w-full items-center justify-center gap-[10px] md:gap-[36px] md:flex-row flex-col pt-[36px]">
                         <div onClick={handleDisableClick} className="w-[141px] h-[35px] bg-color-6 rounded-[22px] flex items-center justify-center cursor-pointer">
                             <p className="text-[14px] text-color-0 font-nico-moji" >Disable</p>
@@ -124,21 +141,6 @@ function OtpCard() {
                 </>
                 )}
             </div>
-            {/* {isVerifying && <div
-                onClick={() => setIsVerifying(false)}
-                 className='bg-color-6 w-6 h-6 flex items-center justify-center rounded-[8px] cursor-pointer absolute top-5 right-5'>
-                    <Image
-                        src={"/../../assets/smallCross.svg"}
-                        alt='cros icon'
-                        width={10}
-                        height={10}
-                    >
-
-                    </Image>
-            </div> } */}
-            {/* <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
-                {isVerifying && <OtpPrompt/>}
-            </div> */}
         </div>
     </>
     )

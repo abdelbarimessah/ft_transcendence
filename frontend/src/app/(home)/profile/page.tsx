@@ -1,4 +1,5 @@
-import Header from "@/components/header/header";
+import LeaderBoard from "@/components/profilePage/LeaderBoard";
+import { MatchesHistory } from "@/components/profilePage/MatchesHistory";
 import ProfileCard from "@/components/profilePage/ProfileCard";
 
 function profile() {
@@ -6,12 +7,15 @@ function profile() {
     return (
         <>
             <div className="w-full gap-10 min-h-screen flex bg-color-18  items-center justify-center ">
-                <div className="w-full h-full flex  items-center justify-center">
-                    <div className="flex flex-col ">
+                <div className="w-full h-full flex gap-[25px] flex-col items-center justify-center">
+                    <div className="flex flex-row gap-[25px]">
                         <ProfileCard />
-                        <div className="h-[619px] w-[1139px] bg-color-0 rounded-[22px] mr-[22px] my-[22px]"></div>
+                        <LeaderBoard />
                     </div>
-                    <div className="h-[1030px] w-[596px] bg-color-0 rounded-[22px] mr-[22px] my-[22px]"></div>
+                    <div className="flex flex-row gap-[25px]">
+                        <div className="h-[619px] w-[1139px] rounded-[22px] bg-color-0"></div>
+                        <MatchesHistory/>   
+                    </div>
                 </div>
             </div>
         </>

@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation'
 axios.defaults.withCredentials = true;
 
 function ProfileCard() {
+    const [id, setId] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [user, setUser] = useState<any>();
     const [isSettingsVisible, setIsSettingsVisible] = useState(false);
@@ -22,6 +23,26 @@ function ProfileCard() {
     const handleSettingsClick = () => {
         setIsSettingsVisible(!isSettingsVisible);
     };
+    
+    useEffect(() => {
+        const getData = async () => {
+            try {
+                setIsLoading(true);
+                const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`);
+                setUser(res.data);
+                setId(res.data.providerId);
+                setAvatar(res.data.avatar)
+                setIsLoading(false);
+            }
+            catch (error) {
+                setIsLoading(false);
+                console.error(error);
+            }
+        }
+        setPhotoPath(`${process.env.NEXT_PUBLIC_API_URL}/uploads/cover-${id}.png`)
+        getData();
+    }, [id]);
+    
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         setChangeAvatar(true);
         const file = event.target.files?.[0];
@@ -30,55 +51,38 @@ function ProfileCard() {
             setAvatar(file);
         }
     };
-
-    useEffect(() => {
-        const getData = async () => {
-            try {
-                setIsLoading(true);
-                const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`);
-                setUser(res.data);
-                console.log('user ===>', res.data);
-                setIsLoading(false);
-            }
-            catch (error) {
-                setIsLoading(false);
-                console.error(error);
-            }
-        }
-        if(changeAvatar)
-        {
+    async function handleSaveClick () {
+        if (avatar && changeAvatar === true) {
             const formData = new FormData();
             formData.append('cover', avatar);
-            try {
-                console.log('formData in the cover', formData);
-                const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/user/updateCover`, formData)
-                console.log("photo uploaded", res.data.uploadPath);
-                
-            }
-            catch (error) {
-                console.error(error);
-            }
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/user/updateCover`, formData)
         }
-        getData();
-    }, []);
+        setChangeAvatar(false);
+    }
 
     return (
-        <div className="w-[1139px] h-[386px] bg-color-0 rounded-[22px] mt-[25px] relative overflow-hidden">
+        <div className="w-[1139px] h-[386px] bg-color-0 rounded-[22px] relative overflow-hidden">
 
             <div className='w-full h-[150px] bg-color-6  relative group cursor-pointer  overflow-hidden'>
                 {user && (
                     <div className="w-full h-full absolute  overflow-hidden">
-                        <Image
-                            src={changeAvatar ? photoPath : user.cover}
+                        {/* <Image
+                            src={photoPath}
                             alt='profile image'
                             fill={true}
                             sizes="100%"
                             className="object-cover w-full h-full "
-                        />
+                        /> */}
+                        <img src={photoPath} alt="" className="object-cover w-full h-full"/>
                     </div>
                 )}
                 <div className='h-full w-full  absolute hidden group-hover:flex  bg-black items-center justify-center text-center bg-slate-600/50 text-white tracking-wider font-nico-moji'>Change Cover Image</div>
                 <input className='h-full w-full  absolute opacity-0 z-10 cursor-pointer' onChange={handleFileChange} type="file" />
+                {changeAvatar &&
+                    <div onClick={handleSaveClick} className="w-[50px] z-[1000] cursor-pointer h-[16px] flex items-center justify-center rounded-[5px] bg-color-0 absolute bottom-1 right-1">
+                        <span className="text-center font-nico-moji text-[10px] text-color-6">Save</span>
+                    </div>
+                }
             </div>
             <div className='w-full flex justify-between items-center px-[85px] absolute top-[111px]'>
                 <div className='flex items-center gap-3'>
@@ -108,7 +112,7 @@ function ProfileCard() {
                             <Skeleton className="w-[86px] h-[16px] rounded-full mt-1 bg-color-25" />
                         )
                             : (
-                                <span className='font-nico-moji -mt-1 text-[16px] text-color-6'>Amessah</span>
+                                <span className='font-nico-moji -mt-1 text-[16px] text-color-6'>{user.nickName}</span>
                             )}
                     </div>
                 </div>

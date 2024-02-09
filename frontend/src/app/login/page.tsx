@@ -46,6 +46,7 @@ function login() {
                                     alt="My Gallery Image"
                                     height={45}
                                     width={45}
+                                    priority={true}
                                     />
                             </div>
                         </div>

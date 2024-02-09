@@ -3,6 +3,8 @@ import { PassportStrategy } from "@nestjs/passport";
 import { Profile, Strategy } from "passport-google-oauth20";
 import { UserService } from "src/user/user.service";
 
+const defaultCoverImage = (`${process.env.NEXT_PUBLIC_API_URL}/uploads/DefaultCover.svg`);
+
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     constructor(
@@ -26,6 +28,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
             lastName: profile._json.family_name,
             provider: 'google',
             avatar: profile._json.picture,
+            cover: defaultCoverImage,
         });
         console.log('user in the validate gg', user);
         return {user};

@@ -57,6 +57,19 @@ export class UsersController {
         fs.writeFileSync(uploadPath, file.buffer);        
         await this.userService.updateAvatar(user.providerId, uploadPath);
     }
+
+    @Post('updateCover')
+    @UseGuards(OTPGuard)
+    @UseGuards(JwtAuthGuard)
+    @UseInterceptors(FileInterceptor('cover'))
+    async updateCover(@UploadedFile() file, @Req() req: Request, @CurrentUser() user: any) {
+        const uploadDir = path.join(__dirname, '../../uploads/');
+        const uploadPath = path.join(uploadDir, `cover-${user.providerId}${'.png'}`);
+        fs.writeFileSync(uploadPath, file.buffer);
+        console.log('uploadPath', uploadPath);
+        await this.userService.updateCover(user.providerId, uploadPath);
+        return {uploadPath};
+    }
     
     @Post('updateInfo')
     @UseGuards(OTPGuard)
@@ -67,8 +80,9 @@ export class UsersController {
         const res = await this.userService.updateUserData(user.providerId, req.body);
         return {message : 'User data updated', data: res};
     }
-
+    
     @Get(':id')
+    @UseGuards(OTPGuard)
     @UseGuards(JwtAuthGuard)
     findOne(@Param('id') id: string) {
         return this.userService.getUserById(id);

@@ -1,7 +1,6 @@
 'use client'
 import Image from 'next/image'
 import styles from './Otp.module.css'
-import OtpPrompt from '../prompt/OtpPrompt'
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Skeleton } from "@/components/ui/skeleton"

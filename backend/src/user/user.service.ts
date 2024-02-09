@@ -56,6 +56,12 @@ export class UserService {
       data: { avatar: avatarPath },
     });
   }
+  async updateCover(id: string, coverPath: string) {
+    return this.prismaService.user.update({
+      where: { providerId: id },
+      data: { cover: coverPath },
+    });
+  }
 
   async updateUserData(providerId: string , data :any)
   {

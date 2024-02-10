@@ -66,7 +66,7 @@ function ProfileCard() {
     }
 
     return (
-        <div className="w-[1139px] h-[386px] bg-color-0 rounded-[22px] relative overflow-hidden">
+        <div className=" w-full xl:w-[1139px] h-[386px] bg-color-4 rounded-[22px] relative overflow-hidden xl:mx-0 mx-10 ">
 
             <div className='w-full h-[150px] bg-color-6  relative group cursor-pointer  overflow-hidden'>
                 {user && (

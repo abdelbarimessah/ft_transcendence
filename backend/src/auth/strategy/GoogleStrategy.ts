@@ -32,7 +32,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
             lastName: profile._json.family_name,
             provider: 'google',
             avatar: profile._json.picture,
-            // cover: "http://localhost:3000/uploads/DefaultCover.svg",
             cover: this.defaultCoverImage,
         });
         console.log('user in the validate gg', user);

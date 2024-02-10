@@ -5,7 +5,7 @@ import Image from 'next/image';
 export default function LeaderBoard() {
 
     return (
-        <div className="w-[596px] h-[386px] rounded-[22px] bg-color-0 overflow-hidden flex flex-col gap-[40px] px-5">
+        <div className=" w-full xl:w-[596px] h-[386px] rounded-[22px] bg-color-0 overflow-hidden flex flex-col gap-[40px] px-5 xl:mx-0 mx-10">
             <div className="w-full flex items-center justify-center gap-[15px] pt-[18px]">
                 <div className='w-[37px] h-[37px]  relative flex items-center justify-center  '>
                     <Image
@@ -17,8 +17,8 @@ export default function LeaderBoard() {
                     />
                 </div>
                 <div className='flex gap-[10px] pt-3 '>
-                    <span className='font-nico-moji text-color-6 text-[32px]'>Leader</span>
-                    <span className='font-nico-moji text-color-29 text-[32px]'>Board</span>
+                    <span className='font-nico-moji text-color-6 2lx:text-[32px] text-[24px]'>Leader</span>
+                    <span className='font-nico-moji text-color-29 2xl:text-[32px] text-[24px]'>Board</span>
                 </div>
             </div>
             <div className=' w-full gap-[25px] flex flex-col '>

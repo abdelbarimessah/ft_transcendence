@@ -3,7 +3,7 @@ import Image from "next/image"
 
 export function MatchesHistory () {
     return (
-        <div className=" h-[619px] w-[596px] bg-color-0 rounded-[22px] flex flex-col gap-[34px]">
+        <div className="h-[619px] w-[596px] bg-color-0 rounded-[22px] flex flex-col gap-[34px]">
             <div className="w-full flex items-center justify-center gap-[15px] pt-[18px]">
                 <div className=' w-[37px] h-[28px] relative flex items-center justify-center pt-3'>
                     <Image

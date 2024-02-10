@@ -44,13 +44,19 @@ const ProfileHeader = () => {
                 )}
                 <div className='w-[10px] h-[10px] rounded-full bg-color-21 absolute bottom-1 right-[2px] z-50'></div>
             </div>
-            <div className=' xl:block w-[184px] h-[30px]  rounded-[10px]'>
-            {isLoading ? (
-                        <Skeleton className="w-[184px] h-[30px] rounded-[10px] bg-color-25" />
-                    )
-                : (
-                <span className='capitalize text-color-20 font-poppins font-[500] text-[20px] pl-3'>{user.nickName}</span>
-                )}
+            <div className='xl:flex flex-col  hidden'>
+                {isLoading ? (
+                    <Skeleton className="w-[165px] h-[20px] rounded-full bg-color-25" />
+                )
+                    : (
+                        <span className='font-nico-moji text-color-6 text-[16px]'>{`${user.firstName} ${user.lastName}`}</span>
+                    )}
+                {isLoading ? (
+                    <Skeleton className="w-[86px] h-[16px] rounded-full mt-1 bg-color-25" />
+                )
+                    : (
+                        <span className='font-nico-moji -mt-1 text-[12px] text-color-16'>{user.nickName}</span>
+                    )}
             </div>
         </div>
     );

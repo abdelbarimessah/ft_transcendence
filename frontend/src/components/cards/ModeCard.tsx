@@ -6,10 +6,13 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image';
 import Lottie from 'lottie-react';
 import animationData from '../../../public/assets/animation.json';
+import { useContext } from 'react';
+import { SocketContext } from '@/app/SocketContext';
 
-var socketClient = io('http://localhost:3000');
+// var socketClient = io('http://localhost:3000');
 
 function ModeCard(props: any) {
+    const socketClient = useContext(SocketContext);
     const router = useRouter()
     const [isRandomMode, setIsRandomMode] = useState(false)
 

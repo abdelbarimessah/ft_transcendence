@@ -3,6 +3,7 @@ import './globals.css'
 import { Providers } from './providers'
 import axios from 'axios';
 import { Toaster } from 'sonner';
+import SocketContext from './SocketContext';
 
 
 export const metadata: Metadata = {
@@ -26,11 +27,12 @@ export default function RootLayout({
         <title>Pong Game</title>
       </head>
       <body className='no-scrollbar '>
-        <Providers>
-            {children}
-        </Providers>
-        <Toaster closeButton />
+          <Providers>
+              {children}
+          </Providers>
+          <Toaster closeButton />
       </body>
     </html>
   )
 }
+

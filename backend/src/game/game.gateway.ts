@@ -43,6 +43,13 @@ export class GameGateway implements OnGatewayConnection {
         this.logger.log(this.playerQueue.length + ' queue length after disconnect');
     }
 
+    @SubscribeMessage('someevent')
+    handleSomeEvent(socket: Socket, data: any) {
+        this.logger.log('someevent');
+        data = 'data';
+        this.server.emit('someevent', data);
+    }
+
     
     @SubscribeMessage('joinRoom')
     handleJoinRoom(socket: Socket) {

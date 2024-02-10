@@ -59,6 +59,7 @@ function ProfileCard() {
             const formData = new FormData();
             formData.append('cover', avatar);
             const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/user/updateCover`, formData)
+            console.log('url i the res', res.data.url);
             setUser({...user, cover: res.data.url});
         }
         setChangeAvatar(false);
@@ -70,16 +71,17 @@ function ProfileCard() {
             <div className='w-full h-[150px] bg-color-6  relative group cursor-pointer  overflow-hidden'>
                 {user && (
                     <div className="w-full h-full absolute  overflow-hidden">
-                        <Image
+                        {/* <Image
                             src={ photoPath || user.cover}
                             alt='profile image'
                             fill={true}
                             sizes="100%"
+                            priority={true}
                             className="object-cover w-full h-full "
-                        />
+                        /> */}
                         
 
-                        {/* <img src={ photoPath || user.cover} alt="" className="object-cover w-full h-full"/> */}
+                        <img src={ photoPath || user.cover} alt="" className="object-cover w-full h-full"/>
                     </div>
                 )}
                 <div className='h-full w-full  absolute hidden group-hover:flex  bg-black items-center justify-center text-center bg-slate-600/50 text-white tracking-wider font-nico-moji'>Change Cover Image</div>

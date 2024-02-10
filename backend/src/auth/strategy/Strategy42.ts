@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
 import { Strategy } from "passport-42";
 import { UserService } from "src/user/user.service";
@@ -9,16 +10,18 @@ const defaultCoverImage = (`${process.env.NEXT_PUBLIC_API_URL}/uploads/DefaultCo
 export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
 
   constructor(
-    private  readonly userService: UserService
+    private userService: UserService,
+    private configService: ConfigService
   ) {
     super({
-      clientID: 'u-s4t2ud-b85b62147e999332737387c03f579f4821ea9b85156f0510c53c2f795c6a3e95',
-      clientSecret: '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',
-      callbackURL: 'http://localhost:8000/api/auth/callback/intra',
+      clientID: configService.get('intra_Client_ID'),
+      clientSecret: configService.get('intra_Client_Secret'),
+      callbackURL: configService.get('intra_Client_callback'),
     })
   }
 
   async validate(accesssToken: string, refreshToken: string, profile: any) {
+    console.log('Full profile:', JSON.stringify(profile, null, 2));
     const user = await this.userService.findOrCreate({
       providerId: profile.id,
       email: profile._json.email,

@@ -72,6 +72,7 @@ export class UsersController {
         // const uploadPathbd = path.join(uploadDirdb, `cover-${user.providerId}${'.png'}`);
         const url = new URL(`/uploads/cover-${user.providerId}${'.png'}` , backendUrl);
         await this.userService.updateCover(user.providerId, url.href);
+        console.log('url', url.href);
         return { url : url.href};
     }
 

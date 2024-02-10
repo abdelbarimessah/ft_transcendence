@@ -11,15 +11,6 @@ function login() {
     };
     function loginGoogle (){
         console.log(' in the login page  ');
-        // useEffect(() => {
-            // axios.get('http://localhost:3000/auth-google/profile')
-            //   .then(function (response) {
-            //     console.log(response.data);
-            //   })
-            //   .catch(function (error) {
-            //     console.log(error);
-            //   });
-        //   }, []);
     };
     return (
         <>

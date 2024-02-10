@@ -9,6 +9,7 @@ import { Skeleton } from "@nextui-org/react";
 import Link from "next/link";
 import { useRouter } from 'next/navigation'
 
+
 axios.defaults.withCredentials = true;
 
 function ProfileCard() {
@@ -17,7 +18,7 @@ function ProfileCard() {
     const [user, setUser] = useState<any>();
     const [isSettingsVisible, setIsSettingsVisible] = useState(false);
     const [changeAvatar, setChangeAvatar] = useState(false);
-    const [photoPath, setPhotoPath] = useState<any>();
+    const [photoPath, setPhotoPath] = useState<any>(null);
     const [avatar, setAvatar] = useState<File | null>(null);
 
     const handleSettingsClick = () => {
@@ -39,7 +40,8 @@ function ProfileCard() {
                 console.error(error);
             }
         }
-        setPhotoPath(`${process.env.NEXT_PUBLIC_API_URL}/uploads/cover-${id}.png`)
+        // setPhotoPath(`${process.env.NEXT_PUBLIC_API_URL}/uploads/cover-${id}.png`)
+        
         getData();
     }, [id]);
     
@@ -53,9 +55,11 @@ function ProfileCard() {
     };
     async function handleSaveClick () {
         if (avatar && changeAvatar === true) {
+
             const formData = new FormData();
             formData.append('cover', avatar);
-            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/user/updateCover`, formData)
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/user/updateCover`, formData)
+            setUser({...user, cover: res.data.url});
         }
         setChangeAvatar(false);
     }
@@ -66,14 +70,16 @@ function ProfileCard() {
             <div className='w-full h-[150px] bg-color-6  relative group cursor-pointer  overflow-hidden'>
                 {user && (
                     <div className="w-full h-full absolute  overflow-hidden">
-                        {/* <Image
-                            src={photoPath}
+                        <Image
+                            src={ photoPath || user.cover}
                             alt='profile image'
                             fill={true}
                             sizes="100%"
                             className="object-cover w-full h-full "
-                        /> */}
-                        <img src={photoPath} alt="" className="object-cover w-full h-full"/>
+                        />
+                        
+
+                        {/* <img src={ photoPath || user.cover} alt="" className="object-cover w-full h-full"/> */}
                     </div>
                 )}
                 <div className='h-full w-full  absolute hidden group-hover:flex  bg-black items-center justify-center text-center bg-slate-600/50 text-white tracking-wider font-nico-moji'>Change Cover Image</div>

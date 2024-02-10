@@ -66,11 +66,13 @@ export class UsersController {
         const uploadDir = path.join(__dirname, '../../uploads/');
         const uploadPath = path.join(uploadDir, `cover-${user.providerId}${'.png'}`);
         fs.writeFileSync(uploadPath, file.buffer);
+
         const backendUrl = process.env.NEXT_PUBLIC_API_URL;
-        const uploadDirdb = path.join(backendUrl, '/uploads/');
-        const uploadPathbd = path.join(uploadDirdb, `cover-${user.providerId}${'.png'}`);
-        await this.userService.updateCover(user.providerId, uploadPathbd);
-        return {uploadPathbd};
+        // const uploadDirdb = path.join(backendUrl, '/uploads/');
+        // const uploadPathbd = path.join(uploadDirdb, `cover-${user.providerId}${'.png'}`);
+        const url = new URL(`/uploads/cover-${user.providerId}${'.png'}` , backendUrl);
+        await this.userService.updateCover(user.providerId, url.href);
+        return { url : url.href};
     }
 
 

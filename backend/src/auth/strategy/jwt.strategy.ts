@@ -5,9 +5,7 @@ import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
-  constructor(
-    private userService: UserService,
-  ) {
+  constructor(private userService: UserService) {
     super({
       // jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       jwtFromRequest: ExtractJwt.fromExtractors([
@@ -15,13 +13,12 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         ExtractJwt.fromAuthHeaderAsBearerToken(),
       ]),
       ignoreExpiration: false,
-      secretOrKey: "DO NOT USE THIS VALUE. INSTEAD, CREATE A COMPLEX SECRET AND KEEP IT SAFE OUTSIDE OF THE SOURCE CODE.",
+      secretOrKey:
+        'DO NOT USE THIS VALUE. INSTEAD, CREATE A COMPLEX SECRET AND KEEP IT SAFE OUTSIDE OF THE SOURCE CODE.',
     });
-    
   }
   async validate(payload: any) {
-    
     const user = this.userService.getUserById(payload.providerId);
-    return {user} ;
+    return { user };
   }
 }

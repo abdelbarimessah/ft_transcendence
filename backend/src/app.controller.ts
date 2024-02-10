@@ -3,22 +3,17 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
 @Controller()
 export class AppController {
-    
-    constructor(
-    ){}
+  constructor() {}
 
-    @Post('auth/login')
-    async login(@Request() req) {
-        
+  @Post('auth/login')
+  async login(@Request() req) {
+    // return this.authService.login(req.user);
+  }
 
-        // return this.authService.login(req.user);
-    }
-
-    @Get('profile')
-    @UseGuards(JwtAuthGuard)
-    getProfile(@Request() req) {
-        // console.log('req.user in the profile route ===>', req.user);
-        return {id: "123123123"};
-    }
-
+  @Get('profile')
+  @UseGuards(JwtAuthGuard)
+  getProfile(@Request() req) {
+    // console.log('req.user in the profile route ===>', req.user);
+    return { id: '123123123' };
+  }
 }

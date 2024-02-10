@@ -18,7 +18,8 @@ import { AuthService } from './auth.services';
     UsersModule,
     PassportModule,
     JwtModule.register({
-      secret: "DO NOT USE THIS VALUE. INSTEAD, CREATE A COMPLEX SECRET AND KEEP IT SAFE OUTSIDE OF THE SOURCE CODE.",
+      secret:
+        'DO NOT USE THIS VALUE. INSTEAD, CREATE A COMPLEX SECRET AND KEEP IT SAFE OUTSIDE OF THE SOURCE CODE.',
       signOptions: { expiresIn: '3d' },
     }),
     // JwtModule.registerAsync({
@@ -31,9 +32,8 @@ import { AuthService } from './auth.services';
     //   }),
     // }),
   ],
-  providers: [AuthService, FortyTwoStrategy, GoogleStrategy,JwtStrategy],
+  providers: [AuthService, FortyTwoStrategy, GoogleStrategy, JwtStrategy],
   exports: [],
   controllers: [AuthContoller],
 })
-
 export class AuthModule {}

@@ -29,6 +29,14 @@ export class GameGateway implements OnGatewayConnection {
         this.logger.log(`Client connected: ${socket.id}`);
     }
 
+    @SubscribeMessage('firstTime')
+    handleFirstTime(socket: Socket, data: any) {
+        this.logger.log('firstTime', data);
+        // this.server.emit('firstTime', data);
+        socket.join(data);
+        this.server.in(data).emit('bothInRoom', data);
+    }
+
     handleDisconnect(socket: Socket) {
         
         this.roomName = this.listRooms.get(socket.id);

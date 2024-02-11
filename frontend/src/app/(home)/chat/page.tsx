@@ -5,7 +5,7 @@ import { useContext } from 'react';
 
 
 
-function chat() {
+function Chat() {
     const socket = useContext(SocketContext);
     // use the socket connection
     socket.emit('someevent', 'data');
@@ -22,4 +22,4 @@ function chat() {
     )
 }
 
-export default chat;
+export default Chat;

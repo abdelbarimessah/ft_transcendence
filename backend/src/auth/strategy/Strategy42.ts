@@ -4,11 +4,10 @@ import { PassportStrategy } from "@nestjs/passport";
 import { Strategy } from "passport-42";
 import { UserService } from "src/user/user.service";
 
-const defaultCoverImage = (`${process.env.NEXT_PUBLIC_API_URL}/uploads/DefaultCover.svg`);
 
 @Injectable()
 export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
-
+  private defaultCoverImage: string;
   constructor(
     private userService: UserService,
     private configService: ConfigService
@@ -18,6 +17,8 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
       clientSecret: configService.get('intra_Client_Secret'),
       callbackURL: configService.get('intra_Client_callback'),
     })
+    this.defaultCoverImage = `${this.configService.get('NEXT_PUBLIC_API_URL')}/uploads/DefaultCover.svg`;
+
   }
 
   async validate(accesssToken: string, refreshToken: string, profile: any) {
@@ -30,7 +31,7 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
       lastName: profile._json.last_name,
       provider: 'intra',
       avatar: profile._json.image.link,
-      cover: defaultCoverImage,
+      cover: this.defaultCoverImage,
   });
     console.log('user in the validate 42', user);
     return {user};

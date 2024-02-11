@@ -8,7 +8,7 @@ var socketClient = io("http://localhost:3000");
 
 // const socketClient = useContext(SocketContext);
 
-export default class PongGame extends Phaser.Scene {
+export default class aiMode extends Phaser.Scene {
     p1: any;
     p2: any;
     ball: any;

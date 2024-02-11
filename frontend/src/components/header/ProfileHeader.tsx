@@ -5,7 +5,6 @@ import axios from 'axios';
 import { Skeleton } from '@nextui-org/react';
 
 const ProfileHeader = () => {
-    const [photoPath, setPhotoPath] = useState<any>();
     const [isLoading, setIsLoading] = useState(true);
     const [user, setUser] = useState<any>();
     useEffect(() => {
@@ -49,13 +48,13 @@ const ProfileHeader = () => {
                     <Skeleton className="w-[165px] h-[20px] rounded-full bg-color-25" />
                 )
                     : (
-                        <span className='font-nico-moji text-color-6 text-[16px]'>{`${user.firstName} ${user.lastName}`}</span>
+                        <span className='font-nico-moji text-color-6 text-[16px] capitalize'>{`${user.firstName} ${user.lastName}`}</span>
                     )}
                 {isLoading ? (
                     <Skeleton className="w-[86px] h-[16px] rounded-full mt-1 bg-color-25" />
                 )
                     : (
-                        <span className='font-nico-moji -mt-1 text-[12px] text-color-16'>{user.nickName}</span>
+                        <span className='font-nico-moji -mt-1 text-[12px] text-color-29 capitalize'>{user.nickName}</span>
                     )}
             </div>
         </div>

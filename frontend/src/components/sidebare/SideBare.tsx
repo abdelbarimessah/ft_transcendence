@@ -1,44 +1,47 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import LogoutPrompt from "@/components/prompt/LogoutPrompt";
 
 
-
 function SideNav({ setShow }: any) {
 
+  const [isHidden, setIsHidden] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedState = localStorage.getItem('sidebarState');
+      setIsHidden(savedState ? JSON.parse(savedState) : false);
+    }
+  }, []);
+  useEffect(() => {
+    localStorage.setItem('sidebarState', JSON.stringify(isHidden));
+  }, [isHidden]);
+
+  const toggleSidebar = () => {
+    setIsHidden(!isHidden);
+  };
   const [showLogoutPrompt, setShowLogoutPrompt] = useState(false);
 
   const handleLogoutClick = () => {
     setShowLogoutPrompt(!showLogoutPrompt);
   };
 
-  // const handleCancelClick = () => {
-  //   setShowLogoutPrompt(false);
-  // };
-
 
   const path = usePathname();
-  const [isHide, setIsHide] = useState(false)
-  const hideShowSideBare = () => {
-    setIsHide(!isHide);
-    setShow(isHide);
-  };
-
   return (
-    <div className={` bg-color-18 z-[1000] transition-all flex-none relative duration-150 ease-out  ${isHide ? 'w-1' : 'w-[130px]'}`}>
-
-      <div className={` absolute flex justify-end items-center right-0 z-50 top-[145px] ${isHide === true ? 'translate-x-full  rotate-180 z-50' : ''} `}>
-        <button onClick={hideShowSideBare}>
-          <svg className="cursor-pointer hover:opacity-80" width="23" height="37" viewBox="0 0 33 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M33 52H15C6.71573 52 0 45.2843 0 37L0 15C0 6.71573 6.71573 0 15 0H33L33 52Z" fill="#DDDDDD" />
-            <path d="M21.577 37C21.577 37 12.6924 30.192 12.6924 25.5C12.6924 20.8096 21.577 14 21.577 14" stroke="#50738B" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
-      </div>
-      <div className={`transition-all absolute w-[130px] h-full left-0 duration-150 ease-out min-h-screen bg-color-0 rounded-r-3xl ${isHide ? '-translate-x-[95%] ' : ''}`}>
+    <div className={` bg-color-18 z-[2000] transition-all flex-none relative duration-150 ease-out sidebar ${isHidden ? 'w-1' : 'w-[130px]'} `}>
+      <div className={`transition-all w-[130px] h-full fixed left-0 duration-150 ease-out min-h-screen bg-color-0 rounded-r-3xl ${isHidden ? '-translate-x-[95%] ' : ''}`}>
+        <div className={` absolute flex justify-end items-center right-0 z-50 top-[145px] ${isHidden === true ? 'translate-x-full  rotate-180 z-50' : ''} `}>
+          <button onClick={toggleSidebar}>
+            <svg className="cursor-pointer hover:opacity-80" width="23" height="37" viewBox="0 0 33 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M33 52H15C6.71573 52 0 45.2843 0 37L0 15C0 6.71573 6.71573 0 15 0H33L33 52Z" fill="#DDDDDD" />
+              <path d="M21.577 37C21.577 37 12.6924 30.192 12.6924 25.5C12.6924 20.8096 21.577 14 21.577 14" stroke="#50738B" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        </div>
         <div className='relative pt-10 pb-40 flex flex-col justify-between h-full'>
           <div className='  flex flex-col justify-center items-cente gap-5 '>
             <div className='flex justify-center items-center'>
@@ -140,14 +143,15 @@ function SideNav({ setShow }: any) {
           <div className=''>
             <div className='flex justify-center items-center flex-col  h-[50px] cursor-pointer'>
               <button onClick={handleLogoutClick}>
-                {showLogoutPrompt && <LogoutPrompt setShowLogoutPrompt={setShowLogoutPrompt}  showLogoutPrompt={showLogoutPrompt}/>}
+                {showLogoutPrompt && <LogoutPrompt setShowLogoutPrompt={setShowLogoutPrompt} showLogoutPrompt={showLogoutPrompt} />}
                 <div className="group">
                   <Image
                     src='/../../assets/LogoutIcon.svg'
                     alt="logout"
                     height={30}
                     width={30}
-                    >
+                    priority={true}
+                  >
                   </Image>
                 </div>
               </button>

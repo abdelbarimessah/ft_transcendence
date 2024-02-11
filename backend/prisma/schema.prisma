@@ -20,6 +20,7 @@ model User {
   otpIsEnabled        Boolean              @default(false)
   level               Int                  @default(10)
   cover               String?
+  sockets             String[]
 }
 
 

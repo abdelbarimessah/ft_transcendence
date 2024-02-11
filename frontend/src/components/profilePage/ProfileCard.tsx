@@ -66,7 +66,7 @@ function ProfileCard() {
     }
 
     return (
-        <div className=" w-full xl:w-[1139px] h-[386px] bg-color-4 rounded-[22px] relative overflow-hidden xl:mx-0 mx-10 ">
+        <div className=" w-full xl:w-[1139px] h-[386px] bg-color-0 rounded-[22px] relative overflow-hidden  ">
 
             <div className='w-full h-[150px] bg-color-6  relative group cursor-pointer  overflow-hidden'>
                 {user && (
@@ -88,7 +88,7 @@ function ProfileCard() {
                 <input className='h-full w-full  absolute opacity-0 z-10 cursor-pointer' onChange={handleFileChange} type="file" />
                 {changeAvatar &&
                     <div onClick={handleSaveClick} className="w-[50px] z-[1000] cursor-pointer h-[16px] flex items-center justify-center rounded-[5px] bg-color-0 absolute bottom-1 right-1">
-                        <span className="text-center font-nico-moji text-[10px] text-color-6">Save</span>
+                        <span className="text-center font-nico-moji text-[10px] text-color-6 capitalize">Save</span>
                     </div>
                 }
             </div>
@@ -98,7 +98,7 @@ function ProfileCard() {
                         <Skeleton className="w-[120px] h-[120px] rounded-full bg-color-25" />
                     )
                         : (
-                            <div className="w-[120px] h-[120px] relative z-50 rounded-full overflow-hidden bg-black border-[2px] border-color-0">
+                            <div className="w-[120px] h-[120px]   relative z-50 rounded-full overflow-hidden bg-black border-[2px] border-color-0">
                                 <Image
                                     src={user.avatar}
                                     alt='profile image'
@@ -114,13 +114,13 @@ function ProfileCard() {
                             <Skeleton className="w-[264px] h-[24px] rounded-full bg-color-25" />
                         )
                             : (
-                                <span className='font-nico-moji text-black text-[24px]'>{`${user.firstName} ${user.lastName}`}</span>
+                                <span className='font-nico-moji text-color-6 sm:text-[24px] text-[18px] capitalize'>{`${user.firstName} ${user.lastName}`}</span>
                             )}
                         {isLoading ? (
                             <Skeleton className="w-[86px] h-[16px] rounded-full mt-1 bg-color-25" />
                         )
                             : (
-                                <span className='font-nico-moji -mt-1 text-[16px] text-color-6'>{user.nickName}</span>
+                                <span className='font-nico-moji -mt-1 sm:text-[16px] text-[12px]  text-color-29 capitalize'>{user.nickName}</span>
                             )}
                     </div>
                 </div>
@@ -134,19 +134,19 @@ function ProfileCard() {
                 </div>
                 {isSettingsVisible && <SettingsPoint />}
             </div>
-            <div className='w-full flex items-center justify-center absolute bottom-[40px]'>
+            <div className='w-full flex items-center justify-center absolute bottom-[40px] px-[25px]'>
                 <div className='h-[82px] w-[867px] bg-color-0 border-[1px] border-[#DDD] rounded-[22px] flex flex-col gap-[4px]'>
                     <div className='flex justify-between  px-[28px] pt-[14px]'>
                         <div className='flex '>
-                            <span className='font-nico-moji text-[20px] text-color-6'>
+                            <span className='font-nico-moji text-[20px] text-color-6 capitalize'>
                                 {user ? `LEVEL ${user.level}` : 'Loading...'}
                             </span>
                         </div>
                         <div className=''>
-                            <span className='font-nico-moji text-[16px] text-color-6'>250 / 500</span>
+                            <span className='font-nico-moji text-[16px] text-color-6 capitalize'>250 / 500</span>
                         </div>
                     </div>
-                    <div className='px-[28px]'>
+                    <div className='px-[28px] '>
                         {user ? <Progress value={user.level} /> :
                             <Skeleton className="w-full h-4 rounded-[22px]  bg-color-25" />
                         }
@@ -176,14 +176,14 @@ const SettingsPoint = () => {
     }
 
     return (
-        <div className="w-[130px] h-[59px] bg-color-0 border border-[#DDD] rounded-[10px] flex flex-col items-center justify-center absolute top-12 right-[100px]">
+        <div className="w-[130px] h-[59px] bg-color-0 border border-[#DDD] rounded-[10px] flex flex-col items-center justify-center absolute top-12 right-[100px] z-[3000]">
             <Link href={`${process.env.NEXT_PUBLIC_FRONTEND_URL}/setting`}>
                 <div className="w-full flex items-center justify-center border-b border-[#DDD]">
-                    <span className="font-nico-moji text-[12px] text-color-6 pb-[5px] cursor-pointer">Settings</span>
+                    <span className="font-nico-moji text-[12px] text-color-6 pb-[5px] cursor-pointer capitalize">Settings</span>
                 </div>
             </Link>
             <div onClick={handleLogoutClick} className="w-full flex items-center justify-center ">
-                <span className=" font-nico-moji text-[12px] text-color-6 pt-[4px] cursor-pointer">Logout</span>
+                <span className=" font-nico-moji text-[12px] text-color-6 pt-[4px] cursor-pointer capitalize">Logout</span>
             </div>
         </div>
     )

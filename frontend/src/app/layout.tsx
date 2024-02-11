@@ -1,9 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { Providers } from './providers'
-import axios from 'axios';
 import { Toaster } from 'sonner';
-import SocketContext from './SocketContext';
 
 
 export const metadata: Metadata = {
@@ -26,7 +24,7 @@ export default function RootLayout({
       <head>
         <title>Pong Game</title>
       </head>
-      <body className='no-scrollbar '>
+      <body className='no-scrollbar bg-color-18 '>
           <Providers>
               {children}
           </Providers>

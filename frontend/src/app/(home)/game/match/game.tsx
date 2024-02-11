@@ -2,25 +2,25 @@ import { Game as PhaserGame } from "phaser";
 import { useEffect, useRef, useState } from "react";
 import PongGame from "@/components/game/PongGame";
 
-let newGame: Phaser.Game;   
-class MyScene extends Phaser.Scene {
-  constructor() {
-      super('MyScene');
-    }
-    create() {
-      var button;
-      const graphics = this.add.graphics();
-      graphics.lineStyle(1, 0xffffff);
-      graphics.strokeRoundedRect(375, 280, 150, 40, 20);
+// let newGame: Phaser.Game;   
+// class MyScene extends Phaser.Scene {
+//   constructor() {
+//       super('MyScene');
+//     }
+//     create() {
+//       var button;
+//       const graphics = this.add.graphics();
+//       graphics.lineStyle(1, 0xffffff);
+//       graphics.strokeRoundedRect(375, 280, 150, 40, 20);
 
-      button = this.add.text(450, 300, 'Start Game!', { color: '#fff'})
-      .setInteractive()
-      .on('pointerdown', () => {
-        this.scene.start('PongGame');
-      });
-      button.setOrigin(0.5, 0.5);
-    }
-}
+//       button = this.add.text(450, 300, 'Start Game!', { color: '#fff'})
+//       .setInteractive()
+//       .on('pointerdown', () => {
+//         this.scene.start('PongGame');
+//       });
+//       button.setOrigin(0.5, 0.5);
+//     }
+// }
 
 const gameConfig: Phaser.Types.Core.GameConfig = {
       type:   Phaser.CANVAS ,
@@ -38,7 +38,7 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
         width: 900,
         height: 600
       },
-      scene: [ PongGame]
+      scene: [PongGame]
     };
 
 export default function Game() {

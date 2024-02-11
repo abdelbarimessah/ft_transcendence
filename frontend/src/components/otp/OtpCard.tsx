@@ -1,7 +1,6 @@
 'use client'
 import Image from 'next/image'
 import styles from './Otp.module.css'
-import OtpPrompt from '../prompt/OtpPrompt'
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Skeleton } from "@/components/ui/skeleton"
@@ -84,8 +83,8 @@ function OtpCard() {
      
     return (
     <>
-        <div className={`2xl:w-[385px] w-8/12 relative`}>
-            <div className={`${styles.playCard}  overflow-hidden h-[522px] w-full  max-w-[900px] 2xl:w-[385px] bg-color-0 rounded-[40px] flex flex-col items-center justify-center gap-[22px]`}>
+        <div className={`2xl:w-[500px] w-8/12 relative`}>
+            <div className={`${styles.playCard}  overflow-hidden h-[522px] w-full  max-w-[900px] 2xl:w-[500px] bg-color-0 rounded-[40px] flex flex-col items-center justify-center gap-[22px]`}>
                 <div className="h-[36px] w-[36px] flex items-center justify-center bg-color-0 border border-color-6 rounded-[10px]">
                 
                     <Image

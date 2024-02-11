@@ -95,7 +95,7 @@ export class AuthContoller {
         console.log('secret ===>', user.secretOpt);
         if (!isValid)
             throw new UnprocessableEntityException();
-        
+
         await this.authService.enabelOtp(user.providerId);
 
         const User = {

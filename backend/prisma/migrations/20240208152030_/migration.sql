@@ -10,6 +10,8 @@ CREATE TABLE "User" (
     "avatar" TEXT,
     "secretOpt" TEXT,
     "otpIsEnabled" BOOLEAN NOT NULL DEFAULT false,
+    "level" INTEGER NOT NULL DEFAULT 0,
+    "cover" TEXT,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );

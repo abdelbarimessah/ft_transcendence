@@ -1,16 +1,18 @@
 'use client'
 import Image from "next/image";
 import styles from './Settings.module.css'
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from "sonner";
+import { SocketContext, socket } from "@/app/SocketContext";
 
 axios.defaults.withCredentials = true;
 
 
 
 function SettingPrompt() {
+    const socketClient = useContext(SocketContext);
     const [id, setId] = useState("");
     const [avatar, setAvatar] = useState<File | null>(null);
     const [changeAvatar, setChangeAvatar] = useState(false);
@@ -26,6 +28,13 @@ function SettingPrompt() {
             try {
                 setIsLoading(true);
                 const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`);
+                socketClient.emit('firstTime', res.data.providerId);
+                socketClient.on('firstTime', (data) => {
+                    console.log('firstTime', data);
+                });
+                socketClient.on('bothInRoom', (data) => {
+                    console.log('bothInRoom in the room ', data);
+                });
                 setId(res.data.providerId);
                 setAvatar(res.data.avatar)
                 setFirstName(res.data.firstName);

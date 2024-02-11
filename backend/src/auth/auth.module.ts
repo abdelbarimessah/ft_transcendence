@@ -8,6 +8,7 @@ import { FortyTwoStrategy } from './strategy/Strategy42';
 import { AuthContoller } from './auth.contoller';
 import { AuthService } from './auth.service';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 // @Module({
 //   imports: [UsersModule, PassportModule],
@@ -18,9 +19,16 @@ import { PrismaService } from 'src/prisma/prisma.service';
   imports: [
     UsersModule,
     PassportModule,
-    JwtModule.register({
-      secret: "DO NOT USE THIS VALUE. INSTEAD, CREATE A COMPLEX SECRET AND KEEP IT SAFE OUTSIDE OF THE SOURCE CODE.",
-      signOptions: { expiresIn: '3d' },
+    ConfigModule,
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get('JWT_SECRET'),
+        signOptions: { 
+          expiresIn: configService.get('JWT_EXPIRES_IN')
+        },
+      }),
+      inject: [ConfigService],
     }),
     // JwtModule.registerAsync({
     //   useFactory: () => ({

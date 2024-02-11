@@ -9,19 +9,20 @@ export function tokenFetcher(tokenUrl: string) {
       const data = await fetch(`${tokenUrl}?${query}`).then((res) =>
         res.json(),
       );
-      console.log("data", data);
       const otp = data.otp;
+
       if (!otp) return NextResponse.redirect("http://localhost:8000/login");
 
       const isOTP = otp.enabled && !otp.verified;
-      // console.log("+++otp", otp)r);
       const res = NextResponse.redirect(isOTP ? "http://localhost:8000/auth" : "http://localhost:8000/setting");
-     
-     res.cookies.set("authorization", data.token, {
-         httpOnly: true,
-         maxAge: ms("999years"),
-       });
-       
+      
+      res.cookies.set("authorization", data.token, {
+        httpOnly: true,
+        maxAge: ms("999years"),
+      });
+      
+      console.log('in the ..', res);
+             
        return res;
       } catch (error) {
        return NextResponse.redirect("http://localhost:8000/login");

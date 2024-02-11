@@ -6,10 +6,16 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image';
 import Lottie from 'lottie-react';
 import animationData from '../../../public/assets/animation.json';
+import { useContext } from 'react';
+import { SocketContext } from '@/app/SocketContext';
+import Link from 'next/link';
 
-var socketClient = io('http://localhost:3000');
+// var socketClient = io('http://localhost:3000');
+
 
 function ModeCard(props: any) {
+
+    const socketClient = useContext(SocketContext);
     const router = useRouter()
     const [isRandomMode, setIsRandomMode] = useState(false)
 
@@ -22,10 +28,12 @@ function ModeCard(props: any) {
     useEffect(() => {
         socketClient.on('enterRoomFromCard', (data) => {
             // console.log('socket is called for random mode');
-            console.log('the room name is ' + data.roomName );
+            console.log('the room name is ' + data.roomName);
             router.push('/game/match', { scroll: false })
         });
-    }, [isRandomMode])
+
+    }, [isRandomMode, router, socketClient])
+
 
     const removeRandomMode = () => {
         setIsRandomMode(false)
@@ -60,12 +68,16 @@ function ModeCard(props: any) {
                                     </div>
 
                                 </div>
-                                <div className='h-full flex items-center justify-center'>
-                                    <button
-                                        className={` ${styles.playCardButton} rounded-[14px] bg-color-6 w-[113px] h-[40px] font-nico-moji text-color-3`}
+                                <div className='h-full flex items-center justify-center '>
+                                    <Link
+                                        href="/game/aiMode"
                                     >
-                                        play
-                                    </button>
+                                        <div
+                                            className={` ${styles.playCardButton} rounded-[14px] bg-color-6 w-[113px] h-[40px] font-nico-moji text-color-3 flex text-center items-center justify-center`}
+                                        >
+                                            play
+                                        </div>
+                                    </Link>
                                 </div>
                             </div>
                         </div>

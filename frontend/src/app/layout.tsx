@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { Providers } from './providers'
-import axios from 'axios';
 import { Toaster } from 'sonner';
 
 
@@ -25,12 +24,13 @@ export default function RootLayout({
       <head>
         <title>Pong Game</title>
       </head>
-      <body className='no-scrollbar '>
-        <Providers>
-            {children}
-        </Providers>
-        <Toaster closeButton />
+      <body className='no-scrollbar bg-color-18 '>
+          <Providers>
+              {children}
+          </Providers>
+          <Toaster closeButton />
       </body>
     </html>
   )
 }
+

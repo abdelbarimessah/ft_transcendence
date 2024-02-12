@@ -5,20 +5,16 @@ import * as uuid from 'uuid';
 import * as fs from 'fs';
 import * as path from 'path';
 import { BadRequestException } from '@nestjs/common';
-import axios from "axios";
+import axios from 'axios';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { error } from 'console';
 
 @Injectable()
 export class UserService {
-  constructor(
-    private prismaService: PrismaService,
-  ) { }
-
+  constructor(private prismaService: PrismaService) {}
 
   async getAllUsers() {
     const users = await this.prismaService.user.findMany();
-    
+
     return users;
   }
 
@@ -33,7 +29,9 @@ export class UserService {
 
   async uploadImage(imageUrl: string, id: string) {
     try {
-      const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+      const response = await axios.get(imageUrl, {
+        responseType: 'arraybuffer',
+      });
       const uploadDir = path.join(__dirname, '../../uploads/');
       const uploadPath = path.join(uploadDir, `${id}${'.png'}`);
 
@@ -44,8 +42,7 @@ export class UserService {
       fs.writeFileSync(uploadPath, response.data);
 
       // console.log(`Image uploaded to ${uploadPath}`);
-    }
-    catch (error) {
+    } catch (error) {
       // console.log('error', error);
     }
   }
@@ -63,24 +60,23 @@ export class UserService {
     });
   }
 
-  async updateUserData(providerId: string , data :any)
-  {
+  async updateUserData(providerId: string, data: any) {
     const existingUser = await this.prismaService.user.findUnique({
       where: { nickName: data.nickName },
     });
-    
+
     if (existingUser && existingUser.providerId !== providerId) {
       console.log('existingUser', existingUser);
-      throw new BadRequestException("nick name already in use")
+      throw new BadRequestException('nick name already in use');
     }
     console.log('data', existingUser);
     console.log('data contunue');
     return this.prismaService.user.update({
       where: { providerId: providerId },
-      data: { 
+      data: {
         firstName: data.firstName,
         lastName: data.lastName,
-        nickName: data.nickName
+        nickName: data.nickName,
       },
     });
   }
@@ -101,7 +97,6 @@ export class UserService {
           where: { providerId: data.providerId },
         });
       } catch (error) {
-
         if (
           !(error instanceof PrismaClientKnownRequestError) ||
           error.code !== 'P2002'
@@ -113,5 +108,4 @@ export class UserService {
     }
     return user;
   }
-
 }

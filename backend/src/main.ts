@@ -17,6 +17,12 @@ async function bootstrap() {
       credentials: true,
     }),
   );
+  app.use(
+    cors({
+      origin: 'http://localhost:8000',
+      credentials: true,
+    }),
+  );
   await app.listen(3000);
   console.log(`Application is running on: ${await app.getUrl()}`);
 }

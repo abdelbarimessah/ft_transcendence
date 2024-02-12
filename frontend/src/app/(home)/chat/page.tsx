@@ -15,8 +15,12 @@ function Chat() {
 
     return (
         <>
-            <div className="w-full gap-10 max-h-screen h-screen bg-color-18 ">
-                <Header/>
+            <div className=" w-full gap-10 max-h-screen h-screen bg-[#FFF0D2] ">
+                <div className=' m-auto max-w-screen-lg flex items-center justify-center h-screen bg-[#FFF0D2]'>
+                    <div className=' w-1/3 h-[1077px] bg-[#000000] rounded-[29px]'></div>
+                    <div className=' w-2/3 h-[1077px] bg-[#ffffff] rounded-[29px]'></div>
+                </div>
+                
             </div>
         </>
     )

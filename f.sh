@@ -4,7 +4,7 @@ tell application "iTerm"
     tell current window
         create tab with default profile
         tell current session of current tab
-            write text "cd frontend && npm i && npm run dev"
+            write text "cd ~/Desktop/ft_transcendence/frontend && npm i && npm run dev"
         end tell
     end tell
 end tell

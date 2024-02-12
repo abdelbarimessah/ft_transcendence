@@ -11,7 +11,6 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 @Injectable()
 export class UserService {
   constructor(private prismaService: PrismaService) {}
-  constructor(private prismaService: PrismaService) {}
 
   async getAllUsers() {
     const users = await this.prismaService.user.findMany();
@@ -22,7 +21,6 @@ export class UserService {
   async getUserById(id: string) {
     const user = await this.prismaService.user.findUnique({
       where: {
-        providerId: id,
         providerId: id,
       },
     });
@@ -96,7 +94,6 @@ export class UserService {
             nickName: `${data.nickName}${suffix}`,
           },
           update: {},
-          where: { providerId: data.providerId },
           where: { providerId: data.providerId },
         });
       } catch (error) {

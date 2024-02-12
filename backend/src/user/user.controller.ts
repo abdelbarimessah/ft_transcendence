@@ -75,8 +75,6 @@ export class UsersController {
         console.log('url', url.href);
         return { url : url.href};
     }
-
-
     
     @Post('updateInfo')
     @UseGuards(OTPGuard)
@@ -87,6 +85,17 @@ export class UsersController {
         const res = await this.userService.updateUserData(user.providerId, req.body);
         return {message : 'User data updated', data: res};
     }
+    
+    @Get('leaders')
+    @UseGuards(OTPGuard)
+    @UseGuards(JwtAuthGuard)
+    async leaders(@Req() req : Request)
+    {
+        const res = await this.userService.getLeaders();
+        console.log('res in the leaders: ====== ', res);
+        return {leader: res};
+    }
+
     
     @Get(':id')
     @UseGuards(OTPGuard)

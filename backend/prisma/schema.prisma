@@ -16,6 +16,7 @@ model User {
   lastName  String?
   provider String?
   avatar String?
+  firstTime Boolean @default(false)
   secretOpt           String?
   otpIsEnabled        Boolean              @default(false)
   level               Int                  @default(10)

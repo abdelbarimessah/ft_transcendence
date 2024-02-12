@@ -10,11 +10,20 @@ export function tokenFetcher(tokenUrl: string) {
         res.json(),
       );
       const otp = data.otp;
+      console.log('data in the api', otp);
+
+      // console.log('res in the midlware ===>', res.ok); 
+      // const data = await res.json();
+      // console.log('data in the midlware ===>', data);
 
       if (!otp) return NextResponse.redirect("http://localhost:8000/login");
 
       const isOTP = otp.enabled && !otp.verified;
-      const res = NextResponse.redirect(isOTP ? "http://localhost:8000/auth" : "http://localhost:8000/setting");
+      let redirectUrl = "http://localhost:8000/profile";
+      if (data.firstTime === false) {
+        redirectUrl = "http://localhost:8000/setting";
+      }
+      const res = NextResponse.redirect(isOTP ? "http://localhost:8000/auth" : redirectUrl);
       
       res.cookies.set("authorization", data.token, {
         httpOnly: true,

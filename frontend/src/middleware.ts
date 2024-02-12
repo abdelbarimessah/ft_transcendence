@@ -10,7 +10,6 @@ export async function middleware(request: NextRequest) {
       authorization: `bearer ${cookie.value}`,
     },
   });
-  console.log('res in the midlware ===>', res.ok); 
 
   if (!res.ok) return  NextResponse.redirect("http://localhost:8000/login");
 

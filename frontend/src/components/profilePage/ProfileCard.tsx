@@ -40,7 +40,6 @@ function ProfileCard() {
                 console.error(error);
             }
         }
-        // setPhotoPath(`${process.env.NEXT_PUBLIC_API_URL}/uploads/cover-${id}.png`)
         
         getData();
     }, [id]);
@@ -59,7 +58,6 @@ function ProfileCard() {
             const formData = new FormData();
             formData.append('cover', avatar);
             const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/user/updateCover`, formData)
-            console.log('url i the res', res.data.url);
             setUser({...user, cover: res.data.url});
         }
         setChangeAvatar(false);
@@ -165,10 +163,8 @@ const SettingsPoint = () => {
     async function handleLogoutClick() {
 
         try {
-            console.log("logout clicked1");
             await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`);
             router.push('/login');
-            console.log("logout clicked");
         }
         catch (error) {
             console.error(error);

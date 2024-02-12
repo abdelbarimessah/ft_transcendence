@@ -37,8 +37,8 @@ export class AuthContoller {
         })
         // console.log('token ===>', token);
         // console.log('otp ===>', user.otpIsEnabled);
-        console.log('user ===>', user);
-        return { token, otp: { enabled: user.otpIsEnabled, verified: false } }
+        console.log('user ===> gggggggggg' , user);
+        return { token, otp: { enabled: user.otpIsEnabled, verified: false  , firstTime: user.firstTime }};
     }
 
     @Get('42')
@@ -62,8 +62,16 @@ export class AuthContoller {
         })
         console.log('token ===>', token);
         console.log('verif user===>', user.otpIsEnabled)
-        return { token, otp: { enabled: user.otpIsEnabled, verified: false } };
+        return { token, otp: { enabled: user.otpIsEnabled, verified: false  , firstTime: user.firstTime}};
     }
+
+    @Get('changeFirstTime')
+    @UseGuards(JwtAuthGuard)
+    async changeFirstTime(@CurrentUser() user: any) {
+        await this.authService.changeFirstTime(user.providerId);
+        console.log('firstTime changed');
+    }
+
 
     @Patch('generate/Otp')
     @UseGuards(JwtAuthGuard)

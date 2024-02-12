@@ -32,9 +32,11 @@ export class GameGateway implements OnGatewayConnection {
     @SubscribeMessage('firstTime')
     handleFirstTime(socket: Socket, data: any) {
         this.logger.log('firstTime', data);
+        socket.data.user = data;
+        this.logger.log('socket.data.user', socket.data.user);
         // this.server.emit('firstTime', data);
-        socket.join(data);
-        this.server.in(data).emit('bothInRoom', data);
+        socket.join(data.providerId);
+        this.server.in(data.providerId).emit('bothInRoom', data);
     }
 
     handleDisconnect(socket: Socket) {

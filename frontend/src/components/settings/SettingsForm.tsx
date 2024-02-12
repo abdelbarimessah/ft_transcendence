@@ -28,13 +28,6 @@ function SettingPrompt() {
             try {
                 setIsLoading(true);
                 const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`);
-                socketClient.emit('firstTime', res.data.providerId);
-                socketClient.on('firstTime', (data) => {
-                    console.log('firstTime', data);
-                });
-                socketClient.on('bothInRoom', (data) => {
-                    console.log('bothInRoom in the room ', data);
-                });
                 setId(res.data.providerId);
                 setAvatar(res.data.avatar)
                 setFirstName(res.data.firstName);

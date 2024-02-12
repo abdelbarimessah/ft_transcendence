@@ -20,7 +20,7 @@ function OtpVerifyCard() {
                 console.log(response.data);
                 toast.success('OTP verified');
                 setTimeout(() => { 
-                    router.push('/profile');
+                router.push('/profile');
                 }, 2000);
             })
             .catch(error => {

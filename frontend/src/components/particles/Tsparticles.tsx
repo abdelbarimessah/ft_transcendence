@@ -17,17 +17,18 @@ const ParticleBackground = () => {
 		});
 	}, []);
 
-	const particlesLoaded = async (container?: Container): Promise<void> => {
-		console.log(container);
-	};
+	// const particlesLoaded = async (container?: Container): Promise<void> => {
+	// 	console.log(container);
+	// };
 
 	if (init) {
 		return (
 			<div className="absolute w-full h-screen">
 				<Particles
 					id="tsparticles"
-					particlesLoaded={particlesLoaded}
-					// options={tsParticlesConfig}
+					// particlesLoaded={particlesLoaded}
+					// style={tsParticlesConfig}
+					options={tsParticlesConfig}
 				/>
 			</div>
 		);

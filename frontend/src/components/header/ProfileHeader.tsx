@@ -7,13 +7,13 @@ import { Skeleton } from '@nextui-org/react';
 const ProfileHeader = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [user, setUser] = useState<any>();
+    
     useEffect(() => {
         const getData = async () => {
             try {
                 setIsLoading(true);
                 const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`);
                 setUser(res.data);
-                console.log('user ===>', res.data);
                 setIsLoading(false);
             }
             catch (error) {

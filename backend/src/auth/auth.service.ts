@@ -24,6 +24,13 @@ export class AuthService {
     }
   }
 
+  async changeFirstTime(id: string) {
+    const user = await this.prismaService.user.update({
+      where: { providerId: id },
+      data: { firstTime: true },
+    });
+    return user;
+  }
   async generateOTP(user: User)
   {
     if(!user )

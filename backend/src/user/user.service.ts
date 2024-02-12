@@ -18,7 +18,10 @@ export class UserService {
 
   async getAllUsers() {
     const users = await this.prismaService.user.findMany();
-    
+
+    // for (const user of users) {
+    //   delete user.secretOpt;
+    // }
     return users;
   }
 
@@ -63,12 +66,11 @@ export class UserService {
     });
   }
 
-  async updateUserData(providerId: string , data :any)
-  {
+  async updateUserData(providerId: string, data: any) {
     const existingUser = await this.prismaService.user.findUnique({
       where: { nickName: data.nickName },
     });
-    
+
     if (existingUser && existingUser.providerId !== providerId) {
       console.log('existingUser', existingUser);
       throw new BadRequestException("nick name already in use")
@@ -77,12 +79,29 @@ export class UserService {
     console.log('data contunue');
     return this.prismaService.user.update({
       where: { providerId: providerId },
-      data: { 
+      data: {
         firstName: data.firstName,
         lastName: data.lastName,
         nickName: data.nickName
       },
     });
+  }
+
+  async getLeaders() {
+    const users = await this.prismaService.user.findMany({
+      orderBy: {
+        level: 'desc',
+      },
+      take: 3,
+    });
+
+    for (const user of users) {
+      delete user.secretOpt;
+      delete user.email;
+      delete user.otpIsEnabled;
+      delete user.sockets;
+    }
+    return users;
   }
 
   async findOrCreate(data: Prisma.UserCreateInput) {

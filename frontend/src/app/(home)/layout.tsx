@@ -2,7 +2,7 @@
 import '../globals.css'
 import SideNav from '@/components/sidebare/SideBare'
 import { useState } from 'react'
-
+import Chat from './chat/page'
 
 export default function RootLayout({
   children,
@@ -11,11 +11,9 @@ export default function RootLayout({
 }) {
   const [Show, setShow] = useState(true);
   return (
-    <div className='flex bg-color-11  w-screen min-h-screen '>
+    <div className='flex w-screen h-screen overflow-hidden '>
       <SideNav setShow={setShow}/>
-        <div className='flex items-center justify-center flex-1 w-10 '>
-          {children}
-        </div>
+          <Chat />
     </div>
   )
 }

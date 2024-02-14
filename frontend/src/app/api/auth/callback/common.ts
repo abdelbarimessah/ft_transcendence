@@ -20,7 +20,7 @@ export function tokenFetcher(tokenUrl: string) {
 
       const isOTP = otp.enabled && !otp.verified;
       let redirectUrl = "http://localhost:8000/profile";
-      if (data.firstTime === false) {
+      if (data.otp.firstTime === false) {
         redirectUrl = "http://localhost:8000/setting";
       }
       const res = NextResponse.redirect(isOTP ? "http://localhost:8000/auth" : redirectUrl);

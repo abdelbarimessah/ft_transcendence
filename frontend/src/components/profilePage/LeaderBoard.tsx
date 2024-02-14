@@ -2,7 +2,7 @@
 import axios from 'axios';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-
+import { Skeleton } from '@nextui-org/react';
 
 type Leader = {
     firstName: string;
@@ -13,22 +13,24 @@ type Leader = {
 };
 
 export default function LeaderBoard() {
-
+    const [isLoading, setIsLoading] = useState(true);
     // const [leaders, setLeaders] = useState([]);
     const [leaders, setLeaders] = useState<Leader[]>([]);
     useEffect(() => {
+        setIsLoading(true);
         axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/leaders`)
         .then(res => {
             setLeaders(res.data.leader);
-            console.log('res in the leaders: ====== ', res.data);
+            setIsLoading(false);
         })
         .catch(err => {
+            setIsLoading(false);
             console.error(err);
         });
     }, []);
     const firstPlace = leaders[0];
-    const secondPlace = leaders[1];
-    const thirdPlace = leaders[2];
+    const secondPlace = leaders.length > 1 ? leaders[1] : null;
+    const thirdPlace = leaders.length > 2 ? leaders[2] : null;
 
     return (
         <div className=" w-full 2xl:w-[596px] xl:w-[1137px] h-[386px] rounded-[22px] bg-color-0 overflow-hidden flex flex-col gap-[40px] ">
@@ -48,6 +50,7 @@ export default function LeaderBoard() {
                 </div>
             </div>
             <div className=' w-full gap-[25px] flex flex-col '>
+            {leaders.length > 0 && (
                 <div className=' w-full flex gap-[35px] items-center justify-center '>
                     <div className='w-[69px] h-[59px] relative sm:block hidden '>
                         <Image
@@ -61,19 +64,37 @@ export default function LeaderBoard() {
                     </div>
                     <div className='w-[345px]  h-[58px] cursor-pointer bg-color-30 rounded-[209px] flex items-center justify-between pr-[5px] pl-[15px]' >
                         <div className='flex flex-col'>
-                            <span className='font-nico-moji text-[14px]  text-color-6'>{`${firstPlace?.firstName} ${firstPlace?.lastName}  `}</span>
-                            <span className='font-nico-moji text-[12px]  text-color-29'>{`LEVEl ${firstPlace?.level}`}</span>
+                            {isLoading ? (
+                                <Skeleton className="w-[150px] h-[21px] rounded-[22px] bg-color-25" />
+                            )
+                                : (
+                                    <span className='font-nico-moji text-[14px]  text-color-6'>{`${firstPlace?.firstName} ${firstPlace?.lastName}  `}</span>
+                                )}
+                            {isLoading ? (
+                                <Skeleton className="w-[100px] h-[17px] mt-1 rounded-[22px] bg-color-25" />
+                            )
+                                : (
+                                    <span className='font-nico-moji text-[12px]  text-color-29'>{`LEVEl ${firstPlace?.level}`}</span>
+                                )}
                         </div>
-                        <div className='w-[48px] h-[48px] rounded-full bg-color-28 relative overflow-hidden'>
-                            <Image
-                                src={firstPlace?.avatar}
-                                alt='First Place Icon'
-                                fill={true}
-                                priority={true}
-                                className='object-cover w-full h-full ' />
-                        </div>
+                        {isLoading ? (
+                            <Skeleton className="w-[48px] h-[48px] rounded-full bg-color-25" />
+                        )
+                            : (
+                                <div className='w-[48px] h-[48px] rounded-full bg-color-28 relative overflow-hidden'>
+                                    <Image
+                                        src={firstPlace?.avatar}
+                                        alt='First Place Icon'
+                                        fill={true}
+                                        sizes='100%'
+                                        priority={true}
+                                        className='object-cover w-full h-full ' />
+                                </div>
+                        )}
                     </div>
                 </div>
+                )}
+                {leaders.length > 1 && (
                 <div className=' w-full flex gap-[35px]  items-center justify-center '>
                     <div className='w-[69px] h-[59px] relative sm:block hidden'>
                         <Image
@@ -86,22 +107,40 @@ export default function LeaderBoard() {
                         <span className='font-nico-moji text-[32px]  text-[#BDBDBD] absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 '>2</span>
                     </div>
                     {/* <div className='w-[345px]  h-[58px]'> */}
-                        <div className='w-[290px] h-[58px] cursor-pointer bg-color-30 rounded-[209px] flex items-center justify-between pr-[5px] pl-[15px]' >
-                            <div className='flex flex-col'>
-                                <span className='font-nico-moji text-[14px]  text-color-6'>{`${secondPlace?.firstName} ${secondPlace?.lastName}  `}</span>
-                                <span className='font-nico-moji text-[12px]  text-color-29'>{`LEVEl ${secondPlace?.level}`}</span>
-                            </div>
-                            <div className='w-[48px] h-[48px] rounded-full bg-color-28 relative overflow-hidden' >
-                                <Image
-                                    src={secondPlace?.avatar}
-                                    alt='First Place Icon'
-                                    fill={true}
-                                    priority={true}
-                                    className='object-cover w-full h-full ' />
-                            </div>
+                    <div className='w-[290px] h-[58px] cursor-pointer bg-color-30 rounded-[209px] flex items-center justify-between pr-[5px] pl-[15px]' >
+                        <div className='flex flex-col'>
+                            {isLoading ? (
+                                <Skeleton className="w-[150px] h-[21px] rounded-[22px] bg-color-25" />
+                            )
+                                : (
+                                    <span className='font-nico-moji text-[14px]  text-color-6'>{`${secondPlace?.firstName} ${secondPlace?.lastName}  `}</span>
+                                )}
+                            {isLoading ? (
+                                <Skeleton className="w-[100px] h-[17px] mt-1 rounded-[22px] bg-color-25" />
+                            )
+                                : (
+                                    <span className='font-nico-moji text-[12px]  text-color-29'>{`LEVEl ${secondPlace?.level}`}</span>
+                                )}
                         </div>
+                        {isLoading ? (
+                            <Skeleton className="w-[48px] h-[48px] rounded-full bg-color-25" />
+                        )
+                            : (
+                                <div className='w-[48px] h-[48px] rounded-full bg-color-28 relative overflow-hidden'>
+                                    <Image
+                                        src={secondPlace?.avatar}
+                                        alt='First Place Icon'
+                                        fill={true}
+                                        sizes='100%'
+                                        priority={true}
+                                        className='object-cover w-full h-full ' />
+                                </div>
+                        )}
+                    </div>
                     {/* </div> */}
                 </div>
+                )}
+                {leaders.length > 2 && (
                 <div className=' w-full flex gap-[35px] items-center justify-center '>
                     <div className='w-[69px] h-[59px] relative sm:block hidden'>
                         <Image
@@ -114,25 +153,42 @@ export default function LeaderBoard() {
                         <span className='font-nico-moji text-[32px]  text-[#D7936C] absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 '>3</span>
                     </div>
                     {/* <div className='w-[345px] h-[58px]'> */}
-                        <div className='w-[235px] h-[58px cursor-pointer bg-color-30 rounded-[209px] flex items-center justify-between pr-[5px] pl-[15px]' >
-                            <div className='flex flex-col'>
-                                <span className='font-nico-moji text-[14px]  text-color-6'>{`${thirdPlace?.firstName} ${thirdPlace?.lastName}  `}</span>
-                                <span className='font-nico-moji text-[12px] text-color-29'>{`LEVEl ${thirdPlace?.level}`}</span>
-                            </div>
-                            <div className='w-[48px] h-[48px] rounded-full bg-color-28 relative overflow-hidden'>
-                                <Image
-                                    src={thirdPlace?.avatar}
-                                    alt='First Place Icon'
-                                    fill={true}
-                                    priority={true}
-                                    className='object-cover w-full h-full ' />
-                            </div>
+                    <div className='w-[235px] h-[58px cursor-pointer bg-color-30 rounded-[209px] flex items-center justify-between pr-[5px] pl-[15px]' >
+                    <div className='flex flex-col'>
+                            {isLoading ? (
+                                <Skeleton className="w-[150px] h-[21px] rounded-[22px] bg-color-25" />
+                            )
+                                : (
+                                    <span className='font-nico-moji text-[14px]  text-color-6'>{`${thirdPlace?.firstName} ${thirdPlace?.lastName}  `}</span>
+                                )}
+                            {isLoading ? (
+                                <Skeleton className="w-[100px] h-[17px] mt-1 rounded-[22px] bg-color-25" />
+                            )
+                                : (
+                                    <span className='font-nico-moji text-[12px]  text-color-29'>{`LEVEl ${thirdPlace?.level}`}</span>
+                                )}
                         </div>
+                        {isLoading ? (
+                            <Skeleton className="w-[48px] h-[48px] rounded-full bg-color-25" />
+                        )
+                            : (
+                                <div className='w-[48px] h-[48px] rounded-full bg-color-28 relative overflow-hidden'>
+                                    <Image
+                                        src={thirdPlace?.avatar}
+                                        alt='First Place Icon'
+                                        fill={true}
+                                        sizes='100%'
+                                        priority={true}
+                                        className='object-cover w-full h-full ' />
+                                </div>
+                        )}
+                    </div>
                     {/* </div> */}
                 </div>
+                )}
+
             </div>
         </div>
     )
 
 }
-

@@ -4,7 +4,7 @@ import ProfileCard from "@/components/profilePage/ProfileCard";
 import ParticleBackground from "@/components/particles/Tsparticles";
 import Achievements from "@/components/profilePage/Achievements";
 import Header from "@/components/header/header";
-
+import FriendsList from "@/components/profilePage/FriendsList";
 
 function profile() {
 
@@ -24,7 +24,8 @@ function profile() {
                     </div>
                     <div className="w-full flex 2xl:flex-row flex-col  gap-[25px] items-center justify-center px-[25px] pt-[25px]">
                         {/* <div className="h-[619px] w-[1139px] rounded-[22px] bg-color-7"></div> */}
-                        <Achievements/>
+                        <FriendsList/>
+                        <Achievements />
                         <MatchesHistory/>
                     </div>
                 </div>

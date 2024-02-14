@@ -1,7 +1,8 @@
 import { Game as PhaserGame } from "phaser";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import PongGame from "@/components/game/PongGame";
 import aiMode from "@/components/game/AiMode";
+import { SocketContext } from "@/app/SocketContext";
 
 let newGame: Phaser.Game;   
 class MyScene extends Phaser.Scene {
@@ -23,33 +24,33 @@ class MyScene extends Phaser.Scene {
     }
 }
 
-const gameConfig: Phaser.Types.Core.GameConfig = {
-      type:   Phaser.CANVAS ,
-      width: 900,
-      height: 600,
-      physics: {
-        default: 'arcade',
-        arcade: {
-          gravity: { y: 0 },
-          fps: 120,
-        }
-      },
-      scale: {
-        mode: Phaser.Scale.FIT,
-        width: 900,
-        height: 600
-      },
-      scene: [aiMode]
-    };
+
 
 export default function Game() {
     const parentEl = useRef<HTMLDivElement>(null);
-
     let [game, setGame] = useState<PhaserGame | null>(null);
 
     useEffect(() => {
       if (!parentEl.current) return;
 
+      const gameConfig: Phaser.Types.Core.GameConfig = {
+        type:   Phaser.CANVAS ,
+        width: 900,
+        height: 600,
+        physics: {
+          default: 'arcade',
+          arcade: {
+            gravity: { y: 0 },
+            fps: 120,
+          }
+        },
+        scale: {
+          mode: Phaser.Scale.FIT,
+          width: 900,
+          height: 600
+        },
+        scene: [aiMode]
+      };
 
       const newGame = new PhaserGame({ ...gameConfig, parent: parentEl.current, width: parentEl.current.offsetWidth, height: parentEl.current.offsetHeight });
       setGame(newGame);

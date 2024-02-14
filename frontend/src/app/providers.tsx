@@ -5,9 +5,9 @@ import  {SocketProvider}  from './SocketContext'
 export function Providers({children}: { children: React.ReactNode }) {
   return (
     <NextUIProvider>
-      {/* <SocketProvider> */}
+      <SocketProvider>
         {children}
-      {/* </SocketProvider> */}
+      </SocketProvider>
     </NextUIProvider>
   )
 }

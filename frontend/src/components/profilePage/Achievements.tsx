@@ -4,8 +4,7 @@
 function Achievements() {
 
     return(
-        <div className="h-[619px]  w-full xl:w-[1139px] bg-color-0 rounded-[22px]">
-
+        <div className="w-[557px] h-full bg-color-0 rounded-[22px]">
 
         </div>
     )

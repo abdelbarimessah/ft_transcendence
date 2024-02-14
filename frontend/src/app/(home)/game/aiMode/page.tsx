@@ -2,12 +2,17 @@
 import CountDownTimer from '@/components/game/CountDowntimer';
 import dynamic from 'next/dynamic'
 import { useEffect, useState } from 'react';
+const DynamicComponentWithNoSSR = dynamic(
+  () => import('./aiMode'),
+  { ssr: false }
+);
+
+// import DynamicComponentWithNoSSR from './game';
+
 // const DynamicComponentWithNoSSR = dynamic(
-//   () => import('./game'),
+//   () => import('@/components/Game'),
 //   { ssr: false }
 // );
-
-import DynamicComponentWithNoSSR from './aiMode';
 
 export default function Home() {
   const [showFirstComponent, setShowFirstComponent] = useState(true);
@@ -21,9 +26,13 @@ export default function Home() {
 
 
   return (
-      <div className='mx-0 sm:mx-2 md:mx-4 lg:mx-8 xl:mx-16 h-full flex items-center justify-center w-10 flex-1'>
-          <DynamicComponentWithNoSSR />
-      </div>
+    <div className='ml-6 mr-5 h-full flex items-center justify-center w-10 flex-1'>
+    {showFirstComponent ? (
+      <CountDownTimer />
+      ) : (
+        <DynamicComponentWithNoSSR />
+        )}
+  </div>
   );
 }
 

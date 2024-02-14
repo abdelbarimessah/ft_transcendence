@@ -70,7 +70,7 @@ export class UserService {
       throw new BadRequestException('nick name already in use');
     }
     console.log('data', existingUser);
-    console.log('data contunue');
+    console.log('data continue');
     return this.prismaService.user.update({
       where: { providerId: providerId },
       data: {

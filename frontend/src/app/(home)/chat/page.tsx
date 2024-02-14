@@ -15,20 +15,16 @@ function Chat() {
     return (
         <>
 
-        <div className="w-screen h-screen overflow-hidden">
-          {/* 2 components cointainer */}
-          <div className="flex justify-start chat-bp:justify-center items-center bg-[#f8d594] h-screen">
-            {/* LeftMenu */}
-            <div className="bg-[#000000] min-w-[340px] max-w-[500px] w-100 h-100 rounded[29px]">
-              <LeftSide />
-            </div>
+          <div className="flex my-auto justify-start items-center w-[1920px] h-[1080px]  bg-[#ffbb3b]">
 
-            {/* ChatDetail */}
-            <div className="bg-[#ffffff] min-w-[415px] max-w-[1120px] w-100 h-100">
-              <RightSide />
+              <div className="bg-[#000000] min-w-[340px] max-w-[500px] h-[1080px] text-color-0 rounded-[29px]">
+                <LeftSide />
+              </div>
+
+              <div className="bg-[#ffffff] min-w-[415px] max-w-[1120px] w-100 h-100">
+                <RightSide />
+              </div>
             </div>
-          </div>
-        </div>
 
 
 

@@ -5,7 +5,7 @@ import { io } from 'socket.io-client'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image';
 import Lottie from 'lottie-react';
-import animationData from '../../../public/assets/animation.json';
+import animationData from '../../../public/assets/Animation.json';
 import { useContext } from 'react';
 import { SocketContext } from '@/app/SocketContext';
 import Link from 'next/link';

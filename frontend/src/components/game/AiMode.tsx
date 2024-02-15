@@ -513,9 +513,9 @@ export default class aiMode extends Phaser.Scene {
     const tolerance = 5;
     if (this.ballMovingToP2) {
       if (futureBallPosition < this.p2.body.y - tolerance) {
-        this.p2.setVelocityY(-400);
+        this.p2.setVelocityY(-500);
       } else if (futureBallPosition > this.p2.body.y + tolerance) {
-        this.p2.setVelocityY(400);
+        this.p2.setVelocityY(500);
       } else {
         this.p2.setVelocityY(0);
       }

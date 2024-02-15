@@ -7,7 +7,9 @@ import * as path from 'path';
 import { BadRequestException } from '@nestjs/common';
 import axios from "axios";
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { error } from 'console';
+import { error, log } from 'console';
+// import * as Fuse from 'fuse.js';
+const Fuse = require('fuse.js');
 
 @Injectable()
 export class UserService {
@@ -121,6 +123,36 @@ export class UserService {
     return userWithAchievements?.achievements;
   }
 
+  async getUserSearch(query: string, id: string) {
+    const users = await this.prismaService.user.findMany({
+      where: { providerId: { not: id } },
+    });
+    console.log('idddd' , id);
+    
+    const keys: (keyof User)[] = ['nickName','firstName', 'lastName'];
+    const fuse = new Fuse(users, { keys, threshold: 0.2 });
+    const filtered = fuse.search(query).map((elem) => elem.item);
+    
+    for (const user of filtered) {
+      delete user.secretOpt;
+      delete user.email;
+      delete user.otpIsEnabled;
+      delete user.sockets;
+    }
+    console.log('filtered', filtered);
+    return {filtered};
+  }
+  // async filterUsers(search: string, id: User['id']) {
+  //   const users = await this.prismaService.user.findMany({
+  //     where: { id: { not: id } },
+  //   });
+  //   const keys: (keyof User)[] = ['fullName', 'displayName'];
+  //   const fuse = new Fuse(users, { keys, threshold: 0.2 });
+  //   const filtered = fuse.search(search).map((elem) => elem.item);
+
+  //   return UserEntity.fromUser(filtered);
+  // }
+  
   async findOrCreate(data: Prisma.UserCreateInput) {
     let user: User | null = null;
     let suffix = '';

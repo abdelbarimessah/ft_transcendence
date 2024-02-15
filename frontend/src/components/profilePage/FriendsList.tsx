@@ -3,7 +3,7 @@ import Image from "next/image";
 
 function FriendsList() {
     return (
-        <div className="2xl:w-[596px] xl:w-[1137px] h-full w-full bg-color-0 rounded-[22px] flex flex-col gap-[40px]">
+        <div className="h-[619px] 2xl:w-[557px] xl:w-[1137px] w-full bg-color-0 rounded-[22px] flex flex-col gap-[40px]">
             <div className="w-full flex items-center justify-center gap-[15px] pt-[18px]">
                 <div className=' w-[37px] h-[28px] relative sm:flex hidden items-center justify-center pt-3 '>
                     <Image
@@ -15,11 +15,11 @@ function FriendsList() {
                     />
                 </div>
                 <div className='flex gap-[10px] '>
-                    <span className='font-nico-moji text-color-29 sm:text-[32px] text-[28px]'>Friends</span>
+                    <span className='font-nico-moji text-color-6 sm:text-[32px] text-[28px]'>Friends</span>
                 </div>
             </div>
             <div className="w-full flex gap-[60px] items-center justify-center ">
-                <div className=" w-[200px] h-[200px] bg-color-30 rounded-[22px] relative overflow-hidden flex  flex-col gap-[40px] hover:opacity-90">
+                <div className=" w-[200px] h-[200px] bg-color-30 rounded-[22px] relative overflow-hidden flex  flex-col gap-[40px] hover:opacity-90 hover:scale-[1.01]">
                     <div className="w-full h-[69px] relative overflow-hidden ">
                         <Image
                             src="/../../assets/DefaultCover.svg"
@@ -73,7 +73,7 @@ function FriendsList() {
                         </div>
                     </div>
                 </div>
-                <div className="  w-[200px] h-[200px] bg-color-30 rounded-[22px] relative overflow-hidden flex  flex-col gap-[40px] ">
+                <div className="  w-[200px] h-[200px] bg-color-30 rounded-[22px] relative overflow-hidden flex  flex-col gap-[40px] hover:opacity-90 hover:scale-[1.01]">
                 <div className="w-full h-[69px] relative overflow-hidden ">
                         <Image
                             src="/../../assets/DefaultCover.svg"
@@ -129,7 +129,7 @@ function FriendsList() {
                 </div>
             </div>
             <div className="w-full flex gap-[60px] items-center justify-center ">
-                <div className=" w-[200px] h-[200px] bg-color-30 rounded-[22px] relative overflow-hidden flex  flex-col gap-[40px]">
+                <div className=" w-[200px] h-[200px] bg-color-30 rounded-[22px] relative overflow-hidden flex  flex-col gap-[40px] hover:opacity-90 hover:scale-[1.01]">
                     <div className="w-full h-[69px] relative overflow-hidden ">
                         <Image
                             src="/../../assets/DefaultCover.svg"
@@ -183,7 +183,7 @@ function FriendsList() {
                         </div>
                     </div>
                 </div>
-                <div className="  w-[200px] h-[200px] bg-color-30 rounded-[22px] relative overflow-hidden flex  flex-col gap-[40px] ">
+                <div className="  w-[200px] h-[200px] bg-color-30 rounded-[22px] relative overflow-hidden flex  flex-col gap-[40px] hover:opacity-90 hover:scale-[1.01]">
                 <div className="w-full h-[69px] relative overflow-hidden ">
                         <Image
                             src="/../../assets/DefaultCover.svg"

@@ -14,7 +14,6 @@ type Leader = {
 
 export default function LeaderBoard() {
     const [isLoading, setIsLoading] = useState(true);
-    // const [leaders, setLeaders] = useState([]);
     const [leaders, setLeaders] = useState<Leader[]>([]);
     useEffect(() => {
         setIsLoading(true);
@@ -28,9 +27,6 @@ export default function LeaderBoard() {
             console.error(err);
         });
     }, []);
-    const firstPlace = leaders[0];
-    const secondPlace = leaders.length > 1 ? leaders[1] : null;
-    const thirdPlace = leaders.length > 2 ? leaders[2] : null;
 
     return (
         <div className=" w-full 2xl:w-[596px] xl:w-[1137px] h-[386px] rounded-[22px] bg-color-0 overflow-hidden flex flex-col gap-[40px] ">
@@ -50,7 +46,7 @@ export default function LeaderBoard() {
                 </div>
             </div>
             <div className=' w-full gap-[25px] flex flex-col '>
-            {leaders.length > 0 && (
+            {leaders[0] && (
                 <div className=' w-full flex gap-[35px] items-center justify-center '>
                     <div className='w-[69px] h-[59px] relative sm:block hidden '>
                         <Image
@@ -68,13 +64,13 @@ export default function LeaderBoard() {
                                 <Skeleton className="w-[150px] h-[21px] rounded-[22px] bg-color-25" />
                             )
                                 : (
-                                    <span className='font-nico-moji text-[14px]  text-color-6'>{`${firstPlace?.firstName} ${firstPlace?.lastName}  `}</span>
+                                    <span className='font-nico-moji text-[14px]  text-color-6'>{`${leaders[0].firstName} ${leaders[0].lastName}  `}</span>
                                 )}
                             {isLoading ? (
                                 <Skeleton className="w-[100px] h-[17px] mt-1 rounded-[22px] bg-color-25" />
                             )
                                 : (
-                                    <span className='font-nico-moji text-[12px]  text-color-29'>{`LEVEl ${firstPlace?.level}`}</span>
+                                    <span className='font-nico-moji text-[12px]  text-color-29'>{`LEVEl ${leaders[0].level}`}</span>
                                 )}
                         </div>
                         {isLoading ? (
@@ -83,7 +79,7 @@ export default function LeaderBoard() {
                             : (
                                 <div className='w-[48px] h-[48px] rounded-full bg-color-28 relative overflow-hidden'>
                                     <Image
-                                        src={firstPlace?.avatar}
+                                        src={leaders[0].avatar}
                                         alt='First Place Icon'
                                         fill={true}
                                         sizes='100%'
@@ -94,7 +90,7 @@ export default function LeaderBoard() {
                     </div>
                 </div>
                 )}
-                {leaders.length > 1 && (
+                {leaders[1] && (
                 <div className=' w-full flex gap-[35px]  items-center justify-center '>
                     <div className='w-[69px] h-[59px] relative sm:block hidden'>
                         <Image
@@ -113,13 +109,13 @@ export default function LeaderBoard() {
                                 <Skeleton className="w-[150px] h-[21px] rounded-[22px] bg-color-25" />
                             )
                                 : (
-                                    <span className='font-nico-moji text-[14px]  text-color-6'>{`${secondPlace?.firstName} ${secondPlace?.lastName}  `}</span>
+                                    <span className='font-nico-moji text-[14px]  text-color-6'>{`${leaders[1].firstName} ${leaders[1].lastName}  `}</span>
                                 )}
                             {isLoading ? (
                                 <Skeleton className="w-[100px] h-[17px] mt-1 rounded-[22px] bg-color-25" />
                             )
                                 : (
-                                    <span className='font-nico-moji text-[12px]  text-color-29'>{`LEVEl ${secondPlace?.level}`}</span>
+                                    <span className='font-nico-moji text-[12px]  text-color-29'>{`LEVEl ${leaders[1].level}`}</span>
                                 )}
                         </div>
                         {isLoading ? (
@@ -128,7 +124,7 @@ export default function LeaderBoard() {
                             : (
                                 <div className='w-[48px] h-[48px] rounded-full bg-color-28 relative overflow-hidden'>
                                     <Image
-                                        src={secondPlace?.avatar}
+                                        src={leaders[1].avatar}
                                         alt='First Place Icon'
                                         fill={true}
                                         sizes='100%'
@@ -140,7 +136,7 @@ export default function LeaderBoard() {
                     {/* </div> */}
                 </div>
                 )}
-                {leaders.length > 2 && (
+                {leaders[2] && (
                 <div className=' w-full flex gap-[35px] items-center justify-center '>
                     <div className='w-[69px] h-[59px] relative sm:block hidden'>
                         <Image
@@ -159,13 +155,13 @@ export default function LeaderBoard() {
                                 <Skeleton className="w-[150px] h-[21px] rounded-[22px] bg-color-25" />
                             )
                                 : (
-                                    <span className='font-nico-moji text-[14px]  text-color-6'>{`${thirdPlace?.firstName} ${thirdPlace?.lastName}  `}</span>
+                                    <span className='font-nico-moji text-[14px]  text-color-6'>{`${leaders[2].firstName} ${leaders[2].lastName}  `}</span>
                                 )}
                             {isLoading ? (
                                 <Skeleton className="w-[100px] h-[17px] mt-1 rounded-[22px] bg-color-25" />
                             )
                                 : (
-                                    <span className='font-nico-moji text-[12px]  text-color-29'>{`LEVEl ${thirdPlace?.level}`}</span>
+                                    <span className='font-nico-moji text-[12px]  text-color-29'>{`LEVEl ${leaders[2].level}`}</span>
                                 )}
                         </div>
                         {isLoading ? (
@@ -174,7 +170,7 @@ export default function LeaderBoard() {
                             : (
                                 <div className='w-[48px] h-[48px] rounded-full bg-color-28 relative overflow-hidden'>
                                     <Image
-                                        src={thirdPlace?.avatar}
+                                        src={leaders[2].avatar}
                                         alt='First Place Icon'
                                         fill={true}
                                         sizes='100%'

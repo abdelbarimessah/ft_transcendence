@@ -21,12 +21,8 @@ export class UsersController {
     @Get('All') 
     @UseGuards(OTPGuard)
     @UseGuards(JwtAuthGuard)
-    findAll() {
-        console.log('All users');
-        
-        console.log('All users');
-        
-        return this.userService.getAllUsers();
+    async findAll() {
+        return await this.userService.getAllUsers();
     }
     
     @Get('me')
@@ -37,11 +33,11 @@ export class UsersController {
             if (user) {
                 this.userService.uploadImage(user.avatar, user.providerId);
             } else {
-                // console.log(`No user found`);
+                console.log(`No user found`);
             }
         }
         catch (error) {
-            // console.error('error', error);
+            console.error('error', error);
         }
         return user;
     }
@@ -68,8 +64,6 @@ export class UsersController {
         fs.writeFileSync(uploadPath, file.buffer);
 
         const backendUrl = process.env.NEXT_PUBLIC_API_URL;
-        // const uploadDirdb = path.join(backendUrl, '/uploads/');
-        // const uploadPathbd = path.join(uploadDirdb, `cover-${user.providerId}${'.png'}`);
         const url = new URL(`/uploads/cover-${user.providerId}${'.png'}` , backendUrl);
         await this.userService.updateCover(user.providerId, url.href);
         console.log('url', url.href);
@@ -80,8 +74,6 @@ export class UsersController {
     @UseGuards(OTPGuard)
     @UseGuards(JwtAuthGuard)
     async updateInfo(@Req() req : Request, @CurrentUser() user :any){
-        console.log('updateInfo body', req.body, user.providerId);
-        console.log('res');
         const res = await this.userService.updateUserData(user.providerId, req.body);
         return {message : 'User data updated', data: res};
     }
@@ -89,13 +81,22 @@ export class UsersController {
     @Get('leaders')
     @UseGuards(OTPGuard)
     @UseGuards(JwtAuthGuard)
-    async leaders(@Req() req : Request)
+    async leaders(@Req() req : Request, )
     {
         const res = await this.userService.getLeaders();
-        console.log('res in the leaders: ====== ', res);
         return {leader: res};
     }
+    @Get('achievements')
+    @UseGuards(OTPGuard)
+    @UseGuards(JwtAuthGuard)
+    async achievements(@Req() req : Request, @CurrentUser() user :any)
+    {
+        const res = await this.userService.getAchievements(user.providerId);
+        return {achievements: res};
+    }
 
+    
+    
     
     @Get(':id')
     @UseGuards(OTPGuard)

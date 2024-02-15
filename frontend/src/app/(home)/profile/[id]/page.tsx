@@ -21,7 +21,7 @@ function profile() {
                         <ProfileCard />
                         <LeaderBoard />
                     </div>
-                    <div className="w-full flex 2xl:flex-row flex-col  gap-[25px] items-center justify-center px-[25px] pt-[25px]">
+                    <div className="w-full flex 2xl:flex-row flex-col  gap-[25px] items-center justify-center ">
                         <Achievements />
                         <MatchesHistory/>
                     </div>

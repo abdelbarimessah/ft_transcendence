@@ -78,7 +78,7 @@ function ProfileCard() {
                             className="object-cover w-full h-full "
                         /> */}
                         
-
+                        
                         <img src={ photoPath || user.cover} alt="" className="object-cover w-full h-full"/>
                     </div>
                 )}
@@ -96,7 +96,7 @@ function ProfileCard() {
                         <Skeleton className="w-[120px] h-[120px] rounded-full bg-color-25" />
                     )
                         : (
-                            <div className="w-[120px] h-[120px]   relative z-50 rounded-full overflow-hidden bg-black border-[2px] border-color-0">
+                            <div className="w-[120px] h-[120px]   relative z-50 rounded-full overflow-hidden bg-black border-[2px] border-color-0  hover:scale-[1.01]" >
                                 <Image
                                     src={user.avatar}
                                     alt='profile image'
@@ -174,11 +174,11 @@ const SettingsPoint = () => {
     return (
         <div className="w-[130px] h-[59px] bg-color-0 border border-[#DDD] rounded-[10px] flex flex-col items-center justify-center absolute top-12 right-[100px] z-[3000]">
             <Link href={`${process.env.NEXT_PUBLIC_FRONTEND_URL}/setting`}>
-                <div className="w-full flex items-center justify-center border-b border-[#DDD]">
+                <div className="w-full flex items-center justify-center border-b border-[#DDD]  hover:scale-105">
                     <span className="font-nico-moji text-[12px] text-color-6 pb-[5px] cursor-pointer capitalize">Settings</span>
                 </div>
             </Link>
-            <div onClick={handleLogoutClick} className="w-full flex items-center justify-center ">
+            <div onClick={handleLogoutClick} className="w-full flex items-center justify-center  hover:scale-105">
                 <span className=" font-nico-moji text-[12px] text-color-6 pt-[4px] cursor-pointer capitalize">Logout</span>
             </div>
         </div>

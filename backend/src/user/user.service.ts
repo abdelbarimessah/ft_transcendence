@@ -19,9 +19,12 @@ export class UserService {
   async getAllUsers() {
     const users = await this.prismaService.user.findMany();
 
-    // for (const user of users) {
-    //   delete user.secretOpt;
-    // }
+    for (const user of users) {
+      delete user.secretOpt;
+      delete user.email;
+      delete user.otpIsEnabled;
+      delete user.sockets;
+    }
     return users;
   }
 
@@ -104,17 +107,35 @@ export class UserService {
     return users;
   }
 
+
+  async getAchievements(id: string) {
+    const userWithAchievements = await this.prismaService.user.findUnique({
+      where: {
+        providerId: id
+      },
+      include: {
+        achievements: true
+      }
+    });
+
+    return userWithAchievements?.achievements;
+  }
+
   async findOrCreate(data: Prisma.UserCreateInput) {
     let user: User | null = null;
     let suffix = '';
 
     console.log('data', data);
+    const achievements = ['ach1', 'ach2', 'ach3', 'ach4', 'ach5', 'ach6', 'ach7'];
     while (!user) {
       try {
         user = await this.prismaService.user.upsert({
           create: {
             ...data,
             nickName: `${data.nickName}${suffix}`,
+            achievements: {
+              create: achievements.map(name => ({ name, locked: false })),
+            },
           },
           update: {},
           where: { providerId: data.providerId },

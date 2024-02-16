@@ -137,7 +137,7 @@ export default function LeaderBoard() {
                 </div>
                 )}
                 {leaders[2] && (
-                <div className=' w-full flex gap-[35px] items-center justify-center '>
+                <div className=' w-full flex gap-[35px] items-center justify-center  '>
                     <div className='w-[69px] h-[59px] relative sm:block hidden'>
                         <Image
                             src="/../../assets/thirdPlace.svg"
@@ -149,7 +149,7 @@ export default function LeaderBoard() {
                         <span className='font-nico-moji text-[32px]  text-[#D7936C] absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 '>3</span>
                     </div>
                     {/* <div className='w-[345px] h-[58px]'> */}
-                    <div className='w-[235px] h-[58px cursor-pointer bg-color-30 rounded-[209px] flex items-center justify-between pr-[5px] pl-[15px]' >
+                    <div className='w-[235px] h-[58px] cursor-pointer bg-color-30 rounded-[209px] flex items-center justify-between pr-[5px] pl-[15px]' >
                     <div className='flex flex-col'>
                             {isLoading ? (
                                 <Skeleton className="w-[150px] h-[21px] rounded-[22px] bg-color-25" />

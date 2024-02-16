@@ -1,4 +1,4 @@
-import {  Controller, Get, Param, Post, UseGuards, ConflictException, Req, UploadedFile, UseInterceptors, Body } from '@nestjs/common';
+import {  Controller, Get, Param, Post, UseGuards, ConflictException, Req, UploadedFile, UseInterceptors, Body, Patch, Res } from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/auth/current-user.decorator';
@@ -94,6 +94,17 @@ export class UsersController {
         const res = await this.userService.getAchievements(user.providerId);
         return {achievements: res};
     }
+    @Get('UsersAchievements/:id')
+    @UseGuards(OTPGuard)
+    @UseGuards(JwtAuthGuard)
+    async UsersAchievements(@Req() req : Request, @Param('id') id: string)
+    {
+        const res = await this.userService.getAchievements(id);
+        console.log('UsersAchievements' , res);
+        
+        return {achievements: res};
+    }
+
     
     @Get('userSearch')
     @UseGuards(OTPGuard)
@@ -103,11 +114,23 @@ export class UsersController {
         console.log('body', req.query);
         const searchQuery = String(req.query.query);
         const res = await this.userService.getUserSearch(searchQuery, user.providerId);
-
+        
         return res;
     }
     
-  
+    @Patch('addFriend')
+    @UseGuards(OTPGuard)
+    @UseGuards(JwtAuthGuard)
+    async enableOtp(
+        @CurrentUser() user: any,
+        @Res({ passthrough: true }) res: Response,
+        @Body() body:  {id: string} 
+    ) {
+
+    
+
+    }
+    
 
     
     

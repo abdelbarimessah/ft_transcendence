@@ -11,7 +11,7 @@ function profile() {
     return (
         // <div className=" w-full h-full bg-color-2 flex flex-col items-center justify-center">
         <div className="w-full h-full flex flex-col bg-color-18  items-center justify-center ">
-                <div className="w-full z-[1000] pt-12 2xl:pt-0">
+                <div className="w-full z-[2000] pt-12 2xl:pt-0">
                     <Header/>
                 </div>
                 <div className='w-full h-full absolute '>

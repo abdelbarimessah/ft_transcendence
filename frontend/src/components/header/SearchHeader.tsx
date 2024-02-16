@@ -4,19 +4,19 @@ import Image from 'next/image';
 import { useState } from 'react';
 import axios from 'axios';
 import debounce from 'debounce';
+import Link from 'next/link';
 
 const SearchBareHeader = () => {
     const [searchInput, setSearchInput] = useState('');
     const [searchResults, setSearchResults] = useState([]);
 
 
-     const debouncedHandleInputChange = debounce(async (value) => {
-        setSearchInput(value);
+    const debouncedHandleInputChange = debounce(async (value) => {
         try {
             const response = await axios.get("http://localhost:3000/user/userSearch", {
                 params: { query: value }
             });
-    
+
             console.log('response**************************', response.data.filtered);
             setSearchResults(response.data.filtered);
         } catch (error) {
@@ -24,45 +24,73 @@ const SearchBareHeader = () => {
             console.error(error);
         }
     }, 500);
-    const handleInputChange = (event:any) => {
-        debouncedHandleInputChange(event.target.value);
+    const handleInputChange = (event: any) => {
+        const value = event.target.value;
+        setSearchInput(value); // Update the input's value immediately
+        debouncedHandleInputChange(value);
     };
-    const handleSearch = async (event:any) => {
+    const handleSearch = async (event: any) => {
         event.preventDefault();
 
         // Replace with your actual API endpoint
 
     };
     return (
-        <div className='max-w-[651px] w-full h-[66px] bg-color-0 rounded-[22px] flex items-center justify-start gap-[10px] cursor-pointer'>
-                <div className='h-full w-[60px] flex items-center justify-center'>
-            <div className=' w-[30px] h-[30px] relative '>
-                <Image
-                    src="/../../assets/SearchIcon.svg"
-                    alt="My Gallery Image"
-                    fill={true}
-                />
-            </div>
-
+        <div className='max-w-[651px] w-full h-[66px] bg-color-0 rounded-[22px] flex items-center justify-start gap-[10px] cursor-pointer relative  position-relative'>
+            <div className='h-full w-[60px] flex items-center justify-center'>
+                <div className=' w-[30px] h-[30px] relative '>
+                    <Image
+                        src="/../../assets/SearchIcon.svg"
+                        alt="My Gallery Image"
+                        fill={true}
+                        priority={true}
+                    />
+                </div>
             </div>
             <form onSubmit={handleSearch} className='w-full h-[70%] rounded-[22px] border-color-6'>
-                <input 
-                    type="text" 
-                    placeholder='Search...' 
+                <input
+                    type="search"
+                    placeholder='Search...'
                     className='placeholder-color-20/50 px-[8px] h-full tracking-wider placeholder:font-light font-poppins font-[400] rounded-[22px] text-black/80 text-[22px] w-full mr-2 focus:outline-none'
                     value={searchInput}
                     onChange={handleInputChange}
                 />
             </form>
-            <div>
-                {searchResults.map((result, index) => (
-                    <div key={index}>
-                        {/* Replace this with how you want to display each result */}
-                        <p>{result?.nickName}</p>
+            {searchInput && (
+                <div className='result bg-color-0 z-[3000] absolute top-[70px] left-0 flex flex-col items-center justify-content-start h-[500px] w-[651px] rounded-[22px] '>
+                    <div className='w-full flex items-center pl-5 gap-3 h-[50px] border-b-[2px] border-l-color-30 '>
+                        <span className='font-nico-moji text-color-6 text-[20px] capitalize text-center'>People</span>
+                        <div className='h-[20px] mt-1  rounded-[5px] bg-color-29/20 flex items-center justify-center' style={{ width: searchResults.length > 9 ? `${searchResults.length * 10}px` : '25px' }}>
+                            <span className='font-nico-moji text-color-6 text-[16px]  text-center'>{searchResults.length}</span>
+                        </div>
                     </div>
-                ))}
-            </div>
-
+                    <div className='w-full bg-color-30 gap-[2px] flex flex-col overflow-y-auto no-scrollbar'>
+                        {searchResults.map((result, index) => (
+                            <Link href={`http://localhost:8000/profile/${result?.providerId}`}>
+                            <div key={index} className='  h-[66px] w-full bg-color-0 hover:bg-color-30 z-[4000] flex pl-5 items-center justify-start gap-3  hover:scale-[1.01]'>
+                                <div className='w-[50px] h-[50px] bg-color-15 rounded-full relative overflow-hiddenr'>
+                                    <Image
+                                        src={result?.avatar}
+                                        alt="My Gallery Image"
+                                        fill={true}
+                                        sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
+                                        className='object-cover  rounded-full  w-[50px] h-[50px]'
+                                    />
+                                </div>
+                                <div className='flex gap-2 items-center justify-center'>
+                                    <span className='font-nico-moji text-color-6 text-[16px] capitalize text-center'>{result?.firstName}</span>
+                                    <span className='font-nico-moji text-color-6 text-[16px] capitalize text-center'>{result?.lastName}</span>
+                                    <div className='flex'>
+                                        <span className='font-nico-moji text-color-29 text-[12px] capitalize text-center'>@</span>
+                                        <span className='font-nico-moji text-color-29 text-[12px] capitalize text-center'>{result?.nickName}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

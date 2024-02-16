@@ -127,7 +127,6 @@ export class UserService {
     const users = await this.prismaService.user.findMany({
       where: { providerId: { not: id } },
     });
-    console.log('idddd' , id);
     
     const keys: (keyof User)[] = ['nickName','firstName', 'lastName'];
     const fuse = new Fuse(users, { keys, threshold: 0.2 });
@@ -139,7 +138,6 @@ export class UserService {
       delete user.otpIsEnabled;
       delete user.sockets;
     }
-    console.log('filtered', filtered);
     return {filtered};
   }
   // async filterUsers(search: string, id: User['id']) {

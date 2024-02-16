@@ -8,29 +8,31 @@ generator client {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  providerId String @unique
-  email String  @unique
-  nickName  String? @unique
-  firstName String?
-  lastName  String?
-  provider String?
-  avatar String?
-  firstTime Boolean @default(false)
-  secretOpt           String?
-  otpIsEnabled        Boolean              @default(false)
-  level               Int                  @default(10)
-  cover               String?
-  sockets             String[]
-  achievements  Achievement[] // Add this line
+  id           Int           @id @default(autoincrement())
+  providerId   String        @unique
+  email        String        @unique
+  nickName     String?       @unique
+  firstName    String?
+  lastName     String?
+  provider     String?
+  avatar       String?
+  firstTime    Boolean       @default(false)
+  secretOpt    String?
+  otpIsEnabled Boolean       @default(false)
+  level        Int           @default(10)
+  cover        String?
+  sockets      String[]
+  achievements Achievement[]
+  friends      User[]        @relation("friends")
+  friendOf     User[]        @relation("friends")
 }
 
 model Achievement {
-  id        Int    @id @default(autoincrement())
-  name      String
-  locked    Boolean @default(false)
-  userId    Int
-  user      User   @relation(fields: [userId], references: [id])
+  id     Int     @id @default(autoincrement())
+  name   String
+  locked Boolean @default(false)
+  userId Int
+  user   User    @relation(fields: [userId], references: [id])
 }
 
 // model User {
@@ -58,8 +60,6 @@ model Achievement {
 
 // }
 
-
-
 // model Profile {
 //   id        Int      @id @default(autoincrement())
 //   createdAt DateTime @default(now())
@@ -77,7 +77,6 @@ model Achievement {
 //   title     String   @db.VarChar(255)
 //   player    User?     @relation(fields: [userId], references: [id])
 // }
-
 
 // model channel {
 //   id        Int      @id @default(autoincrement())

@@ -19,6 +19,18 @@ function ProfileCard() {
     const [avatar, setAvatar] = useState<File | null>(null);
 
     const params = useParams<{ id: string; tag: string; item: string }>()
+    function handleAddFriend() {
+        console.log('add friend', params.id);
+        axios.patch('http://localhost:3000/user/addFriend', { id: params.id })
+            .then(response => {
+                console.log('response', response);
+                toast.success('OTP Enabled successfully');
+            })
+            .catch(error => {
+                if (error.response && error.response.status === 422)
+                    toast.error('Incorrect OTP code');
+            });
+    }
     useEffect(() => {
         const getData = async () => {
             try {
@@ -40,8 +52,8 @@ function ProfileCard() {
     }, [ids]);
 
     console.log('user i am', user);
-    
-    
+
+
 
 
     return (
@@ -93,7 +105,13 @@ function ProfileCard() {
                             )}
                     </div>
                 </div>
-                <AddFriend/>
+                {isLoading
+                    ? <Skeleton className="h-[28px] w-[70px] rounded-[10px] bg-color-25" />
+                    : user.isFriend
+                        ? <RemoveFriend onSuccess={() => setUser({ ...user, isFriend: false })} />
+                        : <AddFriend onSuccess={() => setUser({ ...user, isFriend: true })} />
+                }
+
 
             </div>
             <div className='w-full flex items-center justify-center absolute bottom-[40px] px-[25px]'>
@@ -122,22 +140,24 @@ function ProfileCard() {
 export default ProfileCard;
 
 
+interface AddFriendProps {
+    onSuccess: () => void;
+}
 
 
-
-
-function AddFriend() {
+function AddFriend(props: AddFriendProps) {
     const params = useParams<{ id: string; tag: string; item: string }>()
     function handleAddFriend() {
         console.log('add friend', params.id);
-        axios.patch('http://localhost:3000/user/addFriend', {id:params.id} )
+        axios.patch('http://localhost:3000/user/addFriend', { id: params.id })
             .then(response => {
                 console.log('response', response);
-                toast.success('OTP Enabled successfully');
+                props.onSuccess();
+                toast.success('user added successfully');
             })
             .catch(error => {
                 if (error.response && error.response.status === 422)
-                toast.error('Incorrect OTP code');
+                    toast.error('error adding user');
             });
     }
 
@@ -153,16 +173,35 @@ function AddFriend() {
                     className="object-cover w-full h-full "
                 />
             </div>
-                <span className='font-nico-moji text-[8px] text-color-0 '>ADD</span>
+            <span className='font-nico-moji text-[8px] text-color-0 '>ADD</span>
         </div>
     )
 }
 
-export {AddFriend}
+export { AddFriend }
 
-function RemoveFriend() {
+interface RemoveFriendProps {
+    onSuccess: () => void;
+}
+
+function RemoveFriend(props: RemoveFriendProps) {
+    const params = useParams<{ id: string; tag: string; item: string }>()
+    function handleRemoveFriend() {
+        console.log('add friend', params.id);
+        axios.patch('http://localhost:3000/user/removeFriend', { id: params.id })
+            .then(response => {
+                console.log('response', response);
+                props.onSuccess();
+                toast.success('user removed successfully');
+            })
+            .catch(error => {
+                if (error.response && error.response.status === 422)
+                    toast.error('error removing user');
+            });
+    }
+
     return (
-        <div className='h-[28px] w-[70px] bg-color-30 mt-5 rounded-[10px] gap-[5px] flex items-center justify-center  cursor-pointer'>
+        <div onClick={handleRemoveFriend} className='h-[28px] w-[70px] bg-color-30 mt-5 rounded-[10px] gap-[5px] flex items-center justify-center  cursor-pointer'>
             <div className="w-[12px] h-[13px] relative z-50 overflow-hidden " >
                 <Image
                     src="/../../assets/removeFriendIconUsers.svg"
@@ -178,7 +217,7 @@ function RemoveFriend() {
     )
 }
 
-export {RemoveFriend}
+export { RemoveFriend }
 
 
 

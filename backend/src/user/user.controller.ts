@@ -121,25 +121,42 @@ export class UsersController {
     @Patch('addFriend')
     @UseGuards(OTPGuard)
     @UseGuards(JwtAuthGuard)
-    async enableOtp(
+    async addFriend(
         @CurrentUser() user: any,
         @Res({ passthrough: true }) res: Response,
         @Body() body:  {id: string} 
     ) {
 
-    
-
+        const friendId = body.id;
+        const result = await this.userService.addFriend(user.providerId, friendId);
+        return {message: result};
     }
-    
 
-    
-    
+    @Patch('removeFriend')
+    @UseGuards(OTPGuard)
+    @UseGuards(JwtAuthGuard)
+    async removeFriend(
+        @CurrentUser() user: any,
+        @Res({ passthrough: true }) res: Response,
+        @Body() body:  {id: string} 
+    ) {
+
+        const friendId = body.id;
+        const result = await this.userService.removeFriend(user.providerId, friendId);
+        return {message: result};
+    }
     
     @Get(':id')
     @UseGuards(OTPGuard)
     @UseGuards(JwtAuthGuard)
-    findOne(@Param('id') id: string) {
-        return this.userService.getUserById(id);
+    async findOne(@Param('id') id: string, @CurrentUser() user: any) {
+
+        const { friendOf, ...rest } = await this.userService.getUserById(id);
+
+        return {
+            ...rest,
+            isFriend: friendOf.some((friend) => friend.providerId === user.providerId)
+        };
     }
 }
 

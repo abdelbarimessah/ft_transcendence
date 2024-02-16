@@ -67,8 +67,7 @@
 
 import { Game as PhaserGame } from "phaser";
 import { useContext, useEffect, useRef, useState } from "react";
-import PongGame from "@/components/game/PongGame";
-import aiMode from "@/components/game/PongGame";
+import pongGame from "@/components/game/PongGame";
 import { SocketContext } from "@/app/SocketContext";
 
 let newGame: Phaser.Game;
@@ -117,7 +116,7 @@ export default function Game() {
         width: 900,
         height: 600
       },
-      scene: [new aiMode(socketClient)]
+      scene: [new pongGame(socketClient)]
     };
 
     const newGame = new PhaserGame({ ...gameConfig, parent: parentEl.current, width: parentEl.current.offsetWidth, height: parentEl.current.offsetHeight });

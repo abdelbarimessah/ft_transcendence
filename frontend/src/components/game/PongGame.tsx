@@ -125,13 +125,13 @@ export default class PongGame extends Phaser.Scene {
                  this.p2victory.visible = false;
                 if(this.playerData.wishPlayer == 'player1')
                 {
-                    this.ball.setVelocityX(data.initialVelocityX);
-                    this.ball.setVelocityY(data.initialVelocityY);
+                    this.ball?.setVelocityX(data.initialVelocityX);
+                    this.ball?.setVelocityY(data.initialVelocityY);
                 }
                 else if (this.playerData.wishPlayer == 'player2')
                 {
-                    this.ball.setVelocityX(data.initialVelocityX * -1);
-                    this.ball.setVelocityY(data.initialVelocityY);    
+                    this.ball?.setVelocityX(data.initialVelocityX * -1);
+                    this.ball?.setVelocityY(data.initialVelocityY);    
                 }
                  this.isgamestarted = true;
             }
@@ -326,7 +326,7 @@ export default class PongGame extends Phaser.Scene {
 
 
     resetGame() {
-
+        if (this.ball && this.ball.body) {
         this.ball.setPosition(
             this.physics.world.bounds.width / 2,
             this.physics.world.bounds.height / 2
@@ -343,5 +343,6 @@ export default class PongGame extends Phaser.Scene {
         this.time.delayedCall(1000, () => {
             this.ball.body.enable = true;
         });
+    }
     }
 }

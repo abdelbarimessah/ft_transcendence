@@ -35,7 +35,11 @@ export class UserService {
       where: {
         providerId: id,
       },
+      include: {
+        friendOf: true,
+      }
     });
+
     return user;
   }
 
@@ -150,7 +154,46 @@ export class UserService {
 
   //   return UserEntity.fromUser(filtered);
   // }
+
   
+  async addFriend(userId: string, friendId: string) {
+    if(userId === friendId) {
+      throw new BadRequestException("You can't add yourself as a friend");
+    }
+    await this.prismaService.user.update({
+      where: {
+        providerId: userId,
+      },
+      data: {
+        friends: {
+          connect: {
+            providerId: friendId,
+          },
+        },
+      },
+    });
+    return { message: 'Friend added' };
+  }
+
+  async removeFriend(userId: string, friendId: string) {
+    if(userId === friendId) {
+      throw new BadRequestException("You can't add yourself as a friend");
+    }
+    await this.prismaService.user.update({
+      where: {
+        providerId: userId,
+      },
+      data: {
+        friends: {
+          disconnect: {
+            providerId: friendId,
+          },
+        },
+      },
+    });
+    return { message: 'Friend added' };
+  }
+
   async findOrCreate(data: Prisma.UserCreateInput) {
     let user: User | null = null;
     let suffix = '';

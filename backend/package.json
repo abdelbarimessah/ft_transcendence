@@ -46,6 +46,7 @@
     "ws": "^8.14.2"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@nestjs/cli": "^10.3.0",
     "@nestjs/mapped-types": "^2.0.4",
     "@nestjs/schematics": "^10.0.0",
@@ -57,7 +58,6 @@
     "@types/passport-google-oauth20": "^2.0.14",
     "@types/passport-jwt": "^4.0.0",
     "@types/passport-local": "^1.0.38",
-    "@types/socket.io": "^3.0.2",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
@@ -92,5 +92,8 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   }
 }

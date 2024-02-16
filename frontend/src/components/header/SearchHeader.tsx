@@ -33,8 +33,8 @@ const SearchBareHeader = () => {
         event.preventDefault();
 
         // Replace with your actual API endpoint
-
     };
+    
     return (
         <div className='max-w-[651px] w-full h-[66px] bg-color-0 rounded-[22px] flex items-center justify-start gap-[10px] cursor-pointer relative  position-relative'>
             <div className='h-full w-[60px] flex items-center justify-center'>

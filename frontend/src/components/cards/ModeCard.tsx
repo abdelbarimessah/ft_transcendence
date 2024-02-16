@@ -27,9 +27,8 @@ function ModeCard(props: any) {
 
     useEffect(() => {
         socketClient.on('enterRoomFromCard', (data) => {
-            // console.log('socket is called for random mode');
             console.log('the room name is ' + data.roomName);
-            router.push('/game/match', { scroll: false })
+            router.push('/game/match');
         });
 
     }, [isRandomMode, router, socketClient])

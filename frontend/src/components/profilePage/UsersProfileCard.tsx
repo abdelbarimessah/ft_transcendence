@@ -76,7 +76,7 @@ function ProfileCard() {
             <div className='w-full flex justify-center items-center gap-[100px] absolute top-[111px] '>
                 <div className='flex items-center gap-3'>
                     {isLoading ? (
-                        <Skeleton className="w-[120px] h-[120px] rounded-full bg-color-25" />
+                        <Skeleton className="w-[120px] h-[120px] rounded-full bg-color-25 ml-7" />
                     )
                         : (
                             <div className="w-[120px] h-[120px]   relative z-50 rounded-full overflow-hidden bg-black border-[2px] border-color-0  hover:scale-[1.01]" >
@@ -92,7 +92,7 @@ function ProfileCard() {
                         )}
                     <div className='flex flex-col pt-[15px] '>
                         {isLoading ? (
-                            <Skeleton className="w-[225px] h-[20px] rounded-full bg-color-25" />
+                            <Skeleton className="w-[200px] h-[20px] rounded-full bg-color-25" />
                         )
                             : (
                                 <span className='font-nico-moji text-color-6 sm:text-[20px] text-[16px] capitalize'>{`${user.firstName} ${user.lastName}`}</span>
@@ -106,7 +106,7 @@ function ProfileCard() {
                     </div>
                 </div>
                 {isLoading
-                    ? <Skeleton className="h-[28px] w-[70px] rounded-[10px] bg-color-25" />
+                    ? <Skeleton className="h-[28px] w-[70px] rounded-[10px] bg-color-25 mt-5 mr-5" />
                     : user.isFriend
                         ? <RemoveFriend onSuccess={() => setUser({ ...user, isFriend: false })} />
                         : <AddFriend onSuccess={() => setUser({ ...user, isFriend: true })} />

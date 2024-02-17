@@ -6,6 +6,14 @@ import axios from 'axios';
 import debounce from 'debounce';
 import Link from 'next/link';
 
+interface Result {
+    firstName: string;
+    lastName: string;
+    nickName: string;
+    avatar: string;
+    providerId: string;
+}
+
 const SearchBareHeader = () => {
     const [searchInput, setSearchInput] = useState('');
     const [searchResults, setSearchResults] = useState([]);
@@ -17,22 +25,19 @@ const SearchBareHeader = () => {
                 params: { query: value }
             });
 
-            console.log('response**************************', response.data.filtered);
+            console.log('response', response.data.filtered);
             setSearchResults(response.data.filtered);
         } catch (error) {
-            // Handle error here
             console.error(error);
         }
     }, 500);
     const handleInputChange = (event: any) => {
         const value = event.target.value;
-        setSearchInput(value); // Update the input's value immediately
+        setSearchInput(value); 
         debouncedHandleInputChange(value);
     };
     const handleSearch = async (event: any) => {
         event.preventDefault();
-
-        // Replace with your actual API endpoint
     };
     
     return (
@@ -60,12 +65,12 @@ const SearchBareHeader = () => {
                 <div className='result bg-color-0 z-[3000] absolute top-[70px] left-0 flex flex-col items-center justify-content-start h-[500px] w-[651px] rounded-[22px] '>
                     <div className='w-full flex items-center pl-5 gap-3 h-[50px] border-b-[2px] border-l-color-30 '>
                         <span className='font-nico-moji text-color-6 text-[20px] capitalize text-center'>People</span>
-                        <div className='h-[20px] mt-1  rounded-[5px] bg-color-29/20 flex items-center justify-center' style={{ width: searchResults.length > 9 ? `${searchResults.length * 10}px` : '25px' }}>
+                        <div className='h-[20px] mt-1  rounded-[5px] bg-color-29/20 flex items-center justify-center' style={{ width: searchResults.length > 9 ? `${searchResults.length / 10 + 30}px` : '25px' }}>
                             <span className='font-nico-moji text-color-6 text-[16px]  text-center'>{searchResults.length}</span>
                         </div>
                     </div>
                     <div className='w-full bg-color-30 gap-[2px] flex flex-col overflow-y-auto no-scrollbar'>
-                        {searchResults.map((result, index) => (
+                        {searchResults.map((result : Result, index) => (
                             <Link href={`http://localhost:8000/profile/${result?.providerId}`}>
                             <div key={index} className='  h-[66px] w-full bg-color-0 hover:bg-color-30 z-[4000] flex pl-5 items-center justify-start gap-3  hover:scale-[1.01]'>
                                 <div className='w-[50px] h-[50px] bg-color-15 rounded-full relative overflow-hiddenr'>

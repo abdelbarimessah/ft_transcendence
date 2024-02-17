@@ -14,11 +14,13 @@ export class GameGateway implements OnGatewayConnection {
     @WebSocketServer()
     server: Server;
     playerQueue: { socket: Socket }[] = [];
+    playerQueueUser: { socket: Socket }[] = [];
     listClient: { id: string; socket: Socket; wishPlayer: string }[] = [];
     listRooms: Map<string, string> = new Map<string, string>();
     playerScore: Map<string, number> = new Map<string, number>();
 
     players = {
+
     };
     roomName: string = '';
     clientNO: number = 0;
@@ -57,9 +59,11 @@ export class GameGateway implements OnGatewayConnection {
 
 
     @SubscribeMessage('joinRoom')
-    handleJoinRoom(socket: Socket) {
+    handleJoinRoom(socket: Socket, data: any) {
         this.clientNO++;
-        this.roomName = `game-${Math.round(this.clientNO / 2).toString()}`;
+        // this.roomName = `game-${Math.round(this.clientNO / 2).toString()}`;
+        this.roomName = data.roomName;
+        this.logger.log('room name in the join room: ==================================================== ' + this.roomName);
         if (this.clientNO % 2)
             this.listClient.push({ id: socket.id, socket: socket, wishPlayer: 'player1' });
         else
@@ -91,28 +95,6 @@ export class GameGateway implements OnGatewayConnection {
 
 
 
-    @SubscribeMessage('customDisconnectClient')
-    handleCustomDisconnect(socket: Socket, data: any) {
-        this.playerQueue = this.playerQueue.filter((player) => player.socket.id !== socket.id);
-        this.logger.log(this.playerQueue.length + ' queue length after quit the game mode');
-    }
-
-    // @SubscribeMessage('joinRoomFromCard')
-    // handleJoinRoomFromCard(socket: Socket, data: any) {
-    //     this.clientNOForCard++;
-    //     this.playerQueue.push({socket: socket});
-    //     this.logger.log(this.playerQueue.length + ' queue length');
-    //     this.logger.log('befor enter the queue');
-    //     if(this.playerQueue.length == 2){
-    //         this.roomName = `gameCard-${Math.round(this.clientNOForCard / 2).toString()}`;
-    //         for(let i = 0; i < 2; i++){
-    //             this.playerQueue[i].socket.join(this.roomName);
-    //         }
-    //         this.server.in(this.roomName).emit('enterRoomFromCard', { roomName: this.roomName});
-    //         this.playerQueue.shift();
-    //         this.playerQueue.shift();
-    //     }
-    // }
 
     @SubscribeMessage('joinRoomFromCard')
     handleJoinRoomFromCard(socket: Socket, data: any) {
@@ -124,17 +106,25 @@ export class GameGateway implements OnGatewayConnection {
             this.clientNOForCard++;
             this.roomName = `gameCard-${this.clientNOForCard}`;
 
-            // Dequeue two players and add them to the same room
             const player1 = this.playerQueue.shift();
             const player2 = this.playerQueue.shift();
 
             player1.socket.join(this.roomName);
             player2.socket.join(this.roomName);
-
             this.server.in(this.roomName).emit('enterRoomFromCard', { roomName: this.roomName });
         }
     }
 
+
+    @SubscribeMessage('customDisconnectClient')
+    handleCustomDisconnect(socket: Socket, data: any) {
+        this.playerQueue = this.playerQueue.filter((player) => player.socket.id !== socket.id);
+        this.logger.log('ROOM NAME IN THE DISCONNECT', data.roomName);
+        this.server.to(data.roomName).emit('OnePlayerLeaveTheRoom', { roomName: data.roomName });
+        // socket.broadcast.to(data.roomName).emit('OnePlayerLeaveTheRoom', { roomName: data.roomName });
+        this.server.socketsLeave(data.roomName);
+        this.logger.log(this.playerQueue.length + ' queue length after quit the game mode');
+    }
 
     @SubscribeMessage('goalScored')
     handleGoalScored(socket: Socket, data: any) {

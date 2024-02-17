@@ -21,7 +21,7 @@ export default class PongGame extends Phaser.Scene {
     p2victory: any;
     p1goaltext: any;
     p2goaltext: any;
-    
+
     p1score_number: number;
     p2score_number: number;
     goalScored: boolean;
@@ -32,9 +32,12 @@ export default class PongGame extends Phaser.Scene {
     sendBallY: number = 0;
 
     flagGame: boolean = false;
-    
+
     playerData: { roomName: string, wishPlayer: string };
-    constructor(private socketClient: Socket) {
+    constructor(
+        private socketClient: Socket,
+        private roomName: string,
+    ) {
         super('PongGame');
         this.p1score_number = 0;
         this.p2score_number = 0;
@@ -44,7 +47,7 @@ export default class PongGame extends Phaser.Scene {
             wishPlayer: ''
         }
     }
-    
+
     preload() {
         this.load.image("table", "../../assets/table2.png");
         this.load.image("paddle", "../../assets/padle.png");
@@ -53,11 +56,13 @@ export default class PongGame extends Phaser.Scene {
 
     initRoomData(): void {
         if (!this.checkScene) {
-            this.socketClient.emit("joinRoom");
+            this.socketClient.emit("joinRoom", { roomName: this.roomName });
             console.log('join room');
             this.socketClient.on('enterRoom', (data) => {
                 console.log('enter room');
                 this.playerData.roomName = data.roomName;
+                console.log('rooooooooooooom NAme', this.roomName);
+
                 this.playerData.wishPlayer = data.wishPlayer;
                 console.log(this.playerData.roomName);
                 console.log(this.playerData.wishPlayer);
@@ -85,7 +90,7 @@ export default class PongGame extends Phaser.Scene {
                 this.ball.setVelocityY(data.ballY);
             }
         });
-        
+
         this.isgamestarted = true;
     }
     handleSocketEventsOn(): void {
@@ -93,18 +98,20 @@ export default class PongGame extends Phaser.Scene {
             if (data.roomName == this.playerData.roomName) {
                 this.flagGame = true;
                 this.p1victory.visible = false;
-                 this.p2victory.visible = false;
-                if(this.playerData.wishPlayer == 'player1')
-                {
-                    this.ball.setVelocityX(data.initialVelocityX);
-                    this.ball.setVelocityY(data.initialVelocityY);
+                this.p2victory.visible = false;
+                if (this.playerData.wishPlayer == 'player1') {
+                    if (this.ball && data) {
+                        this.ball?.setVelocityX(data.initialVelocityX);
+                        this.ball?.setVelocityY(data.initialVelocityY);
+                    }
                 }
-                else if (this.playerData.wishPlayer == 'player2')
-                {
-                    this.ball.setVelocityX(data.initialVelocityX * -1);
-                    this.ball.setVelocityY(data.initialVelocityY);    
+                else if (this.playerData.wishPlayer == 'player2') {
+                    if (this.ball && data) {
+                        this.ball?.setVelocityX(data.initialVelocityX * -1);
+                        this.ball?.setVelocityY(data.initialVelocityY);
+                    }
                 }
-                 this.isgamestarted = true;
+                this.isgamestarted = true;
                 // this.startGame();
             }
         });
@@ -113,30 +120,35 @@ export default class PongGame extends Phaser.Scene {
         })
 
     }
+    cleanupGame() {
+        // Reset game state
 
+        this.p1score_number = 0;
+        this.p2score_number = 0;
+        this.goalScored = false;
+        this.isgamestarted = false;
+        this.flagGame = false;
+        this.renderReplayButton = false;
+
+        // Remove event listeners
+        this.socketClient.off("startGameServer");
+        this.socketClient.off("leaveRoom");
+        // Add other event listeners to remove as needed
+
+        // Hide game elements
+        this.p1.setActive(false).setVisible(false);
+        this.p2.setActive(false).setVisible(false);
+        this.ball.setActive(false).setVisible(false);
+        this.table.setActive(false).setVisible(false);
+        // Hide other game elements as needed
+    }
     create() {
         this.initRoomData();
-        this.socketClient.on("bothInRoom", (data) => {
-            if (data.roomName == this.playerData.roomName) {
-                console.log(' before both in room');
-                console.log(' after both in room');
-                this.flagGame = true;
-                this.p1victory.visible = false;
-                 this.p2victory.visible = false;
-                if(this.playerData.wishPlayer == 'player1')
-                {
-                    this.ball?.setVelocityX(data.initialVelocityX);
-                    this.ball?.setVelocityY(data.initialVelocityY);
-                }
-                else if (this.playerData.wishPlayer == 'player2')
-                {
-                    this.ball?.setVelocityX(data.initialVelocityX * -1);
-                    this.ball?.setVelocityY(data.initialVelocityY);    
-                }
-                 this.isgamestarted = true;
-            }
-        })
-        this.socketClient.on("gameOver", (data) => {
+        console.log('socker of this user is ', this.socketClient.id);
+
+        this.socketClient.on("OnePlayerLeaveTheRoom", (data) => {
+            console.log('%%%%%%%%%%%%%%%%%%%the other player left the room%%%%%%%%%%%%%%%%%%%%%%%%%');
+            
             let graphics: any;
             let replayButton: any;
             this.renderReplayButton = true;
@@ -144,7 +156,7 @@ export default class PongGame extends Phaser.Scene {
             this.p2.setActive(false).setVisible(false);
             this.ball.setActive(false).setVisible(false);
             this.table.setActive(false).setVisible(false);
-            graphics = this.add.graphics();
+            graphics = this.add?.graphics();
             graphics.lineStyle(1, 0xffffff);
             graphics.strokeRoundedRect(375, 280, 150, 40, 20);
             if (this.renderReplayButton == true) {
@@ -170,11 +182,78 @@ export default class PongGame extends Phaser.Scene {
                     this.p1.setPosition(
                         this.physics.world.bounds.width - 50,
                         this.physics.world.bounds.height / 2,
-                        )
-                        this.p2.setPosition(
-                            this.physics.world.bounds.width - 850,
-                            this.physics.world.bounds.height / 2,
-                            )
+                    )
+                    this.p2.setPosition(
+                        this.physics.world.bounds.width - 850,
+                        this.physics.world.bounds.height / 2,
+                    )
+                    window.location.href = '/game';
+                });
+            }
+            // this.cleanupGame();
+            // this.scene.stop("PongGame");
+        });
+        this.socketClient.on("bothInRoom", (data) => {
+            if (data.roomName == this.playerData.roomName) {
+                console.log(' before both in room');
+                console.log(' after both in room');
+                this.flagGame = true;
+                this.p1victory.visible = false;
+                this.p2victory.visible = false;
+                if (this.playerData.wishPlayer == 'player1') {
+                    if (this.ball && data) {
+                        this.ball?.setVelocityX(data.initialVelocityX);
+                        this.ball?.setVelocityY(data.initialVelocityY);
+                    }
+                }
+                else if (this.playerData.wishPlayer == 'player2') {
+                    if (this.ball && data) {
+                        this.ball?.setVelocityX(data.initialVelocityX * -1);
+                        this.ball?.setVelocityY(data.initialVelocityY);
+                    }
+                }
+                this.isgamestarted = true;
+            }
+        })
+        this.socketClient.on("gameOver", (data) => {
+            let graphics: any;
+            let replayButton: any;
+            this.renderReplayButton = true;
+            this.p1.setActive(false).setVisible(false);
+            this.p2.setActive(false).setVisible(false);
+            this.ball.setActive(false).setVisible(false);
+            this.table.setActive(false).setVisible(false);
+            graphics = this.add?.graphics();
+            graphics.lineStyle(1, 0xffffff);
+            graphics.strokeRoundedRect(375, 280, 150, 40, 20);
+            if (this.renderReplayButton == true) {
+                replayButton = this.add.text(450, 300, 'Back To Home!', { color: '#fff' })
+                replayButton.setOrigin(0.5, 0.5);
+                replayButton.setInteractive()
+                replayButton.on('pointerdown', () => {
+                    this.renderReplayButton = false;
+                    this.p1score_number = 0;
+                    const p1s = this.p1score_number / 60;
+                    this.p1goaltext.setText(p1s.toFixed(0));
+                    this.p2score_number = 0;
+                    const p2s = this.p2score_number / 60;
+                    this.p2goaltext.setText(p2s.toFixed(0));
+                    this.p1.visible = true;
+                    this.p2.visible = true;
+                    this.ball.visible = true;
+                    this.table.visible = true;
+                    this.p1victory.visible = false;
+                    this.p2victory.visible = false;
+                    graphics.visible = false;
+                    replayButton.visible = false;
+                    this.p1.setPosition(
+                        this.physics.world.bounds.width - 50,
+                        this.physics.world.bounds.height / 2,
+                    )
+                    this.p2.setPosition(
+                        this.physics.world.bounds.width - 850,
+                        this.physics.world.bounds.height / 2,
+                    )
                     window.location.href = '/game';
                 });
             }
@@ -276,7 +355,7 @@ export default class PongGame extends Phaser.Scene {
             const p2s = this.p2score_number;
             this.p2goaltext.setText(p2s.toFixed(0));
             console.log("p2 score: " + this.p2score_number + '||' + p2s);
-                
+
             if (p2s === 5) {
                 this.p2victory.visible = true;
                 this.socketClient.emit("replayClient", { roomName: this.playerData.roomName, id: this.socketClient.id });
@@ -327,22 +406,22 @@ export default class PongGame extends Phaser.Scene {
 
     resetGame() {
         if (this.ball && this.ball.body) {
-        this.ball.setPosition(
-            this.physics.world.bounds.width / 2,
-            this.physics.world.bounds.height / 2
-        );
-        this.ball.setVelocity(0, 0);
-        this.ball.setAcceleration(0, 0);
-        this.ball.setAngularVelocity(0);
-        this.ball.setAngularAcceleration(0);
-        this.ball.body.enable = false;
+            this.ball.setPosition(
+                this.physics.world.bounds.width / 2,
+                this.physics.world.bounds.height / 2
+            );
+            this.ball.setVelocity(0, 0);
+            this.ball.setAcceleration(0, 0);
+            this.ball.setAngularVelocity(0);
+            this.ball.setAngularAcceleration(0);
+            this.ball.body.enable = false;
 
-        this.isgamestarted = false;
-        this.goalScored = false;
+            this.isgamestarted = false;
+            this.goalScored = false;
 
-        this.time.delayedCall(1000, () => {
-            this.ball.body.enable = true;
-        });
-    }
+            this.time.delayedCall(1000, () => {
+                this.ball.body.enable = true;
+            });
+        }
     }
 }

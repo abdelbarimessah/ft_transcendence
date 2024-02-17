@@ -91,6 +91,7 @@ const config = {
       },
       fontFamily: {
         'nico-moji': ['nico Moji', 'sans-serif'],
+        'press-start': ['Press Start 2P', 'cursive'],
         'poppins': ['Poppins', 'sans-serif'],
         'iiii': ['ui-sans-serif', 'system-ui'],
       },

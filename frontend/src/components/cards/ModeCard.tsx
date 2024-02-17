@@ -10,12 +10,11 @@ import { useContext } from 'react';
 import { SocketContext } from '@/app/SocketContext';
 import Link from 'next/link';
 
-// var socketClient = io('http://localhost:3000');
-
 
 function ModeCard(props: any) {
 
     const socketClient = useContext(SocketContext);
+    const [roomName, setRoomName] = useState('')
     const router = useRouter()
     const [isRandomMode, setIsRandomMode] = useState(false)
 
@@ -25,23 +24,32 @@ function ModeCard(props: any) {
         socketClient.emit('joinRoomFromCard');
     };
 
+    const removeRandomMode = () => {
+        setIsRandomMode(false)
+        socketClient.emit('customDisconnectClient', {roomName});
+    }
+
     useEffect(() => {
         socketClient.on('enterRoomFromCard', (data) => {
             console.log('the room name is ' + data.roomName);
-            router.push('/game/match');
+            setRoomName(data.roomName);
+            router.push(`/game/match?room=${data.roomName}`);
         });
 
-    }, [isRandomMode, router, socketClient])
+    }, [isRandomMode, router, socketClient]);
 
+    useEffect(() => {
+        return () => {
+            console.log('clean up the socket');
 
-    const removeRandomMode = () => {
-        setIsRandomMode(false)
-        socketClient.emit('customDisconnectClient');
-    }
+            socketClient.emit('customDisconnectClient', {roomName});
+        }
+    }, []);
+
     return (
         <>
             <div className={` ${isRandomMode ? 'blur' : ''}  w-full max-h-full flex flex-wrap items-center justify-center gap-[24px] pb-10 pt-10 `}>
-                <div className={` ${styles.playCard} cursor-pointer w-full max-w-[391px] h-[500px] rounded-[30px] overflow-hidden flex relative hover:opacity-100 `}>
+                <div className={` ${styles.playCard} cursor-pointer w-full max-w-[391px] h-[500px] rounded-[30px] overflow-hidden flex relative hover:opacity-90 hover:scale-[1.01] `}>
                     <Image
                         src="/../../assets/2.jpg"
                         alt="My Gallery Image"
@@ -51,7 +59,7 @@ function ModeCard(props: any) {
                         priority={true}
                     />
                     {/* <img src="/../../assets/2.jpg" alt="random mode image card" /> */}
-                    <div className='bg-color-18 w-full h-[202px] absolute bottom-0 left-0 '>
+                    <div className='bg-color-17/80 w-full h-[202px] absolute bottom-0 left-0 '>
                         <div className='h-full flex flex-col gap-[16px] sm:gap-[30px] justify-center items-center '>
                             <div className='w-full'>
                                 <p className='text-[24px] sm:text-[32px] font-nico-moji text-color-3 text-center uppercase '>AI mode</p>
@@ -83,7 +91,7 @@ function ModeCard(props: any) {
                     </div>
                 </div>
 
-                <div className={`${styles.playCard} cursor-pointer w-full max-w-[391px] h-[500px]  rounded-[30px] overflow-hidden flex relative hover:opacity-90 `}>
+                <div className={`${styles.playCard} cursor-pointer w-full max-w-[391px] h-[500px]  rounded-[30px] overflow-hidden flex relative hover:opacity-90  hover:scale-[1.01]`}>
                     <Image
                         src="/../../assets/3.jpg"
                         alt="My Gallery Image"
@@ -91,7 +99,7 @@ function ModeCard(props: any) {
                         sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
                         className='object-cover'
                     />
-                    <div className='bg-color-18 w-full h-[202px] absolute bottom-0 left-0 '>
+                    <div className='bg-color-17/80 w-full h-[202px] absolute bottom-0 left-0 '>
                         <div className='h-full flex flex-col gap-[16px] sm:gap-[30px] justify-center items-center '>
                             <div className='w-full '>
                                 <p className='text-[24px] sm:text-[32px] font-nico-moji text-color-3 text-center uppercase '>Random mode</p>
@@ -135,7 +143,7 @@ function ModeCard(props: any) {
                         </div>
                     </div>
                 </div>
-                <div className={`${styles.playCard} cursor-pointer xl:mb-0 w-full max-w-[391px] h-[500px] rounded-[30px] overflow-hidden flex relative hover:opacity-90 `}>
+                <div className={`${styles.playCard} cursor-pointer xl:mb-0 w-full max-w-[391px] h-[500px] rounded-[30px] overflow-hidden flex relative hover:opacity-90  hover:scale-[1.01]`}>
                     <Image
                         src="/../../assets/4.jpg"
                         alt="My Gallery Image"
@@ -143,7 +151,7 @@ function ModeCard(props: any) {
                         sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
                         className='object-cover'
                     />
-                    <div className='bg-color-18 w-full h-[202px] absolute bottom-0 left-0 '>
+                    <div className='bg-color-17/80 w-full h-[202px] absolute bottom-0 left-0 '>
                         <div className='h-full flex flex-col gap-[16px] sm:gap-[30px] justify-center items-center '>
                             <div className='w-full '>
                                 <p className='text-[24px] sm:text-[32px] font-nico-moji text-color-3 text-center uppercase '>FRIENDS MODE</p>
@@ -188,7 +196,3 @@ function ModeCard(props: any) {
 }
 
 export default ModeCard;
-
-function redirectToPage(arg0: string) {
-    throw new Error('Function not implemented.');
-}

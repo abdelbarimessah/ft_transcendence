@@ -132,9 +132,10 @@ export class UserService {
       where: { providerId: { not: id } },
     });
     
+    const queryArr = query.split(' ');
     const keys: (keyof User)[] = ['nickName','firstName', 'lastName'];
     const fuse = new Fuse(users, { keys, threshold: 0.2 });
-    const filtered = fuse.search(query).map((elem) => elem.item);
+    const filtered = fuse.search(queryArr[0]).map((elem) => elem.item);
     
     for (const user of filtered) {
       delete user.secretOpt;

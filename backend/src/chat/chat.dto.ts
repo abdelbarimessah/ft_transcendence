@@ -21,12 +21,6 @@ export class newMessageDto {
   channelId?: string;
 }
 
-export class createChatDto {
-  @IsNotEmpty()
-  @IsString()
-  userId: string;
-}
-
 export class createChannelDto {
   @IsString()
   @MinLength(3)
@@ -59,4 +53,10 @@ export class JoinChannelDto {
   @IsOptional()
   @IsString()
   password?: string;
+}
+
+export class userIdDto {
+  @IsString()
+  @IsNotEmpty()
+  userId: string;
 }

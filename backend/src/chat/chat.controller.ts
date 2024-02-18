@@ -20,7 +20,7 @@ import {
   JoinChannelDto,
   UpdateChannelDto,
   createChannelDto,
-  createChatDto,
+  userIdDto,
   newMessageDto,
 } from './chat.dto';
 import * as bcrypt from 'bcrypt';
@@ -42,7 +42,7 @@ export class ChatController {
   @Post('create')
   // i need to add authGuard here and the authGuard should extract userId from JWT token payload and put it in req
   // change req type later to Request
-  async createChat(@CurrentUser() user: any, @Body() data: createChatDto) {
+  async createChat(@CurrentUser() user: any, @Body() data: userIdDto) {
     const currentUser = user;
     const userToChatId = await this.chatService.getUserId(data.userId);
     const chatPairHash = this.chatService.generateChatPairHash(
@@ -320,5 +320,227 @@ export class ChatController {
     });
 
     return { message: 'User added to the channel successfully' };
+  }
+  @Post('channel/:id/leave')
+  async leaveChannel(@Param('id') channelId: string, @CurrentUser() user: any) {
+    const channel = await this.prismaService.channel.findUnique({
+      where: { id: channelId },
+    });
+    if (!channel) {
+      throw new NotFoundException(`Channel not found with ID ${channelId}`);
+    }
+    const membership = await this.prismaService.channelMembership.findUnique({
+      where: {
+        channelId_userId: {
+          channelId: channelId,
+          userId: user.id,
+        },
+      },
+    });
+
+    if (!membership) {
+      throw new NotFoundException(
+        `User is not a member of the channel ${channelId}`,
+      );
+    }
+    if (channel.ownerId === user.id) {
+      throw new BadRequestException(
+        `Channel owner cannot leave the channel directly.`,
+      );
+    }
+    await this.prismaService.channelMembership.delete({
+      where: {
+        channelId_userId: {
+          channelId: channelId,
+          userId: user.id,
+        },
+      },
+    });
+    return { message: `User has successfully left the channel ${channelId}.` };
+  }
+  @Post('channel/:id/admin')
+  async addAdmin(
+    @Param('id') channelId: string,
+    @CurrentUser() user: any,
+    body: userIdDto,
+  ) {
+    const currentUserMembership =
+      await this.prismaService.channelMembership.findUnique({
+        where: {
+          channelId_userId: {
+            channelId,
+            userId: user.id,
+          },
+        },
+      });
+
+    if (!currentUserMembership || !currentUserMembership.isAdmin) {
+      throw new ForbiddenException(
+        'You must be an admin to perform this action.',
+      );
+    }
+    const targetUserMembership =
+      await this.prismaService.channelMembership.findUnique({
+        where: {
+          channelId_userId: {
+            channelId,
+            userId: body.userId,
+          },
+        },
+      });
+
+    if (!targetUserMembership) {
+      throw new NotFoundException(
+        'Target user is not a member of the channel.',
+      );
+    }
+
+    if (targetUserMembership.isAdmin) {
+      throw new BadRequestException('User is already an admin.');
+    }
+
+    await this.prismaService.channelMembership.update({
+      where: {
+        channelId_userId: {
+          channelId,
+          userId: body.userId,
+        },
+      },
+      data: {
+        isAdmin: true,
+      },
+    });
+
+    return {
+      message: `User has been made an admin of the channel .`,
+    };
+  }
+  @Delete('channel/:id/admin')
+  async removeAdmin(
+    @Param('id') channelId: string,
+    @CurrentUser() user: any,
+    body: userIdDto,
+  ) {
+    const channelMembership =
+      await this.prismaService.channelMembership.findUnique({
+        where: {
+          channelId_userId: {
+            channelId: channelId,
+            userId: user.id,
+          },
+        },
+        include: {
+          channel: {
+            select: {
+              ownerId: true,
+            },
+          },
+        },
+      });
+    const channel = channelMembership.channel;
+    if (
+      !channelMembership ||
+      (!channelMembership.isAdmin &&
+        channelMembership.userId !== channel.ownerId)
+    ) {
+      throw new ForbiddenException(
+        'You do not have permission to remove an admin.',
+      );
+    }
+    const targetAdminMembership =
+      await this.prismaService.channelMembership.findUnique({
+        where: {
+          channelId_userId: {
+            channelId: channelId,
+            userId: body.userId,
+          },
+        },
+      });
+
+    if (!targetAdminMembership || !targetAdminMembership.isAdmin) {
+      throw new NotFoundException(
+        'The specified user is not an admin of this channel.',
+      );
+    }
+    await this.prismaService.channelMembership.update({
+      where: {
+        channelId_userId: {
+          channelId: channelId,
+          userId: body.userId,
+        },
+      },
+      data: {
+        isAdmin: false,
+      },
+    });
+    return { message: 'Admin rights removed successfully.' };
+  }
+  @Post('channel/:id/mute')
+  async muteMember(
+    @Param('id') channelId: string,
+    @CurrentUser() user: any,
+    body: userIdDto,
+  ) {
+    const channelMembership =
+      await this.prismaService.channelMembership.findUnique({
+        where: {
+          channelId_userId: {
+            channelId: channelId,
+            userId: user.id,
+          },
+        },
+        include: {
+          channel: true,
+        },
+      });
+
+    if (
+      !channelMembership ||
+      (!channelMembership.isAdmin &&
+        channelMembership.userId !== channelMembership.channel.ownerId)
+    ) {
+      throw new ForbiddenException(
+        'You do not have permission to mute members in this channel.',
+      );
+    }
+
+    // Check if the target user is a member and not the owner
+    const targetMembership =
+      await this.prismaService.channelMembership.findUnique({
+        where: {
+          channelId_userId: {
+            channelId: channelId,
+            userId: body.userId,
+          },
+        },
+      });
+
+    if (!targetMembership) {
+      throw new NotFoundException(
+        'The specified user is not a member of this channel.',
+      );
+    }
+    if (targetMembership.userId === channelMembership.channel.ownerId) {
+      throw new ForbiddenException('Cannot mute the owner of the channel.');
+    }
+
+    // Mute or Unmute the target user
+    const updatedMembership = await this.prismaService.channelMembership.update(
+      {
+        where: {
+          channelId_userId: {
+            channelId: channelId,
+            userId: body.userId,
+          },
+        },
+        data: {
+          isMuted: !targetMembership.isMuted, // Toggle mute status
+        },
+      },
+    );
+
+    return updatedMembership.isMuted
+      ? { message: 'User has been muted successfully.' }
+      : { message: 'User has been unmuted successfully.' };
   }
 }

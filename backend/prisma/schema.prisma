@@ -8,74 +8,93 @@ generator client {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  providerId String @unique
-  email String  @unique
-  nickName  String? @unique
-  firstName String?
-  lastName  String?
-  provider String?
-  avatar String?
-  secretOpt           String?
-  otpIsEnabled        Boolean              @default(false)
-  level               Int                  @default(10)
-  cover               String?
-  sockets             String[]
+  id            String              @id @unique() @default(uuid())
+  providerId    String              @unique
+  email         String              @unique
+  nickName      String?             @unique
+  firstName     String?
+  lastName      String?
+  provider      String?
+  avatar        String?
+  secretOpt     String?
+  otpIsEnabled  Boolean             @default(false)
+  level         Int                 @default(10)
+  cover         String?
+  sockets       String[]
+  messages      Message[]
+  chats         Chat[]              @relation("ChatMembers")
+  channels      Channel[]
+  memberships   ChannelMembership[]
+  notifications Notification[]
+  blockedUsers  User[]              @relation("UserBlocks")
+  blockedBy     User[]              @relation("UserBlocks")
 }
 
+model Chat {
+  id           String    @id @default(uuid())
+  createdAt    DateTime  @default(now())
+  messages     Message[]
+  members      User[]    @relation("ChatMembers")
+  chatPairHash String?   @unique
+}
 
-// model User {
-//   id        Int      @id @default(autoincrement())
-//   createdAt DateTime @default(now())
-//   email     String   @unique
-//   name      String?
-//   role      Role     @default(USER)
-//   mode     String[]
-// }
+model Channel {
+  id        String              @id @default(uuid())
+  name      String
+  type      AccessType
+  password  String?
+  createdAt DateTime            @default(now())
+  ownerId   String
+  owner     User                @relation(fields: [ownerId], references: [id])
+  messages  Message[]
+  members   ChannelMembership[]
+}
 
-// model Post {
-//   id        Int      @id @default(autoincrement())
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-//   published Boolean  @default(false)
-//   title     String   @db.VarChar(255)
-//   author    User?    @relation(fields: [authorId], references: [id])
-//   authorId  Int?
-// }
+enum AccessType {
+  PUBLIC
+  PRIVATE
+  PROTECTED
+}
 
-// enum Role {
-//   USER
-//   ADMIN
+model ChannelMembership {
+  channelId String
+  userId    String
+  isAdmin   Boolean  @default(false)
+  isMuted   Boolean? @default(false)
+  isBanned  Boolean? @default(false)
+  joinedAt  DateTime @default(now())
+  channel   Channel  @relation(fields: [channelId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 
-// }
+  @@id([channelId, userId])
+}
 
+model Message {
+  id            String         @id @default(uuid())
+  content       String
+  createdAt     DateTime       @default(now())
+  authorId      String
+  chatId        String?
+  channelId     String?
+  author        User           @relation(fields: [authorId], references: [id])
+  chat          Chat?          @relation(fields: [chatId], references: [id])
+  channel       Channel?       @relation(fields: [channelId], references: [id])
+  notifications Notification[]
+}
 
+model Notification {
+  id        String   @id @default(uuid())
+  type      String
+  status    Status   @default(PENDING) // e.g., pending, sent, delivered, read
+  createdAt DateTime @default(now())
+  userId    String
+  messageId String?
+  user      User     @relation(fields: [userId], references: [id])
+  message   Message? @relation(fields: [messageId], references: [id])
+}
 
-// model Profile {
-//   id        Int      @id @default(autoincrement())
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-//   bio       String?
-//   user    User?    @relation(fields: [userId], references: [id])
-//   userId    Int      @unique
-// }
-
-// model Game {
-//   id        Int      @id @default(autoincrement())
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-//   published Boolean  @default(false)
-//   title     String   @db.VarChar(255)
-//   player    User?     @relation(fields: [userId], references: [id])
-// }
-
-
-// model channel {
-//   id        Int      @id @default(autoincrement())
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-//   published Boolean  @default(false)
-//   title     String   @db.VarChar(255)
-//   owner    User?    @relation(fields: [ownerId], references: [id])
-//   ownerId  Int?
-// }
+enum Status {
+  PENDING
+  SENT
+  DELIVERED
+}

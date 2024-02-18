@@ -2,17 +2,11 @@ import {
   Body,
   ConflictException,
   Controller,
-  ExecutionContext,
   Get,
   Patch,
-  Post,
-  Req,
   Res,
   UnprocessableEntityException,
-  UploadedFile,
   UseGuards,
-  UseInterceptors,
-  createParamDecorator,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { IntraAuthGuard } from './guards/intra.guard';

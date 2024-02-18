@@ -39,7 +39,7 @@ export class AuthService {
     };
   }
 
-  async setOTPSecret(userId: number, secretOpt: string) {
+  async setOTPSecret(userId: string, secretOpt: string) {
     const user = await this.prismaService.user.update({
       where: { id: userId },
       data: { secretOpt },

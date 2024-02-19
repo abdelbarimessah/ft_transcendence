@@ -1,13 +1,14 @@
 import React from 'react';
+import LeftSide from '../leftSide';
 
 
 
-
-function Btns({icon}) {
+function Btns({icon, onClick}){
     return (
         <>
-            <button type='button' className=' font-popins'>
-                {icon}
+            <button type='button' className=' rounded-full w-[57px] h-[41px] p-[2px]' onClick={onClick}>
+                <img src={icon} alt="icon" />
+                
             </button>
         </>
     );

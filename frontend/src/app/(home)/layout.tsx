@@ -10,6 +10,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   const [Show, setShow] = useState(true);
+  console.log("here;)")
   return (
     <div className='flex bg-[#FFF0D2]  w-screen min-h-screen'>
       <SideNav setShow={setShow}/>

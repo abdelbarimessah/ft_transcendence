@@ -49,7 +49,7 @@ function ProfileCard() {
         }
 
         getData();
-    }, [ids]);
+    }, [ids,params]);
 
     console.log('user i am', user);
 

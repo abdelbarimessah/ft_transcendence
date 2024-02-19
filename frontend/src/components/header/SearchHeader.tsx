@@ -70,9 +70,9 @@ const SearchBareHeader = () => {
                         </div>
                     </div>
                     <div className='w-full bg-color-30 gap-[2px] flex flex-col overflow-y-auto no-scrollbar'>
-                        {searchResults.map((result : Result, index) => (
-                            <Link href={`http://localhost:8000/profile/${result?.providerId}`}>
-                            <div key={index} className='  h-[66px] w-full bg-color-0 hover:bg-color-30 z-[4000] flex pl-5 items-center justify-start gap-3  hover:scale-[1.01]'>
+                        {searchResults.map((result : Result, index:any) => (
+                            <Link key={index} href={`http://localhost:8000/profile/${result?.providerId}`}>
+                            <div  className='  h-[66px] w-full bg-color-0 hover:bg-color-30 z-[4000] flex pl-5 items-center justify-start gap-3  hover:scale-[1.01]'>
                                 <div className='w-[50px] h-[50px] bg-color-15 rounded-full relative overflow-hiddenr'>
                                     <Image
                                         src={result?.avatar}

@@ -94,15 +94,23 @@ function SettingPrompt() {
                             <div className='w-[134px] h-[134px] bg-color-6 rounded-full relative border border-color-0 group cursor-pointer'>
                                 {id && (
                                     <div className="w-full h-full absolute rounded-full overflow-hidden">
-                                        <img src={photoPath} alt="my image" className="object-cover w-full h-full" />
+                                        <Image
+                                            src={photoPath}
+                                            alt="Add image icon"
+                                            height={14}
+                                            width={14}
+                                            priority={true}
+                                        />
+                                        {/* <img src={photoPath} alt="my image" className="object-cover w-full h-full" /> */}
                                     </div>
                                 )}
                                 <div className="h-[23px] w-[23px]  absolute bottom-2 right-2 bg-color-24 flex items-center justify-center rounded-full ">
                                     <Image
-                                        src={'/../../assets/addImageIcon.svg'}
+                                        src='/../../assets/addImageIcon.svg'
                                         alt="Add image icon"
                                         height={14}
                                         width={14}
+                                        priority={true}
                                     />
                                 </div>
                                 <div className='h-full w-full rounded-full absolute hidden group-hover:flex  bg-black items-center justify-center text-center bg-slate-600/50 text-white tracking-wider'>Change Profile</div>
@@ -136,10 +144,10 @@ function SettingPrompt() {
                         </div>
                     </div>
                     <div className="w-full flex md:justify-start  justify-center relative  ">
-                        {nickNameError ?(
-                        <div className="absolute left-4 top-[75px]">
-                            <p className="text-color-22 text-[14px] font-poppins">Nickname is already in use</p>
-                        </div>):null
+                        {nickNameError ? (
+                            <div className="absolute left-4 top-[75px]">
+                                <p className="text-color-22 text-[14px] font-poppins">Nickname is already in use</p>
+                            </div>) : null
                         }
                         <div className="w-full ">
                             <label htmlFor="" className="font-nico-moji pl-4 text-color-6 text-[16px] "> Nick name</label>

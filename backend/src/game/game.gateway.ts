@@ -37,22 +37,8 @@ export class GameGateway implements OnGatewayConnection {
         socket.join(data.providerId);
     }
 
-    handleDisconnect(socket: Socket) {
-        this.roomName = this.listRooms.get(socket.id);
-        this.logger.log(this.listRooms.get(socket.id))
-        this.logger.log('room name in the disconnect: ' + this.roomName);
-        this.logger.log(`Client disconnected: ${socket.id}`);
-        this.server.to(this.roomName).emit('leaveRoom', { roomName: this.roomName });
-        socket.leave(this.roomName);
-        this.numClients[this.roomName]--;
-
-        this.playerQueue = this.playerQueue.filter((player) => player.socket.id !== socket.id);
-        this.logger.log(this.playerQueue.length + ' queue length after disconnect');
-    }
-
     @SubscribeMessage('someevent')
     handleSomeEvent(socket: Socket, data: any) {
-        this.logger.log('someevent');
         data = 'data';
         this.server.emit('someevent', data);
     }
@@ -63,25 +49,20 @@ export class GameGateway implements OnGatewayConnection {
         this.clientNO++;
         // this.roomName = `game-${Math.round(this.clientNO / 2).toString()}`;
         this.roomName = data.roomName;
-        this.logger.log('room name in the join room: ==================================================== ' + this.roomName);
         if (this.clientNO % 2)
             this.listClient.push({ id: socket.id, socket: socket, wishPlayer: 'player1' });
         else
             this.listClient.push({ id: socket.id, socket: socket, wishPlayer: 'player2' });
 
-        this.logger.log(`join to the room : ` + this.roomName);
         socket.join(this.roomName);
         this.listRooms.set(socket.id, this.roomName);
         this.playerScore.set(socket.id, 0);
         if (this.numClients[this.roomName] == undefined) {
             this.numClients[this.roomName] = 1;
-            this.logger.log('player 1 in the room : ' + this.roomName);
         }
         else {
             this.numClients[this.roomName]++;
-            this.logger.log('player 2 in the room : ' + this.roomName);
         }
-        this.logger.log('number of client in the room in the connect: ' + this.roomName + ' : ' + this.numClients[this.roomName]);
         this.server.in(socket.id).emit('enterRoom', { roomName: this.roomName, wishPlayer: this.listClient[this.listClient.length - 1].wishPlayer });
 
         if (this.numClients[this.roomName] == 2) {
@@ -99,16 +80,15 @@ export class GameGateway implements OnGatewayConnection {
     @SubscribeMessage('joinRoomFromCard')
     handleJoinRoomFromCard(socket: Socket, data: any) {
         this.playerQueue.push({ socket: socket });
-        this.logger.log(this.playerQueue.length + ' queue length');
-        this.logger.log('before enter the queue');
-
         if (this.playerQueue.length >= 2) {
             this.clientNOForCard++;
             this.roomName = `gameCard-${this.clientNOForCard}`;
 
             const player1 = this.playerQueue.shift();
             const player2 = this.playerQueue.shift();
-
+            this.listRooms.set(player1.socket.id, this.roomName);
+            this.listRooms.set(player2.socket.id, this.roomName);
+            console.log('list of rooms in the server **:', this.listRooms);
             player1.socket.join(this.roomName);
             player2.socket.join(this.roomName);
             this.server.in(this.roomName).emit('enterRoomFromCard', { roomName: this.roomName });
@@ -116,20 +96,34 @@ export class GameGateway implements OnGatewayConnection {
     }
 
 
+    handleDisconnect(socket: Socket) {
+        this.roomName = this.listRooms.get(socket.id);
+        this.playerQueue = this.playerQueue.filter((player) => player.socket.id !== socket.id);
+        this.server.to(this.roomName).emit('OnePlayerLeaveTheRoom', { roomName: this.roomName });
+        // socket.removeAllListeners();
+        // socket.broadcast.to(this.roomName).emit('OnePlayerLeaveTheRoom', { roomName: data.roomName });
+        console.log('socket rooms 1', socket.rooms);
+        // socket.leave(this.roomName);
+        console.log('socket rooms 1', socket.rooms);
+        this.server.socketsLeave(this.roomName);
+    }
+
     @SubscribeMessage('customDisconnectClient')
     handleCustomDisconnect(socket: Socket, data: any) {
         this.playerQueue = this.playerQueue.filter((player) => player.socket.id !== socket.id);
-        this.logger.log('ROOM NAME IN THE DISCONNECT', data.roomName);
         this.server.to(data.roomName).emit('OnePlayerLeaveTheRoom', { roomName: data.roomName });
+        // socket.removeAllListeners();
         // socket.broadcast.to(data.roomName).emit('OnePlayerLeaveTheRoom', { roomName: data.roomName });
+        console.log('socket rooms 2', socket.rooms);
+        // socket.leave(data.roomName);
+        console.log('socket rooms 2', socket.rooms);
         this.server.socketsLeave(data.roomName);
-        this.logger.log(this.playerQueue.length + ' queue length after quit the game mode');
+
     }
 
     @SubscribeMessage('goalScored')
     handleGoalScored(socket: Socket, data: any) {
         this.playerScore.set(socket.id, this.playerScore.get(socket.id) + 1);
-        this.logger.log('goalScored by ' + socket.id + ' : ' + data.wishPlayer + ' score: ' + this.playerScore.get(socket.id));
         if (this.playerScore.get(socket.id) < 5) {
             const initialVelocityX = Math.random() * 600 + 200;
             const initialVelocityY = Math.random() * 600 + 200;
@@ -145,7 +139,6 @@ export class GameGateway implements OnGatewayConnection {
 
     @SubscribeMessage('replayClient')
     handleReplayClient(socket: Socket, data: any) {
-        this.logger.log('replayClient');
         this.server.in(data.roomName).emit('replayServer', data);
     }
 
@@ -157,19 +150,15 @@ export class GameGateway implements OnGatewayConnection {
             const initialVelocityY = Math.random() * 600 + 200;
             this.server.to(data.roomName).emit('startGameServer', { roomName: data.roomName, initialVelocityX: initialVelocityX, initialVelocityY: initialVelocityY });
         }
-        else
-            this.logger.log('the number of client in the room is not 2 but is => ' + this.numClients[data.roomName] + "||" + data.roomName);
     }
 
     @SubscribeMessage('startBall')
     handleStartBall(socket: Socket, data: any) {
-        this.logger.log('start ball');
         this.server.to(data.roomName).emit('startBallBack', data);
     }
 
     @SubscribeMessage('setScore')
     handleSetScore(socket: Socket, data: any) {
-        this.logger.log('set score');
         this.server.to(data.roomName).emit('setScoreBack', data);
     }
 

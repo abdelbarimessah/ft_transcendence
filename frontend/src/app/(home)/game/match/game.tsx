@@ -89,9 +89,7 @@ export default function Game() {
 
   useEffect(() => {
     if (!parentEl.current) return;
-    game?.destroy(true);
-    
-    
+
     const gameConfig: Phaser.Types.Core.GameConfig = {
       type: Phaser.CANVAS,
       width: 900,
@@ -110,22 +108,31 @@ export default function Game() {
       },
       scene: [new pongGame(socketClient, roomName)]
     };
-    
+
     const newGame = new PhaserGame({ ...gameConfig, parent: parentEl.current, width: parentEl.current.offsetWidth, height: parentEl.current.offsetHeight });
     setGame(newGame);
 
-    const handlePlayerLeave = () => {
-        game?.destroy(false);
-    };
-    socketClient.on('OnePlayerLeaveTheRoom', handlePlayerLeave);
-
     return () => {
-      // game?.destroy(true);
-      
+      newGame?.destroy(true);
       console.log("🐲 DESTROY 🐲");
     };
 
   }, []);
+
+  useEffect(() => {
+    const handlePlayerLeave = () => {
+      console.log('gME IN useeffect', game);
+
+      game?.destroy(true);
+    };
+
+    socketClient.on('OnePlayerLeaveTheRoom', handlePlayerLeave);
+
+    return () => {
+      socketClient.off('OnePlayerLeaveTheRoom', handlePlayerLeave);
+    };
+
+  }, [game, socketClient]);
 
   return (
     <div ref={parentEl} className="flex items-center justify-center w-full flex-1" />

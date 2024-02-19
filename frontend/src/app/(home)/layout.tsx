@@ -2,8 +2,8 @@
 import '../globals.css'
 import SideNav from '@/components/sidebare/SideBare'
 import { useState } from 'react'
-import {SocketProvider} from "@/app/SocketContext"
-
+import { Providers } from '../providers'
+import { SocketProvider } from '../SocketContext'
 
 export default function RootLayout({
   children,
@@ -12,13 +12,13 @@ export default function RootLayout({
 }) {
   const [Show, setShow] = useState(true);
   return (
-    <SocketProvider>
-      <div className='flex  w-screen min-h-screen '>
-        <SideNav setShow={setShow} />
-        <div className='flex items-center justify-center flex-1 w-10 '>
+    <div className='flex  w-screen min-h-screen '>
+      <SideNav setShow={setShow} />
+      <div className='flex items-center justify-center flex-1 w-10 '>
+        <SocketProvider>
           {children}
-        </div>
+        </SocketProvider>
       </div>
-    </SocketProvider>
+    </div>
   )
 }

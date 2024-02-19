@@ -28,7 +28,7 @@ const ParticleBackground = () => {
 					id="tsparticles"
 					// particlesLoaded={particlesLoaded}
 					// style={tsParticlesConfig}
-					options={tsParticlesConfig}
+					// options={tsParticlesConfig}
 				/>
 			</div>
 		);

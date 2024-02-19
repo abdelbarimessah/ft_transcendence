@@ -6,7 +6,7 @@ import { use } from "matter";
 import { useEffect } from "react";
 
 
-function setting() {
+function Setting() {
 
     useEffect(() => {
         axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/changeFirstTime`);
@@ -20,4 +20,4 @@ function setting() {
         </div>
     );
 }
-export default setting;
+export default Setting;

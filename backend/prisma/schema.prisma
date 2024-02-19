@@ -59,12 +59,13 @@ enum AccessType {
 model ChannelMembership {
   channelId String
   userId    String
-  isAdmin   Boolean  @default(false)
-  isMuted   Boolean? @default(false)
-  isBanned  Boolean? @default(false)
-  joinedAt  DateTime @default(now())
-  channel   Channel  @relation(fields: [channelId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
+  isAdmin   Boolean   @default(false)
+  isMuted   Boolean?  @default(false)
+  expiresAt DateTime?
+  isBanned  Boolean?  @default(false)
+  joinedAt  DateTime  @default(now())
+  channel   Channel   @relation(fields: [channelId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
 
   @@id([channelId, userId])
 }
@@ -85,7 +86,7 @@ model Message {
 model Notification {
   id        String   @id @default(uuid())
   type      String
-  status    Status   @default(PENDING) // e.g., pending, sent, delivered, read
+  status    Status   @default(PENDING)
   createdAt DateTime @default(now())
   userId    String
   messageId String?

@@ -22,6 +22,7 @@ import {
   createChannelDto,
   userIdDto,
   newMessageDto,
+  userMuteDto,
 } from './chat.dto';
 import * as bcrypt from 'bcrypt';
 import { CurrentUser } from 'src/auth/current-user.decorator';
@@ -39,7 +40,7 @@ export class ChatController {
     private chatGateway: ChatGateway,
     private chatService: ChatService,
   ) {}
-  @Post('create')
+  @Post('create') // POST /chat/create : create new chat (send body with req)
   async createChat(@CurrentUser() user: any, @Body() data: userIdDto) {
     const currentUser = user;
     const userToChatId = await this.chatService.getUserId(data.userId);
@@ -63,7 +64,7 @@ export class ChatController {
     this.chatGateway.newChat(userToChatId, chat);
     return chat;
   }
-  @Get('all')
+  @Get('all') // GET /chat/all : return all the chat of the current user
   async getUserChats(@CurrentUser() user: any) {
     const userId = user.id;
     const userChats = await this.chatService.getUserChats(userId);
@@ -74,7 +75,7 @@ export class ChatController {
     });
     return chats;
   }
-  @Get(':id')
+  @Get(':id') // GET /chat/:id return the messages of the chat
   async getChat(@Param('id') id: string, @CurrentUser() user: any) {
     const userId = user.id;
     // To-do exclude secret info from user in every method not just here
@@ -87,6 +88,7 @@ export class ChatController {
     }
     return chat;
   }
+
   @Post('message')
   async sendMessage(@Body() data: newMessageDto, @CurrentUser() user: any) {
     const userId = user.id;
@@ -100,7 +102,7 @@ export class ChatController {
     } else if (channelId) {
       this.chatService.isBanned(channelId, userId);
     }
-    // To-do check if the user is muted
+    // To-do check if the user is muted if mute time expires unmute the user
     const message = await this.prismaService.message.create({
       data: {
         content,
@@ -191,7 +193,7 @@ export class ChatController {
     }
     const channels = memberships.map((membership) => {
       this.chatGateway.joinRoom(userId, membership.channel.id);
-      return membership.channel;
+      return membership.isBanned ? {} : membership.channel;
     });
 
     return channels;
@@ -364,7 +366,7 @@ export class ChatController {
   async addAdmin(
     @Param('id') channelId: string,
     @CurrentUser() user: any,
-    body: userIdDto,
+    @Body() body: userIdDto,
   ) {
     const currentUserMembership =
       await this.prismaService.channelMembership.findUnique({
@@ -421,7 +423,7 @@ export class ChatController {
   async removeAdmin(
     @Param('id') channelId: string,
     @CurrentUser() user: any,
-    body: userIdDto,
+    @Body() body: userIdDto,
   ) {
     const channelMembership =
       await this.prismaService.channelMembership.findUnique({
@@ -482,7 +484,7 @@ export class ChatController {
   async muteMember(
     @Param('id') channelId: string,
     @CurrentUser() user: any,
-    body: userIdDto,
+    @Body() body: userMuteDto,
   ) {
     const channelMembership =
       await this.prismaService.channelMembership.findUnique({
@@ -531,6 +533,7 @@ export class ChatController {
         },
         data: {
           isMuted: !targetMembership.isMuted,
+          expiresAt: body.expiresAt,
         },
       },
     );
@@ -604,7 +607,69 @@ export class ChatController {
       ? { message: 'User has been banned successfully.' }
       : { message: 'User has been unbanned successfully.' };
   }
+  @Post('channel/:id/kick')
+  async kickMember(
+    @Param('id') channelId: string,
+    @CurrentUser() user: any,
+    @Body() body: userIdDto,
+  ) {
+    const adminMembership =
+      await this.prismaService.channelMembership.findUnique({
+        where: {
+          channelId_userId: {
+            channelId,
+            userId: user.id,
+          },
+        },
+      });
 
+    if (!adminMembership || !adminMembership.isAdmin) {
+      throw new ForbiddenException('You must be an admin to kick members.');
+    }
+    const channel = await this.prismaService.channel.findUnique({
+      where: {
+        id: channelId,
+      },
+      select: {
+        ownerId: true,
+      },
+    });
+
+    if (!channel) {
+      throw new NotFoundException('Channel does not exist.');
+    }
+
+    if (body.userId === channel.ownerId) {
+      throw new ForbiddenException('Cannot kick the owner of the channel.');
+    }
+
+    const targetMembership =
+      await this.prismaService.channelMembership.findUnique({
+        where: {
+          channelId_userId: {
+            channelId,
+            userId: body.userId,
+          },
+        },
+      });
+
+    if (!targetMembership) {
+      throw new NotFoundException(
+        'The specified user is not a member of the channel.',
+      );
+    }
+
+    await this.prismaService.channelMembership.delete({
+      where: {
+        channelId_userId: {
+          channelId,
+          userId: body.userId,
+        },
+      },
+    });
+
+    return { message: 'User has been kicked from the channel.' };
+  }
   @Get('channel/:id/members')
   async getChannelMembers(@Param('id') channelId, @CurrentUser() user: any) {
     const channelMembership =
@@ -622,9 +687,15 @@ export class ChatController {
     }
 
     const channelWithMembers = await this.prismaService.channel.findUnique({
-      where: { id: channelId },
+      where: {
+        id: channelId,
+      },
+
       include: {
         members: {
+          where: {
+            isBanned: false,
+          },
           include: {
             user: true,
           },
@@ -638,4 +709,89 @@ export class ChatController {
 
     return members;
   }
+  @Get('channel/:id/messages')
+  async getChannelMessages(
+    @Param('id') channelId: string,
+    @CurrentUser() user: any,
+  ) {
+    const channelWithMessages = await this.prismaService.channel.findUnique({
+      where: {
+        id: channelId,
+      },
+      include: {
+        messages: {
+          orderBy: {
+            createdAt: 'asc',
+          },
+        },
+        members: {
+          where: {
+            userId: user.id,
+            isBanned: false,
+          },
+        },
+      },
+    });
+
+    if (!channelWithMessages || channelWithMessages.members.length === 0) {
+      throw new ForbiddenException('Access to the channel is denied.');
+    }
+
+    return channelWithMessages.messages;
+  }
+  @Post('channel/:id/add')
+  async addUserToChannel(
+    @Param('id') channelId: string,
+    @CurrentUser() user: any,
+    @Body() body: userIdDto,
+  ) {
+    const adminMembership =
+      await this.prismaService.channelMembership.findUnique({
+        where: {
+          channelId_userId: {
+            channelId,
+            userId: user.id,
+          },
+        },
+      });
+
+    if (!adminMembership || !adminMembership.isAdmin) {
+      throw new ForbiddenException(
+        'You must be an admin of this channel to add members.',
+      );
+    }
+
+    const targetUser = await this.prismaService.user.findUnique({
+      where: {
+        id: body.userId,
+      },
+    });
+
+    if (!targetUser) {
+      throw new NotFoundException('User does not exist.');
+    }
+
+    await this.prismaService.channelMembership.upsert({
+      where: {
+        channelId_userId: {
+          channelId,
+          userId: body.userId,
+        },
+      },
+      create: {
+        channelId,
+        userId: body.userId,
+        isAdmin: false,
+      },
+      update: {
+        isBanned: false,
+      },
+    });
+
+    return { message: 'User successfully added to the channel.' };
+  }
 }
+
+/**To-do: -check mute and ban in channel methods,
+ *        -
+ * */

@@ -5,6 +5,7 @@ import {
   MinLength,
   MaxLength,
   IsEnum,
+  IsDate,
 } from 'class-validator';
 import { AccessType } from '@prisma/client';
 export class newMessageDto {
@@ -59,4 +60,14 @@ export class userIdDto {
   @IsString()
   @IsNotEmpty()
   userId: string;
+}
+
+export class userMuteDto {
+  @IsString()
+  @IsNotEmpty()
+  userId: string;
+
+  @IsOptional()
+  @IsDate()
+  expiresAt;
 }

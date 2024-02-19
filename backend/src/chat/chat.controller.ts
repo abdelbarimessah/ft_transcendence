@@ -40,8 +40,6 @@ export class ChatController {
     private chatService: ChatService,
   ) {}
   @Post('create')
-  // i need to add authGuard here and the authGuard should extract userId from JWT token payload and put it in req
-  // change req type later to Request
   async createChat(@CurrentUser() user: any, @Body() data: userIdDto) {
     const currentUser = user;
     const userToChatId = await this.chatService.getUserId(data.userId);
@@ -69,7 +67,6 @@ export class ChatController {
   async getUserChats(@CurrentUser() user: any) {
     const userId = user.id;
     const userChats = await this.chatService.getUserChats(userId);
-    //To-do create room for each userChats.chats members
     const chats = userChats ? userChats.chats : [];
     chats.forEach((chat) => {
       this.chatGateway.joinRoom(chat.members[0].id, chat.id);
@@ -80,7 +77,7 @@ export class ChatController {
   @Get(':id')
   async getChat(@Param('id') id: string, @CurrentUser() user: any) {
     const userId = user.id;
-    // To-do exclude secret info
+    // To-do exclude secret info from user in every method not just here
     const chat = await this.chatService.getChatMessages(id, userId);
 
     if (!chat) {
@@ -103,6 +100,7 @@ export class ChatController {
     } else if (channelId) {
       this.chatService.isBanned(channelId, userId);
     }
+    // To-do check if the user is muted
     const message = await this.prismaService.message.create({
       data: {
         content,
@@ -117,8 +115,6 @@ export class ChatController {
   // maybe i won't need it cuz i get the messages when i get the chat
   @Get('message/:chatId')
   async getMessages(@Param('chatId') chatId: string, @CurrentUser() user: any) {
-    // i should get the message of a chat that the user is part of not any other message
-    // To-do the thing below
     const userId = user.id;
     const chat = await this.prismaService.chat.findFirst({
       where: {
@@ -167,6 +163,7 @@ export class ChatController {
           },
         },
       });
+      this.chatGateway.joinRoom(userId, channel.id);
       return channel;
     } catch (err) {
       if (err.code === 'P2002') {
@@ -192,10 +189,13 @@ export class ChatController {
     if (!memberships || memberships.length === 0) {
       throw new NotFoundException('No channels found for the user.');
     }
-    // const channels = memberships.map((membership) => membership.channel);
+    const channels = memberships.map((membership) => {
+      this.chatGateway.joinRoom(userId, membership.channel.id);
+      return membership.channel;
+    });
 
-    // return channels;
-    return memberships;
+    return channels;
+    // return memberships;
   }
   @Patch('channel/:id')
   async updateChannel(
@@ -233,7 +233,7 @@ export class ChatController {
       where: { id: channelId },
       data: updateData,
     });
-
+    this.chatGateway.updateChannel(channelId, updatedChannel);
     return updatedChannel;
   }
   @Delete('channel/:id')
@@ -263,7 +263,7 @@ export class ChatController {
     await this.prismaService.channel.delete({
       where: { id: channelId },
     });
-
+    this.chatGateway.deleteChannel(channelId);
     return { message: `Channel with ID ${channelId} has been deleted.` };
   }
   @Post('channel/:id/join')
@@ -318,7 +318,8 @@ export class ChatController {
         isBanned: false,
       },
     });
-
+    this.chatGateway.joinRoom(userId, channelId);
+    this.chatGateway.userJoined(channelId, user);
     return { message: 'User added to the channel successfully' };
   }
   @Post('channel/:id/leave')
@@ -356,6 +357,7 @@ export class ChatController {
         },
       },
     });
+    this.chatGateway.userLeft(channelId, user);
     return { message: `User has successfully left the channel ${channelId}.` };
   }
   @Post('channel/:id/admin')
@@ -410,7 +412,7 @@ export class ChatController {
         isAdmin: true,
       },
     });
-
+    this.chatGateway.addAdmin(channelId, body.userId);
     return {
       message: `User has been made an admin of the channel .`,
     };
@@ -473,6 +475,7 @@ export class ChatController {
         isAdmin: false,
       },
     });
+    this.chatGateway.removeAdmin(channelId, body.userId);
     return { message: 'Admin rights removed successfully.' };
   }
   @Post('channel/:id/mute')
@@ -494,17 +497,11 @@ export class ChatController {
         },
       });
 
-    if (
-      !channelMembership ||
-      (!channelMembership.isAdmin &&
-        channelMembership.userId !== channelMembership.channel.ownerId)
-    ) {
+    if (!channelMembership || !channelMembership.isAdmin) {
       throw new ForbiddenException(
         'You do not have permission to mute members in this channel.',
       );
     }
-
-    // Check if the target user is a member and not the owner
     const targetMembership =
       await this.prismaService.channelMembership.findUnique({
         where: {
@@ -524,7 +521,6 @@ export class ChatController {
       throw new ForbiddenException('Cannot mute the owner of the channel.');
     }
 
-    // Mute or Unmute the target user
     const updatedMembership = await this.prismaService.channelMembership.update(
       {
         where: {
@@ -534,13 +530,112 @@ export class ChatController {
           },
         },
         data: {
-          isMuted: !targetMembership.isMuted, // Toggle mute status
+          isMuted: !targetMembership.isMuted,
         },
       },
     );
-
+    this.chatGateway.muteUser(
+      channelId,
+      body.userId,
+      !updatedMembership.isMuted,
+    );
     return updatedMembership.isMuted
       ? { message: 'User has been muted successfully.' }
       : { message: 'User has been unmuted successfully.' };
+  }
+  @Post('channel/:id/ban')
+  async banMember(
+    @Param('id') id: string,
+    @CurrentUser() user: any,
+    targetId: userIdDto,
+  ) {
+    const membership = await this.prismaService.channelMembership.findUnique({
+      where: {
+        channelId_userId: {
+          channelId: id,
+          userId: user.id,
+        },
+      },
+      include: {
+        channel: true,
+      },
+    });
+
+    if (!membership) {
+      throw new NotFoundException('You are not a member of this channel.');
+    }
+    if (!membership.isAdmin) {
+      throw new ForbiddenException(
+        'You do not have permission to ban or unban members in this channel.',
+      );
+    }
+    const targetMembership =
+      await this.prismaService.channelMembership.findUnique({
+        where: {
+          channelId_userId: {
+            channelId: id,
+            userId: targetId.userId,
+          },
+        },
+      });
+
+    if (!targetMembership) {
+      throw new NotFoundException(
+        'The target user is not a member of this channel.',
+      );
+    }
+    if (targetMembership.userId === membership.channel.ownerId) {
+      throw new ForbiddenException('Cannot ban the owner of the channel.');
+    }
+
+    await this.prismaService.channelMembership.update({
+      where: {
+        channelId_userId: {
+          channelId: id,
+          userId: targetId.userId,
+        },
+      },
+      data: {
+        isBanned: !targetMembership.isBanned,
+      },
+    });
+    this.chatGateway.banUser(id, targetId.userId, !targetMembership.isBanned);
+    return !targetMembership.isBanned
+      ? { message: 'User has been banned successfully.' }
+      : { message: 'User has been unbanned successfully.' };
+  }
+
+  @Get('channel/:id/members')
+  async getChannelMembers(@Param('id') channelId, @CurrentUser() user: any) {
+    const channelMembership =
+      await this.prismaService.channelMembership.findFirst({
+        where: {
+          channelId: channelId,
+          userId: user.id,
+        },
+      });
+
+    if (!channelMembership) {
+      throw new ForbiddenException(
+        'You are not a member of this channel or the channel does not exist.',
+      );
+    }
+
+    const channelWithMembers = await this.prismaService.channel.findUnique({
+      where: { id: channelId },
+      include: {
+        members: {
+          include: {
+            user: true,
+          },
+        },
+      },
+    });
+
+    const members = channelWithMembers.members.map(
+      (membership) => membership.user,
+    );
+
+    return members;
   }
 }

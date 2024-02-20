@@ -26,25 +26,31 @@ function ModeCard(props: any) {
 
     const removeRandomMode = () => {
         setIsRandomMode(false)
+        console.log('random mode called from the button click 2222222');
+        
         socketClient.emit('customDisconnectClient', {roomName});
     }
 
     useEffect(() => {
-        socketClient.on('enterRoomFromCard', (data) => {
+        const enterRoom = (data:any) => {
             console.log('the room name is ' + data.roomName);
             setRoomName(data.roomName);
             router.push(`/game/match?room=${data.roomName}`);
-        });
+        };
+        socketClient.on('enterRoomFromCard', enterRoom);
 
-    }, [isRandomMode, router, socketClient]);
+        return () => {
+            socketClient.off('enterRoomFromCard', enterRoom);
+        }
+    }, [isRandomMode, router, socketClient, roomName]);
 
     useEffect(() => {
         return () => {
-            console.log('clean up the socket');
-
+            console.log('clean up the socket11111');
             socketClient.emit('customDisconnectClient', {roomName});
+            console.log('11111 room name is ', roomName);
         }
-    }, []);
+    }, [roomName]);
 
     return (
         <>

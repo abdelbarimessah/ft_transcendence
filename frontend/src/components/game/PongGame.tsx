@@ -166,14 +166,14 @@ export default class PongGame extends Phaser.Scene {
                 this.p2victory.visible = false;
                 if (this.playerData.wishPlayer == 'player1') {
                     if (this.ball.body && data) {
-                        console.log('th ball object is ================' , this.ball.body);
+                        // console.log('th ball object is ================' , this.ball.body);
                         this.ball.setVelocityX(data.initialVelocityX);
                         this.ball.setVelocityY(data.initialVelocityY);
                     }
                 }
                 else if (this.playerData.wishPlayer == 'player2') {
                     if (this.ball.body && data) { 
-                        console.log('th ball object is ================' , this.ball);
+                        // console.log('th ball object is ================' , this.ball);
                         
                         this.ball.setVelocityX(data.initialVelocityX * -1);
                         this.ball.setVelocityY(data.initialVelocityY);

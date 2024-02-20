@@ -43,7 +43,7 @@ export default function Home() {
     //   }, 5000);
     // });
     return () => {
-      console.log('clean up the socket');
+      console.log('clean up the socket333333');
       socketClient.emit('customDisconnectClient', { roomName });
     }
   }, []);

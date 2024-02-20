@@ -71,3 +71,9 @@ export class userMuteDto {
   @IsDate()
   expiresAt;
 }
+
+export class searchChannelsDto {
+  @IsString()
+  @IsNotEmpty()
+  keyword: string;
+}

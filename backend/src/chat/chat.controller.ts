@@ -10,6 +10,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 // import { Prisma } from '@prisma/client';
@@ -23,6 +24,7 @@ import {
   userIdDto,
   newMessageDto,
   userMuteDto,
+  searchChannelsDto,
 } from './chat.dto';
 import * as bcrypt from 'bcrypt';
 import { CurrentUser } from 'src/auth/current-user.decorator';
@@ -101,6 +103,7 @@ export class ChatController {
       this.chatService.isBlocked(chatId, userId);
     } else if (channelId) {
       this.chatService.isBanned(channelId, userId);
+      this.chatService.isMuted(channelId, userId);
     }
     // To-do check if the user is muted if mute time expires unmute the user
     const message = await this.prismaService.message.create({
@@ -185,7 +188,7 @@ export class ChatController {
         isBanned: false,
       },
       include: {
-        channel: true,
+        channel: true, // To-do exclude the password
       },
     });
     if (!memberships || memberships.length === 0) {
@@ -667,7 +670,7 @@ export class ChatController {
         },
       },
     });
-
+    this.chatGateway.kickUser(channelId, user.id);
     return { message: 'User has been kicked from the channel.' };
   }
   @Get('channel/:id/members')
@@ -787,11 +790,51 @@ export class ChatController {
         isBanned: false,
       },
     });
-
+    this.chatGateway.userJoined(channelId, targetUser);
     return { message: 'User successfully added to the channel.' };
+  }
+  @Get('channel/all')
+  async getAllChannel() {
+    const channels = await this.prismaService.channel.findMany({
+      where: {
+        type: {
+          in: ['PROTECTED', 'PUBLIC'],
+        },
+      },
+    });
+    return channels;
+  }
+  @Get('channel/search')
+  async searchChannels(@Query() query: searchChannelsDto) {
+    const { keyword } = query;
+    return await this.prismaService.channel.findMany({
+      where: {
+        AND: [
+          {
+            name: {
+              contains: keyword,
+              mode: 'insensitive',
+            },
+          },
+          {
+            type: {
+              not: 'PRIVATE',
+            },
+          },
+        ],
+      },
+      select: {
+        id: true,
+        name: true,
+        type: true,
+        createdAt: true,
+        ownerId: true,
+      },
+    });
   }
 }
 
 /**To-do: -check mute and ban in channel methods,
- *        -
+ *        -check privet channel access in channel methods,
+ *
  * */

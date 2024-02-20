@@ -88,7 +88,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   addAdmin(channelId: string, userId: string) {
     this.server.to(channelId).emit('addAdmin', { channelId, userId });
   }
-  removeAdmin(channelId, userId: string) {
+  removeAdmin(channelId: string, userId: string) {
     this.server.to(channelId).emit('removeAdmin', { channelId, userId });
   }
   muteUser(channelId: string, userId: string, mute: boolean) {
@@ -96,5 +96,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
   banUser(channelId: string, userId: string, ban: boolean) {
     this.server.to(channelId).emit('banUser', { channelId, userId, ban });
+  }
+  kickUser(channelId: string, userId: string) {
+    this.server.to(channelId).emit('kickUser', { channelId, userId });
   }
 }

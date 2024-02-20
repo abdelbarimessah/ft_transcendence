@@ -155,4 +155,38 @@ export class ChatService {
       throw new ForbiddenException('You are banned from the channel.');
     }
   }
+  async isMuted(channelId: string, userId: string) {
+    const membership = await this.prismaService.channelMembership.findUnique({
+      where: {
+        channelId_userId: {
+          channelId: channelId,
+          userId: userId,
+        },
+      },
+      select: {
+        isMuted: true,
+        expiresAt: true,
+      },
+    });
+
+    if (membership && membership.isMuted) {
+      if (membership.expiresAt && membership.expiresAt < new Date()) {
+        await this.prismaService.channelMembership.update({
+          where: {
+            channelId_userId: {
+              channelId: channelId,
+              userId: userId,
+            },
+          },
+          data: {
+            isMuted: false,
+            expiresAt: null,
+          },
+        });
+      } else {
+        // Mute is still in effect
+        throw new ForbiddenException('You are muted in this channel.');
+      }
+    }
+  }
 }

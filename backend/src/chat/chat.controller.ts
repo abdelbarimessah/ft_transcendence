@@ -75,6 +75,8 @@ export class ChatController {
       this.chatGateway.joinRoom(chat.members[0].id, chat.id);
       this.chatGateway.joinRoom(chat.members[1].id, chat.id);
     });
+    //delete the user info the user should not see it
+    console.log('chats:::::', chats);
     return chats;
   }
   @Get(':id') // GET /chat/:id return the messages of the chat

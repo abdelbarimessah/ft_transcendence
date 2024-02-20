@@ -88,7 +88,7 @@ export class GameGateway implements OnGatewayConnection {
             console.log('list of rooms in the server **:', this.listRooms);
             player1.socket.join(roomName);
             player2.socket.join(roomName);
-            this.server.in(roomName).emit('enterRoomFromCard', {roomName });
+            this.server.in(roomName).emit('enterRoomFromCard', { roomName });
         }
     }
 
@@ -107,16 +107,16 @@ export class GameGateway implements OnGatewayConnection {
 
     @SubscribeMessage('customDisconnectClient')
     handleCustomDisconnect(socket: Socket, data: any) {
-        if(!data.roomName) return ; 
+        if (!data.roomName) return;
         console.log('how send the event 555', socket.id);
-        
+
         this.playerQueue = this.playerQueue.filter((player) => player.socket.id !== socket.id);
         this.server.to(data.roomName).emit('OnePlayerLeaveTheRoom', { roomName: data.roomName });
         // socket.removeAllListeners();
         // socket.broadcast.to(data.roomName).emit('OnePlayerLeaveTheRoom', { roomName: data.roomName });
         this.logger.log(`Client disconnected2: ${socket.id}`);
         console.log('the room name is  666', data.roomName);
-        
+
         // socket.leave(data.roomName);
         this.server.socketsLeave(data.roomName);
 
@@ -125,23 +125,25 @@ export class GameGateway implements OnGatewayConnection {
     @SubscribeMessage('goalScored')
     handleGoalScored(socket: Socket, data: any) {
         this.playerScore.set(socket.id, this.playerScore.get(socket.id) + 1);
-        // const roomName = this.listRooms.get(socket.id);
+        const roomName = this.listRooms.get(socket.id);
         if (this.playerScore.get(socket.id) < 5) {
             const initialVelocityX = Math.random() * 600 + 200;
             const initialVelocityY = Math.random() * 600 + 200;
             setTimeout(() => {
-                this.server.in(this.roomName).emit('bothInRoom', { roomName: this.roomName, initialVelocityX: initialVelocityX, initialVelocityY: initialVelocityY });
+                this.server.in(roomName).emit('bothInRoom', { roomName: roomName, initialVelocityX: initialVelocityX, initialVelocityY: initialVelocityY });
             }, 2000);
         }
         else if (this.playerScore.get(socket.id) == 5) {
-            this.server.in(this.roomName).emit('gameOver');
+            this.server.in(roomName).emit('gameOver');
         }
 
     }
 
     @SubscribeMessage('replayClient')
     handleReplayClient(socket: Socket, data: any) {
-        this.server.in(data.roomName).emit('replayServer', data);
+        console.log('the game is over', data);
+        socket.emit('replayServer', data);
+        // this.server.in(data.roomName).emit('replayServer', data);
     }
 
 

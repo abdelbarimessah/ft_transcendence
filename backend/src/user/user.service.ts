@@ -44,9 +44,11 @@ export class UserService {
   }
 
   async uploadImage(imageUrl: string, id: string) {
+    console.log('uploadImage in the backend .... ');
+    
     try {
       const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
-      const uploadDir = path.join(__dirname, '../../uploads/');
+      const uploadDir = path.join(__dirname, '../../../uploads/');
       const uploadPath = path.join(uploadDir, `${id}${'.png'}`);
 
       if (!fs.existsSync(uploadDir)) {
@@ -55,10 +57,10 @@ export class UserService {
 
       fs.writeFileSync(uploadPath, response.data);
 
-      // console.log(`Image uploaded to ${uploadPath}`);
+      console.log(`Image uploaded to ${uploadPath}`);
     }
     catch (error) {
-      // console.log('error', error);
+      console.log('error in the upload of the image in the backend', error);
     }
   }
 
@@ -125,6 +127,19 @@ export class UserService {
     });
 
     return userWithAchievements?.achievements;
+  }
+
+  async getFriends(id: string) {
+    const userWithFriends = await this.prismaService.user.findUnique({
+      where: {
+        providerId: id
+      },
+      include: {
+        friends: true
+      }
+    });
+
+    return userWithFriends?.friends;
   }
 
   async getUserSearch(query: string, id: string) {

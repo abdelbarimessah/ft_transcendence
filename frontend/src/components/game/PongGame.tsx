@@ -117,7 +117,6 @@ export default class PongGame extends Phaser.Scene {
 
     }
     cleanupGame() {
-
         this.p1score_number = 0;
         this.p2score_number = 0;
         this.goalScored = false;
@@ -134,29 +133,15 @@ export default class PongGame extends Phaser.Scene {
     }
     create() {
         this.initRoomData();
-        
+
         console.log('socker of this user is ', this.socketClient.id);
         this.socketClient.on("OnePlayerLeaveTheRoom", (data) => {
             console.log('----111111111111111----');
-            let graphics: any;
-            let replayButton: any;
-            this.renderReplayButton = true;
             this.p1.setActive(false).setVisible(false);
             this.p2.setActive(false).setVisible(false);
             this.ball.setActive(false).setVisible(false);
             this.table.setActive(false).setVisible(false);
-            // graphics = this.add?.graphics();
-            // graphics.lineStyle(1, 0xffffff);
-            // graphics.strokeRoundedRect(375, 280, 150, 40, 20);
-            if (this.renderReplayButton == true) {
-                // replayButton = this.add?.text(450, 300, 'Back To Home!', { color: '#fff' })
-                // replayButton.setOrigin(0.5, 0.5);
-                // replayButton.setInteractive()
-                // replayButton.on('pointerdown', () => {
-                    // this.scene.restart();
-                //     window.location.href = '/game';
-                // });
-            }
+            this.p1.setActive(false).setVisible(false);
         });
 
         this.socketClient.on("bothInRoom", (data) => {
@@ -166,15 +151,12 @@ export default class PongGame extends Phaser.Scene {
                 this.p2victory.visible = false;
                 if (this.playerData.wishPlayer == 'player1') {
                     if (this.ball.body && data) {
-                        // console.log('th ball object is ================' , this.ball.body);
                         this.ball.setVelocityX(data.initialVelocityX);
                         this.ball.setVelocityY(data.initialVelocityY);
                     }
                 }
                 else if (this.playerData.wishPlayer == 'player2') {
-                    if (this.ball.body && data) { 
-                        // console.log('th ball object is ================' , this.ball);
-                        
+                    if (this.ball.body && data) {
                         this.ball.setVelocityX(data.initialVelocityX * -1);
                         this.ball.setVelocityY(data.initialVelocityY);
                     }
@@ -182,51 +164,7 @@ export default class PongGame extends Phaser.Scene {
                 this.isgamestarted = true;
             }
         })
-        this.socketClient.on("gameOver", (data) => {
-            // let graphics: any;
-            // let replayButton: any;
-            // this.renderReplayButton = true;
-            // this.p1.setActive(false).setVisible(false);
-            // this.p2.setActive(false).setVisible(false);
-            // this.ball.setActive(false).setVisible(false);
-            // this.table.setActive(false).setVisible(false);
-            // if(graphics.body){
-            //     graphics = this.add?.graphics();
-            //     graphics.lineStyle(1, 0xffffff);
-            //     graphics.strokeRoundedRect(375, 280, 150, 40, 20);
-            // }
-            // if (this.renderReplayButton == true) {
-                // replayButton = this.add?.text(450, 300, 'Back To Home!', { color: '#fff' })
-                // replayButton.setOrigin(0.5, 0.5);
-                // replayButton.setInteractive()
-                // replayButton.on('pointerdown', () => {
-                //     this.renderReplayButton = false;
-                //     this.p1score_number = 0;
-                //     const p1s = this.p1score_number / 60;
-                //     this.p1goaltext.setText(p1s.toFixed(0));
-                //     this.p2score_number = 0;
-                //     const p2s = this.p2score_number / 60;
-                //     this.p2goaltext.setText(p2s.toFixed(0));
-                //     this.p1.visible = true;
-                //     this.p2.visible = true;
-                //     this.ball.visible = true;
-                //     this.table.visible = true;
-                //     this.p1victory.visible = false;
-                //     this.p2victory.visible = false;
-                //     graphics.visible = false;
-                //     replayButton.visible = false;
-                //     this.p1.setPosition(
-                //         this.physics.world.bounds.width - 50,
-                //         this.physics.world.bounds.height / 2,
-                //     )
-                //     this.p2.setPosition(
-                //         this.physics.world.bounds.width - 850,
-                //         this.physics.world.bounds.height / 2,
-                //     )
-                    // window.location.href = '/game';
-                // });
-            // }
-        });
+
 
         this.handleSocketEventsOn();
         this.table = this.add.image(0, 0, "table").setOrigin(0, 0);
@@ -312,7 +250,9 @@ export default class PongGame extends Phaser.Scene {
             this.socketClient.emit("goalScored", { p1score: this.p1score_number, roomName: this.playerData.roomName, id: this.socketClient.id, wishPlayer: this.playerData.wishPlayer })
             if (p1s === 5) {
                 this.p1victory.visible = true;
-                this.socketClient.emit("replayClient", { roomName: this.playerData.roomName, id: this.socketClient.id });
+                console.log('player win ;;;;;;;');
+
+                this.socketClient.emit("replayClient", { roomName: this.playerData.roomName, id: this.socketClient.id, wishPlayer: this.playerData.wishPlayer, status: 'win' });
             }
         }
     }
@@ -324,7 +264,8 @@ export default class PongGame extends Phaser.Scene {
             this.p2goaltext.setText(p2s.toFixed(0));
             if (p2s === 5) {
                 this.p2victory.visible = true;
-                this.socketClient.emit("replayClient", { roomName: this.playerData.roomName, id: this.socketClient.id });
+                console.log('player lose ;;;;;;;');
+                this.socketClient.emit("replayClient", { roomName: this.playerData.roomName, id: this.socketClient.id, wishPlayer: this.playerData.wishPlayer, status: 'lose' });
             }
         }
     }

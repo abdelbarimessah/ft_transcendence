@@ -8,6 +8,7 @@ import axios from "axios";
 import { Skeleton } from "@nextui-org/react";
 import { useParams, usePathname, useSearchParams } from 'next/navigation'
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 
 axios.defaults.withCredentials = true;
@@ -19,6 +20,7 @@ function ProfileCard() {
     const [avatar, setAvatar] = useState<File | null>(null);
 
     const params = useParams<{ id: string; tag: string; item: string }>()
+    const router = useRouter()
     function handleAddFriend() {
         console.log('add friend', params.id);
         axios.patch('http://localhost:3000/user/addFriend', { id: params.id })
@@ -37,6 +39,9 @@ function ProfileCard() {
                 setIsLoading(true);
                 console.log('params', params);
                 const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/${params?.id}`);
+                if(res.data === 1){
+                    router.push('/profile');
+                }
                 setUser(res.data);
                 setIds(res.data.providerId);
                 setAvatar(res.data.avatar)

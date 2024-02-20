@@ -25,7 +25,7 @@ const ProfileHeader = () => {
     }, []);
 
     return (
-        <div className='w-[66px] h-[66px] bg-color-0 rounded-[22px] flex items-center justify-center gap-[8px] cursor-pointer xl:w-[280px]'>
+        <div className='w-[66px] h-[66px] bg-color-0 rounded-[22px] flex items-center xl:pl-5 pl-0 justify-center  xl:justify-start gap-[8px] cursor-pointer xl:w-[280px]'>
             <div className=' relative'>
             {isLoading ? (
                         <Skeleton className="w-[50px] h-[50px] rounded-full bg-color-25" />

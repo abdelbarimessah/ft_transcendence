@@ -43,7 +43,7 @@ function UsersAchievements() {
             }
         }
         getAchievements();
-    }, [achievements, params.id]);
+    }, [params.id]);
 
 
         return (

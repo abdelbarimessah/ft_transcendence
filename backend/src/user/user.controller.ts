@@ -146,6 +146,15 @@ export class UsersController {
         const result = await this.userService.removeFriend(user.providerId, friendId);
         return {message: result};
     }
+    @Get('friends')
+    @UseGuards(OTPGuard)
+    @UseGuards(JwtAuthGuard)
+    async getFriends(@CurrentUser() user: any) {
+        const result = await this.userService.getFriends(user.providerId);
+        console.log('friends', result);
+        return result;
+    }
+
     
     @Get(':id')
     @UseGuards(OTPGuard)
@@ -153,6 +162,7 @@ export class UsersController {
     async findOne(@Param('id') id: string, @CurrentUser() user: any) {
 
         const { friendOf, ...rest } = await this.userService.getUserById(id);
+            if(id === user.providerId) return (1);
 
         return {
             ...rest,

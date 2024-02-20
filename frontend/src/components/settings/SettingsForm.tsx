@@ -94,14 +94,14 @@ function SettingPrompt() {
                             <div className='w-[134px] h-[134px] bg-color-6 rounded-full relative border border-color-0 group cursor-pointer'>
                                 {id && (
                                     <div className="w-full h-full absolute rounded-full overflow-hidden">
-                                        <Image
+                                        {/* <Image
                                             src={photoPath}
                                             alt="Add image icon"
                                             height={14}
                                             width={14}
                                             priority={true}
-                                        />
-                                        {/* <img src={photoPath} alt="my image" className="object-cover w-full h-full" /> */}
+                                        /> */}
+                                        <img src={photoPath} alt="my image" className="object-cover w-full h-full" />
                                     </div>
                                 )}
                                 <div className="h-[23px] w-[23px]  absolute bottom-2 right-2 bg-color-24 flex items-center justify-center rounded-full ">

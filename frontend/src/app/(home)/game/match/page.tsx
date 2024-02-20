@@ -1,6 +1,7 @@
 'use client'
 import { SocketContext } from '@/app/SocketContext';
 import CountDownTimer from '@/components/game/CountDowntimer';
+import { use } from 'matter';
 import dynamic from 'next/dynamic'
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useContext, useEffect, useState } from 'react';
@@ -20,7 +21,8 @@ const DynamicComponentWithNoSSR = dynamic(
 export default function Home() {
   const [showFirstComponent, setShowFirstComponent] = useState(true);
   const socketClient = useContext(SocketContext);
-  const [otherPlayer, setOtherPlayer] = useState(false);
+  const [win, setWin] = useState(false);
+  const [lose, setLose] = useState(false);
   const route = useRouter();
 
   useEffect(() => {
@@ -45,8 +47,30 @@ export default function Home() {
     return () => {
       console.log('clean up the socket333333');
       socketClient.emit('customDisconnectClient', { roomName });
+      route.push('/game');
     }
   }, []);
+  const router = useRouter()
+
+  useEffect(() => {
+    const enterRoom = (data: any) => {
+      console.log('the room name is ' + data.roomName);
+      console.log('the data status is ', data.status);
+      
+      if (data.status === 'win') setWin(true);
+      else if (data.status === 'lose') setLose(true);
+
+      setTimeout(() => {
+        router.push('/game');
+      }, 3000);
+    };
+    socketClient.on('replayServer', enterRoom);
+
+    return () => {
+      socketClient.off('replayServer', enterRoom);
+    }
+  }, [router, socketClient, roomName]);
+
 
 
   return (
@@ -58,10 +82,16 @@ export default function Home() {
           <DynamicComponentWithNoSSR />
         )}
       </div>
-      {otherPlayer && (
+      {win && (
         <div className=' w-[282px] h-[195px] bg-color-30 rounded-[22px] flex flex-col items-center justify-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[1000]'>
           <span className='font-nico-moji text-[64px] text-color-6'>you</span>
           <span className='font-nico-moji text-[64px] text-color-6 -mt-7'> win</span>
+        </div>
+      )}
+      {lose && (
+        <div className=' w-[282px] h-[195px] bg-color-30 rounded-[22px] flex flex-col items-center justify-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[1000]'>
+          <span className='font-nico-moji text-[64px] text-color-6'>you</span>
+          <span className='font-nico-moji text-[64px] text-color-6 -mt-7'>lose</span>
         </div>
       )}
     </div>

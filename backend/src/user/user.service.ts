@@ -139,6 +139,12 @@ export class UserService {
       }
     });
 
+    // for (const user of userFriend) {
+    //   delete user.secretOpt;
+    //   delete user.email;
+    //   delete user.otpIsEnabled;
+    //   delete user.sockets;
+    // }0
     return userWithFriends?.friends;
   }
 

@@ -2,18 +2,18 @@ import { channel } from 'diagnostics_channel'
 import React, { useState } from 'react'
 
 function Chats ({avatar ,nickName ,msg ,time ,unreadMsgs, icon}) {
-    // console.log(dis)
+    console.log(nickName)
     return(
         icon == "channel" ?
         (
             //container
-            <div>
+            <div className=' '>
                 {/* avatar */}
                 <div>
                     <img src={"../../assets/_MG_0027.jpg"} alt="" />
                 </div>
                 {/* nickname */}
-                <div>qwqw</div>
+                <div>{nickName} hh</div>
                 {/* last msg */}
                 <div>qqw</div>
                 {/* time */}

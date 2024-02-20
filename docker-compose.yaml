@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   database:
@@ -11,6 +11,8 @@ services:
       - .env
     networks:
       - trans
+    volumes:
+      - db:/var/lib/postgresql/data
   # frontend:
   #   image: node:latest
   #   restart: on-failure
@@ -33,7 +35,6 @@ services:
   #   networks:
   #     - trans
 
-
 networks:
   trans:
 # services:
@@ -42,7 +43,13 @@ networks:
 #     ports:
 #       - 5432:5432
 #     env_file:
-#       - .env 
+#       - .env
 #     networks:
 #       - trans
 
+volumes:
+  db:
+    driver_opts:
+      type: none
+      o: bind
+      device: /Users/mjlem/Desktop/db

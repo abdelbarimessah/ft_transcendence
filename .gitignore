@@ -4,3 +4,5 @@ dist
 .vscode
 .next
 .DS_Store
+uploads
+NOTES.md

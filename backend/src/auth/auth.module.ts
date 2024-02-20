@@ -24,8 +24,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get('JWT_SECRET'),
-        signOptions: { 
-          expiresIn: configService.get('JWT_EXPIRES_IN')
+        signOptions: {
+          expiresIn: configService.get('JWT_EXPIRES_IN'),
         },
       }),
       inject: [ConfigService],
@@ -40,9 +40,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     //   }),
     // }),
   ],
-  providers: [AuthService, FortyTwoStrategy, GoogleStrategy,JwtStrategy, PrismaService],
+  providers: [
+    AuthService,
+    FortyTwoStrategy,
+    GoogleStrategy,
+    JwtStrategy,
+    PrismaService,
+  ],
   exports: [],
   controllers: [AuthContoller],
 })
-
 export class AuthModule {}

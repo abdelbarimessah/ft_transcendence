@@ -50,6 +50,16 @@ export default function Home() {
       route.push('/game');
     }
   }, []);
+
+  useEffect(() => {
+
+    socketClient.emit('checkRoom', { roomName });
+    socketClient.on('youAreNotinRoom', (data) => {
+      setShowFirstComponent(false);
+      route.push('/game');
+    });
+
+  }, []);
   const router = useRouter()
 
   useEffect(() => {

@@ -18,6 +18,7 @@ export class GameGateway implements OnGatewayConnection {
     listClient: { id: string; socket: Socket; wishPlayer: string }[] = [];
     listRooms: Map<string, string> = new Map<string, string>();
     playerScore: Map<string, number> = new Map<string, number>();
+    
 
     players = {
 
@@ -145,6 +146,15 @@ export class GameGateway implements OnGatewayConnection {
         socket.emit('replayServer', data);
         // this.server.in(data.roomName).emit('replayServer', data);
     }
+    
+    @SubscribeMessage('checkRoom')
+    handleCheckRoom(socket: Socket, data: any) {
+        if(!socket.rooms.has(data.roomName)) 
+        {
+            socket.emit('youAreNotinRoom');
+        }
+    }
+
 
 
     @SubscribeMessage('startGameClient')

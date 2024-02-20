@@ -45,7 +45,7 @@ export class UserService {
 
   async uploadImage(imageUrl: string, id: string) {
     console.log('uploadImage in the backend .... ');
-    
+
     try {
       const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
       const uploadDir = path.join(__dirname, '../../../uploads/');
@@ -138,13 +138,14 @@ export class UserService {
         friends: true
       }
     });
-
-    // for (const user of userFriend) {
-    //   delete user.secretOpt;
-    //   delete user.email;
-    //   delete user.otpIsEnabled;
-    //   delete user.sockets;
-    // }0
+    if (userWithFriends?.friends) {
+      for (const user of userWithFriends.friends) {
+        delete user.secretOpt;
+        delete user.email;
+        delete user.otpIsEnabled;
+        delete user.sockets;
+      }
+    }
     return userWithFriends?.friends;
   }
 
@@ -152,34 +153,23 @@ export class UserService {
     const users = await this.prismaService.user.findMany({
       where: { providerId: { not: id } },
     });
-    
+
     const queryArr = query.split(' ');
-    const keys: (keyof User)[] = ['nickName','firstName', 'lastName'];
+    const keys: (keyof User)[] = ['nickName', 'firstName', 'lastName'];
     const fuse = new Fuse(users, { keys, threshold: 0.2 });
     const filtered = fuse.search(queryArr[0]).map((elem) => elem.item);
-    
+
     for (const user of filtered) {
       delete user.secretOpt;
       delete user.email;
       delete user.otpIsEnabled;
       delete user.sockets;
     }
-    return {filtered};
+    return { filtered };
   }
-  // async filterUsers(search: string, id: User['id']) {
-  //   const users = await this.prismaService.user.findMany({
-  //     where: { id: { not: id } },
-  //   });
-  //   const keys: (keyof User)[] = ['fullName', 'displayName'];
-  //   const fuse = new Fuse(users, { keys, threshold: 0.2 });
-  //   const filtered = fuse.search(search).map((elem) => elem.item);
 
-  //   return UserEntity.fromUser(filtered);
-  // }
-
-  
   async addFriend(userId: string, friendId: string) {
-    if(userId === friendId) {
+    if (userId === friendId) {
       throw new BadRequestException("You can't add yourself as a friend");
     }
     await this.prismaService.user.update({
@@ -198,7 +188,7 @@ export class UserService {
   }
 
   async removeFriend(userId: string, friendId: string) {
-    if(userId === friendId) {
+    if (userId === friendId) {
       throw new BadRequestException("You can't add yourself as a friend");
     }
     await this.prismaService.user.update({

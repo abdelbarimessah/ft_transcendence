@@ -16,7 +16,7 @@ export function tokenFetcher(tokenUrl: string) {
       // const data = await res.json();
       // console.log('data in the midlware ===>', data);
 
-      if (!otp) return NextResponse.redirect("http://localhost:8000/login");
+      if (!otp) return NextResponse.redirect("http://localhost:8000");
 
       const isOTP = otp.enabled && !otp.verified;
       let redirectUrl = "http://localhost:8000/profile";
@@ -34,7 +34,7 @@ export function tokenFetcher(tokenUrl: string) {
              
        return res;
       } catch (error) {
-       return NextResponse.redirect("http://localhost:8000/login");
+       return NextResponse.redirect("http://localhost:8000");
     }
   };
 }

@@ -127,9 +127,8 @@ export class UsersController {
         @Res({ passthrough: true }) res: Response,
         @Body() body:  {id: string} 
     ) {
-
         const friendId = body.id;
-        const result = await this.userService.addFriend(user.providerId, friendId);
+        const result = await this.userService.addFriend(user.providerId, friendId);    
         return {message: result};
     }
 
@@ -141,7 +140,6 @@ export class UsersController {
         @Res({ passthrough: true }) res: Response,
         @Body() body:  {id: string} 
     ) {
-
         const friendId = body.id;
         const result = await this.userService.removeFriend(user.providerId, friendId);
         return {message: result};

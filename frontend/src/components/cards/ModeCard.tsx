@@ -15,8 +15,10 @@ function ModeCard(props: any) {
 
     const socketClient = useContext(SocketContext);
     const [roomName, setRoomName] = useState('')
+    const [playerPairingState, setPlayerPairingState] = useState(false);
     const router = useRouter()
     const [isRandomMode, setIsRandomMode] = useState(false)
+    const [opponent, setOpponent] = useState(null);
 
     const randomMode = () => {
         setIsRandomMode(true)
@@ -26,16 +28,20 @@ function ModeCard(props: any) {
 
     const removeRandomMode = () => {
         setIsRandomMode(false)
-        console.log('random mode called from the button click 2222222');
-
-        socketClient.emit('customDisconnectClient', { roomName });
+        console.log('random mode called from the button click remove');
+        socketClient.emit('handleRemoveFromQueue');
     }
 
     useEffect(() => {
         const enterRoom = (data: any) => {
-            console.log('the room name is ' + data.roomName);
             setRoomName(data.roomName);
-            router.push(`/game/match?room=${data.roomName}`);
+
+            setPlayerPairingState(true);
+            setIsRandomMode(false)
+
+            setTimeout(() => {
+                router.push(`/game/match?room=${data.roomName}`);
+            }, 4000);
         };
         socketClient.on('enterRoomFromCard', enterRoom);
 
@@ -45,16 +51,27 @@ function ModeCard(props: any) {
     }, [isRandomMode, router, socketClient, roomName]);
 
     useEffect(() => {
+        const yourOpponent = (data: any) => {
+            setOpponent(data);
+        };
+        socketClient.on('yourOpponent', yourOpponent);
+
         return () => {
-            console.log('clean up the socket11111');
-            socketClient.emit('customDisconnectClient', { roomName });
-            console.log('11111 room name is ', roomName);
+            socketClient.off('yourOpponent', yourOpponent);
+        }
+    }, [socketClient]);
+
+    useEffect(() => {
+        return () => {
+            // socketClient.emit('customDisconnectClient', { roomName });
         }
     }, [roomName]);
 
+
+
     return (
         <>
-            <div className={` ${isRandomMode ? 'blur' : ''}  w-full max-h-full flex flex-wrap items-center justify-center gap-[24px] pb-10 pt-10 `}>
+            <div className={` ${isRandomMode || playerPairingState ? 'blur' : ''}   w-full max-h-full flex flex-wrap items-center justify-center gap-[24px] pb-10 pt-10 `}>
                 <div className={` ${styles.playCard} cursor-pointer w-full max-w-[391px] h-[500px] rounded-[30px] overflow-hidden flex relative hover:opacity-90 hover:scale-[1.01] `}>
                     <Image
                         src="/../../assets/2.jpg"
@@ -185,20 +202,68 @@ function ModeCard(props: any) {
                 </div>
             </div>
             {isRandomMode && (
-                <div className='fixed top-0 left-0 w-screen h-screen flex items-center justify-center z-50'>
+                <div className='fixed ml-20 top-0 left-0 w-screen h-screen flex items-center justify-center z-[1000]'>
                     <Lottie
                         autoPlay
                         loop
                         style={{ width: 300 }} animationData={animationData}
                     />
-                    <div onClick={removeRandomMode} className=' cursor-pointer w-[50px] h-[50px] bg-white fixed top-10 right-10 flex items-center justify-center z-50 rounded-[17px] '>
+                    <div onClick={removeRandomMode} className=' cursor-pointer w-[50px] h-[50px] bg-white fixed top-32 right-32 flex items-center justify-center z-50 rounded-[17px] '>
                         <img src="../../assets/cross1.svg" alt="" />
                     </div>
-                    <button className=''></button>
                 </div>
+            )}
+            {playerPairingState && (
+                <PlayerPairing />
             )}
         </>
     );
 }
 
 export default ModeCard;
+
+
+
+function PlayerPairing() {
+    return (
+        <div className='absolute ml-20 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
+            <div className="w-[475px] h-[185px] bg-color-30 rounded-[22px] overflow-hidden relative ">
+                <div className="absolute z-0 h-full w-[256px] rounded-s-[22px] flex items-center justify-center overflow-hidden left-0 ">
+                    <Image
+                        src="/../../assets/rectangleShape.svg"
+                        alt="My Gallery Image"
+                        fill={true}
+                        sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
+                        className='object-cover'
+                        priority={true}
+                    />
+                </div>
+                <div className="w-full  z-1 absolute flex items-center justify-center gap-[45px] pt-5">
+                    <div className="w-[80px] h-[80px] bg-color-2 rounded-full "></div>
+                    <div className="w-[42px] h-[35px] flex items-center justify-center overflow-hidden">
+                        <Image
+                            src="/../../assets/vsIcon.svg"
+                            alt="My Gallery Image"
+                            width={42}
+                            height={35}
+                            priority={true}
+                        />
+                    </div>
+                    <div className="w-[80px] h-[80px] bg-color-2 rounded-full "></div>
+                </div>
+                <div className="z-10 absolute flex items-center justify-center top-3/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 gap-20">
+                    <div className="w-[134px] h-[40px] bg-color-30 rounded-[10px] flex items-center justify-center flex-col">
+                        <span className="font-nico-moji text-[#949494] text-[14px] capitalize">abdelbari</span>
+                        <span className="font-nico-moji text-[#C7C7C7] text-[10px] -mt-1 capitalize ">@messah</span>
+                    </div>
+                    <div className="w-[134px] h-[40px] bg-color-6 rounded-[10px] flex items-center justify-center flex-col">
+                        <span className="font-nico-moji text-[#949494] text-[14px] capitalize">abdelbari</span>
+                        <span className="font-nico-moji text-[#C7C7C7] text-[10px] -mt-1 capitalize ">@messah</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export { PlayerPairing }

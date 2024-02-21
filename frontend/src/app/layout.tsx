@@ -19,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className='font-nico-moji'>
       <link rel="icon" href="../../assets/favicon.ico" sizes="any" />
       <head>
         <title>Pong Game</title>

@@ -55,7 +55,6 @@ export default function Home() {
 
     socketClient.emit('checkRoom', { roomName });
     socketClient.on('youAreNotinRoom', (data) => {
-      setShowFirstComponent(false);
       route.push('/game');
     });
 
@@ -64,9 +63,9 @@ export default function Home() {
 
   useEffect(() => {
     const enterRoom = (data: any) => {
-      console.log('the room name is ' + data.roomName);
-      console.log('the data status is ', data.status);
       
+      console.log('the data status is ', data.socketData);
+      console.log('the data status is ', data.game.status);
       if (data.status === 'win') setWin(true);
       else if (data.status === 'lose') setLose(true);
 
@@ -74,10 +73,10 @@ export default function Home() {
         router.push('/game');
       }, 3000);
     };
-    socketClient.on('replayServer', enterRoom);
+    socketClient.on('endGameClient', enterRoom);
 
     return () => {
-      socketClient.off('replayServer', enterRoom);
+      socketClient.off('endGameClient', enterRoom);
     }
   }, [router, socketClient, roomName]);
 

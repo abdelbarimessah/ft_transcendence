@@ -25,6 +25,7 @@ model User {
   achievements Achievement[]
   friends      User[]        @relation("friends")
   friendOf     User[]        @relation("friends")
+  games        Game[]
 }
 
 model Achievement {
@@ -35,55 +36,19 @@ model Achievement {
   user   User    @relation(fields: [userId], references: [id])
 }
 
-// model User {
-//   id        Int      @id @default(autoincrement())
-//   createdAt DateTime @default(now())
-//   email     String   @unique
-//   name      String?
-//   role      Role     @default(USER)
-//   mode     String[]
-// }
+enum GameStatus {
+  WIN
+  LOSE
+}
 
-// model Post {
-//   id        Int      @id @default(autoincrement())
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-//   published Boolean  @default(false)
-//   title     String   @db.VarChar(255)
-//   author    User?    @relation(fields: [authorId], references: [id])
-//   authorId  Int?
-// }
-
-// enum Role {
-//   USER
-//   ADMIN
-
-// }
-
-// model Profile {
-//   id        Int      @id @default(autoincrement())
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-//   bio       String?
-//   user    User?    @relation(fields: [userId], references: [id])
-//   userId    Int      @unique
-// }
-
-// model Game {
-//   id        Int      @id @default(autoincrement())
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-//   published Boolean  @default(false)
-//   title     String   @db.VarChar(255)
-//   player    User?     @relation(fields: [userId], references: [id])
-// }
-
-// model channel {
-//   id        Int      @id @default(autoincrement())
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-//   published Boolean  @default(false)
-//   title     String   @db.VarChar(255)
-//   owner    User?    @relation(fields: [ownerId], references: [id])
-//   ownerId  Int?
-// }
+model Game {
+  id            Int        @id @default(autoincrement())
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  opponentId    Int
+  userId        Int
+  userScore     Int
+  opponentScore Int
+  status        GameStatus
+  user          User       @relation(fields: [userId], references: [id])
+}

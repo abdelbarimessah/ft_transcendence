@@ -251,8 +251,7 @@ export default class PongGame extends Phaser.Scene {
             if (p1s === 5) {
                 this.p1victory.visible = true;
                 console.log('player win ;;;;;;;');
-
-                this.socketClient.emit("replayClient", { roomName: this.playerData.roomName, id: this.socketClient.id, wishPlayer: this.playerData.wishPlayer, status: 'win' });
+                this.socketClient.emit("endGame", { roomName: this.playerData.roomName, id: this.socketClient.id, wishPlayer: this.playerData.wishPlayer, status: 'win' });
             }
         }
     }
@@ -265,7 +264,7 @@ export default class PongGame extends Phaser.Scene {
             if (p2s === 5) {
                 this.p2victory.visible = true;
                 console.log('player lose ;;;;;;;');
-                this.socketClient.emit("replayClient", { roomName: this.playerData.roomName, id: this.socketClient.id, wishPlayer: this.playerData.wishPlayer, status: 'lose' });
+                this.socketClient.emit("endGame", { roomName: this.playerData.roomName, id: this.socketClient.id, wishPlayer: this.playerData.wishPlayer, status: 'lose' });
             }
         }
     }

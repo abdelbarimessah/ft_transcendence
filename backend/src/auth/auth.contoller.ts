@@ -77,10 +77,6 @@ export class AuthContoller {
     @UseGuards(JwtAuthGuard)
     async generateOtpSecret(@CurrentUser() user: any) {
         const { secretOpt, qr_code } = await this.authService.generateOTP(user);
-
-        // console.log('otpSecret ===>', secretOpt);
-        // console.log('qr_code ===>', qr_code);
-
         if (!user.secretOpt)
             await this.authService.setOTPSecret(user.id, secretOpt);
 

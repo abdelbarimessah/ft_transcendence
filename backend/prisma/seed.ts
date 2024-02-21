@@ -16,7 +16,7 @@ async function main() {
       lastName: faker.person.lastName(),
       email: faker.internet.email(),
       avatar: faker.image.avatar(),
-      cover: faker.image.url({height: 200, width: 600}),
+      cover: faker.image.url({ height: 200, width: 600 }),
     });
   }
 

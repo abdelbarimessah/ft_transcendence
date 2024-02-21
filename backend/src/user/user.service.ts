@@ -44,7 +44,6 @@ export class UserService {
   }
 
   async uploadImage(imageUrl: string, id: string) {
-    console.log('uploadImage in the backend .... ');
 
     try {
       const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
@@ -57,7 +56,6 @@ export class UserService {
 
       fs.writeFileSync(uploadPath, response.data);
 
-      console.log(`Image uploaded to ${uploadPath}`);
     }
     catch (error) {
       console.log('error in the upload of the image in the backend', error);

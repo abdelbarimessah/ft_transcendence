@@ -8,34 +8,42 @@ generator client {
 }
 
 model User {
-  id            String              @id @unique() @default(uuid())
-  providerId    String              @unique
-  email         String              @unique
-  nickName      String?             @unique
-  firstName     String?
-  lastName      String?
-  provider      String?
-  avatar        String?
-  secretOpt     String?
-  otpIsEnabled  Boolean             @default(false)
-  level         Int                 @default(10)
-  cover         String?
-  sockets       String[]
-  messages      Message[]
-  chats         Chat[]              @relation("ChatMembers")
-  channels      Channel[]
-  memberships   ChannelMembership[]
-  notifications Notification[]
-  blockedUsers  User[]              @relation("UserBlocks")
-  blockedBy     User[]              @relation("UserBlocks")
+  id           String  @id @unique() @default(uuid())
+  providerId   String  @unique
+  email        String  @unique
+  nickName     String? @unique
+  firstName    String?
+  lastName     String?
+  provider     String?
+  avatar       String?
+  secretOpt    String?
+  otpIsEnabled Boolean @default(false)
+  level        Int     @default(10)
+  cover        String?
+
+  sockets              String[]
+  messages             Message[]
+  channels             Channel[]
+  memberships          ChannelMembership[]
+  userStats            UserStats?
+  chats                Chat[]              @relation("ChatMembers")
+  blockedUsers         User[]              @relation("UserBlocks")
+  blockedBy            User[]              @relation("UserBlocks")
+  gamesAsPlayerOne     Game[]              @relation("PlayerOne")
+  gamesAsPlayerTwo     Game[]              @relation("PlayerTwo")
+  Game                 Game[]              @relation("GameWinner")
+  requestedFriends     Friendship[]        @relation("FriendshipRequester")
+  receivedFriends      Friendship[]        @relation("FriendshipAddressee")
+  NotificationReceived Notification[]      @relation("ReceiverUser")
+  NotificationSent     Notification[]      @relation("SenderUser")
 }
 
 model Chat {
   id           String    @id @default(uuid())
   createdAt    DateTime  @default(now())
+  chatPairHash String?   @unique
   messages     Message[]
   members      User[]    @relation("ChatMembers")
-  chatPairHash String?   @unique
 }
 
 model Channel {
@@ -84,18 +92,74 @@ model Message {
 }
 
 model Notification {
-  id        String   @id @default(uuid())
-  type      String
-  status    Status   @default(PENDING)
-  createdAt DateTime @default(now())
-  userId    String
-  messageId String?
-  user      User     @relation(fields: [userId], references: [id])
-  message   Message? @relation(fields: [messageId], references: [id])
+  id         String     @id @default(uuid())
+  type       NotifyType
+  status     Status     @default(PENDING)
+  createdAt  DateTime   @default(now())
+  userId     String
+  receiverId String
+  gameId     String?
+  messageId  String?
+  user       User       @relation("SenderUser", fields: [userId], references: [id])
+  receiver   User?      @relation("ReceiverUser", fields: [receiverId], references: [id])
+  message    Message?   @relation(fields: [messageId], references: [id])
+}
+
+enum NotifyType {
+  FRIEND_REQUEST
+  GAME_INVITE
+  MESSAGE
 }
 
 enum Status {
   PENDING
-  SENT
-  DELIVERED
+  READ
+}
+
+model Game {
+  id             String     @id @default(uuid())
+  status         GameStatus
+  createdAt      DateTime   @default(now())
+  scorePlayerOne Int
+  scorePlayerTwo Int
+  playerOneId    String
+  playerTwoId    String
+  winnerId       String?
+  userId         String?
+  playerOne      User       @relation("PlayerOne", fields: [playerOneId], references: [id])
+  playerTwo      User       @relation("PlayerTwo", fields: [playerTwoId], references: [id])
+  winner         User?      @relation("GameWinner", fields: [winnerId], references: [id])
+}
+
+enum GameStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+model UserStats {
+  id     String @id @default(uuid())
+  userId String @unique
+  wins   Int    @default(0)
+  losses Int    @default(0)
+  level  Int    @default(1)
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model Friendship {
+  id          String           @id @default(uuid())
+  requesterId String
+  addresseeId String
+  status      FriendshipStatus
+  createdAt   DateTime         @default(now())
+  requester   User             @relation("FriendshipRequester", fields: [requesterId], references: [id])
+  addressee   User             @relation("FriendshipAddressee", fields: [addresseeId], references: [id])
+
+  @@unique([requesterId, addresseeId])
+}
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
 }

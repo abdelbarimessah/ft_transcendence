@@ -31,6 +31,8 @@ import { CurrentUser } from 'src/auth/current-user.decorator';
 import { OTPGuard } from 'src/auth/guards/Otp.guard';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ChatService } from './chat.service';
+import { NotificationService } from 'src/notification/notification.service';
+import { NotificationGateway } from 'src/notification/notification.gateway';
 
 // move logic to chatService
 @UseGuards(OTPGuard)
@@ -41,6 +43,8 @@ export class ChatController {
     private prismaService: PrismaService,
     private chatGateway: ChatGateway,
     private chatService: ChatService,
+    private notificationService: NotificationService,
+    private notificationGateway: NotificationGateway,
   ) {}
   @Post('create') // POST /chat/create : create new chat (send body with req)
   async createChat(@CurrentUser() user: any, @Body() data: userIdDto) {
@@ -115,6 +119,12 @@ export class ChatController {
       },
     });
     this.chatGateway.sendMessage(targetId, message);
+    const notification = this.notificationService.messageNotification(
+      user.id,
+      targetId,
+      message.id,
+    );
+    this.notificationGateway.sendNotification(targetId, notification);
     return message;
   }
   // maybe i won't need it cuz i get the messages when i get the chat

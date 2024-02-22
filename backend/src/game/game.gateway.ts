@@ -1,4 +1,4 @@
-import { OnGatewayConnection, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
 
@@ -7,7 +7,7 @@ import { Socket, Server } from 'socket.io';
         origin: 'http://localhost:8000',
     },
 })
-export class GameGateway implements OnGatewayConnection {
+export class GameGateway implements OnGatewayConnection , OnGatewayDisconnect{
     nb: number = 0;
     private logger: Logger = new Logger('GameGateway');
 
@@ -30,23 +30,23 @@ export class GameGateway implements OnGatewayConnection {
 
     private readonly connectedClients: Map<string, Socket> = new Map();
 
-    handleConnection(socket: Socket): void {
-      const clientId = socket.id;
-      this.connectedClients.set(clientId, socket);
-        this.logger.log(`Client connected: ${socket.id}`);
+    // handleConnection(socket: Socket): void {
+    //   const clientId = socket.id;
+    //   this.connectedClients.set(clientId, socket);
+    //     this.logger.log(`Client connected: ${socket.id}`);
   
-      socket.on('disconnect', () => {
-        this.connectedClients.delete(clientId);
-      });
+    //   socket.on('disconnect', () => {
+    //     this.connectedClients.delete(clientId);
+    //   });
     //   console.log('The connected clients are:');
     //     this.connectedClients.forEach((value, key) => {
     //         console.log(key);
     //     });
-    }
-
-    // handleConnection(socket: Socket): any {
-    //     this.logger.log(`Client connected: ${socket.id}`);
     // }
+
+    handleConnection(socket: Socket): any {
+        this.logger.log(`Client connected: ${socket.id}`);
+    }
 
     @SubscribeMessage('firstTime')
     handleFirstTime(socket: Socket, data: any) {
@@ -103,7 +103,7 @@ export class GameGateway implements OnGatewayConnection {
             player2.socket.join(roomName);
             player1.socket.emit('yourOpponent', player2.socket.data.user)
             player2.socket.emit('yourOpponent', player1.socket.data.user)
-            this.server.in(roomName).emit('enterRoomFromCard', { roomName });
+            this.server.in(roomName).emit('enterRoomFromCard', { roomName, player1: player1.socket.data.user , player2: player2.socket.data.user});
         }
     }
 

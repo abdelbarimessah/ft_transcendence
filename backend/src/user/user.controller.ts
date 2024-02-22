@@ -149,7 +149,6 @@ export class UsersController {
     @UseGuards(JwtAuthGuard)
     async getFriends(@CurrentUser() user: any) {
         const result = await this.userService.getFriends(user.providerId);
-        console.log('friends', result);
         return result;
     }
 

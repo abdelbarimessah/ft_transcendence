@@ -1,7 +1,6 @@
 'use client'
 import styles from './ModeCard.module.css'
 import { useEffect, useState } from 'react';
-import { io } from 'socket.io-client'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image';
 import Lottie from 'lottie-react';
@@ -11,7 +10,7 @@ import { SocketContext } from '@/app/SocketContext';
 import Link from 'next/link';
 
 
-function ModeCard(props: any) {
+function ModeCard(me: any) {
 
     const socketClient = useContext(SocketContext);
     const [roomName, setRoomName] = useState('')
@@ -19,6 +18,8 @@ function ModeCard(props: any) {
     const router = useRouter()
     const [isRandomMode, setIsRandomMode] = useState(false)
     const [opponent, setOpponent] = useState(null);
+    const [player1, setPlayer1] = useState(null);
+    const [player2, setPlayer2] = useState(null);
 
     const randomMode = () => {
         setIsRandomMode(true)
@@ -35,10 +36,16 @@ function ModeCard(props: any) {
     useEffect(() => {
         const enterRoom = (data: any) => {
             setRoomName(data.roomName);
-
+            if (data.player1.providerId === me.me.providerId) {
+                setPlayer1(data.player1);
+                setPlayer2(data.player2);
+            }
+            else {
+                setPlayer1(data.player2);
+                setPlayer2(data.player1);
+            }
             setPlayerPairingState(true);
             setIsRandomMode(false)
-
             setTimeout(() => {
                 router.push(`/game/match?room=${data.roomName}`);
             }, 4000);
@@ -81,7 +88,6 @@ function ModeCard(props: any) {
                         className='object-cover'
                         priority={true}
                     />
-                    {/* <img src="/../../assets/2.jpg" alt="random mode image card" /> */}
                     <div className='bg-color-17/80 w-full h-[202px] absolute bottom-0 left-0 '>
                         <div className='h-full flex flex-col gap-[16px] sm:gap-[30px] justify-center items-center '>
                             <div className='w-full'>
@@ -214,7 +220,7 @@ function ModeCard(props: any) {
                 </div>
             )}
             {playerPairingState && (
-                <PlayerPairing />
+                <PlayerPairing player1={player1} player2={player2} />
             )}
         </>
     );
@@ -224,7 +230,7 @@ export default ModeCard;
 
 
 
-function PlayerPairing() {
+function PlayerPairing({ player1, player2 }: any) {
     return (
         <div className='absolute ml-20 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
             <div className="w-[475px] h-[185px] bg-color-30 rounded-[22px] overflow-hidden relative ">
@@ -239,26 +245,46 @@ function PlayerPairing() {
                     />
                 </div>
                 <div className="w-full  z-1 absolute flex items-center justify-center gap-[45px] pt-5">
-                    <div className="w-[80px] h-[80px] bg-color-2 rounded-full "></div>
-                    <div className="w-[42px] h-[35px] flex items-center justify-center overflow-hidden">
+                    <div className="w-[80px] h-[80px] bg-color-2 rounded-full relative overflow-hidden">
+
                         <Image
-                            src="/../../assets/vsIcon.svg"
-                            alt="My Gallery Image"
-                            width={42}
-                            height={35}
+                            src={player1.avatar}
+                            alt="player 1 avatar"
+                            fill={true}
+                            className='object-cover'
+                            sizes='(min-width: 480px) 445px, calc(90.63vw + 28px)'
                             priority={true}
                         />
                     </div>
-                    <div className="w-[80px] h-[80px] bg-color-2 rounded-full "></div>
+                    <div className="w-[42px] h-[35px] flex items-center justify-center overflow-hidden relative">
+                        <Image
+                            src="/../../assets/vsIcon.svg"
+                            alt="My Gallery Image"
+                            fill={true}
+                            className='object-cover'
+                            sizes='(min-width: 480px) 445px, calc(90.63vw + 28px)'
+                            priority={true}
+                        />
+                    </div>
+                    <div className="w-[80px] h-[80px] bg-color-2 rounded-full relative overflow-hidden ">
+                        <Image
+                            src={player2.avatar}
+                            alt="player 2 avatar"
+                            fill={true}
+                            className='object-cover'
+                            sizes='(min-width: 480px) 445px, calc(90.63vw + 28px)'
+                            priority={true}
+                        />
+                    </div>
                 </div>
                 <div className="z-10 absolute flex items-center justify-center top-3/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 gap-20">
-                    <div className="w-[134px] h-[40px] bg-color-30 rounded-[10px] flex items-center justify-center flex-col">
-                        <span className="font-nico-moji text-[#949494] text-[14px] capitalize">abdelbari</span>
-                        <span className="font-nico-moji text-[#C7C7C7] text-[10px] -mt-1 capitalize ">@messah</span>
+                    <div className="w-[150px] h-[50px] bg-color-30 rounded-[10px] flex items-center justify-center flex-col">
+                        <span className="font-nico-moji text-[#949494] text-[12px] capitalize">{` ${player1.firstName} ${player1.lastName}`}</span>
+                        <span className="font-nico-moji text-[#C7C7C7] text-[9px] -mt-1 capitalize ">@{`${player1.nickName}`}</span>
                     </div>
-                    <div className="w-[134px] h-[40px] bg-color-6 rounded-[10px] flex items-center justify-center flex-col">
-                        <span className="font-nico-moji text-[#949494] text-[14px] capitalize">abdelbari</span>
-                        <span className="font-nico-moji text-[#C7C7C7] text-[10px] -mt-1 capitalize ">@messah</span>
+                    <div className="w-[150px] h-[50px] bg-color-6 rounded-[10px] flex items-center justify-center flex-col">
+                        <span className="font-nico-moji text-[#949494] text-[12px] capitalize">{` ${player2.firstName} ${player2.lastName}`}</span>
+                        <span className="font-nico-moji text-[#C7C7C7] text-[9px] -mt-1 capitalize ">@{`${player2.nickName}`}</span>
                     </div>
                 </div>
             </div>

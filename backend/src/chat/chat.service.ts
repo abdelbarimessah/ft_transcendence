@@ -82,8 +82,8 @@ export class ChatService {
     if (chatId) {
       target = await this.prismaService.chat.findUnique({
         where: { id: chatId },
-        select: {
-          id: true,
+        include: {
+          members: true,
         },
       });
     } else if (channelId) {
@@ -97,7 +97,7 @@ export class ChatService {
     if (!target) {
       throw new NotFoundException('there no such chat or channel');
     }
-    return target.id;
+    return target;
   }
   async isBlocked(chatId: string, userId: string) {
     const chatMembers = await this.prismaService.chat.findUnique({

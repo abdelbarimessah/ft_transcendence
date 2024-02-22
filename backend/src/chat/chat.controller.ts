@@ -32,7 +32,6 @@ import { OTPGuard } from 'src/auth/guards/Otp.guard';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ChatService } from './chat.service';
 import { NotificationService } from 'src/notification/notification.service';
-import { NotificationGateway } from 'src/notification/notification.gateway';
 
 // move logic to chatService
 @UseGuards(OTPGuard)
@@ -44,7 +43,6 @@ export class ChatController {
     private chatGateway: ChatGateway,
     private chatService: ChatService,
     private notificationService: NotificationService,
-    private notificationGateway: NotificationGateway,
   ) {}
   @Post('create') // POST /chat/create : create new chat (send body with req)
   async createChat(@CurrentUser() user: any, @Body() data: userIdDto) {
@@ -102,9 +100,14 @@ export class ChatController {
     if (!chatId && !channelId) {
       throw new NotFoundException('a chat or channel must be provided');
     }
+    let receiverId;
     const targetId = await this.chatService.checkChat(chatId, channelId);
     if (chatId) {
       this.chatService.isBlocked(chatId, userId);
+      receiverId =
+        targetId.members[1].id == user.id
+          ? targetId.members[1].id
+          : targetId.members[0].id;
     } else if (channelId) {
       this.chatService.isBanned(channelId, userId);
       this.chatService.isMuted(channelId, userId);
@@ -119,12 +122,13 @@ export class ChatController {
       },
     });
     this.chatGateway.sendMessage(targetId, message);
-    const notification = this.notificationService.messageNotification(
-      user.id,
-      targetId,
-      message.id,
-    );
-    this.notificationGateway.sendNotification(targetId, notification);
+    if (chatId) {
+      await this.notificationService.messageNotification(
+        user.id,
+        receiverId,
+        message.id,
+      );
+    }
     return message;
   }
   // maybe i won't need it cuz i get the messages when i get the chat

@@ -11,8 +11,9 @@ export class NotificationService {
   // game notification
   // friend req notification
   // message notification
+  // To-do add notification for channel messages
   async messageNotification(userId: string, receiverId: string, messageId) {
-    return await this.prismaService.notification.create({
+    const notification = await this.prismaService.notification.create({
       data: {
         type: 'MESSAGE',
         userId: userId,
@@ -20,10 +21,11 @@ export class NotificationService {
         messageId: messageId,
       },
     });
+    this.notificationGateway.sendNotification(receiverId, notification);
     //To-do send notification using the gateway
   }
   async gameNotification(userId: string, receiverId: string, gameId: string) {
-    return await this.prismaService.notification.create({
+    const notification = await this.prismaService.notification.create({
       data: {
         type: 'GAME_INVITE',
         userId: userId,
@@ -31,16 +33,17 @@ export class NotificationService {
         messageId: gameId,
       },
     });
+    this.notificationGateway.sendNotification(receiverId, notification);
     //To-do send notification using the gateway
   }
   async friendRequestNotification(userId: string, receiverId: string) {
-    return await this.prismaService.notification.create({
+    const notification = await this.prismaService.notification.create({
       data: {
         type: 'FRIEND_REQUEST',
         userId: userId,
         receiverId: receiverId,
       },
     });
-    //To-do send notification using the gateway
+    this.notificationGateway.sendNotification(receiverId, notification);
   }
 }

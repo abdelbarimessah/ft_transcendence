@@ -174,9 +174,10 @@ export class GameGateway implements OnGatewayConnection , OnGatewayDisconnect{
         console.log('the player in the end game is*******************', socket.data.user);
         // socket.emit('endGameClient', {game : data, user : socket.data.user});
         console.log('000000the game data is the : 0000000', data.gameData);
-        socket.emit('endGameClient', {game : data.gameData, user : socket.data.user});
-        const roomName = data.roomName;
+        const roomName = data.gameData.roomName;
         const sockets = this.roomSockets.get(roomName);
+        console.log(roomName, 'the sockets are : 99999999', sockets);
+        
         if (sockets) {
             const player1Socket = sockets.player1;
             const player2Socket = sockets.player2;
@@ -184,7 +185,7 @@ export class GameGateway implements OnGatewayConnection , OnGatewayDisconnect{
             console.log('++++++++++++++player2Socket is ', player2Socket);
             // Do something with player1Socket and player2Socket
         }
-        
+        socket.emit('endGameClient', {game : data.gameData, user : socket.data.user, pairs: sockets});
         // this.server.to(data.roomName).emit('endGameClient', {game : data.gameData, user : socket.data.user});
     }
     

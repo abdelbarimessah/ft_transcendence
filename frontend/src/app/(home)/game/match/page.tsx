@@ -63,6 +63,7 @@ export default function Home() {
 
   useEffect(() => {
     const enterRoom = (data: any) => {
+      console.log('the pairs data is: 999999', data.pairs);
       console.log('the socket is is :00000', socketClient.id);
       console.log('the game data is: 1111111', data.game);
       console.log('the user data is: 2222222', data.user);

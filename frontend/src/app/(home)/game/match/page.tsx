@@ -31,7 +31,7 @@ export default function Home() {
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [showFirstComponent]);
   const params = useSearchParams();
   const roomName: any = params.get("room");
 
@@ -49,7 +49,7 @@ export default function Home() {
       socketClient.emit('customDisconnectClient', { roomName });
       route.push('/game');
     }
-  }, []);
+  }, [route, socketClient, roomName]);
 
   useEffect(() => {
 
@@ -58,17 +58,16 @@ export default function Home() {
       route.push('/game');
     });
 
-  }, []);
+  }, [route, socketClient, roomName]);
   const router = useRouter()
 
   useEffect(() => {
     const enterRoom = (data: any) => {
+      console.log('the socket is is :00000', socketClient.id);
+      console.log('the game data is: 1111111', data.game);
+      console.log('the user data is: 2222222', data.user);
       
-      console.log('the data status is ', data.socketData);
-      console.log('the data status is ', data.game.status);
-      if (data.status === 'win') setWin(true);
-      else if (data.status === 'lose') setLose(true);
-
+      
       setTimeout(() => {
         router.push('/game');
       }, 3000);

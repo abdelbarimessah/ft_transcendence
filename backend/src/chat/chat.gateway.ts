@@ -1,8 +1,8 @@
 import {
-  MessageBody,
+  // MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
-  SubscribeMessage,
+  // SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
@@ -10,11 +10,11 @@ import { Server } from 'socket.io';
 import { ChatService } from './chat.service';
 import { Channel, Chat, Message, User } from '@prisma/client';
 import { UseGuards } from '@nestjs/common';
-import { OTPGuard } from 'src/auth/guards/Otp.guard';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { OTPGuard } from 'src/auth/Otp.guard';
+import { AuthGuard } from '@nestjs/passport';
 
 @UseGuards(OTPGuard)
-@UseGuards(JwtAuthGuard)
+@UseGuards(AuthGuard('jwt'))
 @WebSocketGateway()
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private userSocket = new Map<string, string>();

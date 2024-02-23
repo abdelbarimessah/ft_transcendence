@@ -12,38 +12,36 @@ export class NotificationService {
   // friend req notification
   // message notification
   // To-do add notification for channel messages
-  async messageNotification(userId: string, receiverId: string, messageId) {
-    const notification = await this.prismaService.notification.create({
+  async messageNotification(userId: string, receiverId: string, chatId) {
+    return await this.prismaService.notification.create({
       data: {
         type: 'MESSAGE',
-        userId: userId,
-        receiverId: receiverId,
-        messageId: messageId,
+        userId,
+        receiverId,
+        chatId,
       },
     });
-    this.notificationGateway.sendNotification(receiverId, notification);
+    //To-do i need to get user socket change receiverId with socketId
     //To-do send notification using the gateway
   }
   async gameNotification(userId: string, receiverId: string, gameId: string) {
-    const notification = await this.prismaService.notification.create({
+    return await this.prismaService.notification.create({
       data: {
         type: 'GAME_INVITE',
         userId: userId,
         receiverId: receiverId,
-        messageId: gameId,
+        gameId,
       },
     });
-    this.notificationGateway.sendNotification(receiverId, notification);
     //To-do send notification using the gateway
   }
   async friendRequestNotification(userId: string, receiverId: string) {
-    const notification = await this.prismaService.notification.create({
+    return await this.prismaService.notification.create({
       data: {
         type: 'FRIEND_REQUEST',
         userId: userId,
         receiverId: receiverId,
       },
     });
-    this.notificationGateway.sendNotification(receiverId, notification);
   }
 }

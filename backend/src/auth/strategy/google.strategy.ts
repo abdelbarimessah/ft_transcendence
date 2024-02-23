@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
-import { nanoid } from 'nanoid';
+import { Prisma } from '@prisma/client';
 import { Strategy, VerifyCallback } from 'passport-google-oauth20';
-import { UserService } from 'src/user/user.service';
+import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   private defaultCoverImage: string;
   constructor(
-    private readonly userService: UserService,
     private configService: ConfigService,
+    private authService: AuthService,
   ) {
     super({
       clientID: configService.get('Google_Client_ID'),
@@ -30,19 +30,18 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     profile: any,
     done: VerifyCallback,
   ): Promise<any> {
-    const { name, emails, photos, id } = profile;
-    const user: any = {
-      providerId: id,
-      email: emails[0].value,
-      nickName: `name.givenName${nanoid(5)}`,
-      firstName: name.givenName,
-      lastName: name.familyName,
+    const userData: any = {
+      providerId: profile._json.sub,
+      email: profile._json.email,
+      nickName: profile._json.name,
+      firstName: profile._json.given_name,
+      lastName: profile._json.family_name,
       provider: 'google',
-      avatar: photos[0].value,
-      picture: photos[0].value,
+      avatar: profile._json.picture,
       cover: this.defaultCoverImage,
     };
-    // upsert user in db
+    const user: Prisma.UserCreateInput =
+      await this.authService.userUpsert(userData);
     done(null, user);
   }
 }

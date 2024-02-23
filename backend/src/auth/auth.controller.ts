@@ -4,82 +4,120 @@ import {
   Controller,
   Get,
   Patch,
+  Req,
   Res,
   UnprocessableEntityException,
   UseGuards,
 } from '@nestjs/common';
-import { Response } from 'express';
-import { IntraAuthGuard } from './guards/intra.guard';
-import { GoogleAuthGuard } from './guards/Google.guard';
+import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
-import { JwtService } from '@nestjs/jwt';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { Request, Response } from 'express';
 import { CurrentUser } from './current-user.decorator';
 import { authenticator } from 'otplib';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller('auth')
-export class AuthContoller {
+export class AuthController {
   constructor(
-    private jwtService: JwtService,
     private authService: AuthService,
+    private jwtService: JwtService,
   ) {}
-
   @Get('google')
-  // @UseGuards(JwtAuthGuard)
-  @UseGuards(GoogleAuthGuard)
-  async handleGoogleLogin(
-    @CurrentUser() user: any,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    const User = {
-      providerId: user.providerId,
-      nickName: user.nickName,
-      otp: false,
-    };
-    const token = await this.jwtService.signAsync(User);
-    res.cookie('authorization', token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-      expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
-    });
-    // console.log('token ===>', token);
-    // console.log('otp ===>', user.otpIsEnabled);
-    console.log('user ===>', user);
-    return { token, otp: { enabled: user.otpIsEnabled, verified: false } };
+  @UseGuards(AuthGuard('google'))
+  googleAuth() {
+    console.log('********************GOOGLE-HERE***********************');
+  }
+
+  @Get('google/callback')
+  @UseGuards(AuthGuard('google'))
+  async googleAuthCallback(@Req() req, @Res() res) {
+    if (!req.user) {
+      return res.redirect('http://localhost:8000/login');
+    }
+
+    // To-do if it's the first time to login redirect to settings;
+    const isNew = true;
+    if (req.user.otpIsEnabled) {
+      return res.redirect(`http://localhost:8000/auth`);
+    } else {
+      const payload = {
+        id: req.user.id,
+        providerId: req.user.providerId,
+        nickName: req.user.nickName,
+        otp: false,
+      };
+      const token = await this.authService.generateJwtToken(payload);
+
+      res.cookie('authorization', token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'lax',
+        expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
+      });
+
+      if (isNew) {
+        return res.redirect('http://localhost:8000/setting');
+      } else {
+        return res.redirect('http://localhost:8000/profile');
+      }
+    }
   }
 
   @Get('42')
-  // @UseGuards(JwtAuthGuard)
-  @UseGuards(IntraAuthGuard)
-  async handleIntraLogin(
-    @CurrentUser() user: any,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    const User = {
-      providerId: user.providerId,
-      nickName: user.nickName,
+  @UseGuards(AuthGuard('42'))
+  intraAuth() {
+    console.log('********************INTRA-HERE***********************');
+  }
+
+  @Get('42/callback')
+  @UseGuards(AuthGuard('42'))
+  async intraAuthCallback(@Req() req, @Res() res) {
+    if (!req.user) {
+      return res.redirect('http://localhost:8000/login');
+    }
+
+    // To-do if it's the first time to login redirect to settings;
+    const isNew = true;
+    const payload = {
+      id: req.user.id,
+      providerId: req.user.providerId,
+      nickName: req.user.nickName,
       otp: false,
     };
-    const token = await this.jwtService.signAsync(User);
+    const token = await this.authService.generateJwtToken(payload);
+
     res.cookie('authorization', token, {
       httpOnly: true,
       secure: false,
       sameSite: 'lax',
       expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
     });
-    console.log('token ===>', token);
-    console.log('verif user===>', user.otpIsEnabled);
-    return { token, otp: { enabled: user.otpIsEnabled, verified: false } };
+    if (req.user.otpIsEnabled) {
+      return res.redirect(`http://localhost:8000/auth`);
+    } else {
+      if (isNew) {
+        return res.redirect('http://localhost:8000/setting');
+      } else {
+        return res.redirect('http://localhost:8000/profile');
+      }
+    }
+  }
+
+  @Get('logout')
+  @UseGuards(AuthGuard('jwt'))
+  async logout(@Req() req: Request, @Res() res: Response) {
+    res.clearCookie('authorization', {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+    });
+    return res.redirect('http://localhost:8000/login');
   }
 
   @Patch('generate/Otp')
-  @UseGuards(JwtAuthGuard)
-  async generateOtpSecret(@CurrentUser() user: any) {
+  @UseGuards(AuthGuard('jwt'))
+  async generateOtpSecrete(@CurrentUser() user: any) {
     const { secretOpt, qr_code } = await this.authService.generateOTP(user);
-
-    // console.log('otpSecret ===>', secretOpt);
-    // console.log('qr_code ===>', qr_code);
 
     if (!user.secretOpt)
       await this.authService.setOTPSecret(user.id, secretOpt);
@@ -88,7 +126,7 @@ export class AuthContoller {
   }
 
   @Patch('enable/Otp')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard('jwt'))
   async enableOtp(
     @CurrentUser() user: any,
     @Res({ passthrough: true }) res: Response,
@@ -105,14 +143,15 @@ export class AuthContoller {
     console.log('secret ===>', user.secretOpt);
     if (!isValid) throw new UnprocessableEntityException();
 
-    await this.authService.enabelOtp(user.providerId);
+    await this.authService.enableOtp(user.providerId);
 
-    const User = {
+    const payload = {
+      id: user.id,
       providerId: user.providerId,
       nickName: user.nickName,
       otp: true,
     };
-    const token = await this.jwtService.signAsync(User);
+    const token = await this.jwtService.signAsync(payload);
     res.cookie('authorization', token, {
       httpOnly: true,
       secure: false,
@@ -124,19 +163,20 @@ export class AuthContoller {
   }
 
   @Patch('disable/Otp')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard('jwt'))
   async disableOtp(
     @CurrentUser() user: any,
     @Res({ passthrough: true }) res: Response,
   ) {
     await this.authService.disableOtp(user.providerId);
 
-    const User = {
+    const payload = {
+      id: user.id,
       providerId: user.providerId,
       nickName: user.nickName,
       otp: false,
     };
-    const token = await this.jwtService.signAsync(User);
+    const token = await this.jwtService.signAsync(payload);
     res.cookie('authorization', token, {
       httpOnly: true,
       secure: false,
@@ -147,7 +187,7 @@ export class AuthContoller {
   }
 
   @Patch('verify/Otp')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard('jwt'))
   async verifyOtp(
     @CurrentUser() user: any,
     @Res({ passthrough: true }) res: Response,
@@ -164,12 +204,13 @@ export class AuthContoller {
     }
     console.log('otp correct');
 
-    const User = {
+    const payload = {
+      id: user.id,
       providerId: user.providerId,
       nickName: user.nickName,
       otp: true,
     };
-    const token = await this.jwtService.signAsync(User);
+    const token = await this.jwtService.signAsync(payload);
     res.cookie('authorization', token, {
       httpOnly: true,
       secure: false,
@@ -178,11 +219,5 @@ export class AuthContoller {
     });
 
     return { token, otp: { enabled: true, verified: true } };
-  }
-
-  @Get('logout')
-  async logout(@Res({ passthrough: true }) res: Response) {
-    console.log('logout');
-    res.clearCookie('authorization', { httpOnly: true });
   }
 }

@@ -28,14 +28,14 @@ import {
 } from './chat.dto';
 import * as bcrypt from 'bcrypt';
 import { CurrentUser } from 'src/auth/current-user.decorator';
-import { OTPGuard } from 'src/auth/guards/Otp.guard';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { OTPGuard } from 'src/auth/Otp.guard';
 import { ChatService } from './chat.service';
 import { NotificationService } from 'src/notification/notification.service';
+import { AuthGuard } from '@nestjs/passport';
 
 // move logic to chatService
 @UseGuards(OTPGuard)
-@UseGuards(JwtAuthGuard)
+@UseGuards(AuthGuard('jwt'))
 @Controller('chat')
 export class ChatController {
   constructor(

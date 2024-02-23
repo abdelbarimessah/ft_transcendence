@@ -7,8 +7,9 @@ export async function middleware(request: NextRequest) {
 
   const res = await fetch("http://localhost:3000/user/me", {
     headers: {
-      authorization: `bearer ${cookie.value}`,
+      Cookie: `authorization=${cookie.value}`,
     },
+    credentials: "include",
   });
   console.log("res in the middleware ===>", res.ok);
 

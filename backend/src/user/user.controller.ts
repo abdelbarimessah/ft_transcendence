@@ -9,14 +9,14 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/auth/current-user.decorator';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Request } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as fs from 'fs';
 import * as path from 'path';
-import { OTPGuard } from 'src/auth/guards/Otp.guard';
+import { OTPGuard } from 'src/auth/Otp.guard';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('user')
 export class UsersController {
@@ -27,7 +27,7 @@ export class UsersController {
 
   @Get('All')
   @UseGuards(OTPGuard)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard('jwt'))
   findAll() {
     console.log('All users');
 
@@ -38,9 +38,10 @@ export class UsersController {
 
   @Get('me')
   @UseGuards(OTPGuard)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard('jwt'))
   async getProfile(@CurrentUser() user: any) {
     try {
+      // console.log('in user/me: ', user);
       if (user) {
         this.userService.uploadImage(user.avatar, user.providerId);
       } else {
@@ -54,7 +55,7 @@ export class UsersController {
 
   @Post('updateAvatar')
   @UseGuards(OTPGuard)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptor('avatar'))
   async updateProfile(
     @UploadedFile() file,
@@ -69,7 +70,7 @@ export class UsersController {
 
   @Post('updateCover')
   @UseGuards(OTPGuard)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptor('cover'))
   async updateCover(
     @UploadedFile() file,
@@ -97,7 +98,7 @@ export class UsersController {
 
   @Post('updateInfo')
   @UseGuards(OTPGuard)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard('jwt'))
   async updateInfo(@Req() req: Request, @CurrentUser() user: any) {
     console.log('updateInfo body', req.body, user.providerId);
     console.log('res');
@@ -110,7 +111,7 @@ export class UsersController {
 
   @Get(':id')
   @UseGuards(OTPGuard)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard('jwt'))
   findOne(@Param('id') id: string) {
     return this.userService.getUserById(id);
   }

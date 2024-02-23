@@ -39,11 +39,12 @@ model User {
 }
 
 model Chat {
-  id           String    @id @default(uuid())
-  createdAt    DateTime  @default(now())
-  chatPairHash String?   @unique
+  id           String         @id @default(uuid())
+  createdAt    DateTime       @default(now())
+  chatPairHash String?        @unique
   messages     Message[]
-  members      User[]    @relation("ChatMembers")
+  members      User[]         @relation("ChatMembers")
+  Notification Notification[]
 }
 
 model Channel {
@@ -79,30 +80,29 @@ model ChannelMembership {
 }
 
 model Message {
-  id            String         @id @default(uuid())
-  content       String
-  createdAt     DateTime       @default(now())
-  authorId      String
-  chatId        String?
-  channelId     String?
-  author        User           @relation(fields: [authorId], references: [id])
-  chat          Chat?          @relation(fields: [chatId], references: [id])
-  channel       Channel?       @relation(fields: [channelId], references: [id])
-  notifications Notification[]
+  id        String   @id @default(uuid())
+  content   String
+  createdAt DateTime @default(now())
+  authorId  String
+  chatId    String?
+  channelId String?
+  author    User     @relation(fields: [authorId], references: [id])
+  chat      Chat?    @relation(fields: [chatId], references: [id])
+  channel   Channel? @relation(fields: [channelId], references: [id])
 }
 
 model Notification {
   id         String     @id @default(uuid())
+  createdAt  DateTime   @default(now())
   type       NotifyType
   status     Status     @default(PENDING)
-  createdAt  DateTime   @default(now())
   userId     String
   receiverId String
   gameId     String?
-  messageId  String?
+  chatId     String?
   user       User       @relation("SenderUser", fields: [userId], references: [id])
   receiver   User?      @relation("ReceiverUser", fields: [receiverId], references: [id])
-  message    Message?   @relation(fields: [messageId], references: [id])
+  chat       Chat?      @relation(fields: [chatId], references: [id])
 }
 
 enum NotifyType {

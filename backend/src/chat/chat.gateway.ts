@@ -45,10 +45,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       if (!secret) throw new Error('JWT secret is not configured');
 
       const decoded = this.jwtService.verify(authToken, { secret });
-      console.log('Decoded JWT:', decoded);
 
       const userId = decoded.id;
-      console.log('User ID from JWT:', userId);
 
       this.appService.set(userId, client.id);
     } catch (error) {
@@ -68,7 +66,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   // @SubscribeMessage('message')
   // handleMessage(@MessageBody() data: string) {
-  //   console.log("i'm here", data);
   //   this.server.emit('message', data);
   //   this.chatService.getChat();
   // }
@@ -77,7 +74,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const socketId = this.getSocketByUserId(userId);
     if (socketId) {
       const client = this.server.sockets.sockets.get(socketId);
-      console.log('in join room, client: ', client);
       client.join(chatId);
     }
   }
@@ -86,7 +82,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const sockId = this.getSocketByUserId(userId);
     if (sockId) {
       const client = this.server.sockets.sockets.get(sockId);
-      console.log('in newChat, client: ', client);
       if (client) {
         client.join(chat.id);
         this.server.to(sockId).emit('newChat', { chat });

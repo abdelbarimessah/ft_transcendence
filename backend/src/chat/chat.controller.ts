@@ -852,6 +852,94 @@ export class ChatController {
       },
     });
   }
+  @Post('block')
+  async blockUser(@CurrentUser() user: any, @Body() targetUserId: userIdDto) {
+    if (user.id === targetUserId.userId) {
+      throw new BadRequestException('You cannot block yourself.');
+    }
+
+    const targetUser = await this.prismaService.user.findUnique({
+      where: {
+        id: targetUserId.userId,
+      },
+    });
+    if (!targetUser) {
+      throw new NotFoundException('Target user not found.');
+    }
+
+    const alreadyBlocked = await this.prismaService.user.findFirst({
+      where: {
+        id: user.id,
+        blockedUsers: {
+          some: {
+            id: targetUserId.userId,
+          },
+        },
+      },
+    });
+
+    if (alreadyBlocked) {
+      throw new BadRequestException('User is already blocked.');
+    }
+
+    await this.prismaService.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        blockedUsers: {
+          connect: {
+            id: targetUser.id,
+          },
+        },
+      },
+    });
+  }
+  @Post('unblock')
+  async unblockUser(@CurrentUser() user: any, @Body() targetUserId: userIdDto) {
+    if (user.id === targetUserId.userId) {
+      throw new BadRequestException('You cannot unblock yourself');
+    }
+
+    // Check if the target user exists
+    const targetUser = await this.prismaService.user.findUnique({
+      where: {
+        id: targetUserId.userId,
+      },
+    });
+    if (!targetUser) {
+      throw new NotFoundException('Target user not found.');
+    }
+
+    // Check if the target user is currently blocked
+    const isBlocked = await this.prismaService.user.findFirst({
+      where: {
+        id: user.id,
+        blockedUsers: {
+          some: {
+            id: targetUserId.userId,
+          },
+        },
+      },
+    });
+
+    if (!isBlocked) {
+      throw new BadRequestException('User is not blocked.');
+    }
+
+    await this.prismaService.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        blockedUsers: {
+          disconnect: {
+            id: targetUser.id,
+          },
+        },
+      },
+    });
+  }
 }
 
 /**To-do: -check mute and ban in channel methods,

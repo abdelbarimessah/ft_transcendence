@@ -14,7 +14,7 @@ function choseMode() {
         }).catch(err => {
             console.error(err);
         })
-    }, [me]);
+    }, []);
     return (
         <>
             <div className="w-full  h-full bg-color-18 flex flex-col  items-center  overflow-scroll no-scrollbar ">

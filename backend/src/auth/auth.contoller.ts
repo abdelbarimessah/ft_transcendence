@@ -35,9 +35,6 @@ export class AuthContoller {
             sameSite: 'lax',
             expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
         })
-        // console.log('token ===>', token);
-        // console.log('otp ===>', user.otpIsEnabled);
-        console.log('user ===> gggggggggg' , user);
         return { token, otp: { enabled: user.otpIsEnabled, verified: false  , firstTime: user.firstTime }};
     }
 
@@ -149,22 +146,16 @@ export class AuthContoller {
         @Body() body: { otp: string }
     ) {
         if (!user.otpIsEnabled) throw new ConflictException();
-        console.log('opt in the verify auth controller', body.otp);
 
         const success = await this.authService.verifyOTP(user, body.otp);
-        console.log('success ===>', success);
-        if (!success)
-        {
-            console.log('otp incorrect');
-            throw new UnprocessableEntityException();
-        }
-        console.log('otp correct');
+        if (!success) return {valid: false}
 
         const User = {
             providerId: user.providerId,
             nickName: user.nickName,
             otp: true
         }
+
         const token = await this.jwtService.signAsync(User);
         res.cookie('authorization', token, {
             httpOnly: true,
@@ -173,7 +164,7 @@ export class AuthContoller {
             expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
         })
 
-        return { token, otp: { enabled: true, verified: true } };
+        return { token, otp: { enabled: true, verified: true }, valid : true };
     }
 
 

@@ -1,6 +1,7 @@
 import { OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
+import { GameService } from './game.service';
 
 @WebSocketGateway({
     cors: {
@@ -10,6 +11,10 @@ import { Socket, Server } from 'socket.io';
 export class GameGateway implements OnGatewayConnection , OnGatewayDisconnect{
     nb: number = 0;
     private logger: Logger = new Logger('GameGateway');
+    constructor(
+        private gameService: GameService
+    ) {
+    }
 
     @WebSocketServer()
     server: Server;
@@ -29,20 +34,6 @@ export class GameGateway implements OnGatewayConnection , OnGatewayDisconnect{
     numClients = {};
 
     private readonly connectedClients: Map<string, Socket> = new Map();
-
-    // handleConnection(socket: Socket): void {
-    //   const clientId = socket.id;
-    //   this.connectedClients.set(clientId, socket);
-    //     this.logger.log(`Client connected: ${socket.id}`);
-  
-    //   socket.on('disconnect', () => {
-    //     this.connectedClients.delete(clientId);
-    //   });
-    //   console.log('The connected clients are:');
-    //     this.connectedClients.forEach((value, key) => {
-    //         console.log(key);
-    //     });
-    // }
 
     handleConnection(socket: Socket): any {
         this.logger.log(`Client connected: ${socket.id}`);
@@ -94,8 +85,6 @@ export class GameGateway implements OnGatewayConnection , OnGatewayDisconnect{
             const player2 = this.playerQueue.shift();
             const id1 = this.playerQueueUser.shift();
             const id2 = this.playerQueueUser.shift();
-            console.log('the player 1 is', id1);
-            console.log('the player 2 is', id2);
             
             this.listRooms.set(player1.socket.id, roomName);
             this.listRooms.set(player2.socket.id, roomName);
@@ -104,8 +93,35 @@ export class GameGateway implements OnGatewayConnection , OnGatewayDisconnect{
             player1.socket.emit('yourOpponent', player2.socket.data.user)
             player2.socket.emit('yourOpponent', player1.socket.data.user)
             this.server.in(roomName).emit('enterRoomFromCard', { roomName, player1: player1.socket.data.user , player2: player2.socket.data.user});
-            this.roomSockets.set(roomName, { player1: player1.socket.data.user, player2: player2.socket.data.user });
+            this.roomSockets.set(roomName, { player1: player1.socket.data.user, player2: player2.socket.data.user});
         }
+    }
+
+    @SubscribeMessage('endGame')
+    async handleEndGame(socket: Socket, data: any) {
+        console.log('the game is over : 000000');
+        
+        const roomName = data.gameData.roomName;
+        const sockets = this.roomSockets.get(roomName);
+        
+        if(socket.data.user.providerId === sockets.player1.providerId) {
+            socket.emit('endGameClient', {game : data.gameData, user : socket.data.user, oponent : sockets.player2 });
+        }
+        else {
+            socket.emit('endGameClient', {game : data.gameData, user : socket.data.user, oponent : sockets.player1 });
+        }
+    }
+    @SubscribeMessage('customDisconnectClient')
+    handleCustomDisconnect(socket: Socket, data: any) {
+        if (!data.roomName) return;
+        this.playerQueue = this.playerQueue.filter((player) => player.socket.id !== socket.id);
+        this.playerQueueUser = this.playerQueueUser.filter((player) => player.socketName !== socket.id);
+        const roomName = data.roomName;
+        const sockets = this.roomSockets.get(roomName);
+        this.server.to(data.roomName).emit('OnePlayerLeaveTheRoom', { roomName: data.roomName, user : sockets.player1, oponent : sockets.player2, socketId: socket.id });
+        
+        this.connectedClients.delete(socket.id);
+        this.server.socketsLeave(data.roomName);
     }
 
     handleDisconnect(socket: Socket) {
@@ -113,43 +129,16 @@ export class GameGateway implements OnGatewayConnection , OnGatewayDisconnect{
         this.playerQueue = this.playerQueue.filter((player) => player.socket.id !== socket.id);
         this.playerQueueUser = this.playerQueueUser.filter((player) => player.socketName !== socket.id);
         this.server.to(roomName).emit('OnePlayerLeaveTheRoom', { roomName });
-        this.logger.log(`Client disconnected1: ${socket.id}`);
-        console.log(socket.id, 'the list of the rooms of this socket is 1', socket.rooms);
-        // socket.rooms.forEach(room => {
-        //     socket.leave(room);
-        // });
         this.connectedClients.delete(socket.id);
         this.server.socketsLeave(roomName);
-        console.log(socket.id, 'the list of the rooms of this socket is 2', socket.rooms);
-        // socket.disconnect();
     }
 
-    @SubscribeMessage('customDisconnectClient')
-    handleCustomDisconnect(socket: Socket, data: any) {
-        console.log('im in the disconnect 333333', data);
-        if (!data.roomName) return;
-        this.playerQueue = this.playerQueue.filter((player) => player.socket.id !== socket.id);
-        this.playerQueueUser = this.playerQueueUser.filter((player) => player.socketName !== socket.id);
-        this.server.to(data.roomName).emit('OnePlayerLeaveTheRoom', { roomName: data.roomName });
-        this.logger.log(`Client disconnected2: ${socket.id}`);
-        console.log(socket.id, 'the list of the rooms of this socket is 1', socket.rooms);
-        // socket.leave(data.roomName);
-        // socket.rooms.forEach(room => {
-        //     socket.leave(room);
-        // });
-        this.connectedClients.delete(socket.id);
-        this.server.socketsLeave(data.roomName);
-        console.log(socket.id, 'the list of the rooms of this socket is 2', socket.rooms);
-        // socket.disconnect();
-    }
 
     @SubscribeMessage('handleRemoveFromQueue')
     handleHandleRemoveFromQueue(socket: Socket) {
+        
         this.playerQueue = this.playerQueue.filter((player) => player.socket.id !== socket.id);
         this.playerQueueUser = this.playerQueueUser.filter((player) => player.socketName !== socket.id);
-        const room = socket.data.user.providerId;
-        console.log('the room is', room);
-        const socketsInRoom = this.server.in(room);
     }
 
     @SubscribeMessage('goalScored')
@@ -169,32 +158,11 @@ export class GameGateway implements OnGatewayConnection , OnGatewayDisconnect{
 
     }
 
-    @SubscribeMessage('endGame')
-    async handleEndGame(socket: Socket, data: any) {
-        console.log('the player in the end game is*******************', socket.data.user);
-        // socket.emit('endGameClient', {game : data, user : socket.data.user});
-        console.log('000000the game data is the : 0000000', data.gameData);
-        const roomName = data.gameData.roomName;
-        const sockets = this.roomSockets.get(roomName);
-        console.log(roomName, 'the sockets are : 99999999', sockets);
-        
-        if (sockets) {
-            const player1Socket = sockets.player1;
-            const player2Socket = sockets.player2;
-            console.log('++++++++++++++player1Socket is ', player1Socket);
-            console.log('++++++++++++++player2Socket is ', player2Socket);
-            // Do something with player1Socket and player2Socket
-        }
-        socket.emit('endGameClient', {game : data.gameData, user : socket.data.user, pairs: sockets});
-        // this.server.to(data.roomName).emit('endGameClient', {game : data.gameData, user : socket.data.user});
-    }
     
     @SubscribeMessage('checkRoom')
     handleCheckRoom(socket: Socket, data: any) {
         if(socket.rooms.has(data.roomName) === false) socket.emit('youAreNotinRoom');
     }
-
-
 
     @SubscribeMessage('startGameClient')
     handleStartGameClinet(socket: Socket, data: any) {

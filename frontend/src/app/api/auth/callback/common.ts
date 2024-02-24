@@ -30,8 +30,6 @@ export function tokenFetcher(tokenUrl: string) {
         maxAge: ms("999years"),
       });
       
-      console.log('in the ..', res);
-             
        return res;
       } catch (error) {
        return NextResponse.redirect("http://localhost:8000");

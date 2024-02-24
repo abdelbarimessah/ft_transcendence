@@ -85,8 +85,6 @@ export default function Game() {
   const params = useSearchParams();
   const roomName: any = params.get("room");
 
-  console.log('params', params.get("room"));
-
   useEffect(() => {
     if (!parentEl.current) return;
 

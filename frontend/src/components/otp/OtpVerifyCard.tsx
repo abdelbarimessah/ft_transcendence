@@ -13,20 +13,43 @@ function OtpVerifyCard() {
     const [otp, setOtp] = useState('');
 
     const handleEnableClick = async () => {
-        if(otp.length === 6)
-        {
-        axios.patch('http://localhost:3000/auth/verify/Otp', { otp })
-            .then(response => {
-                console.log(response.data);
-                toast.success('OTP verified');
-                setTimeout(() => { 
-                router.push('/profile');
-                }, 2000);
-            })
-            .catch(error => {
-                if (error.response && error.response.status === 422)
+        if (otp.length === 6) {
+
+            // axios.patch('http://localhost:3000/auth/verify/Otp', { otp })
+            // .then(response => {
+            //     if(response.statusText === 'OK')
+            //     {
+            //         console.log(response.data);
+            //         toast.success('OTP verified');
+            //         setTimeout(() => {
+            //             router.push('/profile');
+            //         }, 2000);
+
+            //     }
+            //     else
+            //         toast.error('error in the code from the axios');
+            // })
+            // .catch(error => {
+            //     if (error.response && error.response.status === 422)
+            //         toast.error('Incorrect OTP code');
+            // });
+
+            try {
+                const response = await axios.patch('http://localhost:3000/auth/verify/Otp', { otp })
+                if (response.data.valid === true) {
+                    console.log(response.data);
+                    toast.success('OTP verified');
+                    setTimeout(() => {
+                        router.push('/profile');
+                    }, 2000);
+                }
+                else
                     toast.error('Incorrect OTP code');
-            });
+            }
+            catch {
+                console.log('eroor in the code')
+                toast.error('Incorrect OTP code');
+            }
         }
         else
             toast.error('You must enter a 6-digit code');
@@ -57,7 +80,6 @@ function OtpVerifyCard() {
                             maxLength={6}
                             className='placeholder-color-6 h-full tracking-[18px] placeholder:font-light placeholder:text-[12px] placeholder:tracking-[4px] bg-color-26 placeholder:text-start ml-[18px] font-poppins font-medium rounded-[10px] text-color-6 text-[22px] w-full focus:outline-none'
                             style={{ caretColor: "transparent" }}
-                            // value={otp}
                             onChange={(event) => setOtp(event.target.value.replace(/[^0-9]/g, ''))}
                             onInput={(event) => {
                                 event.currentTarget.value = event.currentTarget.value.replace(/[^0-9]/g, '');

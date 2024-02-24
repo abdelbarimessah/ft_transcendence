@@ -20,7 +20,7 @@ function LogoutPrompt(props:any) {
             try {
                 console.log("logout clicked1");
                 await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`);
-                router.push('/login');
+                router.push('/');
                 console.log("logout clicked");
             }
             catch (error) {

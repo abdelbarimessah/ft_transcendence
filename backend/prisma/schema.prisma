@@ -36,19 +36,20 @@ model Achievement {
   user   User    @relation(fields: [userId], references: [id])
 }
 
-enum GameStatus {
-  WIN
-  LOSE
-}
+// enum GameStatus {
+//   WIN
+//   LOSE
+// }
 
 model Game {
   id            Int        @id @default(autoincrement())
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
-  opponentId    Int
-  userId        Int
+  opponentId    String
+  userIds       String
   userScore     Int
   opponentScore Int
-  status        GameStatus
+  status        String
+  userId        Int
   user          User       @relation(fields: [userId], references: [id])
 }

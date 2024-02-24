@@ -15,7 +15,6 @@ export class UsersController {
 
     constructor(
         private userService: UserService,
-        private prismaService: PrismaService,
     )
     {}
 
@@ -112,11 +111,8 @@ export class UsersController {
     @UseGuards(JwtAuthGuard)
     async userSearch(@Req() req : Request, @CurrentUser() user :any)
     {
-        console.log('body', req.query);
         const searchQuery = String(req.query.query);
         const res = await this.userService.getUserSearch(searchQuery, user.providerId);
-        
-        return res;
     }
     
     @Patch('addFriend')
@@ -151,6 +147,8 @@ export class UsersController {
         const result = await this.userService.getFriends(user.providerId);
         return result;
     }
+    
+
 
     
     @Get(':id')

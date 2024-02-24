@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Skeleton } from "@nextui-org/react";
-import { useParams, usePathname, useSearchParams } from 'next/navigation'
+import { useParams} from 'next/navigation'
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
@@ -17,34 +17,20 @@ function ProfileCard() {
     const [ids, setIds] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [user, setUser] = useState<any>();
-    const [avatar, setAvatar] = useState<File | null>(null);
 
     const params = useParams<{ id: string; tag: string; item: string }>()
-    const router = useRouter()
-    function handleAddFriend() {
-        console.log('add friend', params.id);
-        axios.patch('http://localhost:3000/user/addFriend', { id: params.id })
-            .then(response => {
-                console.log('response', response);
-                toast.success('OTP Enabled successfully');
-            })
-            .catch(error => {
-                if (error.response && error.response.status === 422)
-                    toast.error('Incorrect OTP code');
-            });
-    }
+    const router = useRouter();
     useEffect(() => {
         const getData = async () => {
             try {
                 setIsLoading(true);
-                console.log('params', params);
+                console.log('params user profile', params);
                 const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/${params?.id}`);
                 if(res.data === 1){
                     router.push('/profile');
                 }
                 setUser(res.data);
                 setIds(res.data.providerId);
-                setAvatar(res.data.avatar)
                 setIsLoading(false);
             }
             catch (error) {

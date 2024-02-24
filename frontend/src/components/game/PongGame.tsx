@@ -254,7 +254,7 @@ export default class PongGame extends Phaser.Scene {
                 const gameData= {
                     roomName: this.playerData.roomName,
                     userScore: this.p1score_number,
-                    opententScore: this.p2score_number,
+                    opponentScore: this.p2score_number,
                     winner: this.socketClient.id,
                     loser: '',
                     status: 'win',
@@ -275,7 +275,7 @@ export default class PongGame extends Phaser.Scene {
                 const gameData= {
                     roomName: this.playerData.roomName,
                     userScore: this.p1score_number,
-                    opententScore: this.p2score_number,
+                    opponentScore: this.p2score_number,
                     winner: '',
                     loser: this.socketClient.id,
                     status: 'lose',

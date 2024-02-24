@@ -24,6 +24,23 @@ export class NotificationService {
         receiverId,
         chatId,
       },
+      include: {
+        user: {
+          select: {
+            id: true,
+            providerId: true,
+            email: true,
+            nickName: true,
+            firstName: true,
+            lastName: true,
+            provider: true,
+            avatar: true,
+            otpIsEnabled: true,
+            level: true,
+            cover: true,
+          },
+        },
+      },
     });
     this.notificationGateway.sendNotification(chatId, notification);
   }

@@ -12,8 +12,12 @@ export class NotificationService {
   // friend req notification
   // message notification
   // To-do add notification for channel messages
-  async messageNotification(userId: string, receiverId: string, chatId) {
-    return await this.prismaService.notification.create({
+  async messageNotification(
+    userId: string,
+    receiverId: string,
+    chatId: string,
+  ) {
+    const notification = await this.prismaService.notification.create({
       data: {
         type: 'MESSAGE',
         userId,
@@ -21,8 +25,7 @@ export class NotificationService {
         chatId,
       },
     });
-    //To-do i need to get user socket change receiverId with socketId
-    //To-do send notification using the gateway
+    this.notificationGateway.sendNotification(chatId, notification);
   }
   async gameNotification(userId: string, receiverId: string, gameId: string) {
     return await this.prismaService.notification.create({
@@ -43,5 +46,6 @@ export class NotificationService {
         receiverId: receiverId,
       },
     });
+    //To-do send notification using the gateway
   }
 }

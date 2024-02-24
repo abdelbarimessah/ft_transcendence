@@ -13,6 +13,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
   async userUpsert(userData: Prisma.UserCreateInput) {
+    let isNew = false;
     const { email, firstName, lastName } = userData;
     if (!userData?.nickName) {
       const nickName = await this.generateNickname(firstName, lastName);
@@ -25,13 +26,14 @@ export class AuthService {
     });
 
     if (!user) {
+      isNew = true;
       user = await this.prismaService.user.create({
         data: {
           ...userData,
         },
       });
     }
-    return user;
+    return { user, isNew };
   }
   async generateNickname(firstName: string, lastName: string) {
     const { nanoid } = await import('nanoid');

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
-import { Prisma } from '@prisma/client';
+// import { Prisma } from '@prisma/client';
 import { Strategy } from 'passport-42';
 import { AuthService } from '../auth.service';
 
@@ -39,8 +39,7 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
       avatar: profile._json.image.link,
       cover: this.defaultCoverImage,
     };
-    const user: Prisma.UserCreateInput =
-      await this.authService.userUpsert(userData);
-    done(null, user);
+    const { user, isNew } = await this.authService.userUpsert(userData);
+    done(null, { user, isNew });
   }
 }

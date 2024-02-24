@@ -68,7 +68,21 @@ export class ChatService {
         },
       },
       include: {
-        members: true,
+        members: {
+          select: {
+            id: true,
+            providerId: true,
+            email: true,
+            nickName: true,
+            firstName: true,
+            lastName: true,
+            provider: true,
+            avatar: true,
+            otpIsEnabled: true,
+            level: true,
+            cover: true,
+          },
+        },
         messages: {
           orderBy: {
             createdAt: 'desc',
@@ -184,7 +198,6 @@ export class ChatService {
           },
         });
       } else {
-        // Mute is still in effect
         throw new ForbiddenException('You are muted in this channel.');
       }
     }

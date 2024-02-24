@@ -4,7 +4,9 @@ import { io } from "socket.io-client";
 import { useContext } from 'react';
 import { SocketContext } from '@/app/SocketContext';
 
-var socketClient = io("http://localhost:3000");
+var socketClient = io("http://localhost:3000", {
+  withCredentials: true,
+});
 
 // const socketClient = useContext(SocketContext);
 

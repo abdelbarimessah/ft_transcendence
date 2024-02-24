@@ -9,6 +9,7 @@ import { NotificationModule } from './notification/notification.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AppService } from './app.service';
 
 @Module({
   imports: [
@@ -30,6 +31,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     }),
   ],
   controllers: [AppController],
-  providers: [GameGateway, JwtService],
+  providers: [GameGateway, JwtService, AppService],
 })
 export class AppModule {}

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
-import { Prisma } from '@prisma/client';
+// import { Prisma } from '@prisma/client';
 import { Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { AuthService } from 'src/auth/auth.service';
 
@@ -40,8 +40,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       avatar: profile._json.picture,
       cover: this.defaultCoverImage,
     };
-    const user: Prisma.UserCreateInput =
-      await this.authService.userUpsert(userData);
-    done(null, user);
+    const { user, isNew } = await this.authService.userUpsert(userData);
+    done(null, { user, isNew });
   }
 }

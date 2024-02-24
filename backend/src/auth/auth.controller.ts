@@ -31,30 +31,29 @@ export class AuthController {
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   async googleAuthCallback(@Req() req, @Res() res) {
+    const user = req.user.user;
     if (!req.user) {
       return res.redirect('http://localhost:8000/login');
     }
 
-    // To-do if it's the first time to login redirect to settings;
-    const isNew = true;
-    if (req.user.otpIsEnabled) {
+    const payload = {
+      id: user.id,
+      providerId: user.providerId,
+      nickName: user.nickName,
+      otp: false,
+    };
+    const token = await this.authService.generateJwtToken(payload);
+
+    res.cookie('authorization', token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
+    });
+    const isNew = req.user.isNew;
+    if (user.otpIsEnabled) {
       return res.redirect(`http://localhost:8000/auth`);
     } else {
-      const payload = {
-        id: req.user.id,
-        providerId: req.user.providerId,
-        nickName: req.user.nickName,
-        otp: false,
-      };
-      const token = await this.authService.generateJwtToken(payload);
-
-      res.cookie('authorization', token, {
-        httpOnly: true,
-        secure: false,
-        sameSite: 'lax',
-        expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
-      });
-
       if (isNew) {
         return res.redirect('http://localhost:8000/setting');
       } else {
@@ -72,16 +71,17 @@ export class AuthController {
   @Get('42/callback')
   @UseGuards(AuthGuard('42'))
   async intraAuthCallback(@Req() req, @Res() res) {
+    const user = req.user.user;
+
     if (!req.user) {
       return res.redirect('http://localhost:8000/login');
     }
 
-    // To-do if it's the first time to login redirect to settings;
-    const isNew = true;
+    const isNew = req.user.isNew;
     const payload = {
-      id: req.user.id,
-      providerId: req.user.providerId,
-      nickName: req.user.nickName,
+      id: user.id,
+      providerId: user.providerId,
+      nickName: user.nickName,
       otp: false,
     };
     const token = await this.authService.generateJwtToken(payload);
@@ -92,7 +92,7 @@ export class AuthController {
       sameSite: 'lax',
       expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
     });
-    if (req.user.otpIsEnabled) {
+    if (user.otpIsEnabled) {
       return res.redirect(`http://localhost:8000/auth`);
     } else {
       if (isNew) {

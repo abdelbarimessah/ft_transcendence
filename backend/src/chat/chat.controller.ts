@@ -79,10 +79,9 @@ export class ChatController {
     });
     return chats;
   }
-  @Get(':id') // GET /chat/:id return the messages of the chat
+  @Get('get/:id') // GET /chat/:id return the messages of the chat
   async getChat(@Param('id') id: string, @CurrentUser() user: any) {
     const userId = user.id;
-    // To-do exclude secret info from user in every method not just here
     const chat = await this.chatService.getChatMessages(id, userId);
 
     if (!chat) {
@@ -112,7 +111,6 @@ export class ChatController {
       this.chatService.isBanned(channelId, userId);
       this.chatService.isMuted(channelId, userId);
     }
-    // To-do check if the user is muted if mute time expires unmute the user
     const message = await this.prismaService.message.create({
       data: {
         content,
@@ -121,12 +119,13 @@ export class ChatController {
         ...(channelId && { channelId }),
       },
     });
-    this.chatGateway.sendMessage(targetId, message);
+    this.chatGateway.sendMessage(targetId.id, message);
     if (chatId) {
-      await this.notificationService.messageNotification(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const notify = await this.notificationService.messageNotification(
         user.id,
         receiverId,
-        message.id,
+        chatId,
       );
     }
     return message;
@@ -161,7 +160,6 @@ export class ChatController {
     @Body() data: createChannelDto,
     @CurrentUser() user: any,
   ) {
-    //To-do extract the id;
     const userId = user.id;
     try {
       let hashedPassword = null;
@@ -202,7 +200,15 @@ export class ChatController {
         isBanned: false,
       },
       include: {
-        channel: true, // To-do exclude the password
+        channel: {
+          select: {
+            id: true,
+            name: true,
+            type: true,
+            createdAt: true,
+            ownerId: true,
+          },
+        },
       },
     });
     if (!memberships || memberships.length === 0) {

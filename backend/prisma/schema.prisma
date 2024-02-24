@@ -97,7 +97,7 @@ model Notification {
   type       NotifyType
   status     Status     @default(PENDING)
   userId     String
-  receiverId String
+  receiverId String?
   gameId     String?
   chatId     String?
   user       User       @relation("SenderUser", fields: [userId], references: [id])

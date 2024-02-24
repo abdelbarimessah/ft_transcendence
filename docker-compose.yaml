@@ -52,4 +52,4 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: /Users/mjlem/Desktop/db
+      device: /Users/imittous/Desktop/db

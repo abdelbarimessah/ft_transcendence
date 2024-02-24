@@ -79,7 +79,7 @@ export class ChatController {
     console.log('chats:::::', chats);
     return chats;
   }
-  @Get(':id') // GET /chat/:id return the messages of the chat
+  @Get('get/:id') // GET /chat/:id return the messages of the chat
   async getChat(@Param('id') id: string, @CurrentUser() user: any) {
     const userId = user.id;
     // To-do exclude secret info from user in every method not just here

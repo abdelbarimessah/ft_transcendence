@@ -8,10 +8,6 @@ import { useEffect } from "react";
 
 
 function Setting() {
-
-    useEffect(() => {
-        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/changeFirstTime`);
-    }, []);
     return (
         <div className=" bg-color-18 flex items-center no-scrollbar justify-center w-full gap-20  py-10 flex-col">
             <div className=" w-full xl:w-[1400px] z-[2000] pt-12 2xl:pt-0">

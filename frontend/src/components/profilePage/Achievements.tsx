@@ -41,7 +41,7 @@ function Achievements() {
             }
         }
         getAchievements();
-    }, [ach1,ach2,ach3,ach4,ach5,ach6,ach7, achievements]);
+    }, []);
 
 
         return (

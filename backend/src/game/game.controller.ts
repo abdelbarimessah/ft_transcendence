@@ -1,9 +1,9 @@
 
 import { GameService } from './game.service';
 import {  Controller, Post, UseGuards, Req, Get, Param } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { AuthGuard } from '@nestjs/passport';
+import { OTPGuard } from 'src/auth/Otp.guard';
 import { CurrentUser } from 'src/auth/current-user.decorator';
-import { OTPGuard } from 'src/auth/guards/Otp.guard';
 
 
 @Controller('game')
@@ -16,7 +16,7 @@ export class GameController {
 
     @Post('gameData')
     @UseGuards(OTPGuard)
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AuthGuard('jwt'))
     async gameData(@Req() req : Request, @CurrentUser() user :any)
     {
         const gameData = req.body;
@@ -26,10 +26,9 @@ export class GameController {
     //TODO add the level when the user win a game 
     @Get('matchHistory/:id')
     @UseGuards(OTPGuard)
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AuthGuard('jwt'))
     async handleMatchHistory(@Req() req : Request, @Param('id') id: string) {  
-        const result = await this.gameService.getMatchHistory(Number(id));
-        console.log('the result of the match history is ', result);
+        const result = await this.gameService.getMatchHistory(id);
         return result
     }
 }

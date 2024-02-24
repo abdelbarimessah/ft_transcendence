@@ -4,7 +4,7 @@ import { Controller, Get } from '@nestjs/common';
 export class AppController {
   @Get('profile')
   // @UseGuards(OTPGuard)
-  // @UseGuards(JwtAuthGuard)
+  //  @UseGuards(AuthGuard('jwt'))
   getProfile() {
     console.log('getProfile in the user controller');
     return { id: '123123123' };

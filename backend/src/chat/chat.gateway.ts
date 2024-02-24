@@ -19,7 +19,7 @@ import { AppService } from 'src/app.service';
 
 @UseGuards(OTPGuard)
 @UseGuards(AuthGuard('jwt'))
-@WebSocketGateway()
+@WebSocketGateway({namespace: 'chat'})
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   // private userSocket = new Map<string, string>();
   @WebSocketServer()

@@ -56,13 +56,16 @@ export class NotificationService {
     //To-do send notification using the gateway
   }
   async friendRequestNotification(userId: string, receiverId: string) {
-    return await this.prismaService.notification.create({
+   const notification = await this.prismaService.notification.create({
       data: {
         type: 'FRIEND_REQUEST',
         userId: userId,
-        receiverId: receiverId,
+        // receiverId: receiverId,
       },
     });
+    this.notificationGateway.sendNotification(receiverId, notification);  
     //To-do send notification using the gateway
+
+    return notification;
   }
 }

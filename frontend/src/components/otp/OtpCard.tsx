@@ -75,7 +75,7 @@ function OtpCard() {
             console.error(error);
             setIsLoading(false);
     });
-    }, [id]);
+    }, []);
      
     return (
     <>

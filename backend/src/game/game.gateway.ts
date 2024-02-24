@@ -193,7 +193,7 @@ export class GameGateway implements OnGatewayConnection , OnGatewayDisconnect{
 
 // @WebSocketGateway({
 //     cors: {
-//         origin: 'http://localhost:8000',
+//         origin: 'http://localhost:8000/',
 //     },
 // })
 // export class GameGateway implements OnGatewayConnection {

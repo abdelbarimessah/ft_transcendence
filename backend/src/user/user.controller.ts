@@ -1,14 +1,13 @@
 import {  Controller, Get, Param, Post, UseGuards, ConflictException, Req, UploadedFile, UseInterceptors, Body, Patch, Res } from '@nestjs/common';
 import { UserService } from './user.service';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/auth/current-user.decorator';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Request } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as fs from 'fs';
 import * as path from 'path';
-import { OTPGuard } from 'src/auth/guards/Otp.guard';
 import { AuthGuard } from '@nestjs/passport';
+import { OTPGuard } from 'src/auth/Otp.guard';
 
 
 @Controller('user')
@@ -21,7 +20,7 @@ export class UsersController {
 
     @Get('All') 
     @UseGuards(OTPGuard)
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AuthGuard('jwt'))
     async findAll() {
         return await this.userService.getAllUsers();
     }
@@ -40,6 +39,8 @@ export class UsersController {
         catch (error) {
             console.error('error', error);
         }
+        console.log('the user in the [me]' , user);
+        
         return user;
     }
     
@@ -89,7 +90,7 @@ export class UsersController {
     }
     @Get('achievements')
     @UseGuards(OTPGuard)
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AuthGuard('jwt'))
     async achievements(@Req() req : Request, @CurrentUser() user :any)
     {
         const res = await this.userService.getAchievements(user.providerId);
@@ -97,7 +98,7 @@ export class UsersController {
     }
     @Get('UsersAchievements/:id')
     @UseGuards(OTPGuard)
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AuthGuard('jwt'))
     async UsersAchievements(@Req() req : Request, @Param('id') id: string)
     {
         const res = await this.userService.getAchievements(id);
@@ -109,7 +110,7 @@ export class UsersController {
     
     @Get('userSearch')
     @UseGuards(OTPGuard)
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AuthGuard('jwt'))
     async userSearch(@Req() req : Request, @CurrentUser() user :any)
     {
         const searchQuery = String(req.query.query);
@@ -118,7 +119,7 @@ export class UsersController {
     
     @Patch('addFriend')
     @UseGuards(OTPGuard)
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AuthGuard('jwt'))
     async addFriend(
         @CurrentUser() user: any,
         @Res({ passthrough: true }) res: Response,
@@ -131,7 +132,7 @@ export class UsersController {
 
     @Patch('removeFriend')
     @UseGuards(OTPGuard)
-    @UseGuards(JwtAuthGuard)
+     @UseGuards(AuthGuard('jwt'))
     async removeFriend(
         @CurrentUser() user: any,
         @Res({ passthrough: true }) res: Response,
@@ -143,7 +144,7 @@ export class UsersController {
     }
     @Get('friends')
     @UseGuards(OTPGuard)
-    @UseGuards(JwtAuthGuard)
+     @UseGuards(AuthGuard('jwt'))
     async getFriends(@CurrentUser() user: any) {
         const result = await this.userService.getFriends(user.providerId);
         return result;
@@ -154,7 +155,7 @@ export class UsersController {
     
     @Get(':id')
     @UseGuards(OTPGuard)
-    @UseGuards(JwtAuthGuard)
+     @UseGuards(AuthGuard('jwt'))
     async findOne(@Param('id') id: string, @CurrentUser() user: any) {
 
         const { friendOf, ...rest } = await this.userService.getUserById(id);

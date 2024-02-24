@@ -21,7 +21,7 @@ export class AuthController {
   constructor(
     private authService: AuthService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
   @Get('google')
   @UseGuards(AuthGuard('google'))
   googleAuth() {
@@ -32,8 +32,9 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   async googleAuthCallback(@Req() req, @Res() res) {
     const user = req.user.user;
+
     if (!req.user) {
-      return res.redirect('http://localhost:8000/login');
+      return res.redirect('http://localhost:8000');
     }
 
     const payload = {
@@ -72,9 +73,9 @@ export class AuthController {
   @UseGuards(AuthGuard('42'))
   async intraAuthCallback(@Req() req, @Res() res) {
     const user = req.user.user;
-
+    console.log('here in 42/callback', req.user);
     if (!req.user) {
-      return res.redirect('http://localhost:8000/login');
+      return res.redirect('http://localhost:8000');
     }
 
     const isNew = req.user.isNew;
@@ -103,15 +104,25 @@ export class AuthController {
     }
   }
 
+  // @Get('logout')
+  // @UseGuards(AuthGuard('jwt'))
+  // async logout(@Req() req: Request, @Res() res: Response) {
+  //   res.clearCookie('authorization', {
+  //     httpOnly: true,
+  //     secure: false,
+  //     sameSite: 'lax',
+  //   });
+  //   console.log('logout');
+
+  //   return {ok: 'ok'}
+  //   // return res.redirect('http://localhost:8000');
+  // }
+
   @Get('logout')
-  @UseGuards(AuthGuard('jwt'))
-  async logout(@Req() req: Request, @Res() res: Response) {
-    res.clearCookie('authorization', {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-    });
-    return res.redirect('http://localhost:8000/login');
+  async logout(@Res({ passthrough: true }) res: Response) {
+    console.log('logout');
+    res.clearCookie('authorization', { httpOnly: true });
+    
   }
 
   @Patch('generate/Otp')

@@ -4,6 +4,8 @@ import { UserService } from './user.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { NotificationModule } from 'src/notification/notification.module';
+import { NotificationService } from 'src/notification/notification.service';
 
 @Module({
   imports: [
@@ -18,9 +20,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       }),
       inject: [ConfigService],
     }),
+    NotificationModule
   ],
   controllers: [UsersController],
-  providers: [UserService, PrismaService, JwtService],
+  providers: [UserService, PrismaService, JwtService, NotificationService],
   exports: [UserService],
 })
 export class UsersModule {}

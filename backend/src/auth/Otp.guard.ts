@@ -16,6 +16,8 @@ export class OTPGuard implements CanActivate {
     if (!request.user) return false;
     if (request.user.user.otpIsEnabled) {
       return request.user.payload?.otp;
-    } else return true;
+    } else{
+      return true;
+    } 
   }
 }

@@ -164,7 +164,7 @@ const SettingsPoint = () => {
 
         try {
             await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`);
-            router.push('/login');
+            router.push('/');
         }
         catch (error) {
             console.error(error);

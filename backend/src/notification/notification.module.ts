@@ -22,6 +22,6 @@ import { AppService } from 'src/app.service';
   ],
   providers: [NotificationService, NotificationGateway, JwtService, AppService],
   controllers: [NotificationController],
-  exports: [NotificationService],
+  exports: [NotificationService, NotificationGateway],
 })
 export class NotificationModule {}

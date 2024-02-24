@@ -34,15 +34,15 @@ function SettingPrompt() {
                 setLastName(res.data.lastName);
                 setNickName(res.data.nickName);
                 setIsLoading(false);
+                setPhotoPath(`${process.env.NEXT_PUBLIC_API_URL}/uploads/${res.data.providerId}.png`)
             }
             catch (error) {
                 setIsLoading(false);
                 console.error(error);
             }
         }
-        setPhotoPath(`${process.env.NEXT_PUBLIC_API_URL}/uploads/${id}.png`)
         getData();
-    }, [id]);
+    }, [id , firstName  ]);
 
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         setChangeAvatar(true);

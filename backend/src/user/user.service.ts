@@ -8,6 +8,7 @@ import { BadRequestException } from '@nestjs/common';
 import axios from "axios";
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { error, log } from 'console';
+import { NotificationService } from 'src/notification/notification.service';
 // import * as Fuse from 'fuse.js';
 const Fuse = require('fuse.js');
 
@@ -15,6 +16,7 @@ const Fuse = require('fuse.js');
 export class UserService {
   constructor(
     private prismaService: PrismaService,
+    private notificationService: NotificationService
   ) { }
 
 
@@ -25,7 +27,6 @@ export class UserService {
       delete user.secretOpt;
       delete user.email;
       delete user.otpIsEnabled;
-      delete user.sockets;
     }
     return users;
   }
@@ -108,7 +109,6 @@ export class UserService {
       delete user.secretOpt;
       delete user.email;
       delete user.otpIsEnabled;
-      delete user.sockets;
     }
     return users;
   }
@@ -141,7 +141,7 @@ export class UserService {
         delete user.secretOpt;
         delete user.email;
         delete user.otpIsEnabled;
-        delete user.sockets;
+        
       }
     }
     return userWithFriends?.friends;
@@ -170,7 +170,7 @@ export class UserService {
     if (userId === friendId) {
       throw new BadRequestException("You can't add yourself as a friend");
     }
-    await this.prismaService.user.update({
+   const user = await this.prismaService.user.update({
       where: {
         providerId: userId,
       },
@@ -182,6 +182,7 @@ export class UserService {
         },
       },
     });
+    await this.notificationService.friendRequestNotification(user.id, friendId);
     return { message: 'Friend added' };
   }
 

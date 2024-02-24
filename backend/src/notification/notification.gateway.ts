@@ -7,7 +7,7 @@ import { Server } from 'socket.io';
 import { AppService } from 'src/app.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 
-@WebSocketGateway()
+@WebSocketGateway({namespace: 'notification'})
 export class NotificationGateway {
   @WebSocketServer()
   server: Server;

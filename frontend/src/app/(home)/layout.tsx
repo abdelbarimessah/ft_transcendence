@@ -113,7 +113,6 @@ export default function RootLayout({
     }
   }, [socketClient]);
 
-
   return (
     <div className='flex  w-screen min-h-screen '>
       <SideNav setShow={setShow} />

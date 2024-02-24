@@ -8,7 +8,7 @@ export class GameService {
     private prismaService: PrismaService,
   ) { }
 
-  async addGameData(id: number, gameData: any) {
+  async addGameData(id: string, gameData: any) {
     let { opponentId, userIds, userScore, opponentScore, status, gameName , gameType} = gameData;
     const count = await this.prismaService.game.count({
       where: {
@@ -32,13 +32,12 @@ export class GameService {
           },
         },
       });
-      console.log('game added succesfly',gameName);
       
       return game;
     }
   }
 
-  async getMatchHistory(userId: number) {
+  async getMatchHistory(userId: string) {
     const games = await this.prismaService.game.findMany({
       where: {
         userId: userId,

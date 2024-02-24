@@ -1,7 +1,7 @@
 'use client'
 import '../globals.css'
 import SideNav from '@/components/sidebare/SideBare'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { Providers } from '../providers'
 import { SocketContext, SocketProvider } from '../SocketContext'
 import axios from 'axios'
@@ -12,6 +12,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const [gameEnded, setGameEnded] = useState(false); 
   const [Show, setShow] = useState(true);
   const route = useRouter();
   const socketClient = useContext(SocketContext);
@@ -19,13 +20,15 @@ export default function RootLayout({
   useEffect(() => {
     const enterRoom = (data: any) => {
       console.log('in the case of the game end with the score [2222]');
-
+      setGameEnded(true)
       const gameData = {
         opponentId: data.oponent.providerId,
         userIds: data.user.providerId,
         userScore: data.game.userScore,
         opponentScore: data.game.opponentScore,
         status: data.game.status,
+        gameName: data.roomName,
+        gameType: 'randomMode'
       }
       axios.post(`${process.env.NEXT_PUBLIC_API_URL}/game/gameData`, gameData).then(res => {
 
@@ -43,18 +46,24 @@ export default function RootLayout({
     }
   }, [socketClient]);
 
+
   useEffect(() => {
+    if (gameEnded) 
+    {
+      return;
+    }
     socketClient.on('OnePlayerLeaveTheRoom', async (data) => {
       
       if (data.socketId !== socketClient.id ) return;
       console.log('in the case of you  leave the room [0000]');
-
       const gameData = {
         opponentId: data.oponent.providerId,
         userIds: data.user.providerId,
         userScore: 0,
         opponentScore: 5,
         status: 'lose',
+        gameName: data.roomName,
+        gameType: 'randomMode'
       }
 
       try {
@@ -73,17 +82,22 @@ export default function RootLayout({
 
 
   useEffect(() => {
+    if (gameEnded) 
+    {
+      return;
+    }
     socketClient.on('OnePlayerLeaveTheRoom', async (data) => {
       
       if (data.socketId === socketClient.id ) return;
       console.log('in the case of the other player leave the room [1111]');
-      
       const gameData = {
         userIds: data.oponent.providerId,
         opponentId: data.user.providerId,
         userScore: 5,
         opponentScore: 0,
         status: 'win',
+        gameName: data.roomName,
+        gameType: 'randomMode'
       }
 
       try {
@@ -98,6 +112,7 @@ export default function RootLayout({
       socketClient.off('OnePlayerLeaveTheRoom');
     }
   }, [socketClient]);
+
 
   return (
     <div className='flex  w-screen min-h-screen '>

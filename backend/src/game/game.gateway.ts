@@ -43,7 +43,6 @@ export class GameGateway implements OnGatewayConnection , OnGatewayDisconnect{
     handleFirstTime(socket: Socket, data: any) {
         socket.data.user = data;
         socket.join(data.providerId);
-
     }
 
     @SubscribeMessage('joinRoom')
@@ -99,21 +98,21 @@ export class GameGateway implements OnGatewayConnection , OnGatewayDisconnect{
 
     @SubscribeMessage('endGame')
     async handleEndGame(socket: Socket, data: any) {
-        console.log('the game is over : 000000');
-        
         const roomName = data.gameData.roomName;
         const sockets = this.roomSockets.get(roomName);
         
         if(socket.data.user.providerId === sockets.player1.providerId) {
-            socket.emit('endGameClient', {game : data.gameData, user : socket.data.user, oponent : sockets.player2 });
+            socket.emit('endGameClient', {roomName:roomName, game : data.gameData, user : socket.data.user, oponent : sockets.player2 });
         }
         else {
-            socket.emit('endGameClient', {game : data.gameData, user : socket.data.user, oponent : sockets.player1 });
+            socket.emit('endGameClient', {roomName:roomName, game : data.gameData, user : socket.data.user, oponent : sockets.player1 });
         }
     }
     @SubscribeMessage('customDisconnectClient')
     handleCustomDisconnect(socket: Socket, data: any) {
-        if (!data.roomName) return;
+        console.log('the custom disconnect in the gateway [333333]', data.roomName);
+        
+        if (!data.roomName ) return;
         this.playerQueue = this.playerQueue.filter((player) => player.socket.id !== socket.id);
         this.playerQueueUser = this.playerQueueUser.filter((player) => player.socketName !== socket.id);
         const roomName = data.roomName;

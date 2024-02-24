@@ -42,14 +42,16 @@ model Achievement {
 // }
 
 model Game {
-  id            Int        @id @default(autoincrement())
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  id            Int      @id @default(autoincrement())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
   opponentId    String
   userIds       String
   userScore     Int
   opponentScore Int
   status        String
   userId        Int
-  user          User       @relation(fields: [userId], references: [id])
+  gameName      String?
+  gameType      String?
+  user          User     @relation(fields: [userId], references: [id])
 }

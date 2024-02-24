@@ -25,12 +25,7 @@ export default function Home() {
   const socketClient = useContext(SocketContext);
   const [win, setWin] = useState(false);
   const [lose, setLose] = useState(false);
-  const [user, setUser] = useState<any>();
-  const [oponent, setOponent] = useState<any>();
-  const [games, setGames] = useState<any>();
   const route = useRouter();
-  const [dataseted, setDataseted] = useState(false);
-  const [dataseted2, setDataseted2] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -53,44 +48,16 @@ export default function Home() {
 
   }, []);
 
-  const router = useRouter()
-
-
-  // useEffect(() => {
-  //   const enterRoom = (data: any) => {
-  //     const gameData = {
-  //       opponentId: data.oponent.providerId,
-  //       userIds: data.user.providerId,
-  //       userScore: data.game.userScore,
-  //       opponentScore: data.game.opponentScore,
-  //       status: data.game.status,
-  //     }
-  //     axios.post(`${process.env.NEXT_PUBLIC_API_URL}/game/gameData`, gameData).then(res => {
-
-  //     }).catch(err => {
-  //       console.error(err);
-  //     })
-
-  //     setUser(data.user);
-  //     setOponent(data.oponent);
-  //     setGames(data.game);
-  //     setTimeout(() => {
-  //       router.push('/game');
-  //     }, 3000);
-  //   };
-  //   socketClient.on('endGameClient', enterRoom);
-
-  //   return () => {
-  //     socketClient.off('endGameClient', enterRoom);
-  //   }
-  // }, []);
-
   useEffect(() => {
-    const handleUnload = () => {
-      setLose(true);
-      socketClient.emit('customDisconnectClient', { roomName ,  gameState: 'issueGame'});
-    };
+    const enterRoom = (data: any) => {
 
+    };
+    socketClient.on('endGameClient', enterRoom);
+
+    const handleUnload = () => {
+      
+      socketClient.emit('customDisconnectClient', { roomName });
+    };
     return () => {
       handleUnload();
     };

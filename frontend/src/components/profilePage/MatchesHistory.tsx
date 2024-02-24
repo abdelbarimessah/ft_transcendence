@@ -1,6 +1,7 @@
 
 import Image from "next/image"
 
+
 export function MatchesHistory () {
     return (
         <div className="h-[619px] 2xl:w-[596px] xl:w-[1137px] w-full bg-color-0 rounded-[22px] flex flex-col gap-[34px]">

@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function middleware(request: NextRequest) {
   const cookie = request.cookies.get("authorization");
 
-  if (!cookie) return NextResponse.redirect("http://localhost:8000/login");
+  if (!cookie) return  NextResponse.redirect("http://localhost:8000");
 
   const res = await fetch("http://localhost:3000/user/me", {
     headers: {
@@ -11,9 +11,8 @@ export async function middleware(request: NextRequest) {
     },
     credentials: "include",
   });
-  console.log("res in the middleware ===>", res.ok);
 
-  if (!res.ok) return NextResponse.redirect("http://localhost:8000/login");
+  if (!res.ok) return  NextResponse.redirect("http://localhost:8000");
 
   return NextResponse.next();
 }

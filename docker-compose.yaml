@@ -11,8 +11,8 @@ services:
       - .env
     networks:
       - trans
-    volumes:
-      - db:/var/lib/postgresql/data
+    # volumes:
+    #   - db:/var/lib/postgresql/data
   # frontend:
   #   image: node:latest
   #   restart: on-failure
@@ -47,9 +47,9 @@ networks:
 #     networks:
 #       - trans
 
-volumes:
-  db:
-    driver_opts:
-      type: none
-      o: bind
-      device: /Users/mjlem/Desktop/db
+# volumes:
+#   db:
+#     driver_opts:
+#       type: none
+#       o: bind
+#       device: /Users/amessah/Desktop/db

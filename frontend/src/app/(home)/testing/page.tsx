@@ -1,56 +1,47 @@
-'use client'
-import React, { FC, useEffect, useRef, useState } from "react";
+import React from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import Image from "next/image";
 
-interface Props {}
-let currentOtpIndex: number = 0;
 
-const OTPField: FC<Props> = (props): JSX.Element => {
-    const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));
-    const [activeOtpIndex, setActiveOtpIndex] = useState<number>(0);
-    const inputRef = useRef<HTMLInputElement>(null);
-
-  const handelChange = ({target} :React.ChangeEvent<HTMLInputElement>):void => {
-        const {value} = target;
-        const newOtp: string[] = [...otp];
-        newOtp[currentOtpIndex] = value.substring(value.length - 1);
-
-        if(!value) setActiveOtpIndex(currentOtpIndex - 1);
-        else setActiveOtpIndex(currentOtpIndex + 1);
-
-        setOtp(newOtp);
-        console.log('value ===>', value);
-    }
-
-    const handleKeyDown = ({key}: React.KeyboardEvent<HTMLInputElement>, index: number) => {
-        currentOtpIndex = index;
-        if(key === 'Backspace' ) setActiveOtpIndex(currentOtpIndex - 1);
-    }
-
-    useEffect(() => {
-        inputRef.current?.focus();
-    },[activeOtpIndex])
-    console.log('otp ===>', otp);
+export default function App() {
   return (
-    <div className="h-screen flex justify-center items-center space-x-2">
-      {otp.map((_, index) => {
-        return (
-          <React.Fragment key={index}>
-            <input
-            ref={index === activeOtpIndex ? inputRef : null}
-              type="number"
-              className="w-12 h-12 border-2 rounded bg-transparent outline-none text-center font-semibold text-xl spin-button-none border-gray-400 focus:border-gray-700 focus:text-gray-700 text-gray-400 transition"
-              onChange={handelChange}
-              onKeyDown={(e) => handleKeyDown(e, index) }
-              value={otp[index]}
+    <div className="flex w-full flex-col  items-center justify-center relative bg-color-18">
+      <div className="w-[475px] h-[185px] bg-color-30 rounded-[22px] overflow-hidden relative">
+        <div className="absolute z-0 h-full w-[256px] rounded-s-[22px] flex items-center justify-center overflow-hidden left-0 ">
+          <Image
+            src="/../../assets/rectangleShape.svg"
+            alt="My Gallery Image"
+            fill={true}
+            sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
+            className='object-cover'
+            priority={true}
+          />
+        </div>
+        <div className="w-full  z-1 absolute flex items-center justify-center gap-[45px] pt-5">
+          <div className="w-[80px] h-[80px] bg-color-2 rounded-full "></div>
+          <div className="w-[42px] h-[35px] flex items-center justify-center overflow-hidden">
+            <Image
+              src="/../../assets/vsIcon.svg"
+              alt="My Gallery Image"
+              width={42}
+              height={35}
+              priority={true}
             />
-            {index === otp.length - 1 ? null : (
-              <span className="w-2 py-0.5 bg-gray-400" />
-            )}
-          </React.Fragment>
-        );
-      })}
+          </div>
+          <div className="w-[80px] h-[80px] bg-color-2 rounded-full "></div>
+        </div>
+        <div className="z-10 absolute flex items-center justify-center top-3/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 gap-20">
+          <div className="w-[134px] h-[40px] bg-color-30 rounded-[10px] flex items-center justify-center flex-col">
+            <span className="font-nico-moji text-[#949494] text-[14px] capitalize">abdelbari</span>
+            <span className="font-nico-moji text-[#C7C7C7] text-[10px] -mt-1 capitalize ">@messah</span>
+          </div>
+          <div className="w-[134px] h-[40px] bg-color-6 rounded-[10px] flex items-center justify-center flex-col">
+            <span className="font-nico-moji text-[#949494] text-[14px] capitalize">abdelbari</span>
+            <span className="font-nico-moji text-[#C7C7C7] text-[10px] -mt-1 capitalize ">@messah</span>
+          </div>
+        </div>
+      </div>
     </div>
   );
-};
+}
 
-export default OTPField;

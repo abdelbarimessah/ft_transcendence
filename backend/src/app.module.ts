@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppService } from './app.service';
+import { GameModule } from './game/game.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { AppService } from './app.service';
     ChatModule,
     PrismaModule,
     NotificationModule,
+    GameModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),

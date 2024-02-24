@@ -5,12 +5,12 @@ import LeftSide from '@/components/chat/leftSide';
 import RightSide from '@/components/chat/rightSide';
 
 function Chat() {
-    const socket = useContext(SocketContext);
-    // use the socket connection
-    socket.emit('someevent', 'data');
-    socket.on('someevent', (data) => {
-        console.log('data in the emit ' , data);
-      });
+    // const socket = useContext(SocketContext);
+    // // use the socket connection
+    // // socket.emit('someevent', 'data');
+    // socket.on('someevent', (data) => {
+    //     console.log('data in the emit ' , data);
+    // });
 
     return (
         <>

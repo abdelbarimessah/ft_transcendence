@@ -21,21 +21,42 @@ model User {
   level        Int     @default(10)
   cover        String?
 
-  sockets              String[]
   messages             Message[]
   channels             Channel[]
   memberships          ChannelMembership[]
-  userStats            UserStats?
   chats                Chat[]              @relation("ChatMembers")
   blockedUsers         User[]              @relation("UserBlocks")
   blockedBy            User[]              @relation("UserBlocks")
-  gamesAsPlayerOne     Game[]              @relation("PlayerOne")
-  gamesAsPlayerTwo     Game[]              @relation("PlayerTwo")
-  Game                 Game[]              @relation("GameWinner")
-  requestedFriends     Friendship[]        @relation("FriendshipRequester")
-  receivedFriends      Friendship[]        @relation("FriendshipAddressee")
   NotificationReceived Notification[]      @relation("ReceiverUser")
   NotificationSent     Notification[]      @relation("SenderUser")
+
+  achievements Achievement[]
+  friends      User[]        @relation("friends")
+  friendOf     User[]        @relation("friends")
+  games        Game[]
+}
+
+model Game {
+  id            Int      @id @default(autoincrement())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  opponentId    String
+  userIds       String
+  userScore     Int
+  opponentScore Int
+  status        String
+  userId        String
+  gameName      String?
+  gameType      String?
+  user          User     @relation(fields: [userId], references: [id])
+}
+
+model Achievement {
+  id     Int     @id @default(autoincrement())
+  name   String
+  locked Boolean @default(false)
+  userId String
+  user   User    @relation(fields: [userId], references: [id])
 }
 
 model Chat {
@@ -114,52 +135,4 @@ enum NotifyType {
 enum Status {
   PENDING
   READ
-}
-
-model Game {
-  id             String     @id @default(uuid())
-  status         GameStatus
-  createdAt      DateTime   @default(now())
-  scorePlayerOne Int
-  scorePlayerTwo Int
-  playerOneId    String
-  playerTwoId    String
-  winnerId       String?
-  userId         String?
-  playerOne      User       @relation("PlayerOne", fields: [playerOneId], references: [id])
-  playerTwo      User       @relation("PlayerTwo", fields: [playerTwoId], references: [id])
-  winner         User?      @relation("GameWinner", fields: [winnerId], references: [id])
-}
-
-enum GameStatus {
-  PENDING
-  IN_PROGRESS
-  COMPLETED
-}
-
-model UserStats {
-  id     String @id @default(uuid())
-  userId String @unique
-  wins   Int    @default(0)
-  losses Int    @default(0)
-  level  Int    @default(1)
-  user   User   @relation(fields: [userId], references: [id])
-}
-
-model Friendship {
-  id          String           @id @default(uuid())
-  requesterId String
-  addresseeId String
-  status      FriendshipStatus
-  createdAt   DateTime         @default(now())
-  requester   User             @relation("FriendshipRequester", fields: [requesterId], references: [id])
-  addressee   User             @relation("FriendshipAddressee", fields: [addresseeId], references: [id])
-
-  @@unique([requesterId, addresseeId])
-}
-
-enum FriendshipStatus {
-  PENDING
-  ACCEPTED
-  REJECTED
 }

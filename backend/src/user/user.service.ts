@@ -5,16 +5,28 @@ import * as uuid from 'uuid';
 import * as fs from 'fs';
 import * as path from 'path';
 import { BadRequestException } from '@nestjs/common';
-import axios from 'axios';
+import axios from "axios";
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { error, log } from 'console';
+// import * as Fuse from 'fuse.js';
+const Fuse = require('fuse.js');
 
 @Injectable()
 export class UserService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private prismaService: PrismaService,
+  ) { }
+
 
   async getAllUsers() {
     const users = await this.prismaService.user.findMany();
 
+    for (const user of users) {
+      delete user.secretOpt;
+      delete user.email;
+      delete user.otpIsEnabled;
+      delete user.sockets;
+    }
     return users;
   }
 
@@ -23,16 +35,19 @@ export class UserService {
       where: {
         providerId: id,
       },
+      include: {
+        friendOf: true,
+      }
     });
+
     return user;
   }
 
   async uploadImage(imageUrl: string, id: string) {
+
     try {
-      const response = await axios.get(imageUrl, {
-        responseType: 'arraybuffer',
-      });
-      const uploadDir = path.join(__dirname, '../../uploads/');
+      const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+      const uploadDir = path.join(__dirname, '../../../uploads/');
       const uploadPath = path.join(uploadDir, `${id}${'.png'}`);
 
       if (!fs.existsSync(uploadDir)) {
@@ -41,9 +56,9 @@ export class UserService {
 
       fs.writeFileSync(uploadPath, response.data);
 
-      // console.log(`Image uploaded to ${uploadPath}`);
-    } catch (error) {
-      // console.log('error', error);
+    }
+    catch (error) {
+      console.log('error in the upload of the image in the backend', error);
     }
   }
 
@@ -67,18 +82,126 @@ export class UserService {
 
     if (existingUser && existingUser.providerId !== providerId) {
       console.log('existingUser', existingUser);
-      throw new BadRequestException('nick name already in use');
+      throw new BadRequestException("nick name already in use")
     }
     console.log('data', existingUser);
-    console.log('data continue');
+    console.log('data contunue');
     return this.prismaService.user.update({
       where: { providerId: providerId },
       data: {
         firstName: data.firstName,
         lastName: data.lastName,
-        nickName: data.nickName,
+        nickName: data.nickName
       },
     });
+  }
+
+  async getLeaders() {
+    const users = await this.prismaService.user.findMany({
+      orderBy: {
+        level: 'desc',
+      },
+      take: 3,
+    });
+
+    for (const user of users) {
+      delete user.secretOpt;
+      delete user.email;
+      delete user.otpIsEnabled;
+      delete user.sockets;
+    }
+    return users;
+  }
+
+
+  async getAchievements(id: string) {
+    const userWithAchievements = await this.prismaService.user.findUnique({
+      where: {
+        providerId: id
+      },
+      include: {
+        achievements: true
+      }
+    });
+
+    return userWithAchievements?.achievements;
+  }
+
+  async getFriends(id: string) {
+    const userWithFriends = await this.prismaService.user.findUnique({
+      where: {
+        providerId: id
+      },
+      include: {
+        friends: true
+      }
+    });
+    if (userWithFriends?.friends) {
+      for (const user of userWithFriends.friends) {
+        delete user.secretOpt;
+        delete user.email;
+        delete user.otpIsEnabled;
+        delete user.sockets;
+      }
+    }
+    return userWithFriends?.friends;
+  }
+
+  async getUserSearch(query: string, id: string) {
+    const users = await this.prismaService.user.findMany({
+      where: { providerId: { not: id } },
+    });
+
+    const queryArr = query.split(' ');
+    const keys: (keyof User)[] = ['nickName', 'firstName', 'lastName'];
+    const fuse = new Fuse(users, { keys, threshold: 0.2 });
+    const filtered = fuse.search(queryArr[0]).map((elem) => elem.item);
+
+    for (const user of filtered) {
+      delete user.secretOpt;
+      delete user.email;
+      delete user.otpIsEnabled;
+      delete user.sockets;
+    }
+    return { filtered };
+  }
+
+  async addFriend(userId: string, friendId: string) {
+    if (userId === friendId) {
+      throw new BadRequestException("You can't add yourself as a friend");
+    }
+    await this.prismaService.user.update({
+      where: {
+        providerId: userId,
+      },
+      data: {
+        friends: {
+          connect: {
+            providerId: friendId,
+          },
+        },
+      },
+    });
+    return { message: 'Friend added' };
+  }
+
+  async removeFriend(userId: string, friendId: string) {
+    if (userId === friendId) {
+      throw new BadRequestException("You can't add yourself as a friend");
+    }
+    await this.prismaService.user.update({
+      where: {
+        providerId: userId,
+      },
+      data: {
+        friends: {
+          disconnect: {
+            providerId: friendId,
+          },
+        },
+      },
+    });
+    return { message: 'Friend added' };
   }
 
   async findOrCreate(data: Prisma.UserCreateInput) {
@@ -86,17 +209,22 @@ export class UserService {
     let suffix = '';
 
     console.log('data', data);
+    const achievements = ['ach1', 'ach2', 'ach3', 'ach4', 'ach5', 'ach6', 'ach7'];
     while (!user) {
       try {
         user = await this.prismaService.user.upsert({
           create: {
             ...data,
             nickName: `${data.nickName}${suffix}`,
+            achievements: {
+              create: achievements.map(name => ({ name, locked: false })),
+            },
           },
           update: {},
           where: { providerId: data.providerId },
         });
       } catch (error) {
+
         if (
           !(error instanceof PrismaClientKnownRequestError) ||
           error.code !== 'P2002'
@@ -108,4 +236,5 @@ export class UserService {
     }
     return user;
   }
+
 }

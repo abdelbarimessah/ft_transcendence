@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Prisma } from '@prisma/client';
 import { authenticator } from 'otplib';
-// import { nanoid } from 'nanoid';
 import { toDataURL } from 'qrcode';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -11,7 +10,8 @@ export class AuthService {
   constructor(
     private prismaService: PrismaService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
+
   async userUpsert(userData: Prisma.UserCreateInput) {
     let isNew = false;
     const { email, firstName, lastName } = userData;
@@ -35,6 +35,7 @@ export class AuthService {
     }
     return { user, isNew };
   }
+
   async generateNickname(firstName: string, lastName: string) {
     const { nanoid } = await import('nanoid');
     let nickName: string = `${firstName.toLowerCase()}-${lastName.toLowerCase()}`;
@@ -52,6 +53,7 @@ export class AuthService {
     }
     throw new Error('generating nickname failed');
   }
+
   async generateJwtToken(user) {
     const payload = {
       providerId: user.providerId,
@@ -60,6 +62,7 @@ export class AuthService {
     };
     return await this.jwtService.signAsync(payload);
   }
+
   async generateOTP(user: Prisma.UserCreateInput) {
     if (!user) console.log('user not found');
     // eslint-disable-next-line prefer-const

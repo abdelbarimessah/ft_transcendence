@@ -21,7 +21,6 @@ function OtpCard() {
 
             axios.patch('http://localhost:3000/auth/enable/Otp', { otp })
             .then(response => {
-                console.log(response.data);
                 toast.success('OTP Enabled successfully');
                 setOtpDisable(true);
             })
@@ -40,7 +39,6 @@ function OtpCard() {
             axios.
             patch('http://localhost:3000/auth/disable/Otp')
             .then((res) => {
-                console.log(res)
                 setOtpDisable(false);
                 toast.success('OTP Disabled successfully');
             })
@@ -59,7 +57,6 @@ function OtpCard() {
                 const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`);
                 setId(res.data.providerId);
                 setOtpDisable(res.data.otpIsEnabled);
-                console.log('data opt enable ', res.data.otpIsEnabled);
             }
             catch (error) {
                 console.error(error);
@@ -73,7 +70,6 @@ function OtpCard() {
         .then((res) => {
             setQrcode(res.data.qr_code)
             setIsLoading(false);
-            console.log(res)
         })
         .catch((error) => {
             console.error(error);

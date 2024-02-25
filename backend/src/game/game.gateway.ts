@@ -32,6 +32,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   roomName: string = '';
   clientNO: number = 0;
   clientNOForCard: number = 0;
+  inviteNumber:  number = 0;
   numClients = {};
 
   private readonly connectedClients: Map<string, Socket> = new Map();
@@ -123,22 +124,53 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (socket.rooms.has(data.roomName) === false)
       socket.emit('youAreNotinRoom');
   }
+
   @SubscribeMessage('playInvite')
   async handlePlayInvite(socket : Socket, data: any)
   {
-    socket.join(`{room=${data.user.providerId}-${data.friend.providerId}`)
-    console.log('the data come with the invite is :[66666]', data.user , data.friend);
-    
-    this.server.to(data.friend.providerId).emit('playRequestFromFriend', {user: data.friend, friend: data.friend})
-    console.log('the user join to the room and send the play request');
+    this.inviteNumber++;
+    const roomName  = `InviteRoom-${data.sender.providerId}-${data.receiver.providerId}-${this.inviteNumber}`;
+    socket.join(roomName)
+    this.roomSockets.set(roomName, {
+      player1: socket.data.user,
+      player2: null,
+    })
+    console.log('the data in the roomsocket is [oooooo]', this.roomSockets.get(roomName));
+
+    console.log(socket.id, 'join the room :: ', roomName);
+    this.server.to(data.receiver.providerId).emit('playRequestFromFriend', {sender: data.sender, receiver: data.receiver, inviteNumber: this.inviteNumber})
   }
+  
+  @SubscribeMessage('acceptInviteGame')
+  async handleAcceptInviteGame(socket : Socket, data: any)
+  {
+    const roomName  = `InviteRoom-${data.gamePair.sender.providerId}-${data.gamePair.receiver.providerId}-${data.gamePair.inviteNumber}`;
+    socket.join(roomName);
+    const tmpData = this.roomSockets.get(roomName);
+    if(tmpData)
+    {
+      tmpData.player2 = socket.data.user;
+      this.roomSockets.set(roomName, tmpData);
+      console.log('the data in the roomsocket is [oooooo]', this.roomSockets.get(roomName));
+
+    }
+    console.log(socket.id, 'join the room :: ', roomName);    
+    this.server.in(roomName).emit('playersReadyInvite', {sender: data.gamePair.sender, receiver: data.gamePair.receiver, inviteNumber: data.gamePair.inviteNumber});
+    // socket.emit('playersReadyInvite', {sender: data.gamePair.sender, receiver: data.gamePair.receiver});
+  }
+
+
 
   @SubscribeMessage('endGame')
   async handleEndGame(socket: Socket, data: any) {
+    console.log('the data in the endGane after the finish [ppppp]', data);
+    
     const roomName = data.gameData.roomName;
     const sockets = this.roomSockets.get(roomName);
 
     if (socket.data.user.providerId === sockets.player1.providerId) {
+      console.log('the first player in the endgame [uuuuu]');
+      
       socket.emit('endGameClient', {
         roomName: roomName,
         game: data.gameData,
@@ -146,6 +178,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         oponent: sockets.player2,
       });
     } else {
+      console.log('the second player in the endgame [tttttt]');
       socket.emit('endGameClient', {
         roomName: roomName,
         game: data.gameData,
@@ -156,9 +189,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
   @SubscribeMessage('customDisconnectClient')
   handleCustomDisconnect(socket: Socket, data: any) {
-    console.log('the custom disconnect in the gateway [333333]', data.roomName);
     
-    if (!data.roomName) return;
+    if (!data.roomName || data.roomName.ww ) return;
     this.playerQueue = this.playerQueue.filter(
       (player) => player.socket.id !== socket.id,
       );

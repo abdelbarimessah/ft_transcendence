@@ -24,7 +24,7 @@ function Chat() {
     const [friendsList, setFriendsList] = useState([]);
     const [channelsList, setChannelsList] = useState([]);
     const [myId, setMyId] = useState([]);
-    const [chatConversation, setChatConversation] = useState("");
+    const [chatConversation, setChatConversation] = useState([]);
     const [chatClicked, setChatClicked] = useState([]);
     
 
@@ -60,7 +60,7 @@ function Chat() {
       };
 
       useEffect(() => {
-        if (chatClicked != "")
+        if (chatClicked.id)
           fetchConversationDta();
       }, [chatClicked]);
   

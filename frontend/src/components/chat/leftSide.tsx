@@ -44,7 +44,7 @@ function LeftSide({ParentEventTriger}) {
 			return (<>
 				<div className= 'flex justify-between items-center  px-3 min-h-[60px] bg[#FEE7C5] cursor-pointer hover:bg-[#635b4d]'>
 					
-					<h1 className=' text-color-2 text-lg' >  list of new friend</h1>
+					<h1 className=' text-color-2 text-lg' >  list of new friend </h1>
 					<Btns icon={"../../assets/addChannel.png"}/>
 
 				</div>

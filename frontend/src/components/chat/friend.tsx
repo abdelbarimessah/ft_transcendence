@@ -93,7 +93,7 @@ function Friend ({chat, EventTriger}: any) {
                         alt={UserData.myId.id != chat.members[0].id ? chat.members[0].nickName: chat.members[1].nickName}
                         className=' rounded-full w-[60px] ' />
                 
-                    <h1 className=' font-medium '>{UserData.myId != chat.members[1].id ? chat.members[0].nickName: chat.members[1].nickName}</h1>
+                    <h1 className=' font-medium '>{UserData.myId.id != chat.members[0].id ? chat.members[0].nickName: chat.members[1].nickName}</h1>
         
             </div>
     )

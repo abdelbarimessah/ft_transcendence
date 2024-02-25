@@ -166,6 +166,12 @@ export class UserService {
     if (userId === friendId) {
       throw new BadRequestException("You can't add yourself as a friend");
     }
+    const friend = await this.prismaService.user.findUnique({
+      where: {
+        providerId: friendId,
+      },
+    });
+    if (!friend) throw new BadRequestException("user doesn't exists");
     const user = await this.prismaService.user.update({
       where: {
         providerId: userId,
@@ -178,7 +184,11 @@ export class UserService {
         },
       },
     });
-    await this.notificationService.friendRequestNotification(user.id, friendId);
+    await this.notificationService.friendRequestNotification(
+      user.id,
+      friend.id,
+      friendId,
+    );
     return { message: 'Friend added' };
   }
 

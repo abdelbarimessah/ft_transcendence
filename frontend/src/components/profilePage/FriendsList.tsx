@@ -17,7 +17,8 @@ const friend1 = {
 
 const getFriendsList = async () => {
   const res = await axios.get<FriendCardProps[]>(
-    "http://localhost:3000/user/friends"
+    "http://localhost:3000/user/friends",
+    { withCredentials: true }
   );
   return res.data;
 };

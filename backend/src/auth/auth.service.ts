@@ -10,7 +10,7 @@ export class AuthService {
   constructor(
     private prismaService: PrismaService,
     private jwtService: JwtService,
-  ) { }
+  ) {}
 
   async userUpsert(userData: Prisma.UserCreateInput) {
     let isNew = false;

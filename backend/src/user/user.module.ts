@@ -20,7 +20,7 @@ import { NotificationService } from 'src/notification/notification.service';
       }),
       inject: [ConfigService],
     }),
-    NotificationModule
+    NotificationModule,
   ],
   controllers: [UsersController],
   providers: [UserService, PrismaService, JwtService, NotificationService],

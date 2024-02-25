@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { CurrentUser } from './current-user.decorator';
 import { authenticator } from 'otplib';
 import { JwtService } from '@nestjs/jwt';
@@ -21,7 +21,7 @@ export class AuthController {
   constructor(
     private authService: AuthService,
     private jwtService: JwtService,
-  ) { }
+  ) {}
   @Get('google')
   @UseGuards(AuthGuard('google'))
   googleAuth() {
@@ -122,7 +122,6 @@ export class AuthController {
   async logout(@Res({ passthrough: true }) res: Response) {
     console.log('logout');
     res.clearCookie('authorization', { httpOnly: true });
-    
   }
 
   @Patch('generate/Otp')

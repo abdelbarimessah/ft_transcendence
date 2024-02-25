@@ -4,12 +4,18 @@ const Fuse = require('fuse.js');
 
 @Injectable()
 export class GameService {
-  constructor(
-    private prismaService: PrismaService,
-  ) { }
+  constructor(private prismaService: PrismaService) {}
 
   async addGameData(id: string, gameData: any) {
-    let { opponentId, userIds, userScore, opponentScore, status, gameName , gameType} = gameData;
+    const {
+      opponentId,
+      userIds,
+      userScore,
+      opponentScore,
+      status,
+      gameName,
+      gameType,
+    } = gameData;
     const count = await this.prismaService.game.count({
       where: {
         gameName: gameName,
@@ -32,7 +38,7 @@ export class GameService {
           },
         },
       });
-      
+
       return game;
     }
   }

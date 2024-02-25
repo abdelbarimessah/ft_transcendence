@@ -25,17 +25,19 @@ const SearchBareHeader = () => {
                 params: { query: value }
             });
 
-            console.log('response', response.data.filtered);
-            setSearchResults(response.data.filtered);
+            console.log('response in the search', response.data.search.filtered);
+            setSearchResults(response.data.search.filtered);
         } catch (error) {
             console.error(error);
         }
     }, 500);
+
     const handleInputChange = (event: any) => {
         const value = event.target.value;
         setSearchInput(value); 
         debouncedHandleInputChange(value);
     };
+
     const handleSearch = async (event: any) => {
         event.preventDefault();
     };

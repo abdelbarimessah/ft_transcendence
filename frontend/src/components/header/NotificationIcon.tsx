@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 
 import {
@@ -11,8 +11,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { SocketContext } from "@/app/SocketContext";
+
 
 const NotificationIcon = () => {
+  const socketClient = useContext(SocketContext);
+  const [inviteGame, setInviteGame] = useState(false);
+
+  useEffect(() => {
+    socketClient.on('playRequestFromFriend', (data) => {
+      setInviteGame(true);
+      console.log('the data in the client who receive the invite [222222]', data);
+    })
+  })
   return (
     <div className="w-[66px] h-[66px] bg-color-0 rounded-[22px] flex items-center justify-center  cursor-pointer relative">
       <DropdownMenu>
@@ -29,10 +40,13 @@ const NotificationIcon = () => {
 
             <DropdownMenuContent
               align="end"
-              className="absolute h-fit z-50 top-0 right-0 rounded-[15px]"
+              className="absolute h-fit z-[1000] top-0 right-0 rounded-[15px] "
             >
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
+              {inviteGame &&
+                <GameNotification/>
+              }
               <DropdownMenuItem>Profile</DropdownMenuItem>
               <DropdownMenuItem>Billing</DropdownMenuItem>
               <DropdownMenuItem>Team</DropdownMenuItem>
@@ -46,3 +60,23 @@ const NotificationIcon = () => {
 };
 
 export default NotificationIcon;
+
+
+function GameNotification() {
+  const handleAcceptInvite = () => {
+    
+  }
+
+  return (
+    <div className="w-[200px] h-[50px] bg-color-6 rounded-[10px] flex items-center justify-center gap-[22px]">
+      <div className="w-[70px] h-[40px] bg-color-0 cursor-pointer rounded-[10px] flex items-center justify-center">
+        <span className="text-color-6 text-[14px]">accept</span>
+      </div>
+      <div className="w-[70px] h-[40px] bg-color-23 rounded-[10px] cursor-pointer flex items-center justify-center">
+        <span className="text-color-30 text-[14px]">decline</span>
+      </div>
+    </div>
+  )
+}
+
+export { GameNotification };

@@ -15,7 +15,6 @@ const ProfileHeader = () => {
             try {
                 setIsLoading(true);
                 const res = await axios.get(`http://localhost:3000/user/me`);
-                console.log('res data is ', res.data);
                 
                 setUser(res.data);
                 setIsLoading(false);

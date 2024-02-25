@@ -4,6 +4,7 @@ import Image from "next/image";
 import FriendCard, { FriendCardProps } from "./FriendCard";
 import { useQuery } from "react-query";
 import axios from "axios";
+import { useEffect, useState } from "react";
 
 const friend1 = {
   id: 1,
@@ -15,6 +16,8 @@ const friend1 = {
   cover: "http://localhost:3000/uploads/DefaultCover.svg",
 };
 
+axios.defaults.withCredentials = true;
+
 const getFriendsList = async () => {
   const res = await axios.get<FriendCardProps[]>(
     "http://localhost:3000/user/friends"
@@ -22,7 +25,19 @@ const getFriendsList = async () => {
   return res.data;
 };
 
+
 function FriendsList() {
+  const [me, setMe] = useState<any>();
+  useEffect(() => {
+    axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`).then(res => {
+      setMe(res.data);
+    }).catch(err => {
+      console.error(err);
+    })
+  }, [])
+  console.log('the user in the friend list [33333]', me);
+  
+
   const {
     data: friendsList,
     isLoading,
@@ -68,7 +83,7 @@ function FriendsList() {
         {!isLoading &&
           !isError &&
           friendsList?.map((friend) => (
-            <FriendCard key={friend.id} friend={friend} />
+            <FriendCard key={friend.id} friend={friend} user={me} />
           ))}
 
         {/* <FriendCard friend={friend1} /> */}

@@ -25,7 +25,6 @@ export class AuthController {
   @Get('google')
   @UseGuards(AuthGuard('google'))
   googleAuth() {
-    console.log('********************GOOGLE-HERE***********************');
   }
 
   @Get('google/callback')
@@ -66,14 +65,12 @@ export class AuthController {
   @Get('42')
   @UseGuards(AuthGuard('42'))
   intraAuth() {
-    console.log('********************INTRA-HERE***********************');
   }
 
   @Get('42/callback')
   @UseGuards(AuthGuard('42'))
   async intraAuthCallback(@Req() req, @Res() res) {
     const user = req.user.user;
-    console.log('here in 42/callback', req.user);
     if (!req.user) {
       return res.redirect('http://localhost:8000');
     }
@@ -104,23 +101,8 @@ export class AuthController {
     }
   }
 
-  // @Get('logout')
-  // @UseGuards(AuthGuard('jwt'))
-  // async logout(@Req() req: Request, @Res() res: Response) {
-  //   res.clearCookie('authorization', {
-  //     httpOnly: true,
-  //     secure: false,
-  //     sameSite: 'lax',
-  //   });
-  //   console.log('logout');
-
-  //   return {ok: 'ok'}
-  //   // return res.redirect('http://localhost:8000');
-  // }
-
   @Get('logout')
   async logout(@Res({ passthrough: true }) res: Response) {
-    console.log('logout');
     res.clearCookie('authorization', { httpOnly: true });
   }
 
@@ -149,8 +131,6 @@ export class AuthController {
       token: body.otp,
       secret: user.secretOpt,
     });
-    console.log('token ===>', body.otp);
-    console.log('secret ===>', user.secretOpt);
     if (!isValid) throw new UnprocessableEntityException();
 
     await this.authService.enableOtp(user.providerId);
@@ -168,7 +148,6 @@ export class AuthController {
       sameSite: 'lax',
       expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
     });
-    console.log('token ===>', token);
     return { token, otp: { enabled: true, verified: true } };
   }
 
@@ -204,15 +183,11 @@ export class AuthController {
     @Body() body: { otp: string },
   ) {
     if (!user.otpIsEnabled) throw new ConflictException();
-    console.log('opt in the verify auth controller', body.otp);
 
     const success = await this.authService.verifyOTP(user, body.otp);
-    console.log('success ===>', success);
     if (!success) {
-      console.log('otp incorrect');
       throw new UnprocessableEntityException();
     }
-    console.log('otp correct');
 
     const payload = {
       id: user.id,

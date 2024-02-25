@@ -117,6 +117,21 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       });
     }
   }
+  
+  @SubscribeMessage('checkRoom')
+  handleCheckRoom(socket: Socket, data: any) {
+    if (socket.rooms.has(data.roomName) === false)
+      socket.emit('youAreNotinRoom');
+  }
+  @SubscribeMessage('playInvite')
+  async handlePlayInvite(socket : Socket, data: any)
+  {
+    socket.join(`{room=${data.user.providerId}-${data.friend.providerId}`)
+    console.log('the data come with the invite is :[66666]', data.user , data.friend);
+    
+    this.server.to(data.friend.providerId).emit('playRequestFromFriend', {user: data.friend, friend: data.friend})
+    console.log('the user join to the room and send the play request');
+  }
 
   @SubscribeMessage('endGame')
   async handleEndGame(socket: Socket, data: any) {
@@ -142,11 +157,11 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('customDisconnectClient')
   handleCustomDisconnect(socket: Socket, data: any) {
     console.log('the custom disconnect in the gateway [333333]', data.roomName);
-
+    
     if (!data.roomName) return;
     this.playerQueue = this.playerQueue.filter(
       (player) => player.socket.id !== socket.id,
-    );
+      );
     this.playerQueueUser = this.playerQueueUser.filter(
       (player) => player.socketName !== socket.id,
     );
@@ -164,6 +179,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   handleDisconnect(socket: Socket) {
+    console.log('diconnect of the socket', socket.id);
+    
     const roomName = this.listRooms.get(socket.id);
     this.playerQueue = this.playerQueue.filter(
       (player) => player.socket.id !== socket.id,
@@ -205,11 +222,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  @SubscribeMessage('checkRoom')
-  handleCheckRoom(socket: Socket, data: any) {
-    if (socket.rooms.has(data.roomName) === false)
-      socket.emit('youAreNotinRoom');
-  }
 
   @SubscribeMessage('startGameClient')
   handleStartGameClinet(socket: Socket, data: any) {

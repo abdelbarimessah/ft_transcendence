@@ -80,11 +80,8 @@ export class UserService {
     });
 
     if (existingUser && existingUser.providerId !== providerId) {
-      console.log('existingUser', existingUser);
       throw new BadRequestException('nick name already in use');
     }
-    console.log('data', existingUser);
-    console.log('data contunue');
     return this.prismaService.user.update({
       where: { providerId: providerId },
       data: {

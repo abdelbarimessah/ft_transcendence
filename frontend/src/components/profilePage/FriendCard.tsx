@@ -1,28 +1,39 @@
 "use client";
 
+import { SocketContext } from "@/app/SocketContext";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useContext } from "react";
 
 
 
 export type FriendCardProps = {
   id: number;
-  nickname: string;
+  providerId: string;
+  nickName: string;
   firstName: string;
   lastName: string;
   avatar: string;
   cover: string;
 };
 
-export default function FriendCard({ friend }: { friend: FriendCardProps }) {
+export default function FriendCard({ friend , user}: { friend: FriendCardProps, user : FriendCardProps}) {
+  const socketClient = useContext(SocketContext);
   const fullName = `${friend.firstName} ${friend.lastName}`;
+  const router = useRouter()
 
   const handlePlayWith = () => {
-    console.log(`Play with ${friend.nickname} with ID: ${friend.id}`);
+    socketClient.emit('playInvite', {user: user , friend : friend})
+    console.log('send the invite to the game from the sender [88888]');
+    
+    setTimeout(() => {
+      router.push(`/game/waitingpm?room=${user.providerId}-${friend.providerId}`);
+    }, 2000)
   };
 
   const handleMessageToFriend = () => {
-    console.log(`Message to ${friend.nickname} with ID: ${friend.id}`);
+    console.log(`Message to ${friend.nickName} with ID: ${friend.providerId}`);
   };
 
   return (
@@ -39,7 +50,7 @@ export default function FriendCard({ friend }: { friend: FriendCardProps }) {
       </div>
       <div className="w-full flex items-center justify-center absolute top-[35px]">
         <div className="w-[70px] h-[70px] rounded-full relative border border-color-0 overflow-hidden cursor-pointer">
-          <Link href={`/profile/${friend.id}`}>
+          <Link href={`/profile/${friend.providerId}`}>
             <Image
               src={friend.avatar}
               alt="Avatar"
@@ -51,13 +62,13 @@ export default function FriendCard({ friend }: { friend: FriendCardProps }) {
           </Link>
         </div>
       </div>
-      <div className="w-full flex gap-[10px] flex-col">
+      <div className="w-full flex gap-[10px] flex-col ">
         <div className="w-full flex flex-col items-center justify-center">
           <span className="font-nico-moji text-[14px] text-color-6">
             {fullName}
           </span>
           <span className="-mt-1 font-nico-moji text-[13px] text-color-29">
-            {friend.nickname}
+            @{friend.nickName}
           </span>
         </div>
         <div className="w-full flex items-center justify-center gap-[18px]">

@@ -16,6 +16,8 @@ export default function RootLayout({
   const [Show, setShow] = useState(true);
   const route = useRouter();
   const socketClient = useContext(SocketContext);
+  const[acceptinvite, setAcceptinvite] = useState(false);
+  const[declineinvite, setDeclineinvite] = useState(false);
 
   useEffect(() => {
     const enterRoom = (data: any) => {
@@ -45,7 +47,6 @@ export default function RootLayout({
       socketClient.off('endGameClient');
     }
   }, [socketClient]);
-
 
   useEffect(() => {
     if (gameEnded) 
@@ -118,7 +119,7 @@ export default function RootLayout({
       <SideNav setShow={setShow} />
       <div className='flex items-center justify-center flex-1 w-10 '>
         <SocketProvider>
-          {children}
+            {children}
         </SocketProvider>
       </div>
     </div>

@@ -38,11 +38,11 @@ export class UsersController {
   @UseGuards(AuthGuard('jwt'))
   async getProfile(@CurrentUser() user: any) {
     try {
-      if (user) {
-        this.userService.uploadImage(user.avatar, user.providerId);
-      } else {
-        console.log(`No user found`);
-      }
+      // if (user) {
+      //   this.userService.uploadImage(user.avatar, user.providerId);
+      // } else {
+      //   console.log(`No user found`);
+      // }
     } catch (error) {
       console.error('error', error);
     }
@@ -59,10 +59,17 @@ export class UsersController {
     @Req() req: Request,
     @CurrentUser() user: any,
   ) {
-    const uploadDir = path.join(__dirname, '../../uploads/');
+    const uploadDir = path.join(__dirname, '../../../uploads/');
     const uploadPath = path.join(uploadDir, `${user.providerId}${'.png'}`);
     fs.writeFileSync(uploadPath, file.buffer);
-    await this.userService.updateAvatar(user.providerId, uploadPath);
+    const backendUrl ='http://localhost:3000'
+    const url = new URL(
+      `/uploads/${user.providerId}${'.png'}`,
+      backendUrl,
+    );
+    url.searchParams.append('time', Date.now().toString());
+    
+    await this.userService.updateAvatar(user.providerId, url.href);
   }
 
   @Post('updateCover')
@@ -74,7 +81,7 @@ export class UsersController {
     @Req() req: Request,
     @CurrentUser() user: any,
   ) {
-    const uploadDir = path.join(__dirname, '../../uploads/');
+    const uploadDir = path.join(__dirname, '../../../uploads/');
     const uploadPath = path.join(
       uploadDir,
       `cover-${user.providerId}${'.png'}`,
@@ -86,8 +93,9 @@ export class UsersController {
       `/uploads/cover-${user.providerId}${'.png'}`,
       backendUrl,
     );
+    url.searchParams.append('time', Date.now().toString());
+
     await this.userService.updateCover(user.providerId, url.href);
-    console.log('url', url.href);
     return { url: url.href };
   }
 
@@ -126,16 +134,27 @@ export class UsersController {
     return { achievements: res };
   }
 
+  // @Get('userSearch')
+  // @UseGuards(OTPGuard)
+  // @UseGuards(AuthGuard('jwt'))
+  // async userSearch(@Req() req: Request, @CurrentUser() user: any) {
+  //   const searchQuery = String(req.query.query);
+  //   const res = await this.userService.getUserSearch(
+  //     searchQuery,
+  //     user.providerId,
+  //   );
+  // }
+
+
   @Get('userSearch')
   @UseGuards(OTPGuard)
   @UseGuards(AuthGuard('jwt'))
-  async userSearch(@Req() req: Request, @CurrentUser() user: any) {
-    const searchQuery = String(req.query.query);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const res = await this.userService.getUserSearch(
-      searchQuery,
-      user.providerId,
-    );
+  async userSearch(@Req() req : Request, @CurrentUser() user :any)
+  {
+      const searchQuery = String(req.query.query);
+      const res = await this.userService.getUserSearch(searchQuery, user.providerId);
+      console.log('the result of the seearch in the backend',res);
+      return {search: res}
   }
 
   @Patch('addFriend')

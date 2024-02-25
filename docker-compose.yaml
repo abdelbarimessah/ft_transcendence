@@ -47,9 +47,9 @@ networks:
 #     networks:
 #       - trans
 
-# volumes:
-#   db:
-#     driver_opts:
-#       type: none
-#       o: bind
-#       device: /Users/amessah/Desktop/db
+volumes:
+  db:
+    driver_opts:
+      type: none
+      o: bind
+      device: /Users/imittous/Desktop/db

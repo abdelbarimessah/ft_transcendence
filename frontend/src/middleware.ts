@@ -10,10 +10,7 @@ export async function middleware(request: NextRequest) {
       Cookie: `authorization=${cookie.value}`,
     },
     credentials: "include",
-  });
-
-  console.log(' in the middleware', res.ok);
-  
+  });  
 
   if (!res.ok) return  NextResponse.redirect("http://localhost:8000");
 

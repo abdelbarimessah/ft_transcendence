@@ -28,8 +28,6 @@ const ProfileHeader = () => {
         getData();
     }, []);
 
-    console.log('thse user in profile [header]', user);
-    
     return (
         <Link href='/profile'>
             <div className='w-[66px] h-[66px] bg-color-0 rounded-[22px] flex items-center xl:pl-5 pl-0 justify-center  xl:justify-start gap-[8px] cursor-pointer xl:w-[280px]'>

@@ -29,15 +29,10 @@ export class NotificationService {
           select: {
             id: true,
             providerId: true,
-            email: true,
             nickName: true,
             firstName: true,
             lastName: true,
-            provider: true,
             avatar: true,
-            otpIsEnabled: true,
-            level: true,
-            cover: true,
           },
         },
       },
@@ -55,15 +50,31 @@ export class NotificationService {
     });
     //To-do send notification using the gateway
   }
-  async friendRequestNotification(userId: string, receiverId: string) {
+  async friendRequestNotification(
+    userId: string,
+    receiverId: string,
+    room: string,
+  ) {
     const notification = await this.prismaService.notification.create({
       data: {
         type: 'FRIEND_REQUEST',
         userId: userId,
-        // receiverId: receiverId,
+        receiverId: receiverId,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            providerId: true,
+            nickName: true,
+            firstName: true,
+            lastName: true,
+            avatar: true,
+          },
+        },
       },
     });
-    this.notificationGateway.sendNotification(receiverId, notification);
+    this.notificationGateway.sendNotification(room, notification);
     //To-do send notification using the gateway
 
     return notification;

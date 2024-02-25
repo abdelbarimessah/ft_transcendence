@@ -104,25 +104,26 @@ export class AuthController {
     }
   }
 
+  @Get('logout')
+  @UseGuards(AuthGuard('jwt'))
+  async logout(@Req() req: Request, @Res() res: Response) {
+    res.clearCookie('authorization', {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+    });
+    // console.log('logout');
+
+    // return {ok: 'ok'}
+    return res.redirect('http://localhost:8000');
+  }
+
   // @Get('logout')
   // @UseGuards(AuthGuard('jwt'))
-  // async logout(@Req() req: Request, @Res() res: Response) {
-  //   res.clearCookie('authorization', {
-  //     httpOnly: true,
-  //     secure: false,
-  //     sameSite: 'lax',
-  //   });
+  // async logout(@Res({ passthrough: true }) res: Response) {
   //   console.log('logout');
-
-  //   return {ok: 'ok'}
-  //   // return res.redirect('http://localhost:8000');
+  //   res.clearCookie('authorization', { httpOnly: true });
   // }
-
-  @Get('logout')
-  async logout(@Res({ passthrough: true }) res: Response) {
-    console.log('logout');
-    res.clearCookie('authorization', { httpOnly: true });
-  }
 
   @Patch('generate/Otp')
   @UseGuards(AuthGuard('jwt'))

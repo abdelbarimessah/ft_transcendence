@@ -118,6 +118,16 @@ export class ChatController {
         ...(chatId && { chatId }),
         ...(channelId && { channelId }),
       },
+      include: {
+        author: {
+          select: {
+            id: true,
+            providerId: true,
+            avatar: true,
+            nickName: true,
+          },
+        },
+      },
     });
     this.chatGateway.sendMessage(targetId.id, message);
     if (chatId) {

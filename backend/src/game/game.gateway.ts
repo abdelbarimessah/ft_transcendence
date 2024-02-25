@@ -11,7 +11,8 @@ import { GameService } from './game.service';
 
 @WebSocketGateway({
   cors: {
-    origin: 'http://localhost:8000',
+    origin: ['http://localhost:8000', 'http://localhost:8000/'],
+    credentials: true,
   },
 })
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -42,6 +43,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('firstTime')
   handleFirstTime(socket: Socket, data: any) {
+    console.log(`${data.nickName} joined ${data.providerId}`);
     socket.data.user = data;
     socket.join(data.providerId);
   }

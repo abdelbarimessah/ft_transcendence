@@ -84,8 +84,6 @@ export default function RootLayout({
     }
   }, [socketClient]);
 
-
-
   useEffect(() => {
     if (gameEnded) 
     {
@@ -116,6 +114,12 @@ export default function RootLayout({
       socketClient.off('OnePlayerLeaveTheRoom');
     }
   }, [socketClient]);
+
+  useEffect(() => {
+    socketClient.on('User-status', (data) => {
+      console.log(data.providerId, 'the user status in the layout is : [000000]', data.status);
+    });
+  }, [socketClient])
 
   return (
     <div className='flex  w-screen min-h-screen '>

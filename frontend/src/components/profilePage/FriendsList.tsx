@@ -5,6 +5,8 @@ import FriendCard, { FriendCardProps } from "./FriendCard";
 import { useQuery } from "react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import Lottie from "lottie-react";
+import animationData from '../../../public/assets/EmptyFriends.json';
 
 const friend1 = {
   id: 1,
@@ -65,6 +67,15 @@ function FriendsList() {
           </span>
         </div>
       </div>
+      {!isLoading && !isError && friendsList?.length === 0 && (
+        <div className="">
+          <Lottie
+            autoPlay
+            loop
+            style={{ width: 300 }} animationData={animationData}
+          />
+        </div>
+      )}
 
       {isLoading && (
         <div className="flex w-full h-full items-center justify-center ">

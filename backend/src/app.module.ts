@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { GameGateway } from './game/game.gateway';
 import { UsersModule } from './user/user.module';
-// import { AuthModule } from './auth/auth.module';
 import { AppController } from './app.controller';
 import { ChatModule } from './chat/chat.module';
 import { PrismaModule } from './prisma/prisma.module';
@@ -11,6 +10,7 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppService } from './app.service';
 import { GameModule } from './game/game.module';
+import { UserGateway } from './user/user.gateway';
 
 @Module({
   imports: [
@@ -33,6 +33,6 @@ import { GameModule } from './game/game.module';
     }),
   ],
   controllers: [AppController],
-  providers: [GameGateway, JwtService, AppService],
+  providers: [GameGateway, UserGateway,JwtService, AppService],
 })
 export class AppModule {}

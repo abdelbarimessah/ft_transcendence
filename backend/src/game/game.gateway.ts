@@ -74,6 +74,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.server.in(socket.id).emit('enterRoom', {
       roomName: this.roomName,
       wishPlayer: this.listClient[this.listClient.length - 1].wishPlayer,
+      providerId: socket.data.providerId,
     });
 
     if (this.numClients[this.roomName] == 2) {

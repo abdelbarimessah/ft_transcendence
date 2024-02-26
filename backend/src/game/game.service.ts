@@ -36,6 +36,8 @@ export class GameService {
           },
         },
       });
+      
+      if(status === 'win') await this.addUserLevel(providerId);
 
       const achievementsToUnlock = [
         { name: 'ach7', count: 50 },
@@ -81,6 +83,24 @@ export class GameService {
     }
 
   }
+  async addUserLevel(providerId: string)
+  {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        providerId: providerId,
+      },
+    });
+    if (user) {
+      await this.prismaService.user.update({
+        where: {
+          providerId: providerId,
+        },
+        data: {
+          level: user.level + 2,
+        },
+      });
+    }
+  }
 
   async getNumberOfWiningMatch(gameType: string, id: string) {
     const winCount = await this.prismaService.game.count({
@@ -114,8 +134,6 @@ export class GameService {
     })
     return { randomModeCount }
   }
-
-  //TODO add the level of the user after storing the game 
 
   async getMatchHistory(userId: string) {
     const games = await this.prismaService.game.findMany({

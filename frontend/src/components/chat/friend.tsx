@@ -47,6 +47,17 @@ import { chatslistContext } from '../../app/(home)/chat/page'
 
 
 
+// avatar : "https://lh3.googleusercontent.com/a/ACg8ocJas89t8OR8c1fmSRIBb3-Z7iVTXnBe3vxqT3HCxEaI=s96-c"
+// cover : "http://localhost:3000/uploads/DefaultCover.svg"
+// firstName : "Issmail"
+// id : "7f07f92b-03fc-482a-91e5-986ab1beca3b"
+// lastName : "Mittous"
+// level : 10
+// nickName : "Issmail Mittous"
+// provider : "google"
+// providerId : "107369042129154344124"
+
+
 
 function Friend ({chat, EventTriger}: any) {
     // console.log("index = ", index);

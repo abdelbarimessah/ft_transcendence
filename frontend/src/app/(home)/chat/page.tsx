@@ -33,8 +33,8 @@ function Chat() {
           const friendresponse = await axios.get('http://localhost:3000/chat/all');
           setFriendsList(friendresponse.data);
           // console.log("response_friend = ", friendresponse.data);
-          const channelresponse = await axios.get('http://localhost:3000/chat/all');
-          setChannelsList(channelresponse.data);
+          // const channelresponse = await axios.get('http://localhost:3000/chat/all');
+          // setChannelsList(channelresponse.data);
           // console.log("response_channel = ", channelresponse.data);
           const myIdResponse = await axios.get('http://localhost:3000/user/me');
           setMyId(myIdResponse.data);
@@ -63,8 +63,8 @@ function Chat() {
         if (chatClicked.id)
           fetchConversationDta();
       }, [chatClicked]);
-  
-      // console.log("EventTriger = ", chatClicked);
+
+      console.log("EventTriger = ", myId.id);
 
     return (
         <>

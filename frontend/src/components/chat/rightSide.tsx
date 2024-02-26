@@ -17,6 +17,7 @@ function RightSide () {
         
         const friendSrcImg = UserData.myId.id !== UserData.chatClicked.members[0].id ? UserData.chatClicked.members[0].avatar : UserData.chatClicked.members[1].avatar;
         const friendNickName = UserData.myId.id !== UserData.chatClicked.members[0].id ? UserData.chatClicked.members[0].nickName : UserData.chatClicked.members[1].nickName;
+        const friendProviderId = UserData.myId.id !== UserData.chatClicked.members[0].id ? UserData.chatClicked.members[0].providerId : UserData.chatClicked.members[1].providerId;
         return(
             //chat 
             <div className='flex flex-col bg-[#ffff] h-full'>
@@ -26,7 +27,7 @@ function RightSide () {
                    <div className='flex items-center'>
 
                    {/* todo: profile need to redirect to: /profile/friend */}
-                        <Link href="/profile">
+                        <Link href={`/profile/${friendProviderId}`}>
                             <Image    
                                     src={friendSrcImg}
                                     alt={friendNickName}
@@ -57,9 +58,14 @@ function RightSide () {
 
 
                     {messages.map((msg) => (
-                        <Messages />
+                        <Messages   msg={msg.content}
+                                    avatar={msg.avatar}
+                                    nickname={msg.nickName}
+                                    providerId={msg.providerId}
+                                    time={msg.createdAt}
+                                    friendProviderId={friendProviderId}/>
                     ))}
-{/*                     {messages.map((chat) => {
+                    {/* {messages.map((chat) => {
 						console.log(chat);
 					})} */}
 

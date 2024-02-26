@@ -24,7 +24,7 @@ function ProfileCard() {
     const handleSettingsClick = () => {
         setIsSettingsVisible(!isSettingsVisible);
     };
-    
+
     useEffect(() => {
         const getData = async () => {
             try {
@@ -40,10 +40,10 @@ function ProfileCard() {
                 console.error(error);
             }
         }
-        
+
         getData();
     }, [id]);
-    
+
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         setChangeAvatar(true);
         const file = event.target.files?.[0];
@@ -52,13 +52,13 @@ function ProfileCard() {
             setAvatar(file);
         }
     };
-    async function handleSaveClick () {
+    async function handleSaveClick() {
         if (avatar && changeAvatar === true) {
 
             const formData = new FormData();
             formData.append('cover', avatar);
             const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/user/updateCover`, formData)
-            setUser({...user, cover: res.data.url});
+            setUser({ ...user, cover: res.data.url });
         }
         setChangeAvatar(false);
     }
@@ -70,15 +70,15 @@ function ProfileCard() {
                 {user && (
                     <div className="w-full h-full absolute  overflow-hidden">
                         <Image
-                            src={ photoPath || user.cover}
+                            src={photoPath || user.cover}
                             alt='profile image'
                             fill={true}
                             sizes="100%"
                             priority={true}
                             className="object-cover w-full h-full "
                         />
-                        
-                        
+
+
                         {/* <img src={ photoPath || user.cover} alt="" className="object-cover w-full h-full"/> */}
                     </div>
                 )}
@@ -140,9 +140,13 @@ function ProfileCard() {
                                 {user ? `LEVEL ${user.level}` : 'Loading...'}
                             </span>
                         </div>
+
                         <div className=''>
-                            <span className='font-nico-moji text-[16px] text-color-6 capitalize'>250 / 500</span>
+                            <span className='font-nico-moji text-[16px] text-color-6 capitalize'>
+                                {user ? `${user.level} / 100` : 'Loading...'}
+                            </span>
                         </div>
+
                     </div>
                     <div className='px-[28px] '>
                         {user ? <Progress value={user.level} /> :

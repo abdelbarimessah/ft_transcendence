@@ -35,8 +35,7 @@ function FriendsList() {
       console.error(err);
     })
   }, [])
-  console.log('the user in the friend list [33333]', me);
-  
+
 
   const {
     data: friendsList,
@@ -49,8 +48,8 @@ function FriendsList() {
   });
 
   return (
-    <div className="h-[619px] 2xl:w-[557px] xl:w-[1137px] pb-2 w-full bg-color-0 rounded-[22px] flex flex-col items-center gap-[40px] overflow-x-scroll no-scrollbar ">
-      <div className="w-full flex items-center justify-center gap-[15px] pt-[18px]">
+    <div className="h-[619px] 2xl:w-[557px] xl:w-[1137px] pb-2 w-full bg-color-0 rounded-[22px] flex flex-col items-center gap-[40px] overflow-x-scroll no-scrollbar  ">
+      <div className="w-full flex items-center justify-center gap-[15px] pt-[18px] c">
         <div className=" w-[37px] h-[28px] relative sm:flex hidden items-center justify-center pt-3 ">
           <Image
             src="/../../assets/MatchHistoryIcon.svg"
@@ -67,12 +66,14 @@ function FriendsList() {
         </div>
       </div>
 
-      <div className="flex w-full justify-between px-10 gap-10 items-center flex-wrap pb-6 overflow-x-scroll no-scrollbar">
-        {isLoading && (
-          <div className="flex w-full h-full items-center justify-center">
+      {isLoading && (
+        <div className="flex w-full h-full items-center justify-center ">
+          <span className="font-nico-moji text-[25px] text-color-6 capitalize text-center">
             Loading...
-          </div>
-        )}
+          </span>
+        </div>
+      )}
+      <div className="flex w-full justify-between px-10 gap-10 items-center flex-wrap pb-6 overflow-x-scroll no-scrollbar">
 
         {isError && (
           <div className="flex w-full h-full items-center justify-center">

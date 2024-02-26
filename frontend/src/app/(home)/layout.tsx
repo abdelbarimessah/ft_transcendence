@@ -7,6 +7,8 @@ import { SocketContext, SocketProvider } from '../SocketContext'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 
+axios.defaults.withCredentials = true;
+
 export default function RootLayout({
   children,
 }: {
@@ -16,8 +18,6 @@ export default function RootLayout({
   const [Show, setShow] = useState(true);
   const route = useRouter();
   const socketClient = useContext(SocketContext);
-  const[acceptinvite, setAcceptinvite] = useState(false);
-  const[declineinvite, setDeclineinvite] = useState(false);
 
   useEffect(() => {
     const enterRoom = (data: any) => {
@@ -25,12 +25,17 @@ export default function RootLayout({
       setGameEnded(true)
       const gameData = {
         opponentId: data.oponent.providerId,
-        userIds: data.user.providerId,
         userScore: data.game.userScore,
         opponentScore: data.game.opponentScore,
         status: data.game.status,
         gameName: data.roomName,
         gameType: 'randomMode'
+      }
+      if(data.roomName.startsWith('InviteRoom'))
+      {
+        console.log('change the game type in the post');
+        
+        gameData.gameType = 'friendMode'
       }
       axios.post(`${process.env.NEXT_PUBLIC_API_URL}/game/gameData`, gameData).then(res => {
 
@@ -56,10 +61,9 @@ export default function RootLayout({
     socketClient.on('OnePlayerLeaveTheRoom', async (data) => {
       
       if (data.socketId !== socketClient.id ) return;
-      console.log('in the case of you  leave the room [0000]');
+      console.log('in the case of you  leave the room [0000]', data.roomName);
       const gameData = {
         opponentId: data.oponent.providerId,
-        userIds: data.user.providerId,
         userScore: 0,
         opponentScore: 5,
         status: 'lose',
@@ -92,7 +96,6 @@ export default function RootLayout({
       if (data.socketId === socketClient.id ) return;
       console.log('in the case of the other player leave the room [1111]');
       const gameData = {
-        userIds: data.oponent.providerId,
         opponentId: data.user.providerId,
         userScore: 5,
         opponentScore: 0,

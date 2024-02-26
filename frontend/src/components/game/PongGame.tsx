@@ -259,7 +259,9 @@ export default class PongGame extends Phaser.Scene {
                     loser: '',
                     status: 'win',
                 }
+                console.log('send the endGame from the pongGame 1');
                 this.socketClient.emit("endGame", { gameData });
+                
             }
         }
     }
@@ -280,11 +282,12 @@ export default class PongGame extends Phaser.Scene {
                     loser: this.socketClient.id,
                     status: 'lose',
                 }
+                console.log('send the endGame from the pongGame 2');
                 this.socketClient.emit("endGame", { gameData });
             }
         }
     }
-
+    
     update() {
         if (this.ball.body.x > 900) {
             this.scorep2(this.flagGame);

@@ -24,12 +24,12 @@ export default function FriendCard({ friend , user}: { friend: FriendCardProps, 
   const router = useRouter()
 
   const handlePlayWith = () => {
-    socketClient.emit('playInvite', {user: user , friend : friend})
+    socketClient.emit('playInvite', {sender: user , receiver : friend})
     console.log('send the invite to the game from the sender [88888]');
     
     setTimeout(() => {
-      router.push(`/game/waitingpm?room=${user.providerId}-${friend.providerId}`);
-    }, 2000)
+      router.push(`/game/waiting?room=InviteRoom-${user.providerId}-${friend.providerId}`);
+    }, 500)
   };
 
   const handleMessageToFriend = () => {

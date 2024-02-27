@@ -24,7 +24,6 @@ function ProfileCard() {
         const getData = async () => {
             try {
                 setIsLoading(true);
-                console.log('params user profile', params);
                 const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/${params?.id}`);
                 if(res.data === 1){
                     router.push('/profile');
@@ -42,7 +41,6 @@ function ProfileCard() {
         getData();
     }, [ids,params]);
 
-    console.log('user i am', user);
 
 
 
@@ -139,10 +137,8 @@ interface AddFriendProps {
 function AddFriend(props: AddFriendProps) {
     const params = useParams<{ id: string; tag: string; item: string }>()
     function handleAddFriend() {
-        console.log('add friend', params.id);
         axios.patch('http://localhost:3000/user/addFriend', { id: params.id })
             .then(response => {
-                console.log('response', response);
                 props.onSuccess();
                 toast.success('user added successfully');
             })
@@ -178,10 +174,8 @@ interface RemoveFriendProps {
 function RemoveFriend(props: RemoveFriendProps) {
     const params = useParams<{ id: string; tag: string; item: string }>()
     function handleRemoveFriend() {
-        console.log('add friend', params.id);
         axios.patch('http://localhost:3000/user/removeFriend', { id: params.id })
             .then(response => {
-                console.log('response', response);
                 props.onSuccess();
                 toast.success('user removed successfully');
             })

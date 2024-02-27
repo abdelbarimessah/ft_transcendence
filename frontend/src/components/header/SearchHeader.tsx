@@ -25,7 +25,6 @@ const SearchBareHeader = () => {
                 params: { query: value }
             });
 
-            console.log('response in the search', response.data.search.filtered);
             setSearchResults(response.data.search.filtered);
         } catch (error) {
             console.error(error);

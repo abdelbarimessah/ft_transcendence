@@ -21,7 +21,6 @@ export default function RootLayout({
 
   useEffect(() => {
     const enterRoom = (data: any) => {
-      console.log('in the case of the game end with the score [2222]');
       setGameEnded(true)
       const gameData = {
         opponentId: data.oponent.providerId,
@@ -33,8 +32,6 @@ export default function RootLayout({
       }
       if(data.roomName.startsWith('InviteRoom'))
       {
-        console.log('change the game type in the post');
-        
         gameData.gameType = 'friendMode'
       }
       axios.post(`${process.env.NEXT_PUBLIC_API_URL}/game/gameData`, gameData).then(res => {
@@ -61,7 +58,6 @@ export default function RootLayout({
     socketClient.on('OnePlayerLeaveTheRoom', async (data) => {
       
       if (data.socketId !== socketClient.id ) return;
-      console.log('in the case of you  leave the room [0000]', data.roomName);
       const gameData = {
         opponentId: data.oponent.providerId,
         userScore: 0,
@@ -92,7 +88,6 @@ export default function RootLayout({
     socketClient.on('OnePlayerLeaveTheRoom', async (data) => {
       
       if (data.socketId === socketClient.id ) return;
-      console.log('in the case of the other player leave the room [1111]');
       const gameData = {
         opponentId: data.user.providerId,
         userScore: 5,
@@ -114,12 +109,6 @@ export default function RootLayout({
       socketClient.off('OnePlayerLeaveTheRoom');
     }
   }, [socketClient]);
-
-  useEffect(() => {
-    socketClient.on('User-status', (data) => {
-      console.log(data.providerId, 'the user status in the layout is : [000000]', data.status);
-    });
-  }, [socketClient])
 
   return (
     <div className='flex  w-screen min-h-screen '>

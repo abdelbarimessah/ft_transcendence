@@ -30,7 +30,6 @@ export default function FriendCard({
 
   const handlePlayWith = () => {
     socketClient.emit("playInvite", { sender: user, receiver: friend });
-    console.log("send the invite to the game from the sender [88888]");
 
     setTimeout(() => {
       router.push(
@@ -40,29 +39,20 @@ export default function FriendCard({
   };
 
   const handleMessageToFriend = () => {
-    console.log(`Message to ${friend.nickName} with ID: ${friend.providerId}`);
   };
 
   useEffect(() => {
-    console.log("the useEffect -----------------------------------");
     socketClient.on("User-status", (data) => {
-      console.log(
-        data.providerId,
-        "the status of the user in the friendCard is [999999999999]",
-        data.status
-      );
       if (data.providerId === friend.providerId) {
         setStatus(data.status);
-        console.log("the status after matching the status is ::::::", status);
       }
     });
-    socketClient.emit("User-status");
+    if(user)  socketClient.emit('User-status', { status: 'online',  providerId : user.providerId});
 
-    return () => {
-      socketClient.off("User-status");
-    };
-  }, [socketClient]);
-  console.log("the status after matching the status is ::::::", status);
+    // return () => {
+    //   socketClient.off("User-status");
+    // };
+  });
 
   return (
     <div className=" w-[200px] h-[200px] bg-color-30 rounded-[22px] relative overflow-hidden flex  flex-col gap-[40px] hover:opacity-90 hover:scale-[1.01]">
@@ -95,8 +85,8 @@ export default function FriendCard({
             backgroundColor:
               status === "online"
                 ? "green"
-                : status === "ingame"
-                ? "yellow"
+                : status === "inGame"
+                ? "gray"
                 : "red",
           }}
         ></div>

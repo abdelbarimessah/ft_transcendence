@@ -14,40 +14,18 @@ function OtpVerifyCard() {
 
     const handleEnableClick = async () => {
         if (otp.length === 6) {
-
-            // axios.patch('http://localhost:3000/auth/verify/Otp', { otp })
-            // .then(response => {
-            //     if(response.statusText === 'OK')
-            //     {
-            //         console.log(response.data);
-            //         toast.success('OTP verified');
-            //         setTimeout(() => {
-            //             router.push('/profile');
-            //         }, 2000);
-
-            //     }
-            //     else
-            //         toast.error('error in the code from the axios');
-            // })
-            // .catch(error => {
-            //     if (error.response && error.response.status === 422)
-            //         toast.error('Incorrect OTP code');
-            // });
-
             try {
                 const response = await axios.patch('http://localhost:3000/auth/verify/Otp', { otp })
                 if (response.data.valid === true) {
-                    console.log(response.data);
                     toast.success('OTP verified');
                     setTimeout(() => {
                         router.push('/profile');
-                    }, 2000);
+                    }, 1000);
                 }
                 else
                     toast.error('Incorrect OTP code');
             }
             catch {
-                console.log('eroor in the code')
                 toast.error('Incorrect OTP code');
             }
         }

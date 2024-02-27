@@ -25,12 +25,10 @@ const NotificationIcon = () => {
     socketClient.on('playRequestFromFriend', (data) => {
       setInviteGame(true);
       setGamePair(data);
-      console.log('the data in the client who receive the invite [222222]', data);
     })
   })
   useEffect(() => {
     socketClient.on('playersReadyInvite', (data) => {
-      console.log('[111111]  both the player should go to the game [11111]', data);
 
       setTimeout(() => {
           router.push(`/game/match?room=InviteRoom-${data.sender.providerId}-${data.receiver.providerId}-${data.inviteNumber}`);

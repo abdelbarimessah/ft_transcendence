@@ -18,7 +18,6 @@ const OtpField: FC<Props> = (props): JSX.Element => {
         else setActiveOtpIndex(currentOtpIndex + 1);
 
         setOtp(newOtp);
-        console.log('value ===>', value);
     }
 
     const handleKeyDown = ({key}: React.KeyboardEvent<HTMLInputElement>, index: number) => {
@@ -29,7 +28,6 @@ const OtpField: FC<Props> = (props): JSX.Element => {
     useEffect(() => {
         inputRef.current?.focus();
     },[activeOtpIndex])
-    console.log('otp ===>', otp);
   return (
     <div className="flex justify-center items-center space-x-1">
       {otp.map((_, index) => {

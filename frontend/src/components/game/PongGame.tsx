@@ -135,7 +135,7 @@ export default class PongGame extends Phaser.Scene {
     create() {
         // this.socketClient.emit('inGame', this.socketClient.data.providerId)
         this.initRoomData();
-        this.socketClient.emit('User-status', { status: 'offline',  providerId : this.playerData.providerId });
+        this.socketClient.emit('User-status', { status: 'inGame',  providerId : this.playerData.providerId });
         console.log('the provider id of this user is', this.playerData.providerId);
         
 
@@ -294,6 +294,7 @@ export default class PongGame extends Phaser.Scene {
     }
     
     update() {
+        this.socketClient.emit('User-status', { status: 'inGame',  providerId : this.playerData.providerId });
         if (this.ball.body.x > 900) {
             this.scorep2(this.flagGame);
             this.resetGame();

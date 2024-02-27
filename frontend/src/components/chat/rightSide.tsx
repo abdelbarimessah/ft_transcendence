@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { chatslistContext } from '../../app/(home)/chat/page'
 import Image from 'next/image';
 import Messages from './messages';
+import Moment from 'react-moment';
+import 'moment-timezone';
 
 
 function RightSide () {
@@ -17,7 +19,9 @@ function RightSide () {
         
         const friendSrcImg = UserData.myId.id !== UserData.chatClicked.members[0].id ? UserData.chatClicked.members[0].avatar : UserData.chatClicked.members[1].avatar;
         const friendNickName = UserData.myId.id !== UserData.chatClicked.members[0].id ? UserData.chatClicked.members[0].nickName : UserData.chatClicked.members[1].nickName;
+        const friendId = UserData.myId.id !== UserData.chatClicked.members[0].id ? UserData.chatClicked.members[0].id : UserData.chatClicked.members[1].id;
         const friendProviderId = UserData.myId.id !== UserData.chatClicked.members[0].id ? UserData.chatClicked.members[0].providerId : UserData.chatClicked.members[1].providerId;
+        console.log("friendId = ", friendId);
         return(
             //chat 
             <div className='flex flex-col bg-[#ffff] h-full'>
@@ -56,14 +60,17 @@ function RightSide () {
 
                     {/* {console.log(UserData.chatConversation)} */}
 
-
+                    
+                    
                     {messages.map((msg) => (
-                        <Messages   msg={msg.content}
-                                    avatar={msg.avatar}
-                                    nickname={msg.nickName}
-                                    providerId={msg.providerId}
-                                    time={msg.createdAt}
-                                    friendProviderId={friendProviderId}/>
+                        <Messages key={msg.id}
+                        msg={msg.content}
+                        avatar={msg.avatar}
+                        nickname={msg.nickName}
+                        authorId={msg.authorId}
+                        time={<Moment format="hh:mm:ss A">{msg.createdAt}</Moment>}
+                        friendProviderId={friendId}/>
+                                    
                     ))}
                     {/* {messages.map((chat) => {
 						console.log(chat);

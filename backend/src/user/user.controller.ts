@@ -37,11 +37,11 @@ export class UsersController {
   @Get('me')
   async getProfile(@CurrentUser() user: any) {
     try {
-      // if (user) {
-      //   this.userService.uploadImage(user.avatar, user.providerId);
-      // } else {
-      //   console.log(`No user found`);
-      // }
+      if (user) {
+        this.userService.uploadImage(user.avatar, user.providerId);
+      } else {
+        console.log(`No user found`);
+      }
     } catch (error) {
       console.error('error', error);
     }
@@ -103,6 +103,7 @@ export class UsersController {
     const res = await this.userService.getAchievements(user.providerId);
     return { achievements: res };
   }
+
   @Get('UsersAchievements/:id')
   async UsersAchievements(@Param('id') id: string) {
     const res = await this.userService.getAchievements(id);
@@ -124,14 +125,27 @@ export class UsersController {
 
 
   @Get('userSearch')
-  async userSearch(@Query() query, @CurrentUser() user: any) {
+  async userSearch(@Query('query') query, @CurrentUser() user: any) {
+    
     const searchQuery = String(query);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const res = await this.userService.getUserSearch(
+    return await this.userService.getUserSearch(
       searchQuery,
       user.providerId,
     );
   }
+
+
+  // @Get('userSearch')
+  //   @UseGuards(OTPGuard)
+  //   @UseGuards(JwtAuthGuard)
+  //   async userSearch(@Req() req : Request, @CurrentUser() user :any)
+  //   {
+  //       console.log('body', req.query);
+  //       const searchQuery = String(req.query.query);
+  //       const res = await this.userService.getUserSearch(searchQuery, user.providerId);
+        
+  //       return res;
+  //   }
 
   @Patch('addFriend')
   async addFriend(
@@ -159,8 +173,7 @@ export class UsersController {
   }
   @Get('friends')
   async getFriends(@CurrentUser() user: any) {
-    const result = await this.userService.getFriends(user?.providerId);
-    return result;
+    return await this.userService.getFriends(user?.providerId);
   }
 
   @Get(':id')

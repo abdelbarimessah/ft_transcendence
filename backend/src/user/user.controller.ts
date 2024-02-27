@@ -21,21 +21,20 @@ import * as path from 'path';
 import { AuthGuard } from '@nestjs/passport';
 import { OTPGuard } from 'src/auth/Otp.guard';
 import { providerIdDto, updateUserDto } from './user.dto';
+import { Response } from 'express';
 
+@UseGuards(OTPGuard)
+@UseGuards(AuthGuard('jwt'))
 @Controller('user')
 export class UsersController {
   constructor(private userService: UserService) {}
 
   @Get('All')
-  @UseGuards(OTPGuard)
-  @UseGuards(AuthGuard('jwt'))
   async findAll() {
     return await this.userService.getAllUsers();
   }
 
   @Get('me')
-  @UseGuards(OTPGuard)
-  @UseGuards(AuthGuard('jwt'))
   async getProfile(@CurrentUser() user: any) {
     try {
       if (user) {
@@ -51,8 +50,6 @@ export class UsersController {
   }
 
   @Post('updateAvatar')
-  @UseGuards(OTPGuard)
-  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptor('avatar'))
   async updateProfile(@UploadedFile() file, @CurrentUser() user: any) {
     const uploadDir = path.join(__dirname, '../../uploads/');
@@ -62,8 +59,6 @@ export class UsersController {
   }
 
   @Post('updateCover')
-  @UseGuards(OTPGuard)
-  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptor('cover'))
   async updateCover(@UploadedFile() file, @CurrentUser() user: any) {
     const uploadDir = path.join(__dirname, '../../uploads/');
@@ -84,30 +79,23 @@ export class UsersController {
   }
 
   @Post('updateInfo')
-  @UseGuards(OTPGuard)
-  @UseGuards(AuthGuard('jwt'))
   async updateInfo(@Body() body: updateUserDto, @CurrentUser() user: any) {
     const res = await this.userService.updateUserData(user.providerId, body);
     return { message: 'User data updated', data: res };
+    // return res.redirect('http://localhost:8000/profile');
   }
 
   @Get('leaders')
-  @UseGuards(OTPGuard)
-  @UseGuards(AuthGuard('jwt'))
   async leaders() {
     const res = await this.userService.getLeaders();
     return { leader: res };
   }
   @Get('achievements')
-  @UseGuards(OTPGuard)
-  @UseGuards(AuthGuard('jwt'))
   async achievements(@CurrentUser() user: any) {
     const res = await this.userService.getAchievements(user.providerId);
     return { achievements: res };
   }
   @Get('UsersAchievements/:id')
-  @UseGuards(OTPGuard)
-  @UseGuards(AuthGuard('jwt'))
   async UsersAchievements(@Param('id') id: string) {
     const res = await this.userService.getAchievements(id);
     console.log('UsersAchievements', res);
@@ -116,8 +104,6 @@ export class UsersController {
   }
 
   @Get('userSearch')
-  @UseGuards(OTPGuard)
-  @UseGuards(AuthGuard('jwt'))
   async userSearch(@Query() query, @CurrentUser() user: any) {
     const searchQuery = String(query);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -128,21 +114,17 @@ export class UsersController {
   }
 
   @Patch('addFriend')
-  @UseGuards(OTPGuard)
-  @UseGuards(AuthGuard('jwt'))
   async addFriend(
     @CurrentUser() user: any,
     @Res({ passthrough: true }) res: Response,
     @Body() body: providerIdDto,
   ) {
     const friendId = body.id;
-    const result = await this.userService.addFriend(user.providerId, friendId);
+    const result = await this.userService.addFriend(user?.providerId, friendId);
     return { message: result };
   }
 
   @Patch('removeFriend')
-  @UseGuards(OTPGuard)
-  @UseGuards(AuthGuard('jwt'))
   async removeFriend(
     @CurrentUser() user: any,
     @Res({ passthrough: true }) res: Response,
@@ -156,16 +138,12 @@ export class UsersController {
     return { message: result };
   }
   @Get('friends')
-  @UseGuards(OTPGuard)
-  @UseGuards(AuthGuard('jwt'))
   async getFriends(@CurrentUser() user: any) {
-    const result = await this.userService.getFriends(user.providerId);
+    const result = await this.userService.getFriends(user?.providerId);
     return result;
   }
 
   @Get(':id')
-  @UseGuards(OTPGuard)
-  @UseGuards(AuthGuard('jwt'))
   async findOne(@Param('id') id: string, @CurrentUser() user: any) {
     const { friendOf, ...rest } = await this.userService.getUserById(id);
     if (id === user.providerId) return 1;

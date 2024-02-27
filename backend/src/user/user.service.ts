@@ -126,22 +126,26 @@ export class UserService {
   }
 
   async getFriends(id: string) {
-    const userWithFriends = await this.prismaService.user.findUnique({
-      where: {
-        providerId: id,
-      },
-      include: {
-        friends: true,
-      },
-    });
-    if (userWithFriends?.friends) {
-      for (const user of userWithFriends.friends) {
-        delete user.secretOpt;
-        delete user.email;
-        delete user.otpIsEnabled;
+    try {
+      const userWithFriends = await this.prismaService.user.findUnique({
+        where: {
+          providerId: id,
+        },
+        include: {
+          friends: true,
+        },
+      });
+      if (userWithFriends?.friends) {
+        for (const user of userWithFriends.friends) {
+          delete user.secretOpt;
+          delete user.email;
+          delete user.otpIsEnabled;
+        }
       }
+      return userWithFriends?.friends;
+    } catch (err) {
+      console.log(err.message);
     }
-    return userWithFriends?.friends;
   }
 
   async getUserSearch(query: string, id: string) {

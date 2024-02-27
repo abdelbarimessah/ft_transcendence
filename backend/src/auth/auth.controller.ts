@@ -49,7 +49,7 @@ export class AuthController {
       httpOnly: true,
       secure: false,
       sameSite: 'lax',
-      expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
+      expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
     });
     const isNew = req.user.isNew;
     if (user.otpIsEnabled) {
@@ -73,7 +73,6 @@ export class AuthController {
   @UseGuards(AuthGuard('42'))
   async intraAuthCallback(@Req() req, @Res() res) {
     const user = req.user.user;
-    console.log('here in 42/callback', req.user);
     if (!req.user) {
       return res.redirect('http://localhost:8000');
     }
@@ -91,7 +90,7 @@ export class AuthController {
       httpOnly: true,
       secure: false,
       sameSite: 'lax',
-      expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
+      expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
     });
     if (user.otpIsEnabled) {
       return res.redirect(`http://localhost:8000/auth`);
@@ -167,10 +166,10 @@ export class AuthController {
       httpOnly: true,
       secure: false,
       sameSite: 'lax',
-      expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
+      expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
     });
     console.log('token ===>', token);
-    return { token, otp: { enabled: true, verified: true } };
+    return { otp: { enabled: true, verified: true } };
   }
 
   @Patch('disable/Otp')
@@ -192,9 +191,9 @@ export class AuthController {
       httpOnly: true,
       secure: false,
       sameSite: 'lax',
-      expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
+      expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
     });
-    return { token, otp: { enabled: false, verified: false } };
+    return { otp: { enabled: false, verified: false } };
   }
 
   @Patch('verify/Otp')
@@ -226,9 +225,9 @@ export class AuthController {
       httpOnly: true,
       secure: false,
       sameSite: 'lax',
-      expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
+      expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
     });
 
-    return { token, otp: { enabled: true, verified: true } };
+    return { otp: { enabled: true, verified: true } };
   }
 }

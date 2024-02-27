@@ -57,7 +57,7 @@ export class UserService {
 
       fs.writeFileSync(uploadPath, response.data);
     } catch (error) {
-      console.log('error in the upload of the image in the backend', error);
+      console.error('error in the upload of the image in the backend', error);
     }
   }
 

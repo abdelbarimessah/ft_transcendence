@@ -1,12 +1,10 @@
 "use client";
 
-import { SocketContext } from "@/app/SocketContext";
+import { SocketContext, socket } from "@/app/SocketContext";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
-
-
 
 export type FriendCardProps = {
   id: number;
@@ -18,19 +16,27 @@ export type FriendCardProps = {
   cover: string;
 };
 
-export default function FriendCard({ friend, user }: { friend: FriendCardProps, user: FriendCardProps }) {
+export default function FriendCard({
+  friend,
+  user,
+}: {
+  friend: FriendCardProps;
+  user: FriendCardProps;
+}) {
   const socketClient = useContext(SocketContext);
   const fullName = `${friend.firstName} ${friend.lastName}`;
-  const [status, setStatus] = useState('offline')
-  const router = useRouter()
+  const [status, setStatus] = useState("offline");
+  const router = useRouter();
 
   const handlePlayWith = () => {
-    socketClient.emit('playInvite', { sender: user, receiver: friend })
-    console.log('send the invite to the game from the sender [88888]');
+    socketClient.emit("playInvite", { sender: user, receiver: friend });
+    console.log("send the invite to the game from the sender [88888]");
 
     setTimeout(() => {
-      router.push(`/game/waiting?room=InviteRoom-${user.providerId}-${friend.providerId}`);
-    }, 500)
+      router.push(
+        `/game/waiting?room=InviteRoom-${user.providerId}-${friend.providerId}`
+      );
+    }, 500);
   };
 
   const handleMessageToFriend = () => {
@@ -38,17 +44,25 @@ export default function FriendCard({ friend, user }: { friend: FriendCardProps, 
   };
 
   useEffect(() => {
-    console.log('the useEffect -----------------------------------');
-    socketClient.on('User-status', (data) => {
-      console.log(data.providerId, 'the status of the user in the friendCard is [999999999999]', data.status);
+    console.log("the useEffect -----------------------------------");
+    socketClient.on("User-status", (data) => {
+      console.log(
+        data.providerId,
+        "the status of the user in the friendCard is [999999999999]",
+        data.status
+      );
       if (data.providerId === friend.providerId) {
         setStatus(data.status);
-        console.log('the status after matching the status is ::::::', status);
-
+        console.log("the status after matching the status is ::::::", status);
       }
-    })
-  }, [socketClient])
-  console.log('the status after matching the status is ::::::', status);
+    });
+    socketClient.emit("User-status");
+
+    return () => {
+      socketClient.off("User-status");
+    };
+  }, [socketClient]);
+  console.log("the status after matching the status is ::::::", status);
 
   return (
     <div className=" w-[200px] h-[200px] bg-color-30 rounded-[22px] relative overflow-hidden flex  flex-col gap-[40px] hover:opacity-90 hover:scale-[1.01]">
@@ -77,7 +91,14 @@ export default function FriendCard({ friend, user }: { friend: FriendCardProps, 
         </div>
         <div
           className=" statusDiv w-[10px] h-[10px] rounded-full bg-color-21 absolute bottom-2 left-[61%] z-50´"
-          style={{ backgroundColor: status === 'online' ? 'green' : status === 'ingame' ? 'yellow' : 'red' }}
+          style={{
+            backgroundColor:
+              status === "online"
+                ? "green"
+                : status === "ingame"
+                ? "yellow"
+                : "red",
+          }}
         ></div>
       </div>
       <div className="w-full flex gap-[10px] flex-col ">

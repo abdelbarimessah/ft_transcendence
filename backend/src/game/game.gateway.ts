@@ -12,6 +12,7 @@ import { GameService } from './game.service';
 @WebSocketGateway({
   cors: {
     origin: 'http://localhost:8000',
+    credentials: true,
   },
 })
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {

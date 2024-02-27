@@ -4,6 +4,9 @@ import Image from "next/image";
 import FriendCard, { FriendCardProps } from "./FriendCard";
 import { useQuery } from "react-query";
 import axios from "axios";
+import { useEffect, useState } from "react";
+import Lottie from "lottie-react";
+import animationData from '../../../public/assets/EmptyFriends.json';
 
 const friend1 = {
   id: 1,
@@ -15,6 +18,8 @@ const friend1 = {
   cover: "http://localhost:3000/uploads/DefaultCover.svg",
 };
 
+axios.defaults.withCredentials = true;
+
 const getFriendsList = async () => {
   const res = await axios.get<FriendCardProps[]>(
     "http://localhost:3000/user/friends",
@@ -23,7 +28,18 @@ const getFriendsList = async () => {
   return res.data;
 };
 
+
 function FriendsList() {
+  const [me, setMe] = useState<any>();
+  useEffect(() => {
+    axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`).then(res => {
+      setMe(res.data);
+    }).catch(err => {
+      console.error(err);
+    })
+  }, [])
+
+
   const {
     data: friendsList,
     isLoading,
@@ -35,8 +51,8 @@ function FriendsList() {
   });
 
   return (
-    <div className="h-[619px] 2xl:w-[557px] xl:w-[1137px] pb-2 w-full bg-color-0 rounded-[22px] flex flex-col items-center gap-[40px] overflow-x-scroll no-scrollbar ">
-      <div className="w-full flex items-center justify-center gap-[15px] pt-[18px]">
+    <div className="h-[619px] 2xl:w-[557px] xl:w-[1137px] pb-2 w-full bg-color-0 rounded-[22px] flex flex-col items-center gap-[40px] overflow-x-scroll no-scrollbar  ">
+      <div className="w-full flex items-center justify-center gap-[15px] pt-[18px] c">
         <div className=" w-[37px] h-[28px] relative sm:flex hidden items-center justify-center pt-3 ">
           <Image
             src="/../../assets/MatchHistoryIcon.svg"
@@ -52,13 +68,24 @@ function FriendsList() {
           </span>
         </div>
       </div>
+      {!isLoading && !isError && friendsList?.length === 0 && (
+        <div className="">
+          <Lottie
+            autoPlay
+            loop
+            style={{ width: 300 }} animationData={animationData}
+          />
+        </div>
+      )}
 
-      <div className="flex w-full justify-between px-10 gap-10 items-center flex-wrap pb-6 overflow-x-scroll no-scrollbar">
-        {isLoading && (
-          <div className="flex w-full h-full items-center justify-center">
+      {isLoading && (
+        <div className="flex w-full h-full items-center justify-center ">
+          <span className="font-nico-moji text-[25px] text-color-6 capitalize text-center">
             Loading...
-          </div>
-        )}
+          </span>
+        </div>
+      )}
+      <div className="flex w-full justify-between px-10 gap-10 items-center flex-wrap pb-6 overflow-x-scroll no-scrollbar">
 
         {isError && (
           <div className="flex w-full h-full items-center justify-center">
@@ -69,7 +96,7 @@ function FriendsList() {
         {!isLoading &&
           !isError &&
           friendsList?.map((friend) => (
-            <FriendCard key={friend.id} friend={friend} />
+            <FriendCard key={friend.id} friend={friend} user={me} />
           ))}
 
         {/* <FriendCard friend={friend1} /> */}

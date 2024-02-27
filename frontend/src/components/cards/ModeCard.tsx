@@ -23,13 +23,11 @@ function ModeCard(me: any) {
 
     const randomMode = () => {
         setIsRandomMode(true)
-        console.log('random mode called from the button click ');
         socketClient.emit('joinRoomFromCard');
     };
 
     const removeRandomMode = () => {
         setIsRandomMode(false)
-        console.log('random mode called from the button click remove');
         socketClient.emit('handleRemoveFromQueue');
     }
 

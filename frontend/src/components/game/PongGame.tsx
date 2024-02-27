@@ -33,7 +33,7 @@ export default class PongGame extends Phaser.Scene {
 
     flagGame: boolean = false;
 
-    playerData: { roomName: string, wishPlayer: string };
+    playerData: { roomName: string, wishPlayer: string , providerId: string};
     constructor(
         private socketClient: Socket,
         private roomName: string,
@@ -44,7 +44,8 @@ export default class PongGame extends Phaser.Scene {
         this.goalScored = false;
         this.playerData = {
             roomName: '',
-            wishPlayer: ''
+            wishPlayer: '',
+            providerId: ''
         }
     }
 
@@ -60,8 +61,8 @@ export default class PongGame extends Phaser.Scene {
             this.socketClient.emit("joinRoom", { roomName: this.roomName });
             this.socketClient.on('enterRoom', (data) => {
                 this.playerData.roomName = data.roomName;
-
                 this.playerData.wishPlayer = data.wishPlayer;
+                this.playerData.providerId = data.providerId;
             });
             this.checkScene = true;
         }
@@ -132,7 +133,11 @@ export default class PongGame extends Phaser.Scene {
         this.table.setActive(false).setVisible(false);
     }
     create() {
+        // this.socketClient.emit('inGame', this.socketClient.data.providerId)
         this.initRoomData();
+        this.socketClient.emit('User-status', { status: 'inGame',  providerId : this.playerData.providerId });
+        console.log('the provider id of this user is', this.playerData.providerId);
+        
 
         console.log('socker of this user is ', this.socketClient.id);
         this.socketClient.on("OnePlayerLeaveTheRoom", (data) => {
@@ -259,7 +264,9 @@ export default class PongGame extends Phaser.Scene {
                     loser: '',
                     status: 'win',
                 }
+                console.log('send the endGame from the pongGame 1');
                 this.socketClient.emit("endGame", { gameData });
+                
             }
         }
     }
@@ -280,12 +287,14 @@ export default class PongGame extends Phaser.Scene {
                     loser: this.socketClient.id,
                     status: 'lose',
                 }
+                console.log('send the endGame from the pongGame 2');
                 this.socketClient.emit("endGame", { gameData });
             }
         }
     }
-
+    
     update() {
+        this.socketClient.emit('User-status', { status: 'inGame',  providerId : this.playerData.providerId });
         if (this.ball.body.x > 900) {
             this.scorep2(this.flagGame);
             this.resetGame();

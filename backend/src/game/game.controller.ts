@@ -13,8 +13,26 @@ export class GameController {
   @UseGuards(AuthGuard('jwt'))
   async gameData(@Req() req: Request, @CurrentUser() user: any) {
     const gameData = req.body;
-    await this.gameService.addGameData(user.id, gameData);
+    await this.gameService.addGameData(user.providerId, gameData);
   }
+  
+  
+  @Get('winFriendMode/:id')
+  @UseGuards(OTPGuard)
+  @UseGuards(AuthGuard('jwt'))
+  async getWinFriendMode(@Req() req: Request, @Param('id') id: string)
+  {
+    return this.gameService.getNumberOfWiningMatchFriendMode(id);
+  }
+  
+  @Get('winRandomMode/:id')
+  @UseGuards(OTPGuard)
+  @UseGuards(AuthGuard('jwt'))
+  async getWinRandomMode(@Req() req: Request, @Param('id') id: string)
+  {
+    return this.gameService.getNumberOfWiningMatchRandomMode(id);
+  }
+
 
   //TODO add the level when the user win a game
   @Get('matchHistory/:id')

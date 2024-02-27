@@ -1,22 +1,24 @@
 'use client'
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Image from 'next/image';
 import axios from 'axios';
 import { Skeleton } from '@nextui-org/react';
 import Link from 'next/link';
+import { SocketContext } from '@/app/SocketContext';
 
 axios.defaults.withCredentials = true;
 const ProfileHeader = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [user, setUser] = useState<any>();
+    const socketClient = useContext(SocketContext);
+
 
     useEffect(() => {
         const getData = async () => {
             try {
                 setIsLoading(true);
                 const res = await axios.get(`http://localhost:3000/user/me`);
-                console.log('res data is ', res.data);
-                
+
                 setUser(res.data);
                 setIsLoading(false);
             }
@@ -28,8 +30,7 @@ const ProfileHeader = () => {
         getData();
     }, []);
 
-    console.log('thse user in profile [header]', user);
-    
+
     return (
         <Link href='/profile'>
             <div className='w-[66px] h-[66px] bg-color-0 rounded-[22px] flex items-center xl:pl-5 pl-0 justify-center  xl:justify-start gap-[8px] cursor-pointer xl:w-[280px]'>

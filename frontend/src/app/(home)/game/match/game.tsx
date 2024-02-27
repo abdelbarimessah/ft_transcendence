@@ -119,8 +119,6 @@ export default function Game() {
 
   useEffect(() => {
     const handlePlayerLeave = () => {
-      console.log('gME IN useeffect', game);
-
       game?.destroy(true);
     };
 

@@ -1,11 +1,12 @@
-"use client";
-import axios from "axios";
-import { createContext, useEffect, useState } from "react";
-import { io } from "socket.io-client";
+'use client'
+import axios from 'axios';
+import { createContext, useEffect } from 'react';
+import {io } from 'socket.io-client';
 
-export const socket = io("http://localhost:3000", { withCredentials: true });
+export const socket = io('http://localhost:3000', { withCredentials: true  });
 export const SocketContext = createContext(socket);
 
+axios.defaults.withCredentials = true;
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     axios

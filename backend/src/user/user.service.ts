@@ -58,7 +58,7 @@ export class UserService {
 
       fs.writeFileSync(uploadPath, response.data);
     } catch (error) {
-      console.log('error in the upload of the image in the backend', error);
+      console.error('error in the upload of the image in the backend', error);
     }
   }
 
@@ -81,11 +81,8 @@ export class UserService {
     });
 
     if (existingUser && existingUser.providerId !== providerId) {
-      console.log('existingUser', existingUser);
       throw new BadRequestException('nick name already in use');
     }
-    console.log('data', existingUser);
-    console.log('data contunue');
     return this.prismaService.user.update({
       where: { providerId: providerId },
       data: {

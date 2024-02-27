@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+'use client'
 import styles from './Prompt.module.css'
 import axios from 'axios';
 import { useRouter } from 'next/navigation'
@@ -6,31 +6,24 @@ import { useRouter } from 'next/navigation'
 axios.defaults.withCredentials = true;
 
 
-function LogoutPrompt(props:any) {
+function LogoutPrompt(props: any) {
     const router = useRouter()
     const handleCancelClick = () => {
-        console.log("cancel clicked");
-        // props.onCancel();
         props.setShowLogoutPrompt(props.showLogoutPrompt);
     };
 
 
-    // useEffect(() => {
-        async function handleLogoutClick  ()  {
-            try {
-                console.log("logout clicked1");
-                const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`);
-                console.log('res i the logout ', res);
-                
-                router.push('/');
-                console.log("logout clicked");
-            }
-            catch (error) {
-                console.error(error);
-            }
+    async function handleLogoutClick() {
+        try {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`);
+            router.push('/');
         }
+        catch (error) {
+            console.error(error);
+        }
+    }
 
-    return(
+    return (
         <div className={` ${styles.playCard} fixed left-36 bottom-28 w-[388px] h-[132px] z-[1000] bg-color-0 rounded-[22px] flex flex-col gap-[25px] overflow-hidden`}>
             <div className=" w-full flex items-center justify-center pt-[10px]">
                 <p className="text-[24px] text-color-6 font-nico-moji">Logout</p>

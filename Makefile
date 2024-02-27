@@ -12,6 +12,6 @@ all:
 	cd backend && npm i && npm run start:dev 
 
 clean:
-	docker rm -f $$(docker ps -aq)
+	-docker rm -f $$(docker ps -aq)
 	
 re: clean build

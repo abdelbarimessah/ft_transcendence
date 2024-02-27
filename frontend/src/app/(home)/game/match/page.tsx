@@ -55,7 +55,6 @@ export default function Home() {
     socketClient.on('endGameClient', enterRoom);
 
     const handleUnload = () => {
-      
       socketClient.emit('customDisconnectClient', { roomName });
     };
     return () => {

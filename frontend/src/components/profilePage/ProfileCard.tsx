@@ -163,7 +163,7 @@ const SettingsPoint = () => {
     async function handleLogoutClick() {
 
         try {
-            await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`);
+            await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {withCredentials: true});
             router.push('/');
         }
         catch (error) {

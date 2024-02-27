@@ -1,4 +1,4 @@
-import React, {useContext} from 'react'
+import React, {useContext, useRef} from 'react'
 import Btns from './commun_component/btns'
 import Link from 'next/link'
 import { chatslistContext } from '../../app/(home)/chat/page'
@@ -6,22 +6,59 @@ import Image from 'next/image';
 import Messages from './messages';
 import Moment from 'react-moment';
 import 'moment-timezone';
+import axios from 'axios';
 
 
 function RightSide () {
-
+    
+    const inputMessageRef = useRef(null);
     const UserData = useContext(chatslistContext);
+    
+    
     
     if (UserData.chatClicked.members != undefined)
     {   
-        const messages = UserData.chatConversation;
-        console.log("messages = ", messages);
         
         const friendSrcImg = UserData.myId.id !== UserData.chatClicked.members[0].id ? UserData.chatClicked.members[0].avatar : UserData.chatClicked.members[1].avatar;
         const friendNickName = UserData.myId.id !== UserData.chatClicked.members[0].id ? UserData.chatClicked.members[0].nickName : UserData.chatClicked.members[1].nickName;
         const friendId = UserData.myId.id !== UserData.chatClicked.members[0].id ? UserData.chatClicked.members[0].id : UserData.chatClicked.members[1].id;
         const friendProviderId = UserData.myId.id !== UserData.chatClicked.members[0].id ? UserData.chatClicked.members[0].providerId : UserData.chatClicked.members[1].providerId;
         console.log("friendId = ", friendId);
+
+        const handelMessageInput = () => {
+            inputMessageRef.current.value.length === 0 ? UserData.setTyping(true) : UserData.setTyping(false);
+            // console.log("input = ", inputMessageRef.current.value.length);
+        }
+        
+        const addMessageToChat = (message) => {
+            const newMessageArray = [...UserData.chatConversation, message];
+            UserData.setChatConversation(newMessageArray);
+        }
+    
+    
+        const handelSubmit = async() => {
+            try{
+                const postMsgResponse = await axios.post("http://localhost:3000/chat/message",
+                    {
+                        content: inputMessageRef.current?.value,
+                        chatId: UserData.chatClicked.id,
+                    },
+                    {
+                        withCredentials: true,
+                    }
+                );
+                // console.log("postMsgResponse.data = ", postMsgResponse.data);
+                addMessageToChat(postMsgResponse.data);
+                inputMessageRef.current.value = "";
+            }
+            catch (error)
+            {
+                console.error(error);
+            }
+        }
+        const messages = UserData.chatConversation;
+        // console.log("messages = ", messages);
+        
         return(
             //chat 
             <div className='flex flex-col bg-[#ffff] h-full'>
@@ -60,15 +97,13 @@ function RightSide () {
 
                     {/* {console.log(UserData.chatConversation)} */}
 
-                    
-                    
                     {messages.map((msg) => (
                         <Messages key={msg.id}
                         msg={msg.content}
-                        avatar={msg.avatar}
-                        nickname={msg.nickName}
+                        avatar={msg.author.avatar}
+                        nickname={msg.author.nickName}
                         authorId={msg.authorId}
-                        time={<Moment format="hh:mm:ss A">{msg.createdAt}</Moment>}
+                        time={<Moment format="hh:mm A">{msg.createdAt}</Moment>}
                         friendProviderId={friendId}/>
                                     
                     ))}
@@ -83,11 +118,15 @@ function RightSide () {
                 {/* bot nav */}
                 <div className='flex items-center bg-[#FFE0B3] h-[90px] p-4 rounded-lg'>
                     <input  type="text"
-                            placeholder='type a message'
                             className=' bg-[#eadec4] rounded-lg outline-none text-sm text-[#39362d] w-full h-[50px] m-3 p-3 placeholder:text-sm placeholder:text-[#f3b679] '
+                            placeholder='type a message'
+                            onChange={handelMessageInput}
+                            ref={inputMessageRef}
+                            
                     />
                     <div className='flex items-center justify-end  ml-4 mr-3'>
-                        <Btns icon={"../../assets/addChannel.png"}/>
+                        {UserData.typing ? <Btns icon={"../../assets/addChannel.png"}/> : <Btns icon={"../../assets/ball.png"} onClick={handelSubmit}/>}
+                        
                     </div>
                 </div>
     

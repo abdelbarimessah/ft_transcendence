@@ -19,7 +19,7 @@ function LogoutPrompt(props:any) {
         async function handleLogoutClick  ()  {
             try {
                 console.log("logout clicked1");
-                const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`);
+                const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {withCredentials: true});
                 console.log('res i the logout ', res);
                 
                 router.push('/');

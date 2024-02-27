@@ -26,6 +26,7 @@ function Chat() {
     const [myId, setMyId] = useState([]);
     const [chatConversation, setChatConversation] = useState([]);
     const [chatClicked, setChatClicked] = useState([]);
+    const [typing, setTyping] = useState(true);
     
 
       const fetchData = async () => {
@@ -43,7 +44,7 @@ function Chat() {
           console.error(error);
         }
       };
-    
+    // setMessageArray([...messageArray, message])
       useEffect(() => {
         fetchData();
       }, []);
@@ -68,7 +69,7 @@ function Chat() {
 
     return (
         <>
-        <chatslistContext.Provider value={{friendsList, channelsList, myId, chatConversation, chatClicked}}>
+        <chatslistContext.Provider value={{friendsList, channelsList, myId, chatConversation, chatClicked, typing, setTyping, setChatConversation}}>
         <div className='flex justify-start chat-bp:justify-center items-center w-screen h-screen overflow-hidden '>
 
           <div className="flex justify-start chat-bp:justify-center items-center w-[1731px] h-[1080px] bg-[#ffbb3b] ">

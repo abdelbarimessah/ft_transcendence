@@ -51,7 +51,7 @@ export class ChatService {
             members: true,
           },
           orderBy: {
-            createdAt: 'desc',
+            createdAt: 'asc',
           },
         },
       },
@@ -86,6 +86,16 @@ export class ChatService {
         messages: {
           orderBy: {
             createdAt: 'desc',
+          },
+          include: {
+            author: {
+              select: {
+                id: true,
+                providerId: true,
+                avatar: true,
+                nickName: true,
+              },
+            },
           },
         },
       },

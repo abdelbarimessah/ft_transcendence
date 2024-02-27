@@ -38,7 +38,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   handleConnection(client: Socket) {
     try {
-      console.log('in chat gateway', client.handshake.headers);
       const cookies = client.handshake.headers.cookie;
       if (!cookies) throw new Error('No cookies found');
 

@@ -75,7 +75,6 @@ export class NotificationService {
       },
     });
     this.notificationGateway.sendNotification(room, notification);
-    //To-do send notification using the gateway
 
     return notification;
   }

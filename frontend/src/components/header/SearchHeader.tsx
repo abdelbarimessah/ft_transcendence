@@ -24,8 +24,9 @@ const SearchBareHeader = () => {
             const response = await axios.get("http://localhost:3000/user/userSearch", {
                 params: { query: value }
             });
-
-            setSearchResults(response.data.search.filtered);
+            console.log('the result is :::::', response.data);
+            
+            setSearchResults(response.data.filtered);
         } catch (error) {
             console.error(error);
         }

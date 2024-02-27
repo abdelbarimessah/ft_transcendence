@@ -230,7 +230,7 @@ export default ModeCard;
 
 function PlayerPairing({ player1, player2 }: any) {
     return (
-        <div className='absolute ml-20 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
+        <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
             <div className="w-[475px] h-[185px] bg-color-30 rounded-[22px] overflow-hidden relative ">
                 <div className="absolute z-0 h-full w-[256px] rounded-s-[22px] flex items-center justify-center overflow-hidden left-0 ">
                     <Image

@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 import { PlayerPairing } from '../../../../components/cards/ModeCard'
 import { useSearchParams } from 'next/navigation';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import ParticleBackground from '@/components/particles/Tsparticles';
 
 axios.defaults.withCredentials = true;
 
@@ -18,15 +20,19 @@ export default function Wiating() {
     const player2Id = players[2];
     const [player1, setPlayer1] = useState<any>();
     const [player2, setplayer2] = useState<any>();
+    const router = useRouter();
 
     useEffect(() => {
-        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/${player1Id}`).then(res => {
-            console.log(player1Id, 'the data in the player 1 [ppppp]', res.data);
-            
+        console.log('player 1 id is :::', player1Id);
+
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`).then(res => {
             setPlayer1(res.data);
         }).catch(err => {
             console.error(err);
         })
+    }, [])
+    useEffect(() => {
+        console.log('player 2 id is :::', player2Id);
         axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/${player2Id}`).then(res => {
             setplayer2(res.data);
         }).catch(err => {
@@ -35,29 +41,37 @@ export default function Wiating() {
 
     }, [])
 
+
+
     console.log('the two player in this room is 1', player1);
     console.log('the two player in this room is 2', player2);
-    
+
 
     const removeInvitemMode = () => {
         setIsRandomMode(false)
+        router.push('/profile')
     }
 
     return (
-        <div className='ml-6 mr-5 h-full flex items-center justify-center w-10 flex-1 relative'>
-            {isRandomMode && (
-                <div className='fixed ml-20 top-0 left-0 w-screen h-screen flex items-center justify-center z-[1000]'>
-                    <Lottie
-                        autoPlay
-                        loop
-                        style={{ width: 300 }} animationData={animationData}
-                    />
-                    <div onClick={removeInvitemMode} className=' cursor-pointer w-[50px] h-[50px] bg-white fixed top-32 right-32 flex items-center justify-center z-50 rounded-[17px] '>
+        <div className='h-full w-full flex flex-col items-center justify-center relative'>
+            <div className='w-full h-full absolute '>
+                <ParticleBackground />
+            </div>
+            {isRandomMode && player1 && player2 && (
+                <div className='w-full h-full`'>
+                    <div className='w-full h-[300px] flex items-center justify-center  relative'>
+                        <Lottie
+                            autoPlay
+                            loop
+                            style={{ width: 300 }} animationData={animationData}
+                        />
+                    </div>
+                    <div className=' w-full h-[200px] relative flex items-center justify-center '>
+                        <PlayerPairing player1={player1} player2={player2} />
+                    </div><div onClick={removeInvitemMode} className=' cursor-pointer w-[50px] h-[50px] bg-white fixed top-96 right-52 flex items-center justify-center z-50 rounded-[17px] '>
                         <img src="../../assets/cross1.svg" alt="" />
                     </div>
-                    {/* <PlayerPairing player1={player1} player2={player2}/> */}
                 </div>
-
             )}
         </div>
     )

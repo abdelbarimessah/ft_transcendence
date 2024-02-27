@@ -44,7 +44,6 @@ export class NotificationGateway {
   }
   @SubscribeMessage('firstTime')
   handleFirstTime(socket: Socket, data: any) {
-    console.log(`${data.nickName} joined ${data.providerId}`);
     socket.join(data.providerId);
   }
   async sendNotification(receiver: string, notification: any) {

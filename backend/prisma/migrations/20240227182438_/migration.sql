@@ -19,7 +19,7 @@ CREATE TABLE "User" (
     "avatar" TEXT,
     "secretOpt" TEXT,
     "otpIsEnabled" BOOLEAN NOT NULL DEFAULT false,
-    "level" INTEGER NOT NULL DEFAULT 10,
+    "level" INTEGER NOT NULL DEFAULT 0,
     "cover" TEXT,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
@@ -55,6 +55,7 @@ CREATE TABLE "Achievement" (
 CREATE TABLE "Chat" (
     "id" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
     "chatPairHash" TEXT,
 
     CONSTRAINT "Chat_pkey" PRIMARY KEY ("id")

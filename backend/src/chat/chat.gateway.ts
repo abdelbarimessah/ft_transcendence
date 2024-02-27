@@ -9,17 +9,22 @@ import {
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
 import { Channel, Chat, Message, User } from '@prisma/client';
-import { UseGuards } from '@nestjs/common';
-import { OTPGuard } from 'src/auth/Otp.guard';
-import { AuthGuard } from '@nestjs/passport';
 import * as cookie from 'cookie';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { AppService } from 'src/app.service';
 
-@UseGuards(OTPGuard)
-@UseGuards(AuthGuard('jwt'))
-@WebSocketGateway({ namespace: 'chat' })
+// @WebSocketGateway({
+//   cors: {
+//     origin: 'http://localhost:8000',
+//   },
+// })
+@WebSocketGateway({
+  cors: {
+    origin: ['http://localhost:8000', 'http://localhost:8000/'],
+    credentials: true,
+  },
+})
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   // private userSocket = new Map<string, string>();
   @WebSocketServer()
@@ -123,4 +128,5 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   kickUser(channelId: string, userId: string) {
     this.server.to(channelId).emit('kickUser', { channelId, userId });
   }
+  //To-do add block and unblock and anything i forget
 }

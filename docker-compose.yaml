@@ -13,43 +13,40 @@ services:
       - trans
     # volumes:
     #   - db:/var/lib/postgresql/data
-  # frontend:
-  #   image: node:latest
-  #   restart: on-failure
-  #   container_name: myfrontend
-  #   ports:
-  #     - 8080:8080
-  #   env_file:
-  #     - .env
-  #   networks:
-  #     - trans
-  # backend:
-  #   image: node:latest
-  #   restart: on-failure
-  #   container_name: mybackend
-  #   command: npm start dev && npx prisma migrate dev --name init
-  #   ports:
-  #     - 9090:9090
-  #   env_file:
-  #     - .env
-  #   networks:
-  #     - trans
+  frontend:
+    build: ./frontend
+    restart: on-failure
+    container_name: frontend
+    ports:
+      - 8000:8000
+    env_file:
+      - .env
+    environment:
+      - BACKEND_IP=backend
+    networks:
+      - trans
+    depends_on:
+      - backend
+  backend:
+    build: ./backend
+    restart: on-failure
+    container_name: backend
+    ports:
+      - 3000:3000
+    env_file:
+      - .env
+    environment:
+      - HOST=database
+    networks:
+      - trans
+    depends_on:
+      - database
 
 networks:
   trans:
-# services:
-#   db:
-#     image: postgres:latest
-#     ports:
-#       - 5432:5432
-#     env_file:
-#       - .env
-#     networks:
-#       - trans
-
 # volumes:
 #   db:
 #     driver_opts:
 #       type: none
 #       o: bind
-#       device: /Users/amessah/Desktop/db
+#       device: /Users/${USER}/Desktop/db

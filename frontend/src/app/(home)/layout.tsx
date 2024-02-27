@@ -1,24 +1,26 @@
-'use client'
-import '../globals.css'
-import SideNav from '@/components/sidebare/SideBare'
-import { useContext, useEffect, useRef, useState } from 'react'
-import { Providers } from '../providers'
-import { SocketContext, SocketProvider } from '../SocketContext'
-import axios from 'axios'
-import { useRouter } from 'next/navigation'
+"use client";
+import "../globals.css";
+import SideNav from "@/components/sidebare/SideBare";
+import { useContext, useEffect, useRef, useState } from "react";
+import { Providers } from "../providers";
+import { SocketContext, SocketProvider } from "../SocketContext";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 axios.defaults.withCredentials = true;
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
-  const [gameEnded, setGameEnded] = useState(false); 
+  const [gameEnded, setGameEnded] = useState(false);
   const [Show, setShow] = useState(true);
   const route = useRouter();
   const socketClient = useContext(SocketContext);
-
+  socketClient.on("notification", (data) => {
+    console.log(data);
+  });
   useEffect(() => {
     const enterRoom = (data: any) => {
       setGameEnded(true)
@@ -40,19 +42,18 @@ export default function RootLayout({
         console.error(err);
       })
       setTimeout(() => {
-        route.push('/game');
+        route.push("/game");
       }, 3000);
     };
-    socketClient.on('endGameClient', enterRoom);
+    socketClient.on("endGameClient", enterRoom);
 
     return () => {
-      socketClient.off('endGameClient');
-    }
+      socketClient.off("endGameClient");
+    };
   }, [socketClient]);
 
   useEffect(() => {
-    if (gameEnded) 
-    {
+    if (gameEnded) {
       return;
     }
     socketClient.on('OnePlayerLeaveTheRoom', async (data) => {
@@ -62,10 +63,10 @@ export default function RootLayout({
         opponentId: data.oponent.providerId,
         userScore: 0,
         opponentScore: 5,
-        status: 'lose',
+        status: "lose",
         gameName: data.roomName,
-        gameType: 'randomMode'
-      }
+        gameType: "randomMode",
+      };
 
       try {
         const url = process.env.NEXT_PUBLIC_API_URL;
@@ -73,16 +74,15 @@ export default function RootLayout({
       } catch (error) {
         console.error(error);
       }
-      setTimeout(() => route.push('/game'), 3000);
+      setTimeout(() => route.push("/game"), 3000);
     });
     return () => {
-      socketClient.off('OnePlayerLeaveTheRoom');
-    }
+      socketClient.off("OnePlayerLeaveTheRoom");
+    };
   }, [socketClient]);
 
   useEffect(() => {
-    if (gameEnded) 
-    {
+    if (gameEnded) {
       return;
     }
     socketClient.on('OnePlayerLeaveTheRoom', async (data) => {
@@ -92,10 +92,10 @@ export default function RootLayout({
         opponentId: data.user.providerId,
         userScore: 5,
         opponentScore: 0,
-        status: 'win',
+        status: "win",
         gameName: data.roomName,
-        gameType: 'randomMode'
-      }
+        gameType: "randomMode",
+      };
 
       try {
         const url = process.env.NEXT_PUBLIC_API_URL;
@@ -103,15 +103,15 @@ export default function RootLayout({
       } catch (error) {
         console.error(error);
       }
-      setTimeout(() => route.push('/game'), 3000);
+      setTimeout(() => route.push("/game"), 3000);
     });
     return () => {
-      socketClient.off('OnePlayerLeaveTheRoom');
-    }
+      socketClient.off("OnePlayerLeaveTheRoom");
+    };
   }, [socketClient]);
 
   return (
-    <div className='flex  w-screen min-h-screen '>
+    <div className="flex  w-screen min-h-screen ">
       <SideNav setShow={setShow} />
       <div className='flex items-center justify-center flex-1 w-10 '>
         <SocketProvider>
@@ -119,5 +119,5 @@ export default function RootLayout({
         </SocketProvider>
       </div>
     </div>
-  )
+  );
 }

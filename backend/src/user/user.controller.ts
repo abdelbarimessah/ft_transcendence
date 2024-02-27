@@ -5,22 +5,22 @@ import {
   Post,
   UseGuards,
   // ConflictException,
-  Req,
   UploadedFile,
   UseInterceptors,
   Body,
   Patch,
   Res,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CurrentUser } from 'src/auth/current-user.decorator';
 // import { PrismaService } from 'src/prisma/prisma.service';
-import { Request } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as fs from 'fs';
 import * as path from 'path';
 import { AuthGuard } from '@nestjs/passport';
 import { OTPGuard } from 'src/auth/Otp.guard';
+import { providerIdDto, updateUserDto } from './user.dto';
 
 @Controller('user')
 export class UsersController {
@@ -54,11 +54,7 @@ export class UsersController {
   @UseGuards(OTPGuard)
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptor('avatar'))
-  async updateProfile(
-    @UploadedFile() file,
-    @Req() req: Request,
-    @CurrentUser() user: any,
-  ) {
+  async updateProfile(@UploadedFile() file, @CurrentUser() user: any) {
     const uploadDir = path.join(__dirname, '../../uploads/');
     const uploadPath = path.join(uploadDir, `${user.providerId}${'.png'}`);
     fs.writeFileSync(uploadPath, file.buffer);
@@ -69,11 +65,7 @@ export class UsersController {
   @UseGuards(OTPGuard)
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptor('cover'))
-  async updateCover(
-    @UploadedFile() file,
-    @Req() req: Request,
-    @CurrentUser() user: any,
-  ) {
+  async updateCover(@UploadedFile() file, @CurrentUser() user: any) {
     const uploadDir = path.join(__dirname, '../../uploads/');
     const uploadPath = path.join(
       uploadDir,
@@ -94,32 +86,29 @@ export class UsersController {
   @Post('updateInfo')
   @UseGuards(OTPGuard)
   @UseGuards(AuthGuard('jwt'))
-  async updateInfo(@Req() req: Request, @CurrentUser() user: any) {
-    const res = await this.userService.updateUserData(
-      user.providerId,
-      req.body,
-    );
+  async updateInfo(@Body() body: updateUserDto, @CurrentUser() user: any) {
+    const res = await this.userService.updateUserData(user.providerId, body);
     return { message: 'User data updated', data: res };
   }
 
   @Get('leaders')
   @UseGuards(OTPGuard)
   @UseGuards(AuthGuard('jwt'))
-  async leaders(/* @Req() req: Request */) {
+  async leaders() {
     const res = await this.userService.getLeaders();
     return { leader: res };
   }
   @Get('achievements')
   @UseGuards(OTPGuard)
   @UseGuards(AuthGuard('jwt'))
-  async achievements(@Req() req: Request, @CurrentUser() user: any) {
+  async achievements(@CurrentUser() user: any) {
     const res = await this.userService.getAchievements(user.providerId);
     return { achievements: res };
   }
   @Get('UsersAchievements/:id')
   @UseGuards(OTPGuard)
   @UseGuards(AuthGuard('jwt'))
-  async UsersAchievements(@Req() req: Request, @Param('id') id: string) {
+  async UsersAchievements(@Param('id') id: string) {
     const res = await this.userService.getAchievements(id);
     console.log('UsersAchievements', res);
 
@@ -129,8 +118,8 @@ export class UsersController {
   @Get('userSearch')
   @UseGuards(OTPGuard)
   @UseGuards(AuthGuard('jwt'))
-  async userSearch(@Req() req: Request, @CurrentUser() user: any) {
-    const searchQuery = String(req.query.query);
+  async userSearch(@Query() query, @CurrentUser() user: any) {
+    const searchQuery = String(query);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const res = await this.userService.getUserSearch(
       searchQuery,
@@ -144,7 +133,7 @@ export class UsersController {
   async addFriend(
     @CurrentUser() user: any,
     @Res({ passthrough: true }) res: Response,
-    @Body() body: { id: string },
+    @Body() body: providerIdDto,
   ) {
     const friendId = body.id;
     const result = await this.userService.addFriend(user.providerId, friendId);
@@ -157,7 +146,7 @@ export class UsersController {
   async removeFriend(
     @CurrentUser() user: any,
     @Res({ passthrough: true }) res: Response,
-    @Body() body: { id: string },
+    @Body() body: providerIdDto,
   ) {
     const friendId = body.id;
     const result = await this.userService.removeFriend(

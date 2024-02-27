@@ -10,6 +10,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 // import { error, log } from 'console';
 import { NotificationService } from 'src/notification/notification.service';
 // import * as Fuse from 'fuse.js';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const Fuse = require('fuse.js');
 
 @Injectable()

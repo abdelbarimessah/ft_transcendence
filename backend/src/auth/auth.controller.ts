@@ -49,7 +49,7 @@ export class AuthController {
       httpOnly: true,
       secure: false,
       sameSite: 'lax',
-      expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
+      expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
     });
     const isNew = req.user.isNew;
     if (user.otpIsEnabled) {
@@ -91,7 +91,7 @@ export class AuthController {
       httpOnly: true,
       secure: false,
       sameSite: 'lax',
-      expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
+      expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
     });
     if (user.otpIsEnabled) {
       return res.redirect(`http://localhost:8000/auth`);
@@ -109,8 +109,6 @@ export class AuthController {
   async logout(@Req() req: Request, @Res() res: Response) {
     res.clearCookie('authorization', {
       httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
     });
     // console.log('logout');
 
@@ -226,7 +224,7 @@ export class AuthController {
       httpOnly: true,
       secure: false,
       sameSite: 'lax',
-      expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
+      expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
     });
 
     return { token, otp: { enabled: true, verified: true } };

@@ -59,44 +59,18 @@ import { chatslistContext } from '../../app/(home)/chat/page'
 
 
 
-function Friend ({chat, EventTriger}: any) {
-    // console.log("index = ", index);
-    console.log("chat == ", chat);
-    // console.log("icon", icon);
+function Friend ({chat}: any) {
     
-    
-    
-    
-    // const [chatId, setChatId] = useState("");
-    // const fetchConversationDta = async () =>{
-    //     try {
-    //         console.log("chatId = ", chatId);   
-	// 		const response = await axios.get(`http://localhost:3000/chat/${chatId}`);
-	// 		setChatConversation(response.data);
-	// 		console.log(response.data);
-	// 	} catch (error) {
-	// 		console.error(error);
-	// 	}
-    // };
-
-    // useEffect(() => {
-    //     if (chatId != "")
-    //         fetchConversationDta();
-    // }, [chatId]);
-
-    const UserData	 = useContext(chatslistContext);
+    const UserData: any	 = useContext(chatslistContext);
 
     
 
 
     function handelChahtConv (chatClicked: any){
-        EventTriger(chatClicked);
+        UserData.setChatClicked(chatClicked);
     }
-    /* console.log("UserData.myId = ",UserData.myId);
-    console.log("chat.members[1].id = ", chat.members[1].id);
-    console.log("chat.members[0].id = ", chat.members[0].id); */
-    
-    return(            
+
+    return(
             <div    className='flex justify-between items-center border-t border-[#070401] p-3 min-h-[68px]'
                     onClick={e  => {handelChahtConv(chat)}}>
                 

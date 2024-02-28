@@ -87,6 +87,16 @@ export class ChatService {
           orderBy: {
             createdAt: 'desc',
           },
+          include: {
+            author: {
+              select: {
+                id: true,
+                providerId: true,
+                avatar: true,
+                nickName: true,
+              },
+            },
+          },
         },
       },
     });

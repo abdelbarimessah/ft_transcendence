@@ -156,7 +156,21 @@ export class ChatController {
         },
       },
       select: {
-        messages: true,
+        messages:  {
+          orderBy: {
+            createdAt: 'asc',
+          },
+          include: {
+            author: {
+              select: {
+                id: true,
+                providerId: true,
+                avatar: true,
+                nickName: true,
+              },
+            },
+          },
+        },
       },
     });
     if (!chat) {

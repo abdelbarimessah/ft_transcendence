@@ -9,7 +9,7 @@ import { chatslistContext } from '../../app/(home)/chat/page'
 // import { chatsData } from './data'
 // import { error } from 'console'
 
-function LeftSide({ParentEventTriger}) {
+function LeftSide() {
 
 	const [whatIcon, setWhatIcon] = useState("");
 	const [newIcon, setNewIcon] = useState("");
@@ -18,38 +18,24 @@ function LeftSide({ParentEventTriger}) {
 
 
 
-	const UserData = useContext(chatslistContext);
+	const UserData: any = useContext(chatslistContext);
 
-	function handelAddNewConversation(icon) {
+	function handelAddNewConversation(icon : string) {
 		setNewIcon(icon)
-		console.log("add new chat")
 
 	}
-
+ 
 
 	const renderAddNewConv = () => {
-		if (newIcon == 'channel')
-		{
-			return (<>
-				<div className= 'flex justify-between items-center  px-3 min-h-[60px] bg[#FEE7C5] cursor-pointer hover:bg-[#635b4d]'>
-					
-					<h1 className=' text-color-2 text-lg' >  list of new channels</h1>
-					<Btns icon={"../../assets/addChannel.png"}/>
+		
+		
+		return (<>
+			<div className= 'flex justify-between items-center  px-3 min-h-[60px] bg[#FEE7C5] cursor-pointer hover:bg-[#635b4d]'>
 
-				</div>
-			</>)
-		}
-		else if (newIcon == 'friend')
-		{
-			return (<>
-				<div className= 'flex justify-between items-center  px-3 min-h-[60px] bg[#FEE7C5] cursor-pointer hover:bg-[#635b4d]'>
-					
-					<h1 className=' text-color-2 text-lg' >  list of new friend </h1>
-					<Btns icon={"../../assets/addChannel.png"}/>
+								
 
-				</div>
-			</>)
-		}
+			</div>
+		</>)
 	}
 
 
@@ -68,7 +54,7 @@ function LeftSide({ParentEventTriger}) {
 						
 
 					</div>
-						<div className='felx justify-between items-center cursor-pointer w-full h-[80px] px-3 hover:bg-orange-600'>
+						<div className=''>
 							{UserData.channelsList.map((chat) => {
 								return <Channels key={chat.id} chat={chat}/>;
 							})}
@@ -77,10 +63,10 @@ function LeftSide({ParentEventTriger}) {
 				</>
 			)
 		}
-		else if (whatIcon == 'friend') {
+		else if (whatIcon == 'friend' && UserData.friendsList?.length > 0) {
 			return (
 				<>
-					<div className='flex justify-between items-center  px-3 min-h-[60px] bg-[#FEE7C5] cursor-pointer hover:bg-[#635b4d]' onClick={e => {handelAddNewConversation('friend')}}>
+					<div className='flex justify-between items-center  px-3 min-h-[60px] bg-[#FEE7C5] cursor-pointer hover:bg-[#635b4d]' onClick={() => {handelAddNewConversation('friend')}}>
 
 						<h1 className=' text-color-2 text-lg' >  Find New Friend</h1>
 						<Btns icon={"../../assets/addChannel.png"} onClick={undefined} />
@@ -88,7 +74,7 @@ function LeftSide({ParentEventTriger}) {
 					</div>
 						<div className='felx justify-between items-center cursor-pointer w-full h-[85px] px-3 hover:bg-orange-600'>
                          	{UserData.friendsList.map((chat) => {								
-                            	return <Friend key={chat.id} chat={chat} EventTriger={ParentEventTriger}/>;
+                            	return <Friend key={chat.id} chat={chat}/>;
                         	})}
                         </div>
 
@@ -132,21 +118,9 @@ function LeftSide({ParentEventTriger}) {
 			</div>
 			{/* search bar */}
 
-			<div className='flex justify-center items-center h-[57px] bg-[#f8c75b] py-2'>
-				<input type="text"
-					placeholder='Search for chat'
-					className='rounded-lg bg-[#e4d3a1] text-[#8b877a] text-sm font-light outline-none px-4 py-2 w-[400px] h-[40px] placeholder:text-[#536672] placeholder:text-sm placeholder:font-light'
-					value={searchInput}
-					onChange={e => setSearchInput(e.target.value)}
-				/>
-			</div>
-
-			{/* {console.log(searchInput)} */}
-
-
 			{/* chat */}
-			{renderAddNewConv()}
 			{renderConversations()}
+			{renderAddNewConv()}
 		</div>
 	)
 }

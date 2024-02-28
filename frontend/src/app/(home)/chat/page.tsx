@@ -9,17 +9,9 @@ import { useEffect, useState, createContext } from 'react';
 
 
 
-
 export const chatslistContext = createContext();
 
 function Chat() {
-    // const socket = useContext(SocketContext);
-    // // use the socket connection
-    // // socket.emit('someevent', 'data');
-    // socket.on('someevent', (data) => {
-    //     console.log('data in the emit ' , data);
-    // });
-
 
     const [friendsList, setFriendsList] = useState([]);
     const [channelsList, setChannelsList] = useState([]);
@@ -33,13 +25,10 @@ function Chat() {
         try {
           const friendresponse = await axios.get('http://localhost:3000/chat/all');
           setFriendsList(friendresponse.data);
-          // console.log("response_friend = ", friendresponse.data);
           // const channelresponse = await axios.get('http://localhost:3000/chat/all');
           // setChannelsList(channelresponse.data);
-          // console.log("response_channel = ", channelresponse.data);
           const myIdResponse = await axios.get('http://localhost:3000/user/me');
           setMyId(myIdResponse.data);
-          console.log("myIdResponse = ", myIdResponse.data);
         } catch (error) {
           console.error(error);
         }
@@ -65,17 +54,22 @@ function Chat() {
           fetchConversationDta();
       }, [chatClicked]);
 
-      console.log("EventTriger = ", myId.id);
+
 
     return (
         <>
-        <chatslistContext.Provider value={{friendsList, channelsList, myId, chatConversation, chatClicked, typing, setTyping, setChatConversation}}>
-        <div className='flex justify-start chat-bp:justify-center items-center w-screen h-screen overflow-hidden '>
+        <chatslistContext.Provider value={{friendsList, channelsList, myId, chatConversation, chatClicked, typing, setTyping, setChatConversation, setChatClicked}}>
+        <div className='relative flex justify-start chat-bp:justify-center items-center w-screen h-screen overflow-hidden '>
+          
+          <div className='flex justify-center items-center absolute w-screen h-screen opacity-10 bg-black'>
+            <div className=' w-[571px] h-[897px] bg-orange-100 rounded-[29px] border border-black'>
 
+            </div>
+          </div>
           <div className="flex justify-start chat-bp:justify-center items-center w-[1731px] h-[1080px] bg-[#ffbb3b] ">
 
               <div className=" bg-[#FFE0B3] min-w-[340px] max-w-[460px] h-full w-full rounded-[29px_0px_0px_29px]">
-                <LeftSide ParentEventTriger={setChatClicked}/>
+                <LeftSide/>
               </div>
 
               <div className="bg-[#FFF0D2]  min-w-[415px] max-w-[1271px] h-full w-full rounded-[0px_29px_29px_0px]">

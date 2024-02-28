@@ -42,7 +42,7 @@ function SettingPrompt() {
             }
         }
         getData();
-    }, [id , firstName  ]);
+    }, [id ]);
 
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         setChangeAvatar(true);
@@ -127,6 +127,7 @@ function SettingPrompt() {
                             )
                                 : (
                                     <div className='w-full h-[50px]  rounded-[22px] border-color-6 flex items-center justify-center'>
+                                        {/* <input type="text" defaultValue={firstName} onChange={(event) => setFirstName(event.target.value)} className='bg-color-26 w-full h-full px-4 tracking-wider placeholder:text-color-0 placeholder:font-light font-poppins font-[400] rounded-[22px] text-  text-[17px] focus:outline-none' /> */}
                                         <input type="text" defaultValue={firstName} onChange={(event) => setFirstName(event.target.value)} className='bg-color-26 w-full h-full px-4 tracking-wider placeholder:text-color-0 placeholder:font-light font-poppins font-[400] rounded-[22px] text-  text-[17px] focus:outline-none' />
                                     </div>
                                 )}

@@ -1,7 +1,7 @@
 import {
   Body,
-  ConflictException,
   Controller,
+  ForbiddenException,
   Get,
   Patch,
   Req,
@@ -24,8 +24,7 @@ export class AuthController {
   ) {}
   @Get('google')
   @UseGuards(AuthGuard('google'))
-  googleAuth() {
-  }
+  googleAuth() {}
 
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
@@ -64,8 +63,7 @@ export class AuthController {
 
   @Get('42')
   @UseGuards(AuthGuard('42'))
-  intraAuth() {
-  }
+  intraAuth() {}
 
   @Get('42/callback')
   @UseGuards(AuthGuard('42'))
@@ -104,6 +102,7 @@ export class AuthController {
   // @Get('logout')
   // @UseGuards(AuthGuard('jwt'))
   // async logout(@Req() req: Request, @Res() res: Response) {
+  //   console.log('wa slaaaah');
   //   res.clearCookie('authorization', {
   //     httpOnly: true,
   //     secure: false,
@@ -115,9 +114,8 @@ export class AuthController {
   @Get('logout')
   @UseGuards(AuthGuard('jwt'))
   async logout(@Res({ passthrough: true }) res: Response) {
-      res.clearCookie('authorization', { httpOnly: true });
+    res.clearCookie('authorization', { httpOnly: true });
   }
-
 
   @Patch('generate/Otp')
   @UseGuards(AuthGuard('jwt'))
@@ -196,7 +194,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
     @Body() body: { otp: string },
   ) {
-    if (!user.otpIsEnabled) throw new ConflictException();
+    if (!user.otpIsEnabled) throw new ForbiddenException();
 
     const success = await this.authService.verifyOTP(user, body.otp);
     if (!success) {

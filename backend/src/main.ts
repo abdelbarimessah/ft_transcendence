@@ -6,6 +6,7 @@ import * as cookieParser from 'cookie-parser';
 import { Logger } from '@nestjs/common';
 import { ValidationPipe } from '@nestjs/common';
 import 'dotenv/config';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 // require('dotenv').config();
 
 async function bootstrap() {
@@ -14,7 +15,14 @@ async function bootstrap() {
   app.use(cookieParser());
 
   app.useStaticAssets('uploads', { prefix: '/uploads' });
-
+  // OPEN-API
+  const config = new DocumentBuilder()
+    .setTitle('backend')
+    .setDescription('backend endpoints')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
+  //CORS
   app.enableCors({
     origin: ['http://localhost:8000', 'http://localhost:8000/'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',

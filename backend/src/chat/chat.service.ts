@@ -1,20 +1,26 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
-  NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { UpdateChannelDto, createChannelDto } from './chat.dto';
+import * as bcrypt from 'bcrypt';
+import { ChatGateway } from './chat.gateway';
 
 @Injectable()
 export class ChatService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private prismaService: PrismaService,
+    private chatGateway: ChatGateway,
+  ) {}
 
   generateChatPairHash(userId1: string, userId2: string): string {
     const ids = [userId1, userId2].sort();
     const hash = `${ids[0]}-${ids[1]}`;
     return hash;
   }
-  async getUserId(userId: string) {
+  async checkUserId(userId: string) {
     const user = await this.prismaService.user.findUnique({
       where: {
         id: userId,
@@ -25,7 +31,7 @@ export class ChatService {
     });
 
     if (!user) {
-      throw new NotFoundException("user doesn't exists");
+      throw new BadRequestException("user doesn't exists");
     }
     return user.id;
   }
@@ -51,7 +57,7 @@ export class ChatService {
             members: true,
           },
           orderBy: {
-            createdAt: 'asc',
+            updatedAt: 'asc',
           },
         },
       },
@@ -68,24 +74,9 @@ export class ChatService {
         },
       },
       include: {
-        members: {
-          select: {
-            id: true,
-            providerId: true,
-            email: true,
-            nickName: true,
-            firstName: true,
-            lastName: true,
-            provider: true,
-            avatar: true,
-            otpIsEnabled: true,
-            level: true,
-            cover: true,
-          },
-        },
         messages: {
           orderBy: {
-            createdAt: 'desc',
+            createdAt: 'asc',
           },
           include: {
             author: {
@@ -119,7 +110,7 @@ export class ChatService {
       });
     }
     if (!target) {
-      throw new NotFoundException('there no such chat or channel');
+      throw new BadRequestException('there no such chat or channel');
     }
     return target;
   }
@@ -212,4 +203,145 @@ export class ChatService {
       }
     }
   }
+  async createMessage(
+    userId: string,
+    chatId: string,
+    channelId: string,
+    content: string,
+  ) {
+    return this.prismaService.message.create({
+      data: {
+        content,
+        authorId: userId,
+        ...(chatId && { chatId }),
+        ...(channelId && { channelId }),
+      },
+      include: {
+        author: {
+          select: {
+            id: true,
+            providerId: true,
+            avatar: true,
+            nickName: true,
+          },
+        },
+      },
+    });
+  }
+  async checkChannel(channelId: string) {
+    const channel = await this.prismaService.channel.findUnique({
+      where: { id: channelId },
+    });
+    if (!channel) {
+      throw new BadRequestException(`Channel not found.`);
+    }
+  }
+  async createChannel(data: createChannelDto, userId: string) {
+    let hashedPassword = null;
+    if (data.type === 'PROTECTED') {
+      if (!data.password) throw new BadRequestException("there's no password");
+      hashedPassword = await bcrypt.hash(data.password, 10);
+    }
+
+    const channel = await this.prismaService.channel.create({
+      data: {
+        name: data.name,
+        type: data.type,
+        password: hashedPassword,
+        ownerId: userId,
+        members: {
+          create: [{ userId, isAdmin: true }],
+        },
+      },
+    });
+
+    return channel;
+  }
+  async getUserChannels(userId: string) {
+    const memberships = await this.prismaService.channelMembership.findMany({
+      where: {
+        userId: userId,
+        isBanned: false,
+      },
+      include: {
+        channel: {
+          select: {
+            id: true,
+            name: true,
+            type: true,
+            createdAt: true,
+            ownerId: true,
+          },
+        },
+      },
+    });
+    if (!memberships || memberships.length === 0) {
+      throw new BadRequestException('No channels found for the user.');
+    }
+    const channels = memberships.map((membership) => {
+      this.chatGateway.joinRoom(userId, membership.channel.id);
+      return membership.channel;
+    });
+    return channels;
+  }
+  async updateChannel(
+    channelId: string,
+    userId: string,
+    data: UpdateChannelDto,
+  ) {
+    const channel = await this.prismaService.channel.findUnique({
+      where: { id: channelId },
+    });
+    if (!channel) {
+      throw new BadRequestException(`Channel not found`);
+    }
+    if (channel.ownerId !== userId) {
+      throw new ForbiddenException(
+        'You are not authorized to update this channel',
+      );
+    }
+    if (data.type === 'PROTECTED' && data.password) {
+      if (data.password.length === 0) {
+        throw new BadRequestException(
+          'Password is required for protected channels',
+        );
+      }
+      const hashedPassword = await bcrypt.hash(data.password, 10);
+      data.password = hashedPassword;
+    } else if (data.type !== 'PROTECTED') {
+      data.password = null;
+    }
+    const updatedChannel = await this.prismaService.channel.update({
+      where: { id: channelId },
+      data: data,
+    });
+    return updatedChannel;
+  }
+
+  async deleteChannel(channelId: string, userId: string) {
+    const channel = await this.prismaService.channel.findUnique({
+      where: { id: channelId },
+    });
+    if (!channel) {
+      throw new BadRequestException(`Channel not found.`);
+    }
+    if (channel.ownerId !== userId) {
+      throw new ForbiddenException(
+        'You do not have permission to delete this channel.',
+      );
+    }
+    await this.prismaService.message.deleteMany({
+      where: { channelId: channelId },
+    });
+
+    await this.prismaService.channelMembership.deleteMany({
+      where: { channelId: channelId },
+    });
+
+    await this.prismaService.channel.delete({
+      where: { id: channelId },
+    });
+  }
+
+  async joinChannel() {}
 }

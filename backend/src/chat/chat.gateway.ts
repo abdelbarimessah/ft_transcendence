@@ -7,7 +7,6 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { ChatService } from './chat.service';
 import { Channel, Chat, Message, User } from '@prisma/client';
 import * as cookie from 'cookie';
 import { ConfigService } from '@nestjs/config';
@@ -30,7 +29,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
   constructor(
-    private chatService: ChatService,
     private configService: ConfigService,
     private jwtService: JwtService,
     private appService: AppService,
@@ -52,6 +50,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const decoded = this.jwtService.verify(authToken, { secret });
 
       const userId = decoded.id;
+      console.log(`${userId} joined`);
 
       this.appService.set(userId, client.id);
     } catch (error) {
@@ -62,6 +61,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   handleDisconnect(client: any) {
     const userId = this.appService.getUserIdFromSocketId(client.id);
+    console.log(`${userId} disconnected`);
     if (userId) this.appService.delete(userId);
   }
 

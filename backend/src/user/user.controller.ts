@@ -4,7 +4,6 @@ import {
   Param,
   Post,
   UseGuards,
-  // ConflictException,
   UploadedFile,
   UseInterceptors,
   Body,
@@ -55,13 +54,10 @@ export class UsersController {
     const uploadDir = path.join(__dirname, '../../../uploads/');
     const uploadPath = path.join(uploadDir, `${user.providerId}${'.png'}`);
     fs.writeFileSync(uploadPath, file.buffer);
-    const backendUrl ='http://localhost:3000'
-    const url = new URL(
-      `/uploads/${user.providerId}${'.png'}`,
-      backendUrl,
-    );
+    const backendUrl = 'http://localhost:3000';
+    const url = new URL(`/uploads/${user.providerId}${'.png'}`, backendUrl);
     url.searchParams.append('time', Date.now().toString());
-    
+
     await this.userService.updateAvatar(user.providerId, url.href);
   }
 
@@ -123,17 +119,11 @@ export class UsersController {
   //   );
   // }
 
-
   @Get('userSearch')
   async userSearch(@Query('query') query, @CurrentUser() user: any) {
-    
     const searchQuery = String(query);
-    return await this.userService.getUserSearch(
-      searchQuery,
-      user.providerId,
-    );
+    return await this.userService.getUserSearch(searchQuery, user.providerId);
   }
-
 
   // @Get('userSearch')
   //   @UseGuards(OTPGuard)
@@ -143,7 +133,7 @@ export class UsersController {
   //       console.log('body', req.query);
   //       const searchQuery = String(req.query.query);
   //       const res = await this.userService.getUserSearch(searchQuery, user.providerId);
-        
+
   //       return res;
   //   }
 

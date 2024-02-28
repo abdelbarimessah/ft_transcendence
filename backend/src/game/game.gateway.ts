@@ -100,6 +100,12 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const roomName = `gameCard-${this.clientNOForCard}`;
       const player1 = this.playerQueue.shift();
       const player2 = this.playerQueue.shift();
+      if(player1.socket.data.user.providerId === player2.socket.data.user.providerId) 
+      {
+        this.playerQueue.push(player1);
+        socket.emit('youAreInGameFromAntherPage');
+        return;
+      }
       const id1 = this.playerQueueUser.shift();
       const id2 = this.playerQueueUser.shift();
 

@@ -41,18 +41,33 @@ export default function FriendCard({
   const handleMessageToFriend = () => {
   };
 
+
   useEffect(() => {
+    const intervalId = setInterval(() => {
+      if(user) socketClient.emit('User-status', { status: 'online', providerId: user.providerId });
+    }, 5000); // Emit every 5 seconds
+  
     socketClient.on("User-status", (data) => {
+      console.log('get the USER_STATUS from the server [11111]', data);
+        
       if (data.providerId === friend.providerId) {
         setStatus(data.status);
       }
     });
-    if(user)  socketClient.emit('User-status', { status: 'online',  providerId : user.providerId});
-
-    // return () => {
-    //   socketClient.off("User-status");
-    // };
-  });
+  
+    // Cleanup function to clear the interval when the component is unmounted
+    return () => clearInterval(intervalId);
+  }, []);
+  // useEffect(() => {
+  //   socketClient.on("User-status", (data) => {
+  //     console.log('get the USER_STATUS from the server [11111]', data);
+      
+  //     if (data.providerId === friend.providerId) {
+  //       setStatus(data.status);
+  //     }
+  //   });
+  //   if(user)  socketClient.emit('User-status', { status: 'online',  providerId : user.providerId});
+  // });
 
   return (
     <div className=" w-[200px] h-[200px] bg-color-30 rounded-[22px] relative overflow-hidden flex  flex-col gap-[40px] hover:opacity-90 hover:scale-[1.01]">

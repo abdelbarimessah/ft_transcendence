@@ -47,7 +47,6 @@ export class NotificationGateway {
     socket.join(data.providerId);
   }
   async sendNotification(receiver: string, notification: any) {
-    console.log('sent ', notification, 'on ', receiver);
     this.server.to(receiver).emit('notification', notification);
   }
 }

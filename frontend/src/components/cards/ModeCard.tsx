@@ -8,6 +8,7 @@ import animationData from '../../../public/assets/Animation.json';
 import { useContext } from 'react';
 import { SocketContext } from '@/app/SocketContext';
 import Link from 'next/link';
+import { toast } from 'sonner';
 
 
 function ModeCard(me: any) {
@@ -67,10 +68,12 @@ function ModeCard(me: any) {
     }, [socketClient]);
 
     useEffect(() => {
-        return () => {
-            // socketClient.emit('customDisconnectClient', { roomName });
-        }
-    }, [roomName]);
+        socketClient.on('youAreInGameFromAntherPage', () => {
+            console.log('youAreInGameFromAntherPage [12213231]');
+            toast.error('you are already in game');
+            router.push('/profile')
+        })
+    });
 
 
 

@@ -2,16 +2,16 @@
 
 import Image from "next/image";
 import FriendCard, { FriendCardProps } from "./FriendCard";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 // import Lottie from "lottie-react"; 
 // import animationData from '../../../public/assets/EmptyFriends.json';
 import animationData from '../../../public/assets/EmptyFriends.json';
 
 import dynamic from 'next/dynamic';
+import { SocketContext } from "@/app/SocketContext";
 
-// Dynamically import Lottie component
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 
 
@@ -24,7 +24,11 @@ const getFriendsList = async () => {
 };
 
 
+
+
 function FriendsList() {
+  const socketClient = useContext(SocketContext)
+  const queryClient = useQueryClient();
   const [me, setMe] = useState<any>();
   useEffect(() => {
     axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`).then(res => {
@@ -33,6 +37,13 @@ function FriendsList() {
       console.error(err);
     })
   }, [])
+
+
+  useEffect(() => {
+    socketClient.on('updateInfo', () => {
+      queryClient.invalidateQueries('friendsList');
+    })
+  }, [socketClient, queryClient])
 
 
   const {
@@ -55,6 +66,7 @@ function FriendsList() {
             fill={true}
             priority={true}
             className="object-cover w-full h-full"
+            draggable={false}
           />
         </div>
         <div className="flex gap-[10px] ">

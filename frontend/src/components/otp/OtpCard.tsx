@@ -88,10 +88,12 @@ function OtpCard() {
                         alt="Scan Icon"
                         width={24}
                         height={20}
+                        priority={true}
+                        draggable={false}
                         >
                     </Image>
                 </div>
-                <div className='flex items-center justify-center flex-col'>
+                <div className='select-none flex items-center justify-center flex-col'>
                     <p className='font-nico-moji text-[10px] md:text-[14px] tracking-[0px]'>Turn on 2-Step Verification</p>
                     <p className='font-nico-moji text-color-25 text-[8px] md:text-[10px] tracking-[0px] text-center'>open authenticator and chose scan barcode.</p>
                 </div>
@@ -102,12 +104,14 @@ function OtpCard() {
                         alt="Qr Code"
                         fill={true}
                         className='px-2 py-2'
+                        priority={true}
+                        draggable={false}
                         >
                     </Image>
                 }
                 </div>
                 {otpDisable ? (
-                    <div className=" flex w-full items-center justify-center gap-[10px] md:gap-[36px] md:flex-row flex-col pt-[36px]">
+                    <div className="select-none flex w-full items-center justify-center gap-[10px] md:gap-[36px] md:flex-row flex-col pt-[36px]">
                         <div onClick={handleDisableClick} className="w-[141px] h-[35px] bg-color-6 rounded-[22px] flex items-center justify-center cursor-pointer">
                             <p className="text-[14px] text-color-0 font-nico-moji" >Disable</p>
                         </div>
@@ -129,7 +133,7 @@ function OtpCard() {
                         />
                 </div>
                 <div className=" flex w-full items-center justify-center gap-[10px] md:gap-[36px] md:flex-row flex-col ">
-                    <div onClick={handleEnableClick} className="w-[141px] h-[35px] bg-color-6 rounded-[22px] flex items-center justify-center cursor-pointer">
+                    <div onClick={handleEnableClick} className=" select-none w-[141px] h-[35px] bg-color-6 rounded-[22px] flex items-center justify-center cursor-pointer">
                         <p className="text-[14px] text-color-0 font-nico-moji" >Enable</p>
                     </div>
                 </div>

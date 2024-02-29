@@ -3,16 +3,19 @@ import * as React from "react"
 import * as ProgressPrimitive from "@radix-ui/react-progress"
 import { cn } from "@/lib/utils"
 import Image from 'next/image';
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { Skeleton } from "@nextui-org/react";
 import Link from "next/link";
 import { useRouter } from 'next/navigation'
+import { toast } from "sonner";
+import { SocketContext } from "@/app/SocketContext";
 
 
 axios.defaults.withCredentials = true;
 
 function ProfileCard() {
+    const socketClient = useContext(SocketContext);
     const [id, setId] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [user, setUser] = useState<any>();
@@ -44,6 +47,23 @@ function ProfileCard() {
         getData();
     }, [id]);
 
+    useEffect(() => {
+        socketClient.on('updateInfo', async (data) => {
+            if (user && data.providerId === user.providerId) {
+                try {
+                    setIsLoading(true);
+                    const res = await axios.get(`http://localhost:3000/user/me`);
+
+                    setUser(res.data);
+                    setIsLoading(false);
+                }
+                catch (error) {
+                    setIsLoading(false);
+                    console.error(error);
+                }
+            }
+        })
+    })
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         setChangeAvatar(true);
         const file = event.target.files?.[0];
@@ -58,6 +78,8 @@ function ProfileCard() {
             const formData = new FormData();
             formData.append('cover', avatar);
             const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/user/updateCover`, formData)
+            socketClient.emit('updateInfo', {providerId: user.providerId})
+            toast.success('cover updated successfully')
             setUser({ ...user, cover: res.data.url });
         }
         setChangeAvatar(false);
@@ -76,14 +98,12 @@ function ProfileCard() {
                             sizes="100%"
                             priority={true}
                             className="object-cover w-full h-full "
+                            draggable={false}
                         />
-
-
-                        {/* <img src={ photoPath || user.cover} alt="" className="object-cover w-full h-full"/> */}
                     </div>
                 )}
                 <div className='h-full w-full  absolute hidden group-hover:flex  bg-black items-center justify-center text-center bg-slate-600/50 text-white tracking-wider font-nico-moji'>Change Cover Image</div>
-                <input className='h-full w-full  absolute opacity-0 z-10 cursor-pointer' onChange={handleFileChange} type="file" />
+                <input className='h-full w-full  absolute opacity-0 z-10 cursor-pointer' onChange={handleFileChange} type="file" accept=".png, .jpg, .jpeg" />
                 {changeAvatar &&
                     <div onClick={handleSaveClick} className="w-[50px] z-[1000] cursor-pointer h-[16px] flex items-center justify-center rounded-[5px] bg-color-0 absolute bottom-1 right-1">
                         <span className="text-center font-nico-moji text-[10px] text-color-6 capitalize">Save</span>
@@ -104,6 +124,8 @@ function ProfileCard() {
                                     sizes="100%"
                                     priority={true}
                                     className="object-cover w-full h-full "
+                                    draggable={false}
+
                                 />
                             </div>
                         )}
@@ -112,13 +134,17 @@ function ProfileCard() {
                             <Skeleton className="w-[264px] h-[24px] rounded-full bg-color-25" />
                         )
                             : (
-                                <span className='font-nico-moji text-color-6 sm:text-[24px] text-[18px] capitalize'>{`${user.firstName} ${user.lastName}`}</span>
+                                <span className='font-nico-moji text-color-6 sm:text-[24px] text-[18px] capitalize'>
+                                    {`${user.firstName.substring(0, 10)}${user.firstName.length > 10 ? '..' : ''} ${user.lastName.substring(0, 10)}${user.lastName.length > 10 ? '..' : ''}`}
+                                </span>
                             )}
                         {isLoading ? (
                             <Skeleton className="w-[86px] h-[16px] rounded-full mt-1 bg-color-25" />
                         )
                             : (
-                                <span className='font-nico-moji -mt-1 sm:text-[16px] text-[12px]  text-color-29 capitalize'>{user.nickName}</span>
+                                <span className='font-nico-moji -mt-1 sm:text-[16px] text-[12px]  text-color-29 capitalize'>
+                                    @{user.nickName.substring(0, 10)}{user.nickName.length > 10 ? '..' : ''}
+                                </span>
                             )}
                     </div>
                 </div>
@@ -128,6 +154,7 @@ function ProfileCard() {
                         alt='profile image'
                         width={6}
                         height={21}
+                        draggable={false}
                     />
                 </div>
                 {isSettingsVisible && <SettingsPoint />}

@@ -65,7 +65,6 @@ export class UserGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   }
 
-
   async handleDisconnect(socket: Socket) {
     const providerId = socket.data.providerId;
     const sockets = await this.server.in(`User-${providerId}`).fetchSockets();
@@ -77,5 +76,13 @@ export class UserGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('User-status')
   async handleUserStatus(socket: Socket, data: any) {
     this.server.emit('User-status', { status: data.status, providerId: data.providerId })
+  }
+
+
+  @SubscribeMessage('updateInfo')
+  handleUpdateInfo(socket: Socket, data: any)
+  {
+    console.log({message: 'data came with the change of info'}, data.providerId);
+    this.server.emit('updateInfo',{providerId:  data.providerId});
   }
 }

@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Skeleton } from "@nextui-org/react";
-import { useParams} from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
@@ -25,7 +25,7 @@ function ProfileCard() {
             try {
                 setIsLoading(true);
                 const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/${params?.id}`);
-                if(res.data === 1){
+                if (res.data === 1) {
                     router.push('/profile');
                 }
                 setUser(res.data);
@@ -39,7 +39,7 @@ function ProfileCard() {
         }
 
         getData();
-    }, [ids,params]);
+    }, [ids, params]);
 
 
 
@@ -58,6 +58,7 @@ function ProfileCard() {
                             sizes="100%"
                             priority={true}
                             className="object-cover w-full h-full "
+                            draggable={false}
                         />
                     </div>
                 )}
@@ -76,6 +77,7 @@ function ProfileCard() {
                                     sizes="100%"
                                     priority={true}
                                     className="object-cover w-full h-full "
+                                    draggable={false}
                                 />
                             </div>
                         )}
@@ -84,13 +86,17 @@ function ProfileCard() {
                             <Skeleton className="w-[200px] h-[20px] rounded-full bg-color-25" />
                         )
                             : (
-                                <span className='font-nico-moji text-color-6 sm:text-[20px] text-[16px] capitalize'>{`${user.firstName} ${user.lastName}`}</span>
+                                <span className='font-nico-moji text-color-6 sm:text-[24px] text-[18px] capitalize'>
+                                    {`${user.firstName.substring(0, 10)}${user.firstName.length > 10 ? '..' : ''} ${user.lastName.substring(0, 10)}${user.lastName.length > 10 ? '..' : ''}`}
+                                </span>
                             )}
                         {isLoading ? (
                             <Skeleton className="w-[60px] h-[14px] rounded-full mt-1 bg-color-25" />
                         )
                             : (
-                                <span className='font-nico-moji -mt-1 sm:text-[16px] text-[12px]  text-color-29 capitalize'>{user.nickName}</span>
+                                <span className='font-nico-moji -mt-1 sm:text-[16px] text-[12px]  text-color-29 capitalize'>
+                                    @{user.nickName.substring(0, 10)}{user.nickName.length > 10 ? '..' : ''}
+                                </span>
                             )}
                     </div>
                 </div>
@@ -112,7 +118,9 @@ function ProfileCard() {
                             </span>
                         </div>
                         <div className=''>
-                            <span className='font-nico-moji text-[16px] text-color-6 capitalize'>250 / 500</span>
+                            <span className='font-nico-moji text-[16px] text-color-6 capitalize'>
+                                {user ? `${user.level} / 100` : 'Loading...'}
+                            </span>
                         </div>
                     </div>
                     <div className='px-[28px] '>
@@ -158,6 +166,7 @@ function AddFriend(props: AddFriendProps) {
                     sizes="100%"
                     priority={true}
                     className="object-cover w-full h-full "
+                    draggable={false}
                 />
             </div>
             <span className='font-nico-moji text-[8px] text-color-0 '>ADD</span>
@@ -195,6 +204,7 @@ function RemoveFriend(props: RemoveFriendProps) {
                     sizes="100%"
                     priority={true}
                     className="object-cover w-full h-full "
+                    draggable={false}
                 />
             </div>
             <span className='font-nico-moji text-[8px] text-color-6 '>REMOVE</span>

@@ -210,11 +210,8 @@ export default class PongGame extends Phaser.Scene {
 
         this.physics.add.collider(this.ball, this.p1);
         this.physics.add.collider(this.ball, this.p2);
-        // this.input.keyboard?.on("keydown-SPACE", () => {
-        //     if (!this.isgamestarted && this.renderReplayButton == false ) {
-        //         this.socketClient.emit("startGameClient", { roomName: this.playerData.roomName });
-        //     }
-        // });
+
+        
         this.p1victory = this.add.text(
             this.physics.world.bounds.width / 2 - ("you win!".length * 32) / 3,
             this.physics.world.bounds.height / 1.7,

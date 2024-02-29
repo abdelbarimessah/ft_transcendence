@@ -13,10 +13,11 @@ export default class aiMode extends Phaser.Scene {
   p2victory: any;
   p1goaltext: any;
   p2goaltext: any;
-  p1score_number : number ;
-  p2score_number : number ;
+  p1score_number: number;
+  p2score_number: number;
   ballMovingToP2: boolean;
-  
+
+
   state: {
     p1score: number;
     p2score: number;
@@ -43,9 +44,9 @@ export default class aiMode extends Phaser.Scene {
     this.p2goaltext.setText(this.state.p2score);
   }
   preload() {
-         this.load.image("table", "../../assets/table2.png");
-        this.load.image("paddle", "../../assets/padle.png");
-        this.load.image("ball", "../../assets/ball.png");
+    this.load.image("table", "../../assets/table2.png");
+    this.load.image("paddle", "../../assets/padle.png");
+    this.load.image("ball", "../../assets/ball.png");
   }
 
   create() {
@@ -57,6 +58,8 @@ export default class aiMode extends Phaser.Scene {
       "ball"
     );
     this.ball.setCollideWorldBounds(true);
+    this.physics.world.checkCollision.left = false;
+    this.physics.world.checkCollision.right = false;
     this.ball.setBounce(1, 1);
 
     this.p1 = this.physics.add.sprite(
@@ -76,8 +79,6 @@ export default class aiMode extends Phaser.Scene {
     this.p2.setImmovable(true);
 
     this.cursors = this.input.keyboard?.createCursorKeys();
-    this.wKey = this.input.keyboard?.addKey("W");
-    this.sKey = this.input.keyboard?.addKey("S");
     this.ball.setScale(0.7);
     this.p1.setScale(0.7);
     this.p2.setScale(0.7);
@@ -91,23 +92,23 @@ export default class aiMode extends Phaser.Scene {
     });
 
     this.physics.add.collider(this.ball, this.p1, () => {
-        this.ballMovingToP2 = true;
-      });
-      this.physics.add.collider(this.ball, this.p2, () => {
-        this.ballMovingToP2 = false;
-      });
+      this.ballMovingToP2 = true;
+    });
+    this.physics.add.collider(this.ball, this.p2, () => {
+      this.ballMovingToP2 = false;
+    });
     this.p1victory = this.add.text(
       this.physics.world.bounds.width / 2 - ("Player 1 wins!".length * 32) / 3,
       this.physics.world.bounds.height / 1.7,
-      "you wins!",
-      { fontSize: "32px", color: "#fff" }
+      "you win!",
+      { fontSize: "50px", color: "#fff", font:'poppins' }
     );
     this.p1victory.visible = false;
     this.p2victory = this.add.text(
       this.physics.world.bounds.width / 2 - ("Player 1 wins!".length * 32) / 3,
       this.physics.world.bounds.height / 1.7,
-      "the Ai wins!",
-      { fontSize: "32px", color: "#fff" }
+      "Ai win!",
+      { fontSize: "50px", color: "#fff" }
     );
     this.p2victory.visible = false;
 
@@ -127,25 +128,23 @@ export default class aiMode extends Phaser.Scene {
     this.p2goaltext.setAlpha(0.2);
   };
 
-  scorep1() : void {
+  scorep1(): void {
     this.p1score_number += 1;
     const p1s = this.p1score_number / 60;
     this.p1goaltext.setText(p1s.toFixed(0));
-    if(p1s === 3)
-    {
+    if (p1s === 7) {
       this.p1victory.visible = true;
       this.p1.setActive(false).setVisible(false);
       this.p2.setActive(false).setVisible(false);
       this.ball.setActive(false).setVisible(false);
     }
   }
-  scorep2() : void {
+  scorep2(): void {
     this.p2score_number += 1;
     const p2s = this.p2score_number / 60;
     this.p2goaltext.setText(p2s.toFixed(0));
-    if(p2s === 3)
-    {
-      this.p1victory.visible = true;
+    if (p2s === 7) {
+      this.p2victory.visible = true;
       this.p1.setActive(false).setVisible(false);
       this.p2.setActive(false).setVisible(false);
       this.ball.setActive(false).setVisible(false);
@@ -153,14 +152,14 @@ export default class aiMode extends Phaser.Scene {
   }
 
   update() {
-    if (this.ball.body.x > 870) {
-        this.scorep2();
-        this.resetGame();
-
+    if (this.ball.body.x > 900) {
+      this.scorep2();
+      this.resetGame();
       this.ball.setVelocityX(0);
       this.ball.setVelocityY(0);
     }
-    if (this.ball.body.x < 30 ) {
+
+    if (this.ball.body.x < 0) {
       this.scorep1();
       this.resetGame();
       this.ball.setVelocityX(0);
@@ -189,22 +188,7 @@ export default class aiMode extends Phaser.Scene {
     } else {
       this.p2.setVelocityY(0);
     }
-//     const futureBallPosition = this.ball.body.y + this.ball.body.velocity.y / 60;
-//     const tolerance = 5;
-//   if (futureBallPosition < this.p2.body.y - tolerance) {
-//     this.p2.setVelocityY(-600);
-//   } else if (futureBallPosition > this.p2.body.y + tolerance) {
-//     this.p2.setVelocityY(600);
-//   } else {
-//     this.p2.setVelocityY(0);
-//   }
-    // if (this.wKey.isDown) {
-    //   this.p2.setVelocityY(-300);
-    // } else if (this.sKey.isDown) {
-    //   this.p2.setVelocityY(300);
-    // } else {
-    //   this.p2.setVelocityY(0);
-    // }
+
     this.p1victory.setPosition(
       this.physics.world.bounds.width / 2 - this.p1victory.width / 2,
       this.physics.world.bounds.height / 1.7
@@ -223,23 +207,26 @@ export default class aiMode extends Phaser.Scene {
     this.ball.setVelocityX(initialVelocityX);
     this.ball.setVelocityY(initialVelocityY);
     this.isgamestarted = true;
+
   }
   resetGame() {
-    this.ball.setPosition(
-      this.physics.world.bounds.width / 2,
-      this.physics.world.bounds.height / 2
-    );
-    this.ball.setVelocity(0, 0);
-    this.ball.setAcceleration(0, 0);
-    this.ball.setAngularVelocity(0);
-    this.ball.setAngularAcceleration(0);
-    this.ball.body.enable = false;
+    if (this.ball && this.ball.body) {
+      this.ball.setPosition(
+        this.physics.world.bounds.width / 2,
+        this.physics.world.bounds.height / 2
+      );
+      this.ball.setVelocity(0, 0);
+      this.ball.setAcceleration(0, 0);
+      this.ball.setAngularVelocity(0);
+      this.ball.setAngularAcceleration(0);
+      this.ball.body.enable = false;
 
-    this.isgamestarted = false;
-    this.goalScored = false;
+      this.isgamestarted = false;
+      this.goalScored = false;
 
-    this.time.delayedCall(1000, () => {
-      this.ball.body.enable = true;
-    });
+      this.time.delayedCall(1000, () => {
+        this.ball.body.enable = true;
+      });
+    }
   }
 }

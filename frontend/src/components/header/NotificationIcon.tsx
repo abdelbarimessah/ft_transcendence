@@ -29,7 +29,7 @@ const NotificationIcon = () => {
   })
   useEffect(() => {
     socketClient.on('playersReadyInvite', (data) => {
-
+      
       setTimeout(() => {
           router.push(`/game/match?room=InviteRoom-${data.sender.providerId}-${data.receiver.providerId}-${data.inviteNumber}`);
       }, 500)            

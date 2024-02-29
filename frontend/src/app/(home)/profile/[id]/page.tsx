@@ -1,14 +1,16 @@
+'use client'
 import LeaderBoard from "@/components/profilePage/LeaderBoard";
 import { MatchesHistory } from "@/components/profilePage/MatchesHistory";
 import UsersProfileCard from "@/components/profilePage/UsersProfileCard";
 import ParticleBackground from "@/components/particles/Tsparticles";
-import Achievements from "@/components/profilePage/Achievements";
 import Header from "@/components/header/header";
-import FriendsList from "@/components/profilePage/FriendsList";
 import UsersAchievements from "@/components/profilePage/UsersAchievements";
+import { QueryClient, QueryClientProvider } from "react-query";
+
+
+const MatchesHistoryClient = new QueryClient();
 
 function profile() {
-
     return (
         <div className="select-none w-full h-full flex flex-col bg-color-18  items-center justify-center ">
             <div className='w-full h-full absolute '>
@@ -24,7 +26,9 @@ function profile() {
                 </div>
                 <div className="w-full flex 2xl:flex-row flex-col  gap-[25px] items-center justify-center px-[25px] ">
                     <UsersAchievements />
-                    <MatchesHistory />
+                    <QueryClientProvider client={MatchesHistoryClient}>
+                        <MatchesHistory />
+                    </QueryClientProvider>
                 </div>
             </div>
         </div>

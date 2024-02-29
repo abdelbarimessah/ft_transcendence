@@ -47,6 +47,7 @@ export class NotificationGateway {
     socket.join(data.providerId);
   }
   async sendNotification(receiver: string, notification: any) {
+    // TODO (abdelhamid) 
     this.server.to(receiver).emit('notification', notification);
   }
 }

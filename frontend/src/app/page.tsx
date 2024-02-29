@@ -43,6 +43,7 @@ export default function Home() {
             height={48}
             priority={true}
             className="animate-pulse"
+            draggable={false}
           />
         </Link>
         <button
@@ -60,13 +61,13 @@ export default function Home() {
 
       <div className="w-full my-8 md:my-10 md:py-4 flex flex-col md:flex-row justify-center items-center text-color-1 ">
         <div className="w-full h-[18rem] sm:h-[32rem] flex flex-col items-center justify-around sm:justify-center text-center sm:gap-10">
-          <h2 className="text-[17px] sm:text-[22px] text-color-29">
+          <h2 className="select-none text-[17px] sm:text-[22px] text-color-29">
             Welcome to the ultimate
           </h2>
-          <h1 className="text-[24px] sm:text-[40px] md:text-[50px] bg-gradient-to-tr from-color-2 to-color-1 bg-clip-text text-transparent animate-pulse">
+          <h1 className="select-none text-[24px] sm:text-[40px] md:text-[50px] bg-gradient-to-tr from-color-2 to-color-1 bg-clip-text text-transparent animate-pulse">
             {"CHAMPION'S CHALLENGE"}
           </h1>
-          <h2 className="text-[17px] sm:text-[22px] text-color-29">
+          <h2 className="select-none text-[17px] sm:text-[22px] text-color-29">
             Conquer the Table, Rule the Game!
           </h2>
         </div>
@@ -78,9 +79,10 @@ export default function Home() {
             height={200}
             priority={true}
             className="rounded-[15px]"
+            draggable={false}
           />
           <button
-            className=" w-3/4 h-16 sm:text-[18px] text-[22px] rounded-[25px] border-[2px] border-color-1 bg-color-11 shadow-sm shadow-color-1 hover:scale-105 hover:border-[3px] animate-bounce"
+            className="select-none w-3/4 h-16 sm:text-[18px] text-[22px] rounded-[25px] border-[2px] border-color-1 bg-color-11 shadow-sm shadow-color-1 hover:scale-105 hover:border-[3px] animate-bounce"
             onClick={() => setShowModal(!showModal)}
           >
             Play Now
@@ -92,7 +94,7 @@ export default function Home() {
       {/* TEAM */}
 
       <div className="w-full flex flex-col items-center justify-center text-color-3 p-6">
-        <h1 className="py-8 text-[40px] sm:text-[50px] md:text-[60px] bg-gradient-to-br from-color-11 to-color-16 bg-clip-text text-transparent">
+        <h1 className="select-none py-8 text-[40px] sm:text-[50px] md:text-[60px] bg-gradient-to-br from-color-11 to-color-16 bg-clip-text text-transparent">
           TEAM
         </h1>
         <div className="flex flex-wrap w-full justify-center items-center sm:p-4 sm:gap-16 gap-4">
@@ -123,7 +125,7 @@ export default function Home() {
       {/* Stack */}
 
       <div className="w-full h-full flex flex-col items-center justify-center p-6">
-        <h1 className="py-8 text-[40px] sm:text-[50px] md:text-[60px] bg-gradient-to-br from-color-11 to-color-16 bg-clip-text text-transparent">
+        <h1 className=" select-none py-8 text-[40px] sm:text-[50px] md:text-[60px] bg-gradient-to-br from-color-11 to-color-16 bg-clip-text text-transparent">
           STACK
         </h1>
         <div className="w-full h-fit py-10 flex flex-col flex-wrap sm:flex-row gap-5 justify-between items-center sm:px-4 bg-color-0 rounded-[18px] border-[3px] border-color-0 bg-opacity-70 ">

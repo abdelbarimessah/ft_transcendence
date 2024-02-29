@@ -143,7 +143,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       player1: socket.data.user,
       player2: null,
     })
-    console.log('the data in the roomsocket is [oooooo]', this.roomSockets.get(roomName));
 
     console.log(socket.id, 'join the room :: ', roomName);
     this.server.to(data.receiver.providerId).emit('playRequestFromFriend', {sender: data.sender, receiver: data.receiver, inviteNumber: this.inviteNumber})
@@ -159,12 +158,16 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     {
       tmpData.player2 = socket.data.user;
       this.roomSockets.set(roomName, tmpData);
-      console.log('the data in the roomsocket is [oooooo]', this.roomSockets.get(roomName));
 
-    }
-    console.log(socket.id, 'join the room :: ', roomName);    
+    } 
     this.server.in(roomName).emit('playersReadyInvite', {sender: data.gamePair.sender, receiver: data.gamePair.receiver, inviteNumber: data.gamePair.inviteNumber});
-    // socket.emit('playersReadyInvite', {sender: data.gamePair.sender, receiver: data.gamePair.receiver});
+  }
+
+  @SubscribeMessage('declineInviteGame')
+  handleDeclineInviteGame(socket: Socket, data: any)
+  {
+    console.log({message: 'decline the game invitee in the gateway [11111]'}, data);
+    this.server.to(data.gamePair.sender.providerId).emit('OtherPlayerDeclineTheGame', data);
   }
 
 
@@ -195,6 +198,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       });
     }
   }
+
   @SubscribeMessage('customDisconnectClient')
   handleCustomDisconnect(socket: Socket, data: any) {
     

@@ -56,6 +56,7 @@ function Achievements() {
                         fill={true}
                         priority={true}
                         className='object-cover w-full h-full'
+                        draggable={false}
                     />
                 </div>
                 <div className='flex gap-[10px] '>
@@ -80,6 +81,7 @@ function Achievements() {
                                     width={18}
                                     priority={true}
                                     className={`${ach5?.locked ? 'hidden' : 'block'}  w-[18px] h-[19px] absolute top-[75px] z-[2000] left-1/2 transform -translate-x-1/2 -translate-y-1/2 `}
+                                    draggable={false}
                                 />
                                 <div className='w-[58px] h-[58px] absolute z-[1000]  top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
                                     <div className='relative w-[58px] h-[58px] overflow-hidden'>
@@ -90,6 +92,7 @@ function Achievements() {
                                                 fill={true}
                                                 priority={true}
                                                 className='object-cover w-full h-full'
+                                                draggable={false}
                                             />
                                             :
                                             <Image
@@ -98,6 +101,7 @@ function Achievements() {
                                                 fill={true}
                                                 priority={true}
                                                 className='object-cover w-full h-full'
+                                                draggable={false}
                                             />
                                         }
                                     </div>
@@ -111,8 +115,8 @@ function Achievements() {
                                             fill={true}
                                             priority={true}
                                             className='object-cover w-full h-full'
+                                            draggable={false}
                                         />
-
                                         :
                                         <Image
                                             src="/../../assets/ach5-m1.svg"
@@ -120,6 +124,7 @@ function Achievements() {
                                             fill={true}
                                             priority={true}
                                             className='object-cover w-full h-full'
+                                            draggable={false}
                                         />
                                     }
                                 </div>
@@ -132,6 +137,7 @@ function Achievements() {
                                     width={18}
                                     priority={true}
                                     className={`${ach6?.locked ? 'hidden' : 'block'} w-[18px] h-[19px] absolute top-[75px] z-[2000] left-1/2 transform -translate-x-1/2 -translate-y-1/2 `}
+                                    draggable={false}
                                 />
                                 <div className='w-[58px] h-[58px] absolute z-[1000]  top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
                                     <div className='relative w-[58px] h-[58px] overflow-hidden'>
@@ -142,6 +148,7 @@ function Achievements() {
                                                 fill={true}
                                                 priority={true}
                                                 className='object-cover w-full h-full'
+                                                draggable={false}
                                             />
                                             :
                                             <Image
@@ -150,6 +157,7 @@ function Achievements() {
                                                 fill={true}
                                                 priority={true}
                                                 className='object-cover w-full h-full'
+                                                draggable={false}
                                             />
                                         }
                                     </div>
@@ -163,6 +171,7 @@ function Achievements() {
                                             fill={true}
                                             priority={true}
                                             className='object-cover w-full h-full'
+                                            draggable={false}
                                         />
 
                                         :
@@ -172,6 +181,7 @@ function Achievements() {
                                             fill={true}
                                             priority={true}
                                             className='object-cover w-full h-full'
+                                            draggable={false}
                                         />
                                     }
                                 </div>
@@ -184,6 +194,7 @@ function Achievements() {
                                     width={18}
                                     priority={true}
                                     className={`${ach1?.locked ? 'hidden' : 'block'} w-[18px] h-[19px] absolute top-[75px] z-[2000] left-1/2 transform -translate-x-1/2 -translate-y-1/2 `}
+                                    draggable={false}
                                 />
                                 <div className='w-[58px] h-[58px] absolute z-[1000]  top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
                                     <div className='relative w-[58px] h-[58px] overflow-hidden'>
@@ -194,6 +205,7 @@ function Achievements() {
                                                 fill={true}
                                                 priority={true}
                                                 className='object-cover w-full h-full'
+                                                draggable={false}
                                             />
                                             :
                                             <Image
@@ -202,6 +214,7 @@ function Achievements() {
                                                 fill={true}
                                                 priority={true}
                                                 className='object-cover w-full h-full'
+                                                draggable={false}
                                             />
                                         }
                                     </div>
@@ -215,6 +228,7 @@ function Achievements() {
                                             fill={true}
                                             priority={true}
                                             className='object-cover w-full h-full'
+                                            draggable={false}
                                         />
 
                                         :
@@ -224,6 +238,7 @@ function Achievements() {
                                             fill={true}
                                             priority={true}
                                             className='object-cover w-full h-full'
+                                            draggable={false}
                                         />
                                     }
                                 </div>
@@ -237,6 +252,7 @@ function Achievements() {
                                 width={18}
                                 priority={true}
                                 className={`${ach7?.locked ? 'hidden' : 'block'} w-[18px] h-[19px] absolute top-[75px] z-[2000] left-1/2 transform -translate-x-1/2 -translate-y-1/2 `}
+                                draggable={false}
                             />
                             <div className='w-[58px] h-[58px] absolute z-[1000]  top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
                                 <div className='relative w-[58px] h-[58px] overflow-hidden'>
@@ -247,6 +263,7 @@ function Achievements() {
                                             fill={true}
                                             priority={true}
                                             className='object-cover w-full h-full'
+                                            draggable={false}
                                         />
                                         :
                                         <Image
@@ -255,6 +272,7 @@ function Achievements() {
                                             fill={true}
                                             priority={true}
                                             className='object-cover w-full h-full'
+                                            draggable={false}
                                         />
                                     }
                                 </div>
@@ -267,6 +285,7 @@ function Achievements() {
                                         fill={true}
                                         priority={true}
                                         className='object-cover w-full h-full'
+                                        draggable={false}
                                     />
 
                                     :
@@ -276,6 +295,7 @@ function Achievements() {
                                         fill={true}
                                         priority={true}
                                         className='object-cover w-full h-full'
+                                        draggable={false}
                                     />
                                 }
                             </div>
@@ -289,6 +309,7 @@ function Achievements() {
                                     width={18}
                                     priority={true}
                                     className={`${ach4?.locked ? 'hidden' : 'block'} w-[18px] h-[19px] absolute top-[75px] z-[2000] left-1/2 transform -translate-x-1/2 -translate-y-1/2 `}
+                                    draggable={false}
                                 />
                                 <div className='w-[58px] h-[58px] absolute z-[1000]  top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
                                     <div className='relative w-[58px] h-[58px] overflow-hidden'>
@@ -299,6 +320,7 @@ function Achievements() {
                                                 fill={true}
                                                 priority={true}
                                                 className='object-cover w-full h-full'
+                                                draggable={false}
                                             />
                                             :
                                             <Image
@@ -307,6 +329,7 @@ function Achievements() {
                                                 fill={true}
                                                 priority={true}
                                                 className='object-cover w-full h-full'
+                                                draggable={false}
                                             />
                                         }
                                     </div>
@@ -320,6 +343,7 @@ function Achievements() {
                                             fill={true}
                                             priority={true}
                                             className='object-cover w-full h-full'
+                                            draggable={false}
                                         />
 
                                         :
@@ -329,6 +353,7 @@ function Achievements() {
                                             fill={true}
                                             priority={true}
                                             className='object-cover w-full h-full'
+                                            draggable={false}
                                         />
                                     }
                                 </div>
@@ -341,6 +366,7 @@ function Achievements() {
                                     width={18}
                                     priority={true}
                                     className={`${ach3?.locked ? 'hidden' : 'block'} w-[18px] h-[19px] absolute top-[75px] z-[2000] left-1/2 transform -translate-x-1/2 -translate-y-1/2 `}
+                                    draggable={false}
                                 />
                                 <div className='w-[58px] h-[58px] absolute z-[1000]  top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
                                     <div className='relative w-[58px] h-[58px] overflow-hidden'>
@@ -351,6 +377,7 @@ function Achievements() {
                                                 fill={true}
                                                 priority={true}
                                                 className='object-cover w-full h-full'
+                                                draggable={false}
                                             />
                                             :
                                             <Image
@@ -359,6 +386,7 @@ function Achievements() {
                                                 fill={true}
                                                 priority={true}
                                                 className='object-cover w-full h-full'
+                                                draggable={false}
                                             />
                                         }
                                     </div>
@@ -372,6 +400,7 @@ function Achievements() {
                                             fill={true}
                                             priority={true}
                                             className='object-cover w-full h-full'
+                                            draggable={false}
                                         />
 
                                         :
@@ -381,6 +410,7 @@ function Achievements() {
                                             fill={true}
                                             priority={true}
                                             className='object-cover w-full h-full'
+                                            draggable={false}
                                         />
                                     }
                                 </div>
@@ -393,6 +423,7 @@ function Achievements() {
                                     width={18}
                                     priority={true}
                                     className={`${ach2?.locked ? 'hidden' : 'block'} w-[18px] h-[19px] absolute top-[75px] z-[2000] left-1/2 transform -translate-x-1/2 -translate-y-1/2 `}
+                                    draggable={false}
                                 />
                                 <div className='w-[58px] h-[58px] absolute z-[1000]  top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
                                     <div className='relative w-[58px] h-[58px] overflow-hidden'>
@@ -403,6 +434,7 @@ function Achievements() {
                                                 fill={true}
                                                 priority={true}
                                                 className='object-cover w-full h-full'
+                                                draggable={false}
                                             />
                                             :
                                             <Image
@@ -411,6 +443,7 @@ function Achievements() {
                                                 fill={true}
                                                 priority={true}
                                                 className='object-cover w-full h-full'
+                                                draggable={false}
                                             />
                                         }
                                     </div>
@@ -424,6 +457,7 @@ function Achievements() {
                                             fill={true}
                                             priority={true}
                                             className='object-cover w-full h-full'
+                                            draggable={false}
                                         />
 
                                         :
@@ -433,6 +467,7 @@ function Achievements() {
                                             fill={true}
                                             priority={true}
                                             className='object-cover w-full h-full'
+                                            draggable={false}
                                         />
                                     }
                                 </div>

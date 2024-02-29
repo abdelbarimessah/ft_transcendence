@@ -76,6 +76,7 @@ function ProfileCard() {
                             sizes="100%"
                             priority={true}
                             className="object-cover w-full h-full "
+                            draggable={false}
                         />
 
 
@@ -104,6 +105,8 @@ function ProfileCard() {
                                     sizes="100%"
                                     priority={true}
                                     className="object-cover w-full h-full "
+                                    draggable={false}
+
                                 />
                             </div>
                         )}
@@ -128,6 +131,7 @@ function ProfileCard() {
                         alt='profile image'
                         width={6}
                         height={21}
+                        draggable={false}
                     />
                 </div>
                 {isSettingsVisible && <SettingsPoint />}

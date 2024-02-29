@@ -48,7 +48,6 @@ export default function FriendCard({
     }, 2000);
 
     socketClient.on("User-status", (data) => {
-      console.log('get the USER_STATUS from the server [11111]', data);
 
       if (data.providerId === friend.providerId) {
         setStatus(data.status);
@@ -68,10 +67,11 @@ export default function FriendCard({
           width={200}
           priority={true}
           className="object-cover w-full h-full"
+          draggable={false}
         />
       </div>
       <div className="w-full flex items-center justify-center absolute top-[35px] ">
-      <div className="w-[70px] h-[70px] rounded-full relative border-[1px] border-color-0 overflow-hidden cursor-pointer"
+        <div className="w-[70px] h-[70px] rounded-full relative border-[1px] border-color-0 overflow-hidden cursor-pointer"
           style={{
             borderColor:
               status === "online"
@@ -89,6 +89,7 @@ export default function FriendCard({
               width={70}
               priority={true}
               className="object-cover w-full h-full"
+              draggable={false}
             />
           </Link>
         </div>
@@ -125,6 +126,7 @@ export default function FriendCard({
                 fill={true}
                 priority={true}
                 className="object-cover w-full h-full"
+                draggable={false}
               />
             </div>
             <span className="font-nico-moji text-[8px] text-color-0">
@@ -142,6 +144,7 @@ export default function FriendCard({
                 fill={true}
                 priority={true}
                 className="object-cover w-full h-full"
+                draggable={false}
               />
             </div>
             <span className="font-nico-moji text-[8px] text-color-0">

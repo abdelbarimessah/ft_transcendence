@@ -81,12 +81,17 @@ function GameNotification(gamePair: any) {
     console.log('emit the accept of the invite in the receiver [444444]');
   }
 
+  const handleDeclineInvite = () => {
+    console.log({message :'decline the game invite'});
+    socketClient.emit('declineInviteGame', gamePair);
+  }
+
   return (
     <div className="w-[200px] h-[50px] bg-color-6 rounded-[10px] flex items-center justify-center gap-[22px]">
       <div onClick={handleAcceptInvite} className="w-[70px] h-[40px] bg-color-0 cursor-pointer rounded-[10px] flex items-center justify-center">
         <span className="text-color-6 text-[14px]">accept</span>
       </div>
-      <div className="w-[70px] h-[40px] bg-color-23 rounded-[10px] cursor-pointer flex items-center justify-center">
+      <div onClick={handleDeclineInvite} className="w-[70px] h-[40px] bg-color-23 rounded-[10px] cursor-pointer flex items-center justify-center">
         <span className="text-color-30 text-[14px]">decline</span>
       </div>
     </div>

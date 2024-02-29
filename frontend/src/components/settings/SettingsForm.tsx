@@ -75,7 +75,7 @@ function SettingPrompt() {
 
     return (
 
-        <div className="flex items-center justify-center relative w-8/12 2xl:w-[650px]">
+        <div className="select-none flex items-center justify-center relative w-8/12 2xl:w-[650px]">
             <div className={` ${styles.playCard} w-full max-w-[900px] bg-color-0 rounded-[40px]  overflow-hidden flex flex-col gap-12  relative `}>
                 <div className="absolute -top-8 rounded-[22px]">
                     <Image
@@ -83,6 +83,7 @@ function SettingPrompt() {
                         priority={true}
                         width={960}
                         height={540}
+                        draggable={false}
                         alt="My Gallery Image"
                     />
                 </div>

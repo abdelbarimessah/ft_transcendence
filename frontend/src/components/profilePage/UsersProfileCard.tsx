@@ -58,6 +58,7 @@ function ProfileCard() {
                             sizes="100%"
                             priority={true}
                             className="object-cover w-full h-full "
+                            draggable={false}
                         />
                     </div>
                 )}
@@ -76,6 +77,7 @@ function ProfileCard() {
                                     sizes="100%"
                                     priority={true}
                                     className="object-cover w-full h-full "
+                                    draggable={false}
                                 />
                             </div>
                         )}
@@ -112,7 +114,9 @@ function ProfileCard() {
                             </span>
                         </div>
                         <div className=''>
-                            <span className='font-nico-moji text-[16px] text-color-6 capitalize'>250 / 500</span>
+                            <span className='font-nico-moji text-[16px] text-color-6 capitalize'>
+                                {user ? `${user.level} / 100` : 'Loading...'}
+                            </span>
                         </div>
                     </div>
                     <div className='px-[28px] '>
@@ -158,6 +162,7 @@ function AddFriend(props: AddFriendProps) {
                     sizes="100%"
                     priority={true}
                     className="object-cover w-full h-full "
+                    draggable={false}
                 />
             </div>
             <span className='font-nico-moji text-[8px] text-color-0 '>ADD</span>
@@ -195,6 +200,7 @@ function RemoveFriend(props: RemoveFriendProps) {
                     sizes="100%"
                     priority={true}
                     className="object-cover w-full h-full "
+                    draggable={false}
                 />
             </div>
             <span className='font-nico-moji text-[8px] text-color-6 '>REMOVE</span>

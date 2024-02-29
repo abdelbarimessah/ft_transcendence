@@ -10,7 +10,7 @@ import UsersAchievements from "@/components/profilePage/UsersAchievements";
 function profile() {
 
     return (
-        <div className="w-full h-full flex flex-col bg-color-18  items-center justify-center ">
+        <div className="select-none w-full h-full flex flex-col bg-color-18  items-center justify-center ">
             <div className='w-full h-full absolute '>
                 <ParticleBackground />
             </div>

@@ -28,7 +28,7 @@ import { Response } from 'express';
 @UseGuards(AuthGuard('jwt'))
 @Controller('user')
 export class UsersController {
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService) { }
 
   @Get('All')
   async findAll() {
@@ -57,13 +57,13 @@ export class UsersController {
     const uploadDir = path.join(__dirname, '../../../uploads/');
     const uploadPath = path.join(uploadDir, `${user.providerId}${'.png'}`);
     fs.writeFileSync(uploadPath, file.buffer);
-    const backendUrl ='http://localhost:3000'
+    const backendUrl = 'http://localhost:3000'
     const url = new URL(
       `/uploads/${user.providerId}${'.png'}`,
       backendUrl,
     );
     url.searchParams.append('time', Date.now().toString());
-    
+
     await this.userService.updateAvatar(user.providerId, url.href);
   }
 
@@ -114,7 +114,7 @@ export class UsersController {
 
   @Get('userSearch')
   async userSearch(@Query('query') query, @CurrentUser() user: any) {
-    
+
     const searchQuery = String(query);
     return await this.userService.getUserSearch(
       searchQuery,
@@ -148,7 +148,7 @@ export class UsersController {
   }
   @Get('friends')
   async getFriends(@CurrentUser() user: any) {
-    const res  = await this.userService.getFriends(user?.providerId);
+    const res = await this.userService.getFriends(user?.providerId);
     return res
   }
 

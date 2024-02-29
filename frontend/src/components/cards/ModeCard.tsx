@@ -82,7 +82,7 @@ function ModeCard(me: any) {
 
     return (
         <>
-            <div className={` ${isRandomMode || playerPairingState ? 'blur' : ''}   w-full max-h-full flex flex-wrap items-center justify-center gap-[24px] pb-10 pt-10 `}>
+            <div className={` ${isRandomMode || playerPairingState ? 'blur' : ''} select-none   w-full max-h-full flex flex-wrap items-center justify-center gap-[24px] pb-10 pt-10 `}>
                 <div className={` ${styles.playCard} cursor-pointer w-full max-w-[391px] h-[500px] rounded-[30px] overflow-hidden flex relative hover:opacity-90 hover:scale-[1.01] `}>
                     <Image
                         src="/../../assets/2.jpg"
@@ -91,6 +91,7 @@ function ModeCard(me: any) {
                         sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
                         className='object-cover'
                         priority={true}
+                        draggable={false}
                     />
                     <div className='bg-color-17/80 w-full h-[202px] absolute bottom-0 left-0 '>
                         <div className='h-full flex flex-col gap-[16px] sm:gap-[30px] justify-center items-center '>
@@ -131,6 +132,7 @@ function ModeCard(me: any) {
                         fill={true}
                         sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
                         className='object-cover'
+                        draggable={false}
                     />
                     <div className='bg-color-17/80 w-full h-[202px] absolute bottom-0 left-0 '>
                         <div className='h-full flex flex-col gap-[16px] sm:gap-[30px] justify-center items-center '>
@@ -143,17 +145,44 @@ function ModeCard(me: any) {
                                         <ul className="flex flex-wrap ">
                                             <li >
                                                 <div className=''>
-                                                    <img src="https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?auto=compress&cs=tinysrgb&crop=faces&fit=crop&h=200&w=200" alt="Face" className="rounded-full w-10 h-10 object-cover border-1 border-wihte"></img>
+                                                    <Image
+                                                        src="https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?auto=compress&cs=tinysrgb&crop=faces&fit=crop&h=200&w=200"
+                                                        alt="modeCardImage person"
+                                                        height={40}
+                                                        width={40}
+                                                        draggable={false}
+                                                        property='true'
+                                                        className='rounded-full'
+                                                    >
+                                                    </Image>
                                                 </div>
                                             </li>
                                             <li>
                                                 <div className='-ml-7'>
-                                                    <img src="https://images.pexels.com/photos/458718/pexels-photo-458718.jpeg?crop=faces&fit=crop&h=200&w=200&auto=compress&cs=tinysrgb" alt="Face" className="rounded-full w-10 h-10 object-cover border-1  border-white"></img>
+                                                    <Image
+                                                        src="https://images.pexels.com/photos/458718/pexels-photo-458718.jpeg?crop=faces&fit=crop&h=200&w=200&auto=compress&cs=tinysrgb"
+                                                        alt="modeCardImage person"
+                                                        height={40}
+                                                        width={40}
+                                                        draggable={false}
+                                                        property='true'
+                                                        className='rounded-full'
+                                                    >
+                                                    </Image>
                                                 </div>
                                             </li>
                                             <li>
                                                 <div className='-ml-7'>
-                                                    <img src="https://images.pexels.com/photos/458766/pexels-photo-458766.jpeg?crop=faces&fit=crop&h=200&w=200&auto=compress&cs=tinysrgb" alt="Face" className="rounded-full w-10 h-10 object-cover border-1  border-white"></img>
+                                                    <Image
+                                                        src="https://images.pexels.com/photos/458766/pexels-photo-458766.jpeg?crop=faces&fit=crop&h=200&w=200&auto=compress&cs=tinysrgb"
+                                                        alt="modeCardImage person"
+                                                        height={40}
+                                                        width={40}
+                                                        draggable={false}
+                                                        property='true'
+                                                        className='rounded-full'
+                                                    >
+                                                    </Image>
                                                 </div>
                                             </li>
                                         </ul>
@@ -183,6 +212,7 @@ function ModeCard(me: any) {
                         fill={true}
                         sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
                         className='object-cover'
+                        draggable={false}
                     />
                     <div className='bg-color-17/80 w-full h-[202px] absolute bottom-0 left-0 '>
                         <div className='h-full flex flex-col gap-[16px] sm:gap-[30px] justify-center items-center '>
@@ -219,7 +249,14 @@ function ModeCard(me: any) {
                         style={{ width: 300 }} animationData={animationData}
                     />
                     <div onClick={removeRandomMode} className=' cursor-pointer w-[50px] h-[50px] bg-white fixed top-32 right-32 flex items-center justify-center z-50 rounded-[17px] '>
-                        <img src="../../assets/cross1.svg" alt="" />
+                        <Image
+                            src="../../assets/cross1.svg"
+                            alt="My Gallery Image"
+                            width={25}
+                            height={25}
+                            className='object-cover'
+                            draggable={false}
+                        />
                     </div>
                 </div>
             )}
@@ -236,7 +273,7 @@ export default ModeCard;
 
 function PlayerPairing({ player1, player2 }: any) {
     return (
-        <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
+        <div className='select-none absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
             <div className="w-[475px] h-[185px] bg-color-30 rounded-[22px] overflow-hidden relative ">
                 <div className="absolute z-0 h-full w-[256px] rounded-s-[22px] flex items-center justify-center overflow-hidden left-0 ">
                     <Image
@@ -246,6 +283,7 @@ function PlayerPairing({ player1, player2 }: any) {
                         sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
                         className='object-cover'
                         priority={true}
+                        draggable={false}
                     />
                 </div>
                 <div className="w-full  z-1 absolute flex items-center justify-center gap-[45px] pt-5">
@@ -258,6 +296,7 @@ function PlayerPairing({ player1, player2 }: any) {
                             className='object-cover'
                             sizes='(min-width: 480px) 445px, calc(90.63vw + 28px)'
                             priority={true}
+                            draggable={false}
                         />
                     </div>
                     <div className="w-[42px] h-[35px] flex items-center justify-center overflow-hidden relative">
@@ -268,6 +307,7 @@ function PlayerPairing({ player1, player2 }: any) {
                             className='object-cover'
                             sizes='(min-width: 480px) 445px, calc(90.63vw + 28px)'
                             priority={true}
+                            draggable={false}
                         />
                     </div>
                     <div className="w-[80px] h-[80px] bg-color-2 rounded-full relative overflow-hidden ">
@@ -278,6 +318,7 @@ function PlayerPairing({ player1, player2 }: any) {
                             className='object-cover'
                             sizes='(min-width: 480px) 445px, calc(90.63vw + 28px)'
                             priority={true}
+                            draggable={false}
                         />
                     </div>
                 </div>

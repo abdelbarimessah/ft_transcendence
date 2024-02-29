@@ -55,6 +55,7 @@ function FriendsList() {
             fill={true}
             priority={true}
             className="object-cover w-full h-full"
+            draggable={false}
           />
         </div>
         <div className="flex gap-[10px] ">

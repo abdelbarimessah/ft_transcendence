@@ -57,11 +57,13 @@ export class UsersController {
     const uploadDir = path.join(__dirname, '../../../uploads/');
     const uploadPath = path.join(uploadDir, `${user.providerId}${'.png'}`);
     fs.writeFileSync(uploadPath, file.buffer);
+
     const backendUrl = 'http://localhost:3000'
     const url = new URL(
       `/uploads/${user.providerId}${'.png'}`,
       backendUrl,
     );
+    
     url.searchParams.append('time', Date.now().toString());
 
     await this.userService.updateAvatar(user.providerId, url.href);

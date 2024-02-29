@@ -14,9 +14,11 @@ export class newMessageDto {
   content: string;
 
   @IsOptional()
+  @IsNotEmpty()
   @IsString()
   chatId?: string;
 
+  @IsNotEmpty()
   @IsOptional()
   @IsString()
   channelId?: string;
@@ -25,28 +27,34 @@ export class newMessageDto {
 export class createChannelDto {
   @IsString()
   @MinLength(3)
-  @MaxLength(50)
+  @MaxLength(25)
+  @IsNotEmpty()
   name: string;
 
+  @IsNotEmpty()
   @IsEnum(AccessType)
   type: AccessType;
 
   @IsString()
+  @IsNotEmpty()
   @IsOptional()
   password?: string;
 }
 
 export class UpdateChannelDto {
-  @IsOptional()
   @IsString()
-  name?: string;
+  @MinLength(3)
+  @MaxLength(25)
+  @IsNotEmpty()
+  name: string;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsEnum(AccessType)
-  type?: AccessType;
+  type: AccessType;
 
-  @IsOptional()
   @IsString()
+  @IsNotEmpty()
+  @IsOptional()
   password?: string;
 }
 

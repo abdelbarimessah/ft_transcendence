@@ -33,13 +33,14 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   roomName: string = '';
   clientNO: number = 0;
   clientNOForCard: number = 0;
-  inviteNumber:  number = 0;
+  inviteNumber: number = 0;
   numClients = {};
 
   private readonly connectedClients: Map<string, Socket> = new Map();
 
   handleConnection(socket: Socket): any {
-    this.logger.log(`Client connected: ${socket.id}`);
+    console.log('connect of the socket', socket.id);
+    // this.logger.log(`Client connected: ${socket.id}`);
   }
 
   @SubscribeMessage('firstTime')
@@ -126,7 +127,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       });
     }
   }
-  
+
   @SubscribeMessage('checkRoom')
   handleCheckRoom(socket: Socket, data: any) {
     if (socket.rooms.has(data.roomName) === false)
@@ -134,28 +135,29 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('playInvite')
-  async handlePlayInvite(socket : Socket, data: any)
-  {
+  async handlePlayInvite(socket: Socket, data: any) {
     this.inviteNumber++;
-    const roomName  = `InviteRoom-${data.sender.providerId}-${data.receiver.providerId}-${this.inviteNumber}`;
-    socket.join(roomName)
+    const roomName = `InviteRoom-${data.sender.providerId}-${data.receiver.providerId}-${this.inviteNumber}`;
+    socket.join(roomName);
     this.roomSockets.set(roomName, {
       player1: socket.data.user,
       player2: null,
     })
 
     console.log(socket.id, 'join the room :: ', roomName);
-    this.server.to(data.receiver.providerId).emit('playRequestFromFriend', {sender: data.sender, receiver: data.receiver, inviteNumber: this.inviteNumber})
+    this.server.to(data.receiver.providerId).emit('playRequestFromFriend', {
+      sender: data.sender,
+      receiver: data.receiver,
+      inviteNumber: this.inviteNumber,
+    });
   }
-  
+
   @SubscribeMessage('acceptInviteGame')
-  async handleAcceptInviteGame(socket : Socket, data: any)
-  {
-    const roomName  = `InviteRoom-${data.gamePair.sender.providerId}-${data.gamePair.receiver.providerId}-${data.gamePair.inviteNumber}`;
+  async handleAcceptInviteGame(socket: Socket, data: any) {
+    const roomName = `InviteRoom-${data.gamePair.sender.providerId}-${data.gamePair.receiver.providerId}-${data.gamePair.inviteNumber}`;
     socket.join(roomName);
     const tmpData = this.roomSockets.get(roomName);
-    if(tmpData)
-    {
+    if (tmpData) {
       tmpData.player2 = socket.data.user;
       this.roomSockets.set(roomName, tmpData);
 
@@ -170,18 +172,16 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.server.to(data.gamePair.sender.providerId).emit('OtherPlayerDeclineTheGame', data);
   }
 
-
-
   @SubscribeMessage('endGame')
   async handleEndGame(socket: Socket, data: any) {
     console.log('the data in the endGane after the finish [ppppp]', data);
-    
+
     const roomName = data.gameData.roomName;
     const sockets = this.roomSockets.get(roomName);
 
     if (socket.data.user.providerId === sockets.player1.providerId) {
       console.log('the first player in the endgame [uuuuu]');
-      
+
       socket.emit('endGameClient', {
         roomName: roomName,
         game: data.gameData,
@@ -201,11 +201,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('customDisconnectClient')
   handleCustomDisconnect(socket: Socket, data: any) {
-    
-    if (!data.roomName || data.roomName.ww ) return;
+    if (!data.roomName || data.roomName.ww) return;
     this.playerQueue = this.playerQueue.filter(
       (player) => player.socket.id !== socket.id,
-      );
+    );
     this.playerQueueUser = this.playerQueueUser.filter(
       (player) => player.socketName !== socket.id,
     );
@@ -223,8 +222,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   handleDisconnect(socket: Socket) {
-    console.log('diconnect of the socket', socket.id);
-    
+    console.log('disconnect of the socket', socket.id);
+
     const roomName = this.listRooms.get(socket.id);
     this.playerQueue = this.playerQueue.filter(
       (player) => player.socket.id !== socket.id,
@@ -265,7 +264,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       this.server.in(roomName).emit('gameOver');
     }
   }
-
 
   @SubscribeMessage('startGameClient')
   handleStartGameClinet(socket: Socket, data: any) {

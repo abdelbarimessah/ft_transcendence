@@ -4,14 +4,13 @@ import {
   Param,
   Post,
   UseGuards,
-  // ConflictException,
   UploadedFile,
   UseInterceptors,
   Body,
   Patch,
   Res,
   Query,
-  BadRequestException,
+  // BadRequestException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CurrentUser } from 'src/auth/current-user.decorator';
@@ -116,12 +115,8 @@ export class UsersController {
 
   @Get('userSearch')
   async userSearch(@Query('query') query, @CurrentUser() user: any) {
-
     const searchQuery = String(query);
-    return await this.userService.getUserSearch(
-      searchQuery,
-      user.providerId,
-    );
+    return await this.userService.getUserSearch(searchQuery, user.providerId);
   }
 
   @Patch('addFriend')

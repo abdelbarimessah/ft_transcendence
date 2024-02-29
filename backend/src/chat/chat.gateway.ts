@@ -7,7 +7,6 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { ChatService } from './chat.service';
 import { Channel, Chat, Message, User } from '@prisma/client';
 import * as cookie from 'cookie';
 import { ConfigService } from '@nestjs/config';
@@ -30,7 +29,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
   constructor(
-    private chatService: ChatService,
     private configService: ConfigService,
     private jwtService: JwtService,
     private appService: AppService,
@@ -52,6 +50,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const decoded = this.jwtService.verify(authToken, { secret });
 
       const userId = decoded.id;
+      console.log(`${userId} joined`);
 
       this.appService.set(userId, client.id);
     } catch (error) {
@@ -62,6 +61,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   handleDisconnect(client: any) {
     const userId = this.appService.getUserIdFromSocketId(client.id);
+    console.log(`${userId} disconnected`);
     if (userId) this.appService.delete(userId);
   }
 
@@ -80,6 +80,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (socketId) {
       const client = this.server.sockets.sockets.get(socketId);
       client.join(chatId);
+    }
+  }
+  leaveRoom(userId: string, room: string) {
+    const socketId = this.getSocketByUserId(userId);
+    if (socketId) {
+      const client = this.server.sockets.sockets.get(socketId);
+      client.leave(room);
     }
   }
   //change chat type for the Prisma.chat....
@@ -128,5 +135,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   kickUser(channelId: string, userId: string) {
     this.server.to(channelId).emit('kickUser', { channelId, userId });
   }
-  //To-do add block and unblock and anything i forget
+  blockUser(targetId: string, userId: string) {
+    const socketId = this.getSocketByUserId(targetId);
+    if (socketId) {
+      this.server.to(socketId).emit('blockUser', { userId });
+    }
+  }
+  unblockUser(targetId: string, userId: string) {
+    const socketId = this.getSocketByUserId(targetId);
+    if (socketId) {
+      this.server.to(socketId).emit('unblockUser', { userId });
+    }
+  }
+  //? i could optimize the code here but f it
 }

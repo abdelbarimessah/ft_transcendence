@@ -82,6 +82,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       client.join(chatId);
     }
   }
+  leaveRoom(userId: string, room: string) {
+    const socketId = this.getSocketByUserId(userId);
+    if (socketId) {
+      const client = this.server.sockets.sockets.get(socketId);
+      client.leave(room);
+    }
+  }
   //change chat type for the Prisma.chat....
   newChat(userId: string, chat: Chat) {
     const sockId = this.getSocketByUserId(userId);
@@ -128,5 +135,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   kickUser(channelId: string, userId: string) {
     this.server.to(channelId).emit('kickUser', { channelId, userId });
   }
-  //To-do add block and unblock and anything i forget
+  blockUser(targetId: string, userId: string) {
+    const socketId = this.getSocketByUserId(targetId);
+    if (socketId) {
+      this.server.to(socketId).emit('blockUser', { userId });
+    }
+  }
+  unblockUser(targetId: string, userId: string) {
+    const socketId = this.getSocketByUserId(targetId);
+    if (socketId) {
+      this.server.to(socketId).emit('unblockUser', { userId });
+    }
+  }
+  //? i could optimize the code here but f it
 }

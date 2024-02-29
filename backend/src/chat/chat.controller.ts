@@ -3,7 +3,6 @@ import {
   Body,
   Controller,
   Delete,
-  ForbiddenException,
   Get,
   Param,
   Patch,
@@ -22,12 +21,13 @@ import {
   userMuteDto,
   searchChannelsDto,
 } from './chat.dto';
-import * as bcrypt from 'bcrypt';
+// import * as bcrypt from 'bcrypt';
 import { CurrentUser } from 'src/auth/current-user.decorator';
 import { OTPGuard } from 'src/auth/Otp.guard';
 import { ChatService } from './chat.service';
 import { NotificationService } from 'src/notification/notification.service';
 import { AuthGuard } from '@nestjs/passport';
+import { User } from '@prisma/client';
 
 // move logic to chatService
 @UseGuards(OTPGuard)
@@ -41,7 +41,7 @@ export class ChatController {
     private notificationService: NotificationService,
   ) {}
   @Post('create')
-  async createChat(@CurrentUser() user: any, @Body() data: userIdDto) {
+  async createChat(@CurrentUser() user: User, @Body() data: userIdDto) {
     const currentUser = user;
     const userToChatId = await this.chatService.checkUserId(data.userId);
     const chatPairHash = this.chatService.generateChatPairHash(
@@ -65,7 +65,7 @@ export class ChatController {
     return chat;
   }
   @Get('all') // GET /chat/all : return all the chat of the current user
-  async getUserChats(@CurrentUser() user: any) {
+  async getUserChats(@CurrentUser() user: User) {
     const userId = user.id;
     const userChats = await this.chatService.getUserChats(userId);
     const chats = userChats ? userChats.chats : [];
@@ -76,7 +76,7 @@ export class ChatController {
     return chats;
   }
   @Get('get/:id') // GET /chat/:id return the messages of the chat
-  async getChat(@Param('id') id: string, @CurrentUser() user: any) {
+  async getChat(@Param('id') id: string, @CurrentUser() user: User) {
     const userId = user.id;
     const chat = await this.chatService.getChatMessages(id, userId);
 
@@ -89,7 +89,7 @@ export class ChatController {
   }
 
   @Post('message')
-  async sendMessage(@Body() data: newMessageDto, @CurrentUser() user: any) {
+  async sendMessage(@Body() data: newMessageDto, @CurrentUser() user: User) {
     const userId = user.id;
     const { content, chatId, channelId } = data;
     if (!chatId && !channelId) {
@@ -124,7 +124,10 @@ export class ChatController {
     return message;
   }
   @Get('message/:chatId')
-  async getMessages(@Param('chatId') chatId: string, @CurrentUser() user: any) {
+  async getMessages(
+    @Param('chatId') chatId: string,
+    @CurrentUser() user: User,
+  ) {
     const userId = user.id;
     const chat = await this.chatService.getChatMessages(chatId, userId);
     if (!chat) {
@@ -138,12 +141,13 @@ export class ChatController {
   @Post('channel/create')
   async createChannel(
     @Body() data: createChannelDto,
-    @CurrentUser() user: any,
+    @CurrentUser() user: User,
   ) {
     const userId = user.id;
     try {
       const channel = await this.chatService.createChannel(data, userId);
       this.chatGateway.joinRoom(userId, channel.id);
+      delete channel.password;
       return channel;
     } catch (err) {
       if (err.code === 'P2002') {
@@ -155,7 +159,7 @@ export class ChatController {
     }
   }
   @Get('channel')
-  async getChannels(@CurrentUser() user: any) {
+  async getChannels(@CurrentUser() user: User) {
     const userId = user.id;
 
     const channels = this.chatService.getUserChannels(userId);
@@ -166,7 +170,7 @@ export class ChatController {
   async updateChannel(
     @Body() data: UpdateChannelDto,
     @Param('id') channelId: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user: User,
   ) {
     const userId = user.id;
     const updatedChannel = await this.chatService.updateChannel(
@@ -180,7 +184,7 @@ export class ChatController {
   @Delete('channel/:id')
   async deleteChannel(
     @Param('id') channelId: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user: User,
   ) {
     this.chatService.deleteChannel(channelId, user.id);
     this.chatGateway.deleteChannel(channelId);
@@ -188,147 +192,33 @@ export class ChatController {
   }
   @Post('channel/:id/join')
   async joinChannel(
-    @CurrentUser() user: any,
+    @CurrentUser() user: User,
     @Param('id') channelId: string,
     @Body() body: JoinChannelDto,
   ) {
     const userId = user.id;
-
-    const channel = await this.prismaService.channel.findUnique({
-      where: { id: channelId },
-    });
-    if (!channel) {
-      throw new BadRequestException(`Channel not found`);
-    }
-    const isMember = await this.prismaService.channelMembership.findUnique({
-      where: {
-        channelId_userId: {
-          channelId: channelId,
-          userId: userId,
-        },
-      },
-    });
-
-    if (isMember) {
-      throw new BadRequestException('User is already a member of the channel');
-    }
-    if (channel.type === 'PROTECTED') {
-      if (!body.password) {
-        throw new BadRequestException(
-          'Password is required to join this channel',
-        );
-      }
-      const isMatch = await bcrypt.compare(body.password, channel.password);
-      if (!isMatch) {
-        throw new ForbiddenException(
-          'Incorrect password for protected channel',
-        );
-      }
-    } else if (channel.type === 'PRIVATE') {
-      throw new ForbiddenException(
-        'This channel is private and cannot be joined freely',
-      );
-    }
-    await this.prismaService.channelMembership.create({
-      data: {
-        channelId: channelId,
-        userId: userId,
-      },
-    });
+    await this.chatService.joinChannel(channelId, userId, body);
     this.chatGateway.joinRoom(userId, channelId);
     this.chatGateway.userJoined(channelId, user);
-    return { message: 'User added to the channel successfully' };
+    return { message: 'User joined the channel successfully' };
   }
   @Post('channel/:id/leave')
-  async leaveChannel(@Param('id') channelId: string, @CurrentUser() user: any) {
-    const channel = await this.prismaService.channel.findUnique({
-      where: { id: channelId },
-    });
-    if (!channel) {
-      throw new BadRequestException(`Channel not found with ID ${channelId}`);
-    }
-    const membership = await this.prismaService.channelMembership.findUnique({
-      where: {
-        channelId_userId: {
-          channelId: channelId,
-          userId: user.id,
-        },
-      },
-    });
-
-    if (!membership) {
-      throw new BadRequestException(
-        `User is not a member of the channel ${channelId}`,
-      );
-    }
-    if (channel.ownerId === user.id) {
-      throw new BadRequestException(
-        `Channel owner cannot leave the channel directly.`,
-      );
-    }
-    await this.prismaService.channelMembership.delete({
-      where: {
-        channelId_userId: {
-          channelId: channelId,
-          userId: user.id,
-        },
-      },
-    });
+  async leaveChannel(
+    @Param('id') channelId: string,
+    @CurrentUser() user: User,
+  ) {
+    await this.chatService.leaveChannel(channelId, user.id);
     this.chatGateway.userLeft(channelId, user);
-    return { message: `User has successfully left the channel ${channelId}.` };
+    this.chatGateway.leaveRoom(user.id, channelId);
+    return { message: `User has successfully left the channel.` };
   }
   @Post('channel/:id/admin')
   async addAdmin(
     @Param('id') channelId: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user: User,
     @Body() body: userIdDto,
   ) {
-    const currentUserMembership =
-      await this.prismaService.channelMembership.findUnique({
-        where: {
-          channelId_userId: {
-            channelId,
-            userId: user.id,
-          },
-        },
-      });
-
-    if (!currentUserMembership || !currentUserMembership.isAdmin) {
-      throw new ForbiddenException(
-        'You must be an admin to perform this action.',
-      );
-    }
-    const targetUserMembership =
-      await this.prismaService.channelMembership.findUnique({
-        where: {
-          channelId_userId: {
-            channelId,
-            userId: body.userId,
-          },
-        },
-      });
-
-    if (!targetUserMembership) {
-      throw new BadRequestException(
-        'Target user is not a member of the channel.',
-      );
-    }
-
-    if (targetUserMembership.isAdmin) {
-      throw new BadRequestException('User is already an admin.');
-    }
-
-    await this.prismaService.channelMembership.update({
-      where: {
-        channelId_userId: {
-          channelId,
-          userId: body.userId,
-        },
-      },
-      data: {
-        isAdmin: true,
-      },
-    });
+    await this.chatService.addAdmin(channelId, user.id, body.userId);
     this.chatGateway.addAdmin(channelId, body.userId);
     return {
       message: `User has been made an admin of the channel .`,
@@ -337,125 +227,28 @@ export class ChatController {
   @Delete('channel/:id/admin')
   async removeAdmin(
     @Param('id') channelId: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user: User,
     @Body() body: userIdDto,
   ) {
-    const channelMembership =
-      await this.prismaService.channelMembership.findUnique({
-        where: {
-          channelId_userId: {
-            channelId: channelId,
-            userId: user.id,
-          },
-        },
-        include: {
-          channel: {
-            select: {
-              ownerId: true,
-            },
-          },
-        },
-      });
-    const channel = channelMembership.channel;
-    if (
-      !channelMembership ||
-      (!channelMembership.isAdmin &&
-        channelMembership.userId !== channel.ownerId)
-    ) {
-      throw new ForbiddenException(
-        'You do not have permission to remove an admin.',
-      );
-    }
-    const targetAdminMembership =
-      await this.prismaService.channelMembership.findUnique({
-        where: {
-          channelId_userId: {
-            channelId: channelId,
-            userId: body.userId,
-          },
-        },
-      });
-
-    if (!targetAdminMembership || !targetAdminMembership.isAdmin) {
-      throw new BadRequestException(
-        'The specified user is not an admin of this channel.',
-      );
-    }
-    await this.prismaService.channelMembership.update({
-      where: {
-        channelId_userId: {
-          channelId: channelId,
-          userId: body.userId,
-        },
-      },
-      data: {
-        isAdmin: false,
-      },
-    });
+    await this.chatService.removeAdmin(channelId, user.id, body.userId);
     this.chatGateway.removeAdmin(channelId, body.userId);
     return { message: 'Admin rights removed successfully.' };
   }
   @Post('channel/:id/mute')
   async muteMember(
     @Param('id') channelId: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user: User,
     @Body() body: userMuteDto,
   ) {
-    const channelMembership =
-      await this.prismaService.channelMembership.findUnique({
-        where: {
-          channelId_userId: {
-            channelId: channelId,
-            userId: user.id,
-          },
-        },
-        include: {
-          channel: true,
-        },
-      });
-
-    if (!channelMembership || !channelMembership.isAdmin) {
-      throw new ForbiddenException(
-        'You do not have permission to mute members in this channel.',
-      );
-    }
-    const targetMembership =
-      await this.prismaService.channelMembership.findUnique({
-        where: {
-          channelId_userId: {
-            channelId: channelId,
-            userId: body.userId,
-          },
-        },
-      });
-
-    if (!targetMembership) {
-      throw new BadRequestException(
-        'The specified user is not a member of this channel.',
-      );
-    }
-    if (targetMembership.userId === channelMembership.channel.ownerId) {
-      throw new ForbiddenException('Cannot mute the owner of the channel.');
-    }
-
-    const updatedMembership = await this.prismaService.channelMembership.update(
-      {
-        where: {
-          channelId_userId: {
-            channelId: channelId,
-            userId: body.userId,
-          },
-        },
-        data: {
-          isMuted: !targetMembership.isMuted,
-          expiresAt: body.expiresAt,
-        },
-      },
+    const updatedMembership = await this.chatService.muteMember(
+      channelId,
+      user.id,
+      body,
     );
     this.chatGateway.muteUser(
       channelId,
       body.userId,
-      !updatedMembership.isMuted,
+      updatedMembership.isMuted,
     );
     return updatedMembership.isMuted
       ? { message: 'User has been muted successfully.' }
@@ -464,377 +257,90 @@ export class ChatController {
   @Post('channel/:id/ban')
   async banMember(
     @Param('id') id: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user: User,
     targetId: userIdDto,
   ) {
-    const membership = await this.prismaService.channelMembership.findUnique({
-      where: {
-        channelId_userId: {
-          channelId: id,
-          userId: user.id,
-        },
-      },
-      include: {
-        channel: true,
-      },
-    });
-
-    if (!membership) {
-      throw new BadRequestException('You are not a member of this channel.');
-    }
-    if (!membership.isAdmin) {
-      throw new ForbiddenException(
-        'You do not have permission to ban or unban members in this channel.',
-      );
-    }
-    const targetMembership =
-      await this.prismaService.channelMembership.findUnique({
-        where: {
-          channelId_userId: {
-            channelId: id,
-            userId: targetId.userId,
-          },
-        },
-      });
-
-    if (!targetMembership) {
-      throw new BadRequestException(
-        'The target user is not a member of this channel.',
-      );
-    }
-    if (targetMembership.userId === membership.channel.ownerId) {
-      throw new ForbiddenException('Cannot ban the owner of the channel.');
-    }
-
-    await this.prismaService.channelMembership.update({
-      where: {
-        channelId_userId: {
-          channelId: id,
-          userId: targetId.userId,
-        },
-      },
-      data: {
-        isBanned: !targetMembership.isBanned,
-      },
-    });
-    this.chatGateway.banUser(id, targetId.userId, !targetMembership.isBanned);
-    return !targetMembership.isBanned
+    const updatedMembership = await this.chatService.banMember(
+      id,
+      user.id,
+      targetId.userId,
+    );
+    this.chatGateway.banUser(id, targetId.userId, updatedMembership.isBanned);
+    return updatedMembership.isBanned
       ? { message: 'User has been banned successfully.' }
       : { message: 'User has been unbanned successfully.' };
   }
   @Post('channel/:id/kick')
   async kickMember(
     @Param('id') channelId: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user: User,
     @Body() body: userIdDto,
   ) {
-    const adminMembership =
-      await this.prismaService.channelMembership.findUnique({
-        where: {
-          channelId_userId: {
-            channelId,
-            userId: user.id,
-          },
-        },
-      });
-
-    if (!adminMembership || !adminMembership.isAdmin) {
-      throw new ForbiddenException('You must be an admin to kick members.');
-    }
-    const channel = await this.prismaService.channel.findUnique({
-      where: {
-        id: channelId,
-      },
-      select: {
-        ownerId: true,
-      },
-    });
-
-    if (!channel) {
-      throw new BadRequestException('Channel does not exist.');
-    }
-
-    if (body.userId === channel.ownerId) {
-      throw new ForbiddenException('Cannot kick the owner of the channel.');
-    }
-
-    const targetMembership =
-      await this.prismaService.channelMembership.findUnique({
-        where: {
-          channelId_userId: {
-            channelId,
-            userId: body.userId,
-          },
-        },
-      });
-
-    if (!targetMembership) {
-      throw new BadRequestException(
-        'The specified user is not a member of the channel.',
-      );
-    }
-
-    await this.prismaService.channelMembership.delete({
-      where: {
-        channelId_userId: {
-          channelId,
-          userId: body.userId,
-        },
-      },
-    });
+    await this.chatService.kickMember(channelId, user.id, body.userId);
     this.chatGateway.kickUser(channelId, user.id);
     return { message: 'User has been kicked from the channel.' };
   }
   @Get('channel/:id/members')
-  async getChannelMembers(@Param('id') channelId, @CurrentUser() user: any) {
-    const channelMembership =
-      await this.prismaService.channelMembership.findFirst({
-        where: {
-          channelId: channelId,
-          userId: user.id,
-        },
-      });
-
-    if (!channelMembership) {
-      throw new ForbiddenException(
-        'You are not a member of this channel or the channel does not exist.',
-      );
-    }
-
-    const channelWithMembers = await this.prismaService.channel.findUnique({
-      where: {
-        id: channelId,
-      },
-
-      include: {
-        members: {
-          where: {
-            isBanned: false,
-          },
-          include: {
-            user: true,
-          },
-        },
-      },
-    });
-
-    const members = channelWithMembers.members.map(
-      (membership) => membership.user,
+  async getChannelMembers(@Param('id') channelId, @CurrentUser() user: User) {
+    const members = await this.chatService.getChannelMembers(
+      channelId,
+      user.id,
     );
-
     return members;
   }
   @Get('channel/:id/messages')
   async getChannelMessages(
     @Param('id') channelId: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user: User,
   ) {
-    const channelWithMessages = await this.prismaService.channel.findUnique({
-      where: {
-        id: channelId,
-      },
-      include: {
-        messages: {
-          orderBy: {
-            createdAt: 'asc',
-          },
-        },
-        members: {
-          where: {
-            userId: user.id,
-            isBanned: false,
-          },
-        },
-      },
-    });
-
-    if (!channelWithMessages || channelWithMessages.members.length === 0) {
-      throw new ForbiddenException('Access to the channel is denied.');
-    }
-
-    return channelWithMessages.messages;
+    const messages = await this.chatService.getChannelMessages(
+      channelId,
+      user.id,
+    );
+    return messages;
   }
   @Post('channel/:id/add')
   async addUserToChannel(
     @Param('id') channelId: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user: User,
     @Body() body: userIdDto,
   ) {
-    const adminMembership =
-      await this.prismaService.channelMembership.findUnique({
-        where: {
-          channelId_userId: {
-            channelId,
-            userId: user.id,
-          },
-        },
-      });
-
-    if (!adminMembership || !adminMembership.isAdmin) {
-      throw new ForbiddenException(
-        'You must be an admin of this channel to add members.',
-      );
-    }
-
-    const targetUser = await this.prismaService.user.findUnique({
-      where: {
-        id: body.userId,
-      },
-    });
-
-    if (!targetUser) {
-      throw new BadRequestException('User does not exist.');
-    }
-
-    await this.prismaService.channelMembership.upsert({
-      where: {
-        channelId_userId: {
-          channelId,
-          userId: body.userId,
-        },
-      },
-      create: {
-        channelId,
-        userId: body.userId,
-        isAdmin: false,
-      },
-      update: {
-        isBanned: false,
-      },
-    });
+    const targetUser = await this.chatService.addUserChannel(
+      channelId,
+      user.id,
+      body.userId,
+    );
+    this.chatGateway.joinRoom(user.id, channelId);
     this.chatGateway.userJoined(channelId, targetUser);
     return { message: 'User successfully added to the channel.' };
   }
   @Get('channel/all')
   async getAllChannel() {
-    const channels = await this.prismaService.channel.findMany({
-      where: {
-        type: {
-          in: ['PROTECTED', 'PUBLIC'],
-        },
-      },
-    });
+    const channels = this.chatService.getAllChannel();
     return channels;
   }
   @Get('channel/search')
   async searchChannels(@Query() query: searchChannelsDto) {
     const { keyword } = query;
-    return await this.prismaService.channel.findMany({
-      where: {
-        AND: [
-          {
-            name: {
-              contains: keyword,
-              mode: 'insensitive',
-            },
-          },
-          {
-            type: {
-              not: 'PRIVATE',
-            },
-          },
-        ],
-      },
-      select: {
-        id: true,
-        name: true,
-        type: true,
-        createdAt: true,
-        ownerId: true,
-      },
-    });
+    return await this.chatService.searchChannel(keyword);
   }
   @Post('block')
-  async blockUser(@CurrentUser() user: any, @Body() targetUserId: userIdDto) {
-    if (user.id === targetUserId.userId) {
-      throw new BadRequestException('You cannot block yourself.');
-    }
-
-    const targetUser = await this.prismaService.user.findUnique({
-      where: {
-        id: targetUserId.userId,
-      },
-    });
-    if (!targetUser) {
-      throw new BadRequestException('Target user not found.');
-    }
-
-    const alreadyBlocked = await this.prismaService.user.findFirst({
-      where: {
-        id: user.id,
-        blockedUsers: {
-          some: {
-            id: targetUserId.userId,
-          },
-        },
-      },
-    });
-
-    if (alreadyBlocked) {
-      throw new BadRequestException('User is already blocked.');
-    }
-
-    await this.prismaService.user.update({
-      where: {
-        id: user.id,
-      },
-      data: {
-        blockedUsers: {
-          connect: {
-            id: targetUser.id,
-          },
-        },
-      },
-    });
+  async blockUser(@CurrentUser() user: User, @Body() targetUserId: userIdDto) {
+    this.chatService.blockUser(user.id, targetUserId.userId);
+    this.chatGateway.blockUser(targetUserId.userId, user.id);
   }
   @Post('unblock')
-  async unblockUser(@CurrentUser() user: any, @Body() targetUserId: userIdDto) {
-    if (user.id === targetUserId.userId) {
-      throw new BadRequestException('You cannot unblock yourself');
-    }
-
-    // Check if the target user exists
-    const targetUser = await this.prismaService.user.findUnique({
-      where: {
-        id: targetUserId.userId,
-      },
-    });
-    if (!targetUser) {
-      throw new BadRequestException('Target user not found.');
-    }
-
-    // Check if the target user is currently blocked
-    const isBlocked = await this.prismaService.user.findFirst({
-      where: {
-        id: user.id,
-        blockedUsers: {
-          some: {
-            id: targetUserId.userId,
-          },
-        },
-      },
-    });
-
-    if (!isBlocked) {
-      throw new BadRequestException('User is not blocked.');
-    }
-
-    await this.prismaService.user.update({
-      where: {
-        id: user.id,
-      },
-      data: {
-        blockedUsers: {
-          disconnect: {
-            id: targetUser.id,
-          },
-        },
-      },
-    });
+  async unblockUser(
+    @CurrentUser() user: User,
+    @Body() targetUserId: userIdDto,
+  ) {
+    this.chatService.unblockUser(user.id, targetUserId.userId);
+    this.chatGateway.unblockUser(targetUserId.userId, user.id);
   }
 }
 
-/**To-do: -check mute and ban in channel methods,
- *        -check privet channel access in channel methods,
- *
+/**
+ * TODO:
+ *       -check mute and ban in channel methods,
+ *       -check privet channel access in channel methods,
  * */

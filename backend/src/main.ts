@@ -28,6 +28,7 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
+
   const logger: Logger = new Logger('-------------TheAppLoggerIs-----------');
   await app.listen(3000);
   logger.verbose(`Application is running on: ${await app.getUrl()}`);

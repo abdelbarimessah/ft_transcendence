@@ -33,8 +33,8 @@ function SettingPrompt() {
                 setFirstName(res.data.firstName);
                 setLastName(res.data.lastName);
                 setNickName(res.data.nickName);
+                setPhotoPath(res.data.avatar)
                 setIsLoading(false);
-                setPhotoPath(`${process.env.NEXT_PUBLIC_API_URL}/uploads/${res.data.providerId}.png`)
             }
             catch (error) {
                 setIsLoading(false);
@@ -42,7 +42,7 @@ function SettingPrompt() {
             }
         }
         getData();
-    }, [id ]);
+    }, [id]);
 
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         setChangeAvatar(true);
@@ -52,6 +52,7 @@ function SettingPrompt() {
             setAvatar(file);
         }
     };
+
     async function handleSubmit() {
         if (avatar && changeAvatar === true) {
             const formData = new FormData();
@@ -66,6 +67,7 @@ function SettingPrompt() {
         try {
             await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/user/updateInfo`, userData);
             toast.success('Profile updated successfully');
+            socketClient.emit('updateInfo', {providerId: id});
             setNickNameError(false);
         } catch (error) {
             toast.error('Could not update profile, nickname already in use');
@@ -75,7 +77,7 @@ function SettingPrompt() {
 
     return (
 
-        <div className="select-none flex items-center justify-center relative w-8/12 2xl:w-[650px]">
+        <div className="flex items-center justify-center relative w-8/12 2xl:w-[650px]">
             <div className={` ${styles.playCard} w-full max-w-[900px] bg-color-0 rounded-[40px]  overflow-hidden flex flex-col gap-12  relative `}>
                 <div className="absolute -top-8 rounded-[22px]">
                     <Image
@@ -83,7 +85,6 @@ function SettingPrompt() {
                         priority={true}
                         width={960}
                         height={540}
-                        draggable={false}
                         alt="My Gallery Image"
                     />
                 </div>
@@ -95,14 +96,14 @@ function SettingPrompt() {
                             <div className='w-[134px] h-[134px] bg-color-6 rounded-full relative border border-color-0 group cursor-pointer'>
                                 {id && (
                                     <div className="w-full h-full absolute rounded-full overflow-hidden">
-                                        {/* <Image
+                                        <Image
                                             src={photoPath}
                                             alt="Add image icon"
-                                            height={14}
-                                            width={14}
+                                            fill={true}
+                                            className="object-cover w-full h-full"
                                             priority={true}
-                                        /> */}
-                                        <img src={photoPath} alt="my image" className="object-cover w-full h-full" />
+                                            sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
+                                        />
                                     </div>
                                 )}
                                 <div className="h-[23px] w-[23px]  absolute bottom-2 right-2 bg-color-24 flex items-center justify-center rounded-full ">
@@ -115,7 +116,7 @@ function SettingPrompt() {
                                     />
                                 </div>
                                 <div className='h-full w-full rounded-full absolute hidden group-hover:flex  bg-black items-center justify-center text-center bg-slate-600/50 text-white tracking-wider'>Change Profile</div>
-                                <input className='h-full w-full rounded-full absolute opacity-0 z-10 cursor-pointer' onChange={handleFileChange} type="file" />
+                                <input className='h-full w-full rounded-full absolute opacity-0 z-10 cursor-pointer' onChange={handleFileChange} type="file" accept=".png, .jpg, .jpeg" />
                             </div>
                         )}
                 </div>
@@ -128,7 +129,6 @@ function SettingPrompt() {
                             )
                                 : (
                                     <div className='w-full h-[50px]  rounded-[22px] border-color-6 flex items-center justify-center'>
-                                        {/* <input type="text" defaultValue={firstName} onChange={(event) => setFirstName(event.target.value)} className='bg-color-26 w-full h-full px-4 tracking-wider placeholder:text-color-0 placeholder:font-light font-poppins font-[400] rounded-[22px] text-  text-[17px] focus:outline-none' /> */}
                                         <input type="text" defaultValue={firstName} onChange={(event) => setFirstName(event.target.value)} className='bg-color-26 w-full h-full px-4 tracking-wider placeholder:text-color-0 placeholder:font-light font-poppins font-[400] rounded-[22px] text-  text-[17px] focus:outline-none' />
                                     </div>
                                 )}

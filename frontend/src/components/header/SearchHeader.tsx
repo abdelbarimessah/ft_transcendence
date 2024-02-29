@@ -1,10 +1,11 @@
 'use client'
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import Image from 'next/image';
 import { useState } from 'react';
 import axios from 'axios';
 import debounce from 'debounce';
 import Link from 'next/link';
+import { SocketContext } from '@/app/SocketContext';
 
 interface Result {
     firstName: string;
@@ -15,6 +16,7 @@ interface Result {
 }
 
 const SearchBareHeader = () => {
+    const socketClient = useContext(SocketContext);
     const [searchInput, setSearchInput] = useState('');
     const [searchResults, setSearchResults] = useState([]);
 
@@ -30,6 +32,22 @@ const SearchBareHeader = () => {
             console.error(error);
         }
     }, 500);
+
+    useEffect(() => {
+        socketClient.on('updateInfo', async (data) => {
+            if (searchInput) {
+                try {
+                    const response = await axios.get("http://localhost:3000/user/userSearch", {
+                        params: { query: searchInput }
+                    });
+
+                    setSearchResults(response.data.filtered);
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+        })
+    }, [socketClient, searchInput])
 
     const handleInputChange = (event: any) => {
         const value = event.target.value;
@@ -83,15 +101,20 @@ const SearchBareHeader = () => {
                                             sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
                                             className='object-cover  rounded-full  w-[50px] h-[50px]'
                                             draggable={false}
-
                                         />
                                     </div>
                                     <div className='flex gap-2 items-center justify-center'>
-                                        <span className='font-nico-moji text-color-6 text-[16px] capitalize text-center'>{result?.firstName}</span>
-                                        <span className='font-nico-moji text-color-6 text-[16px] capitalize text-center'>{result?.lastName}</span>
+                                        <span className='font-nico-moji text-color-6 text-[16px] capitalize text-center'>
+                                            {`${result?.firstName.substring(0, 10)}${result?.firstName.length > 10 ? '...' : ''}`}
+                                        </span>
+                                        <span className='font-nico-moji text-color-6 text-[16px] capitalize text-center'>
+                                            {`${result?.lastName.substring(0, 10)}${result?.lastName.length > 10 ? '...' : ''}`}
+                                        </span>
                                         <div className='flex'>
                                             <span className='font-nico-moji text-color-29 text-[12px] capitalize text-center'>@</span>
-                                            <span className='font-nico-moji text-color-29 text-[12px] capitalize text-center'>{result?.nickName}</span>
+                                            <span className='font-nico-moji text-color-29 text-[12px] capitalize text-center'>
+                                                {`${result?.nickName.substring(0, 10)}${result?.nickName.length > 10 ? '...' : ''}`}
+                                            </span>
                                         </div>
                                     </div>
                                 </div>

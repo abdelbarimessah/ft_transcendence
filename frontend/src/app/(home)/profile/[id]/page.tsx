@@ -14,6 +14,9 @@ function profile() {
             <div className='w-full h-full absolute '>
                 <ParticleBackground />
             </div>
+            <div className="w-full z-[2000] pt-12 2xl:pt-0">
+                <Header />
+            </div>
             <div className="w-full flex flex-col items-center justify-center z-[1000]  py-[25px] gap-[25px]">
                 <div className="w-full flex 2xl:flex-row flex-col  gap-[25px] items-center justify-center px-[25px] ">
                     <UsersProfileCard />
@@ -29,3 +32,12 @@ function profile() {
 }
 
 export default profile;
+
+
+// Todo limit the lenght of the nickName firsName lastName in each display of them  ++
+// Todo add the socket when the user change some info (avatar/cover && names) ++
+// Todo change the random mode card (100 player online ) ++
+// Todo complute the decline of the game invite  
+// Todo add the invite to play in the page of other users
+// Todo add the message button in the profile of other users
+// Todo make solution for the invite of the game in the modeCard

@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import ParticleBackground from '@/components/particles/Tsparticles';
 import { useContext } from 'react';
 import { SocketContext } from '@/app/SocketContext';
+import Image from 'next/image';
 
 
 axios.defaults.withCredentials = true;
@@ -45,7 +46,7 @@ export default function Wiating() {
 
     useEffect(() => {
         socketClient.on('OtherPlayerDeclineTheGame', (data) => {
-            console.log({message: 'the other player decline the game invite '}, {data});
+            console.log({ message: 'the other player decline the game invite ' }, { data });
             router.push('/profile');
         })
     })
@@ -75,8 +76,18 @@ export default function Wiating() {
                     </div>
                     <div className=' w-full h-[200px] relative flex items-center justify-center '>
                         <PlayerPairing player1={player1} player2={player2} />
-                    </div><div onClick={removeInvitemMode} className=' cursor-pointer w-[50px] h-[50px] bg-white fixed top-96 right-52 flex items-center justify-center z-50 rounded-[17px] '>
-                        <img src="../../assets/cross1.svg" alt="" />
+                    </div>
+                    <div onClick={removeInvitemMode} className=' cursor-pointer w-[50px] h-[50px] bg-white fixed top-96 right-52 flex items-center justify-center z-50 rounded-[17px] '>
+                        <Image
+                            src="../../assets/cross1.svg"
+                            alt='crossIcon'
+                            height={20}
+                            width={20}
+                            priority={true}
+                            draggable={false}
+                                       
+                        >
+                        </Image>
                     </div>
                 </div>
             )}

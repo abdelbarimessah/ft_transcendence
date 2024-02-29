@@ -107,12 +107,14 @@ export default function FriendCard({
       </div>
       <div className="w-full flex gap-[10px] flex-col ">
         <div className="w-full flex flex-col items-center justify-center">
-          <span className="font-nico-moji text-[14px] text-color-6">
-            {fullName}
+          <span className='font-nico-moji text-[14px] text-color-6'>
+            {`${fullName.substring(0, 15)}${fullName.length > 15 ? '..' : ''}`}
           </span>
+
           <span className="-mt-1 font-nico-moji text-[13px] text-color-29">
-            @{friend.nickName}
+            {`${friend.nickName.substring(0, 10)}${friend.nickName.length > 10 ? '..' : ''}`}
           </span>
+
         </div>
         <div className="w-full flex items-center justify-center gap-[18px]">
           <button

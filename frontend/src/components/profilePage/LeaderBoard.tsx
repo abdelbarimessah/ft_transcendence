@@ -1,9 +1,10 @@
 'use client'
 import axios from 'axios';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Skeleton } from '@nextui-org/react';
 import Link from 'next/link';
+import { SocketContext } from '@/app/SocketContext';
 
 type Leader = {
     firstName: string;
@@ -16,6 +17,7 @@ type Leader = {
 
 export default function LeaderBoard() {
     const [isLoading, setIsLoading] = useState(true);
+    const socketClient = useContext(SocketContext)
     const [leaders, setLeaders] = useState<Leader[]>([]);
     useEffect(() => {
         setIsLoading(true);
@@ -29,6 +31,20 @@ export default function LeaderBoard() {
                 console.error(err);
             });
     }, []);
+
+    useEffect(() => {
+        socketClient.on('updateInfo', (data) => {
+            axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/leaders`)
+                .then(res => {
+                    setLeaders(res.data.leader);
+                    setIsLoading(false);
+                })
+                .catch(err => {
+                    setIsLoading(false);
+                    console.error(err);
+                });
+        })
+    })
 
     return (
         <div className=" w-full 2xl:w-[596px] xl:w-[1137px] h-[386px] rounded-[22px] bg-color-0 overflow-hidden flex flex-col gap-[40px] ">
@@ -77,7 +93,14 @@ export default function LeaderBoard() {
                                                 <Skeleton className="w-[150px] h-[21px] rounded-[22px] bg-color-25" />
                                             )
                                                 : (
-                                                    <span className='font-nico-moji text-[14px]  text-color-6'>{`${leaders[0].firstName} ${leaders[0].lastName}  `}</span>
+                                                    <div>
+                                                        <span className='font-nico-moji text-[14px]  text-color-6'>
+                                                            {`${leaders[0].firstName.substring(0, 10)}${leaders[0].firstName.length > 10 ? '..' : ''} `}
+                                                        </span>
+                                                        <span className='font-nico-moji text-[12px]  text-color-29'>
+                                                            {` @${leaders[0].nickName.substring(0, 10)}${leaders[0].nickName.length > 10 ? '..' : ''}`}
+                                                        </span>
+                                                    </div>
                                                 )}
                                             {isLoading ? (
                                                 <Skeleton className="w-[100px] h-[17px] mt-1 rounded-[22px] bg-color-25" />
@@ -126,7 +149,14 @@ export default function LeaderBoard() {
                                                 <Skeleton className="w-[150px] h-[21px] rounded-[22px] bg-color-25" />
                                             )
                                                 : (
-                                                    <span className='font-nico-moji text-[14px]  text-color-6'>{`${leaders[1].firstName} ${leaders[1].lastName}  `}</span>
+                                                    <div>
+                                                        <span className='font-nico-moji text-[14px]  text-color-6'>
+                                                            {`${leaders[1].firstName.substring(0, 10)}${leaders[1].firstName.length > 10 ? '..' : ''} `}
+                                                        </span>
+                                                        <span className='font-nico-moji text-[12px]  text-color-29'>
+                                                            {` @${leaders[1].nickName.substring(0, 10)}${leaders[1].nickName.length > 10 ? '..' : ''}`}
+                                                        </span>
+                                                    </div>
                                                 )}
                                             {isLoading ? (
                                                 <Skeleton className="w-[100px] h-[17px] mt-1 rounded-[22px] bg-color-25" />
@@ -175,7 +205,14 @@ export default function LeaderBoard() {
                                                 <Skeleton className="w-[150px] h-[21px] rounded-[22px] bg-color-25" />
                                             )
                                                 : (
-                                                    <span className='font-nico-moji text-[14px]  text-color-6'>{`${leaders[2].firstName} ${leaders[2].lastName}  `}</span>
+                                                    <div>
+                                                        <span className='font-nico-moji text-[14px]  text-color-6'>
+                                                            {`${leaders[2].firstName.substring(0, 10)}${leaders[2].firstName.length > 10 ? '..' : ''} `}
+                                                        </span>
+                                                        <span className='font-nico-moji text-[12px]  text-color-29'>
+                                                            {` @${leaders[2].nickName.substring(0, 10)}${leaders[2].nickName.length > 10 ? '..' : ''}`}
+                                                        </span>
+                                                    </div>
                                                 )}
                                             {isLoading ? (
                                                 <Skeleton className="w-[100px] h-[17px] mt-1 rounded-[22px] bg-color-25" />

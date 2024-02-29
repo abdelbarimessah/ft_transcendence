@@ -15,6 +15,7 @@ import { Response } from 'express';
 import { CurrentUser } from './current-user.decorator';
 import { authenticator } from 'otplib';
 import { JwtService } from '@nestjs/jwt';
+import { qrCodeDto } from './auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -133,7 +134,7 @@ export class AuthController {
   async enableOtp(
     @CurrentUser() user: any,
     @Res({ passthrough: true }) res: Response,
-    @Body() body: { otp: string },
+    @Body() body: qrCodeDto,
   ) {
     if (user.otpIsEnabled || !user.secretOpt)
       throw new Error('otp already enabled');
@@ -192,7 +193,7 @@ export class AuthController {
   async verifyOtp(
     @CurrentUser() user: any,
     @Res({ passthrough: true }) res: Response,
-    @Body() body: { otp: string },
+    @Body() body: qrCodeDto,
   ) {
     if (!user.otpIsEnabled) throw new ForbiddenException();
 

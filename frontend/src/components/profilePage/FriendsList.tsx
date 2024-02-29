@@ -58,7 +58,7 @@ function FriendsList() {
 
   return (
     <div className="h-[619px] 2xl:w-[557px] xl:w-[1137px] pb-2 w-full bg-color-0 rounded-[22px] flex flex-col items-center gap-[40px] overflow-x-scroll no-scrollbar  ">
-      <div className="w-full flex items-center justify-center gap-[15px] pt-[18px] c">
+      <div className="w-full flex items-center justify-center gap-[15px] pt-[18px]">
         <div className=" w-[37px] h-[28px] relative sm:flex hidden items-center justify-center pt-3 ">
           <Image
             src="/../../assets/MatchHistoryIcon.svg"
@@ -99,14 +99,13 @@ function FriendsList() {
             Error: {error.message}
           </div>
         )}
-
-        {!isLoading &&
-          !isError &&
-          friendsList?.map((friend) => (
-            <FriendCard key={friend.id} friend={friend} user={me} />
-          ))}
-
-        {/* <FriendCard friend={friend1} /> */}
+        <div className="flex w-full justify-center px-10 gap-10 items-center flex-wrap pb-6 overflow-x-scroll no-scrollbar">
+          {!isLoading &&
+            !isError &&
+            friendsList?.map((friend) => (
+              <FriendCard key={friend.id} friend={friend} user={me} />
+            ))}
+        </div>
       </div>
     </div>
   );

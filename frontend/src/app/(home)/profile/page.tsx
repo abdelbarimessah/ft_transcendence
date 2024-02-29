@@ -9,6 +9,8 @@ import FriendsList from "@/components/profilePage/FriendsList";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 const friendsQueryClient = new QueryClient();
+const MatchesHistoryClient = new QueryClient();
+
 
 function profile() {
 
@@ -31,7 +33,9 @@ function profile() {
                         <FriendsList />
                     </QueryClientProvider>
                     <Achievements />
-                    <MatchesHistory />
+                    <QueryClientProvider client={MatchesHistoryClient}>
+                        <MatchesHistory />
+                    </QueryClientProvider>
                 </div>
             </div>
         </div>

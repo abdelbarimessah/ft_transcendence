@@ -85,4 +85,5 @@ export class UserGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log({message: 'data came with the change of info'}, data.providerId);
     this.server.emit('updateInfo',{providerId:  data.providerId});
   }
+
 }

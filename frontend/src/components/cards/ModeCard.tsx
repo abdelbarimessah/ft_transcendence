@@ -11,6 +11,8 @@ import { toast } from 'sonner';
 
 
 import dynamic from 'next/dynamic';
+import axios from 'axios';
+import FriendCard from '../profilePage/FriendCard';
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 
 
@@ -25,6 +27,44 @@ function ModeCard(me: any) {
     const [player1, setPlayer1] = useState(null);
     const [player2, setPlayer2] = useState(null);
 
+    //
+    const [friends, setFriends] = useState<Friend[]>([]);
+    const [isLoading, setIsloading] = useState(false)
+    const [inviteModal, setInviteModel] = useState(false)
+
+    const [my, setMy] = useState<any>();
+    useEffect(() => {
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`).then(res => {
+            setMy(res.data);
+        }).catch(err => {
+            console.error(err);
+        })
+    }, [])
+
+    useEffect(() => {
+        axios.get('http://localhost:3000/user/friends').then((res) => {
+            setIsloading(true)
+            console.log({ response: res.data });
+            setFriends(res.data);
+            setIsloading(false)
+        }).catch((error) => {
+            console.error(error)
+            setIsloading(true)
+        })
+    }, [])
+    const slideLeft = () => {
+        var slider = document.getElementById('slider');
+        if (slider)
+            slider.scrollBy({ left: -500, behavior: 'smooth' }); // Use scrollBy for a smoother scroll
+    };
+
+    const slideRight = () => {
+        var slider = document.getElementById('slider');
+        if (slider)
+            slider.scrollBy({ left: 500, behavior: 'smooth' }); // Use scrollBy for a smoother scroll
+    };
+    //
+
     const randomMode = () => {
         setIsRandomMode(true)
         socketClient.emit('joinRoomFromCard');
@@ -33,6 +73,9 @@ function ModeCard(me: any) {
     const removeRandomMode = () => {
         setIsRandomMode(false)
         socketClient.emit('handleRemoveFromQueue');
+    }
+    const removeInviteFriendModale = ()  => {
+        setInviteModel(false);
     }
 
     useEffect(() => {
@@ -82,10 +125,10 @@ function ModeCard(me: any) {
 
     return (
         <>
-            <div className={` ${isRandomMode || playerPairingState ? 'blur' : ''} select-none   w-full max-h-full flex flex-wrap items-center justify-center gap-[24px] pb-10 pt-10 `}>
+            <div className={` ${isRandomMode || playerPairingState ? 'blur' : ''} ${inviteModal ? 'hidden' : ''} select-none   w-full max-h-full flex flex-wrap items-center justify-center gap-[24px] pb-10 pt-10 `}>
                 <div className={` ${styles.playCard} cursor-pointer w-full max-w-[391px] h-[500px] rounded-[30px] overflow-hidden flex relative hover:opacity-90 hover:scale-[1.01] `}>
                     <Image
-                        src="/../../assets/2.jpg"
+                        src="/../../assets/3.jpg"
                         alt="My Gallery Image"
                         fill={true}
                         sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
@@ -135,7 +178,7 @@ function ModeCard(me: any) {
 
                 <div className={`${styles.playCard} cursor-pointer w-full max-w-[391px] h-[500px]  rounded-[30px] overflow-hidden flex relative hover:opacity-90  hover:scale-[1.01]`}>
                     <Image
-                        src="/../../assets/3.jpg"
+                        src="/../../assets/4.jpg"
                         alt="My Gallery Image"
                         fill={true}
                         sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
@@ -156,6 +199,7 @@ function ModeCard(me: any) {
                                             height={22}
                                             width={22}
                                             priority={true}
+                                            sizes='(min-width: 480px) 445px, calc(90.63vw + 28px)'
                                             draggable={false}
                                         >
                                         </Image>
@@ -181,7 +225,7 @@ function ModeCard(me: any) {
                 </div>
                 <div className={`${styles.playCard} cursor-pointer xl:mb-0 w-full max-w-[391px] h-[500px] rounded-[30px] overflow-hidden flex relative hover:opacity-90  hover:scale-[1.01]`}>
                     <Image
-                        src="/../../assets/4.jpg"
+                        src="/../../assets/2.jpg"
                         alt="My Gallery Image"
                         fill={true}
                         sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
@@ -201,6 +245,7 @@ function ModeCard(me: any) {
                                             alt="Vector"
                                             height={24}
                                             width={24}
+                                            sizes='(min-width: 480px) 445px, calc(90.63vw + 28px)'
                                             priority={true}
                                             draggable={false}
                                         >
@@ -213,6 +258,7 @@ function ModeCard(me: any) {
                                 </div>
                                 <div className='h-full flex items-center'>
                                     <button
+                                        onClick={(e) => { setInviteModel(true) }}
                                         className={` ${styles.playCardButton} rounded-[14px] bg-color-6 w-[113px] h-[40px] font-nico-moji text-color-3`}
                                     >
                                         play
@@ -244,6 +290,76 @@ function ModeCard(me: any) {
             )}
             {playerPairingState && (
                 <PlayerPairing player1={player1} player2={player2} />
+            )}
+            {inviteModal && (
+                <div className='absolute z-[1000] '>
+                    <div className=" w-[1073px] h-[500px] rounded-[22px] bg-[#E3E3E3]/10 relative flex flex-col items-center justify-between pt-10 pb-[100px] gap-[100px] overflow-hidden ">
+                        <div onClick={removeInviteFriendModale} className='absolute cursor-pointer w-[35px] h-[35px] bg-white flex items-center justify-center z-50 rounded-[12px] top-5 right-5' >
+                            <Image
+                                src="../../assets/cross1.svg"
+                                alt="My Gallery Image"
+                                width={18}
+                                height={18}
+                                className='object-cover'
+                                draggable={false}
+                            />
+                        </div>
+                        <div className="w-full flex items-center justify-center gap-[15px] pt-[18px]">
+                            <div className=" w-[37px] h-[28px] relative sm:flex hidden items-center justify-center pt-3 ">
+                                <Image
+                                    src="/../../assets/MatchHistoryIcon.svg"
+                                    alt="Leader Board Icon"
+                                    fill={true}
+                                    priority={true}
+                                    className="object-cover w-full h-full"
+                                    draggable={false}
+                                />
+                            </div>
+                            <div className="flex gap-[10px] ">
+                                <span className="font-nico-moji text-color-0 sm:text-[32px] text-[28px]">
+                                    Friends
+                                </span>
+                            </div>
+                        </div>
+                        <div className="flex  items-center justify-center w-full gap-3 px-2">
+
+                            <div className=' w-[32px] h-[32px] opacity-50 cursor-pointer hover:opacity-100 ' onClick={slideLeft} >
+                                <Image
+                                    src='../../../../assets/leftSlider.svg'
+                                    alt="rightSlider"
+                                    height={31}
+                                    width={31}
+                                    draggable={false}
+                                    priority={true}
+                                >
+                                </Image>
+                            </div>
+                            <div id='slider'
+                                className='w-full overflow-x-scroll scroll whitespace-nowrap no-scrollbar flex flex-row overflow-hidden scroll-smooth scrollbar-hide gap-4'>
+                                {!isLoading &&
+                                    friends?.map((friend) => (
+                                        <div key={friend.id} className="w-64">
+                                            <FriendCard friend={friend} user={my} />
+                                        </div>
+                                    ))
+                                }
+                            </div>
+                            <div className=' w-[32px] h-[32px] opacity-50 cursor-pointer hover:opacity-100  ' onClick={slideRight} >
+                                <Image
+                                    src='../../../../assets/rightSlider.svg'
+                                    alt="rightSlider"
+                                    height={31}
+                                    width={31}
+                                    draggable={false}
+                                    priority={true}
+                                >
+
+                                </Image>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
             )}
         </>
     );
@@ -320,3 +436,114 @@ function PlayerPairing({ player1, player2 }: any) {
 }
 
 export { PlayerPairing }
+
+
+type Friend = {
+    firstName: string
+    lastName: string
+    nickName: string
+    providerId: string
+    id: number
+    avatar: string
+    cover: string
+}
+
+function InivteModeCard() {
+    const [friends, setFriends] = useState<Friend[]>([]);
+    const [isLoading, setIsloading] = useState(false)
+    const [my, setMy] = useState<any>();
+
+    useEffect(() => {
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`).then(res => {
+            setMy(res.data);
+        }).catch(err => {
+            console.error(err);
+        })
+    }, [])
+
+    useEffect(() => {
+        axios.get('http://localhost:3000/user/friends').then((res) => {
+            setIsloading(true)
+            console.log({ response: res.data });
+            setFriends(res.data);
+            setIsloading(false)
+        }).catch((error) => {
+            console.error(error)
+            setIsloading(true)
+        })
+    }, [])
+    const slideLeft = () => {
+        var slider = document.getElementById('slider');
+        if (slider)
+            slider.scrollBy({ left: -500, behavior: 'smooth' }); // Use scrollBy for a smoother scroll
+    };
+
+    const slideRight = () => {
+        var slider = document.getElementById('slider');
+        if (slider)
+            slider.scrollBy({ left: 500, behavior: 'smooth' }); // Use scrollBy for a smoother scroll
+    };
+
+
+    return (
+
+        <div className=" w-[1073px] h-[500px] rounded-[22px] bg-[#E3E3E3]/10 relative flex flex-col items-center justify-between pt-10 pb-[100px] gap-[100px] overflow-hidden ">
+            <div className="w-full flex items-center justify-center gap-[15px] pt-[18px]">
+                <div className=" w-[37px] h-[28px] relative sm:flex hidden items-center justify-center pt-3 ">
+                    <Image
+                        src="/../../assets/MatchHistoryIcon.svg"
+                        alt="Leader Board Icon"
+                        fill={true}
+                        priority={true}
+                        className="object-cover w-full h-full"
+                        draggable={false}
+                    />
+                </div>
+                <div className="flex gap-[10px] ">
+                    <span className="font-nico-moji text-color-0 sm:text-[32px] text-[28px]">
+                        Friends
+                    </span>
+                </div>
+            </div>
+            <div className="flex  items-center justify-center w-full gap-3 px-2">
+
+                <div className=' w-[32px] h-[32px] opacity-50 cursor-pointer hover:opacity-100 ' onClick={slideLeft} >
+                    <Image
+                        src='../../../../assets/leftSlider.svg'
+                        alt="rightSlider"
+                        height={31}
+                        width={31}
+                        draggable={false}
+                        priority={true}
+                    >
+                    </Image>
+                </div>
+                <div id='slider'
+                    className='w-full overflow-x-scroll scroll whitespace-nowrap no-scrollbar flex flex-row overflow-hidden scroll-smooth scrollbar-hide gap-4'>
+                    {!isLoading &&
+                        friends?.map((friend) => (
+                            <div key={friend.id} className="w-64">
+                                <FriendCard friend={friend} user={my} />
+                            </div>
+                        ))
+                    }
+                </div>
+                <div className=' w-[32px] h-[32px] opacity-50 cursor-pointer hover:opacity-100  ' onClick={slideRight} >
+                    <Image
+                        src='../../../../assets/rightSlider.svg'
+                        alt="rightSlider"
+                        height={31}
+                        width={31}
+                        draggable={false}
+                        priority={true}
+                    >
+
+                    </Image>
+
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export { InivteModeCard }

@@ -26,9 +26,9 @@ function profile() {
                 </div>
                 <div className="w-full flex 2xl:flex-row flex-col  gap-[25px] items-center justify-center px-[25px] ">
                     <UsersAchievements />
-                    <QueryClientProvider client={MatchesHistoryClient}>
-                        <MatchesHistory />
-                    </QueryClientProvider>
+                    {/* <QueryClientProvider client={MatchesHistoryClient}> */}
+                        {/* <MatchesHistory /> */}
+                    {/* </QueryClientProvider>w */}
                 </div>
             </div>
         </div>
@@ -38,10 +38,5 @@ function profile() {
 export default profile;
 
 
-// Todo limit the lenght of the nickName firsName lastName in each display of them  ++
-// Todo add the socket when the user change some info (avatar/cover && names) ++
-// Todo change the random mode card (100 player online ) ++
-// Todo complute the decline of the game invite  
-// Todo add the invite to play in the page of other users
-// Todo add the message button in the profile of other users
-// Todo make solution for the invite of the game in the modeCard
+// Todo complute the decline of the game invite 
+// Todo add the channels property design/UI 

@@ -3,20 +3,24 @@ import * as React from "react"
 import * as ProgressPrimitive from "@radix-ui/react-progress"
 import { cn } from "@/lib/utils"
 import Image from 'next/image';
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { Skeleton } from "@nextui-org/react";
 import { useParams } from 'next/navigation'
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { SocketContext } from "@/app/SocketContext";
 
 
 axios.defaults.withCredentials = true;
 
 function ProfileCard() {
+
     const [ids, setIds] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [user, setUser] = useState<any>();
+    const [me, setMe] = useState<any>();
+    const socketClient = useContext(SocketContext);
 
     const params = useParams<{ id: string; tag: string; item: string }>()
     const router = useRouter();
@@ -42,6 +46,25 @@ function ProfileCard() {
     }, [ids, params]);
 
 
+    useEffect(() => {
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`).then((res) => {
+            setMe(res);
+        }).catch((error) => {
+            console.error(error);
+        })
+    }, [me])
+
+    const handlePlayWith = () => {
+        socketClient.emit("playInvite", { sender: me, receiver: user });
+        console.log('the user is : ', user);
+        console.log('me in the invite ', me);
+        
+        setTimeout(() => {
+            router.push(
+                `/game/waiting?room=InviteRoom-${me.providerId}-${user.providerId}`
+            );
+        }, 500);
+    }
 
 
 
@@ -63,13 +86,13 @@ function ProfileCard() {
                     </div>
                 )}
             </div>
-            <div className='w-full flex justify-center items-center gap-[100px] absolute top-[111px] '>
-                <div className='flex items-center gap-3'>
+            <div className='w-full flex justify-between items-center px-10 absolute top-[111px] '>
+                <div className='flex flex-col sm:flex-row items-center sm:gap-3'>
                     {isLoading ? (
                         <Skeleton className="w-[120px] h-[120px] rounded-full bg-color-25 ml-7" />
                     )
                         : (
-                            <div className="w-[120px] h-[120px]   relative z-50 rounded-full overflow-hidden bg-black border-[2px] border-color-0  hover:scale-[1.01]" >
+                            <div className="sm:w-[120px] w-[90px] sm:h-[120px] h-[90px] relative z-50 rounded-full overflow-hidden bg-black border-[2px] border-color-0  hover:scale-[1.01]" >
                                 <Image
                                     src={user.avatar}
                                     alt='profile image'
@@ -86,7 +109,7 @@ function ProfileCard() {
                             <Skeleton className="w-[200px] h-[20px] rounded-full bg-color-25" />
                         )
                             : (
-                                <span className='font-nico-moji text-color-6 sm:text-[24px] text-[18px] capitalize'>
+                                <span className='font-nico-moji text-color-6 lg:text-[21px] text-[18px] capitalize'>
                                     {`${user.firstName.substring(0, 10)}${user.firstName.length > 10 ? '..' : ''} ${user.lastName.substring(0, 10)}${user.lastName.length > 10 ? '..' : ''}`}
                                 </span>
                             )}
@@ -94,7 +117,7 @@ function ProfileCard() {
                             <Skeleton className="w-[60px] h-[14px] rounded-full mt-1 bg-color-25" />
                         )
                             : (
-                                <span className='font-nico-moji -mt-1 sm:text-[16px] text-[12px]  text-color-29 capitalize'>
+                                <span className='font-nico-moji -mt-1 lg:text-[16px] text-[12px]  text-color-29 capitalize'>
                                     @{user.nickName.substring(0, 10)}{user.nickName.length > 10 ? '..' : ''}
                                 </span>
                             )}
@@ -103,11 +126,36 @@ function ProfileCard() {
                 {isLoading
                     ? <Skeleton className="h-[28px] w-[70px] rounded-[10px] bg-color-25 mt-5 mr-5" />
                     : user.isFriend
-                        ? <RemoveFriend onSuccess={() => setUser({ ...user, isFriend: false })} />
-                        : <AddFriend onSuccess={() => setUser({ ...user, isFriend: true })} />
+                        ?
+                        <div className=" gap-1 flex flex-col items-center justify-center mt-10 ">
+                            <div className="">
+                                <button
+                                    className=" h-[28px] lg:w-[90px] w-[40px] bg-color-6 rounded-[10px] flex items-center justify-around px-3 hover:scale-[1.01] hover:opacity-90 cursor-pointer"
+                                    onClick={handlePlayWith}
+                                >
+                                    <div className="w-[12px] h-[12px] relative overflow-hidden">
+                                        <Image
+                                            src="/../../assets/playWithIcon.svg"
+                                            alt="Leader Board Icon"
+                                            fill={true}
+                                            priority={true}
+                                            className="object-cover w-full h-full"
+                                            draggable={false}
+                                        />
+                                    </div>
+                                    <span className="font-nico-moji text-[8px] text-color-0 hidden lg:block ">
+                                        Play With
+                                    </span>
+                                </button>
+                            </div>
+                            <RemoveFriend onSuccess={() => setUser({ ...user, isFriend: false })} />
+                        </div>
+                        :
+                        <div className=" mt-[10px]">
+
+                            <AddFriend onSuccess={() => setUser({ ...user, isFriend: true })} />
+                        </div>
                 }
-
-
             </div>
             <div className='w-full flex items-center justify-center absolute bottom-[40px] px-[25px]'>
                 <div className='h-[82px] w-[867px] bg-color-0 border-[1px] border-[#DDD] rounded-[22px] flex flex-col gap-[4px]'>
@@ -157,7 +205,7 @@ function AddFriend(props: AddFriendProps) {
     }
 
     return (
-        <div onClick={handleAddFriend} className='h-[28px] w-[70px] bg-color-6 mt-5 rounded-[10px] gap-[5px] flex items-center justify-center  cursor-pointer hover:scale-[1.01] hover:opacity-95'>
+        <div onClick={handleAddFriend} className=' h-[28px] lg:w-[90px] w-[40px] bg-color-6 rounded-[10px] flex items-center justify-around px-3 hover:scale-[1.01] hover:opacity-90 cursor-pointer'>
             <div className="w-[12px] h-[13px] relative z-50 overflow-hidden " >
                 <Image
                     src="/../../assets/addFriendIconUsers.svg"
@@ -169,12 +217,56 @@ function AddFriend(props: AddFriendProps) {
                     draggable={false}
                 />
             </div>
-            <span className='font-nico-moji text-[8px] text-color-0 '>ADD</span>
+            <span className='font-nico-moji text-[8px] text-color-0 hidden lg:block '>ADD</span>
         </div>
     )
 }
 
 export { AddFriend }
+
+// function InviteGame(user: any, me: any) {
+//     const socketClient = useContext(SocketContext);
+//     const router = useRouter();
+//     console.log('User in the function :', { user });
+//     console.log('Me  in the function :', { me });
+
+
+//     const handlePlayWith = () => {
+//         socketClient.emit("playInvite", { sender: me, receiver: user });
+
+//         setTimeout(() => {
+//             router.push(
+//                 `/game/waiting?room=InviteRoom-${me.providerId}-${user.providerId}`
+//             );
+//         }, 500);
+//     }
+
+//     return (
+//         <div className="">
+//             <button
+//                 className="h-[28px] w-[90px] bg-color-6 rounded-[10px] cursor-pointer flex items-center justify-around px-3 hover:scale-[1.01] hover:opacity-90"
+//                 onClick={handlePlayWith}
+//             >
+//                 <div className="w-[12px] h-[12px] relative overflow-hidden">
+//                     <Image
+//                         src="/../../assets/playWithIcon.svg"
+//                         alt="Leader Board Icon"
+//                         fill={true}
+//                         priority={true}
+//                         className="object-cover w-full h-full"
+//                         draggable={false}
+//                     />
+//                 </div>
+//                 <span className="font-nico-moji text-[8px] text-color-0">
+//                     Play With
+//                 </span>
+//             </button>
+//         </div>
+//     )
+// }
+// export { InviteGame }
+
+
 
 interface RemoveFriendProps {
     onSuccess: () => void;
@@ -195,7 +287,7 @@ function RemoveFriend(props: RemoveFriendProps) {
     }
 
     return (
-        <div onClick={handleRemoveFriend} className='h-[28px] w-[70px] bg-color-30 mt-5 rounded-[10px] gap-[5px] flex items-center justify-center  cursor-pointer'>
+        <div onClick={handleRemoveFriend} className=' h-[28px] lg:w-[90px] w-[40px] bg-color-30 rounded-[10px] flex items-center justify-around px-3 hover:scale-[1.01] hover:opacity-90 cursor-pointe'>
             <div className="w-[12px] h-[13px] relative z-50 overflow-hidden " >
                 <Image
                     src="/../../assets/removeFriendIconUsers.svg"
@@ -207,7 +299,7 @@ function RemoveFriend(props: RemoveFriendProps) {
                     draggable={false}
                 />
             </div>
-            <span className='font-nico-moji text-[8px] text-color-6 '>REMOVE</span>
+            <span className='font-nico-moji text-[8px] text-color-6 hidden lg:block '>REMOVE</span>
         </div>
     )
 }

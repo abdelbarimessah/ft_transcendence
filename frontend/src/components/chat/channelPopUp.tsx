@@ -10,7 +10,7 @@ import { Truck } from 'lucide-react'
 
 function PopUpChannel() {
 
-    const UserData : any = useContext(chatslistContext);
+    const UserData  = useContext(chatslistContext);
     const inputMessageRef = useRef(null);
 
     console.log("we where here !!!!");
@@ -24,6 +24,12 @@ function PopUpChannel() {
     // UserData.channelsList(creatChannelResponse.data);
     // UserData.setPopUpOn(false);
     
+
+    const addChannelToLits = (channel) => {
+        const newChannelList = [...UserData.friendChatConversation, channel];
+        UserData.setFriendChatConversation(newChannelList);
+    }
+
     const handelCreatChannel = async() =>
     {
         if (!UserData.channelType || !inputMessageRef?.current.value)
@@ -38,37 +44,17 @@ function PopUpChannel() {
                 withCredentials: true, // to include cookies in the request   
             }
             );
-            console.log(creatChannelResponse.data);
-            UserData.setChannelsList(creatChannelResponse.data);
+            // console.log("creatChannelResponse.data = ", creatChannelResponse.data);
             UserData.setPopUpOn(false);
+            addChannelToLits(creatChannelResponse.data);
         }
         catch (error)
         {
             console.error("ERORR AT CREATING CHANNEL: ",error);
         }
-        // console.log(UserData.channelType);
-        // console.log(inputMessageRef?.current.value);
-        
-        // axios
-        // .post(
-        //     "http://localhost:3000/chat/channel/create",
-        //     {
-        //       name: "Channel Name",
-        //       type: "PUBLIC", // or 'PROTECTED'
-        //       password: "passwordIfProtected", // Include if type is PROTECTED
-        //     },
-        //     {
-        //       withCredentials: true, // to include cookies in the request
-        //     }
-        // )
-        // .then((response) => {
-        //   console.log(response.data);
-        // })
-        // .catch((error) => {
-        //   console.error(error);
-        // });
     }
 
+    console.log("channel list = ", UserData.ChannelsList);
     return (
         <>
             <div className='flex justify-center items-center fixed w-screen h-screen bg-opacity-25 bg-black '>
@@ -113,7 +99,7 @@ function PopUpChannel() {
                                 <ul className="flex items-center justify-center  w-full gap-6 md:grid-cols-2">
                                 
                                 <li>
-                                    <input type="radio" id="private" name="typeOfChannel" value="private" className ="hidden peer" onChange={e=>{UserData.setchannelType(e.target.value)}}/>
+                                    <input type="radio" id="private" name="typeOfChannel" value="PRIVATE" className ="hidden peer" onChange={e=>{UserData.setchannelType(e.target.value)}}/>
                                     <label htmlFor="private" className='flex items-center justify-center w-[150px] p-5 text-[#8194a3] bg-[#FFFFFF] border rounded-lg cursor-pointer  peer-checked:border-[#6f87de] peer-checked:text-[#6f87de] hover:text-gray-600 hover:bg-gray-100'>
                                         <div>
                                             private
@@ -123,7 +109,7 @@ function PopUpChannel() {
                                 </li>
                                 
                                 <li>
-                                    <input type="radio" id="public" name="typeOfChannel" value="public" className ="hidden peer"  onChange={e=>{UserData.setchannelType(e.target.value)}}/>
+                                    <input type="radio" id="public" name="typeOfChannel" value="PUBLIC" className ="hidden peer"  onChange={e=>{UserData.setchannelType(e.target.value)}}/>
                                     <label htmlFor="public" className='flex items-center justify-center w-[150px] p-5 text-[#8194a3] bg-[#FFFFFF] border rounded-lg cursor-pointer  peer-checked:border-[#6f87de] peer-checked:text-[#6f87de] hover:text-gray-600 hover:bg-gray-100'>
                                         <div>
                                             public
@@ -134,7 +120,7 @@ function PopUpChannel() {
                                     
                                 <li>
 
-                                    <input type="radio" id="protected" name="typeOfChannel" value="protected" className ="hidden peer" onChange={e=>{UserData.setchannelType(e.target.value)}}/>
+                                    <input type="radio" id="protected" name="typeOfChannel" value="PROTECTED" className ="hidden peer" onChange={e=>{UserData.setchannelType(e.target.value)}}/>
                                     <label htmlFor="protected" className='flex items-center justify-center w-[150px] p-5 text-[#8194a3] bg-[#FFFFFF] border rounded-lg cursor-pointer  peer-checked:border-[#6f87de] peer-checked:text-[#6f87de] hover:text-gray-600 hover:bg-gray-100'> 
                                         <div>
                                             protected

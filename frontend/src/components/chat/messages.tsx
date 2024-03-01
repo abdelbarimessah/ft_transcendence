@@ -1,8 +1,4 @@
 import React from "react";
-import { text } from "stream/consumers";
-/* const socket.on('newChat', (data)=> {
-    //add to chat array
-}) */
 
 function Messages({msg, avatar, nickname, authorId, time, friendId}){
 

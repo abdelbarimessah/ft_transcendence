@@ -16,11 +16,15 @@ function Chat() {
     const [friendsList, setFriendsList] = useState([]);
     const [channelsList, setChannelsList] = useState([]);
     const [myId, setMyId] = useState([]);
-    const [chatConversation, setChatConversation] = useState([]);
+    const [friendChatConversation, setFriendChatConversation] = useState([]);
+    const [channelChatConversation, setChannelChatConversation] = useState([]);
     const [chatClicked, setChatClicked] = useState([]);
+    const [channelClicked, setChannelClicked] = useState([]);
     const [typing, setTyping] = useState(true);
     const [popUpOn, setPopUpOn] = useState(false);
-    const [channelType, setchannelType] = useState("")
+    const [channelType, setchannelType] = useState("");
+    const [whatIcon, setWhatIcon] = useState("") ;
+
 
       const fetchData = async () => {
         try {
@@ -53,11 +57,11 @@ function Chat() {
         fetchData();
       }, []);
 
-      const fetchConversationDta = async () =>{
+      const fetchFriendConversation = async () =>{
         try {
           console.log("chatClicked = ", chatClicked);   
           const messageResponse = await axios.get(`http://localhost:3000/chat/message/${chatClicked.id}`);
-          setChatConversation(messageResponse.data);
+          setFriendChatConversation(messageResponse.data);
           // console.log("messageResponse = ",messageResponse.data);
         } catch (error) {
           console.error("haaaahowa lerroor: ",error);
@@ -66,16 +70,36 @@ function Chat() {
 
       useEffect(() => {
         if (chatClicked.id)
-          fetchConversationDta();
+          fetchFriendConversation();
       }, [chatClicked]);
+      
+      
+      const fetchChannelConversation = async () =>{
+        console.log("channelClicked.id = ", channelClicked.id);
+        
+        try {
+          console.log("channelClicked = ", channelClicked);   
+          const messageResponse = await axios.get(`http://localhost:3000/chat/channel/${channelClicked.id}/messages`);
+          setChannelChatConversation(messageResponse.data);
+          console.log("messageResponse = ",messageResponse.data);
+        } catch (error) {
+          console.error("haaaahowa lerroor: ",error);
+        }
+      };
+
+      useEffect(() => {
+        if (channelClicked.id)
+          fetchChannelConversation();
+      }, [channelClicked]);
 
 
 
     return (
         <>
-        <chatslistContext.Provider value={{ friendsList, channelsList, myId, chatConversation, chatClicked, typing, 
-                                            setTyping, setChatConversation, setChatClicked, popUpOn, setPopUpOn,
-                                            channelType, setchannelType, setChannelsList}}>
+        <chatslistContext.Provider value={{ friendsList, channelsList, myId, friendChatConversation, chatClicked, typing, 
+                                            setTyping, setFriendChatConversation, setChatClicked, popUpOn, setPopUpOn,
+                                            channelType, setchannelType, setChannelsList, whatIcon, setWhatIcon, channelChatConversation,
+                                            setChannelChatConversation, channelClicked, setChannelClicked}}>
         <div className='relative flex justify-start chat-bp:justify-center items-center w-screen h-screen overflow-hidden '>
           <PopUpChannel />
           <div className="flex justify-start chat-bp:justify-center items-center w-[1731px] h-[1080px] bg-[#ffbb3b] ">

@@ -7,6 +7,36 @@ import {createContext, useContext } from 'react'
 import { chatslistContext } from '../../app/(home)/chat/page'
 
 
+
+
+function Friend ({chat}: any) {
+    
+    const UserData: any	 = useContext(chatslistContext);
+    
+    
+    
+    
+    function handelChahtConv (chatClicked: any){
+        UserData.setChatClicked(chatClicked);
+        UserData.setChannelClicked([]);
+    }
+    
+    return(
+        <div    className='flex justify-between items-center border-t border-[#070401] p-3 min-h-[68px]'
+        onClick={e  => {handelChahtConv(chat)}}>
+
+                <img    src={UserData.myId.id != chat.members[0].id ? chat.members[0].avatar: chat.members[1].avatar}
+                        alt={UserData.myId.id != chat.members[0].id ? chat.members[0].nickName: chat.members[1].nickName}
+                        className=' rounded-full w-[60px] ' />
+                
+                    <h1 className=' font-medium '>{UserData.myId.id != chat.members[0].id ? chat.members[0].nickName: chat.members[1].nickName}</h1>
+            </div>
+    )
+}
+
+
+export default Friend
+
 // [
 //     {
 //         "id": "59299932-a049-4211-ae77-f28de983d3fb",
@@ -57,31 +87,3 @@ import { chatslistContext } from '../../app/(home)/chat/page'
 // provider : "google"
 // providerId : "107369042129154344124"
 
-
-
-function Friend ({chat}: any) {
-    
-    const UserData: any	 = useContext(chatslistContext);
-
-    
-
-
-    function handelChahtConv (chatClicked: any){
-        UserData.setChatClicked(chatClicked);
-    }
-
-    return(
-            <div    className='flex justify-between items-center border-t border-[#070401] p-3 min-h-[68px]'
-                    onClick={e  => {handelChahtConv(chat)}}>
-                
-                <img    src={UserData.myId.id != chat.members[0].id ? chat.members[0].avatar: chat.members[1].avatar}
-                        alt={UserData.myId.id != chat.members[0].id ? chat.members[0].nickName: chat.members[1].nickName}
-                        className=' rounded-full w-[60px] ' />
-                
-                    <h1 className=' font-medium '>{UserData.myId.id != chat.members[0].id ? chat.members[0].nickName: chat.members[1].nickName}</h1>
-        
-            </div>
-    )
-}
-
-export default Friend

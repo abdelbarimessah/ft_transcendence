@@ -1,6 +1,4 @@
-
 // import Image from "next/image"
-
 
 // export function MatchesHistory () {
 //     return (
@@ -240,32 +238,89 @@
 import Image from "next/image";
 import MatchHistoryItem, { MatchHistoryProps } from "./MatchHistoryItem";
 import axios from "axios";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
+import animationData from "../../../public/assets/EmptyFriends.json";
 
-const getMatchHistoryList = async () => {
-  const res = await axios.get<MatchHistoryProps[]>(
-    "http://localhost:3000/matchHistory/"
-  );
-  return res.data;
+import dynamic from "next/dynamic";
+import { useContext, useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { user } from "@nextui-org/react";
+import { SocketContext } from "@/app/SocketContext";
+
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
+axios.defaults.withCredentials = true;
+
+// const matchHistoryTest: MatchHistoryProps = {
+//   id: 1,
+//   userId: "99177",
+//   userScore: 5,
+//   opponentId: "332f6c7b-2791-40cd-a4eb-3e8bbfa51675",
+//   opponentScore: 3,
+// };
+
+export type userProps = {
+  providerId: string;
+  firstName: string;
+  lastName: string;
+  nickName: string;
+  avatar: string;
 };
 
-const matchHistoryTest: MatchHistoryProps = {
-  id: 1,
-  userId: "UserId",
-  userScore: 5,
-  opponentId: "OpponentId",
-  opponentScore: 3,
+const getMatchHistoryList = async (userId: string) => {
+  try {
+    const res = await axios.get<MatchHistoryProps[]>(
+      `http://localhost:3000/matchHistory/${userId}`
+    );
+    return res.data;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
 };
 
 export function MatchesHistory() {
+  const socketClient = useContext(SocketContext);
+  const queryClient = useQueryClient();
+  const [me, setMe] = useState<userProps>();
+  const [userToFetch, setUserToFetch] = useState<string>("");
+
+  const pathname = usePathname();
+  const params = pathname.split("/");
+
+  const getUserToFetch = async () => {
+    try {
+      if (params.length === 2) {
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/user/me`
+        );
+        setMe(res.data);
+        setUserToFetch(res.data?.providerId);
+      } else {
+        setUserToFetch(params[2]);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    getUserToFetch();
+  }, [pathname]);
+
+  // useEffect(() => {
+  //   socketClient.on("updateInfo", () => {
+  //     queryClient.invalidateQueries("matchesHistoryList");
+  //   });
+  // }, [socketClient, queryClient]);
+
   const {
     data: matchesHistoryList,
     isLoading,
     isError,
     error,
   } = useQuery<MatchHistoryProps[], Error>({
-    queryKey: ["matchesHistoryList"],
-    queryFn: getMatchHistoryList,
+    queryKey: ["matchesHistoryList", userToFetch ?? ""],
+    queryFn: () => getMatchHistoryList(userToFetch ?? ""),
   });
 
   return (
@@ -305,7 +360,18 @@ export function MatchesHistory() {
           </div>
         )}
 
-<MatchHistoryItem historyEntry={matchHistoryTest} />
+        {/* <MatchHistoryItem historyEntry={matchHistoryTest} /> */}
+
+        {!isLoading && matchesHistoryList?.length === 0 && (
+          <div className="">
+            <Lottie
+              autoPlay
+              loop
+              style={{ width: 300 }}
+              animationData={animationData}
+            />
+          </div>
+        )}
         {!isError &&
           !isLoading &&
           matchesHistoryList &&

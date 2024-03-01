@@ -254,6 +254,7 @@ export class ChatService {
         type: data.type,
         password: hashedPassword,
         ownerId: userId,
+        avatar: data?.avatar,
         members: {
           create: [{ userId, isAdmin: true }],
         },
@@ -305,15 +306,15 @@ export class ChatService {
         'You are not authorized to update this channel',
       );
     }
-    if (data.type === 'PROTECTED' && data.password) {
-      if (data.password.length === 0) {
+    if (data.type === 'PROTECTED') {
+      if (!data.password || data.password.length === 0) {
         throw new BadRequestException(
           'Password is required for protected channels',
         );
       }
       const hashedPassword = await bcrypt.hash(data.password, 10);
       data.password = hashedPassword;
-    } else if (data.type !== 'PROTECTED') {
+    } else {
       data.password = null;
     }
     const updatedChannel = await this.prismaService.channel.update({

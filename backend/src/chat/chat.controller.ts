@@ -8,7 +8,9 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ChatGateway } from './chat.gateway';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -28,8 +30,10 @@ import { ChatService } from './chat.service';
 import { NotificationService } from 'src/notification/notification.service';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '@prisma/client';
-
-// move logic to chatService
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
+import { v4 as uuid4 } from 'uuid';
 @UseGuards(OTPGuard)
 @UseGuards(AuthGuard('jwt'))
 @Controller('chat')
@@ -336,6 +340,26 @@ export class ChatController {
   ) {
     this.chatService.unblockUser(user.id, targetUserId.userId);
     this.chatGateway.unblockUser(targetUserId.userId, user.id);
+  }
+  @Post('upload')
+  @UseInterceptors(
+    FileInterceptor('avatar', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: async (req, file, cb) => {
+          const uniqueName = uuid4(); // Generates a UUID
+          const ext = extname(file.originalname);
+          cb(null, `${uniqueName}${ext}`);
+        },
+      }),
+    }),
+  )
+  uploadChannelAvatar(@UploadedFile() file) {
+    if (!file) {
+      throw new BadRequestException('No file uploaded.');
+    }
+    const filePath = `http://localhost:3000/uploads/${file.filename}`;
+    return { avatar: filePath };
   }
 }
 

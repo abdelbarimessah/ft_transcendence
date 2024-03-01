@@ -75,6 +75,7 @@ model Channel {
   password  String?
   createdAt DateTime            @default(now())
   ownerId   String
+  avatar    String?
   owner     User                @relation(fields: [ownerId], references: [id])
   messages  Message[]
   members   ChannelMembership[]

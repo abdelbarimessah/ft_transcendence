@@ -270,6 +270,8 @@ export class ChatController {
       targetId.userId,
     );
     this.chatGateway.banUser(id, targetId.userId, updatedMembership.isBanned);
+    this.chatGateway.leaveRoom(user.id, id);
+
     return updatedMembership.isBanned
       ? { message: 'User has been banned successfully.' }
       : { message: 'User has been unbanned successfully.' };

@@ -56,12 +56,14 @@ const ChatMenu = ({}) => {
         </p>
       </div>
       <div
-        className="flex justify-between w-full cursor-pointer py-4"
+        className="flex justify-between w-full cursor-pointer py-4 hover:bg-slate-50 rounded-xl active:bg-slate-100"
         onClick={handleClick}
       >
-        <span className="uppercase text-[#6D8CA3]">block {user.nickName}</span>
+        <span className="uppercase text-[#6D8CA3] pl-2">
+          block {user.nickName}
+        </span>
         <svg
-          className="w-7 h-7"
+          className="w-7 h-7 pr-2"
           viewBox="0 0 46 46"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"

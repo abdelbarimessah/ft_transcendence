@@ -7,11 +7,17 @@ import { useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import ParticleBackground from '@/components/particles/Tsparticles';
+import { useContext } from 'react';
+import { SocketContext } from '@/app/SocketContext';
+import Image from 'next/image';
+
 
 axios.defaults.withCredentials = true;
 
 
 export default function Wiating() {
+    const socketClient = useContext(SocketContext);
+
     const [isRandomMode, setIsRandomMode] = useState(true)
     const params = useSearchParams();
     const roomName: any = params.get("room");
@@ -23,8 +29,6 @@ export default function Wiating() {
     const router = useRouter();
 
     useEffect(() => {
-        console.log('player 1 id is :::', player1Id);
-
         axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`).then(res => {
             setPlayer1(res.data);
         }).catch(err => {
@@ -32,7 +36,6 @@ export default function Wiating() {
         })
     }, [])
     useEffect(() => {
-        console.log('player 2 id is :::', player2Id);
         axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/${player2Id}`).then(res => {
             setplayer2(res.data);
         }).catch(err => {
@@ -41,10 +44,15 @@ export default function Wiating() {
 
     }, [])
 
+    useEffect(() => {
+        socketClient.on('OtherPlayerDeclineTheGame', (data) => {
+            console.log({ message: 'the other player decline the game invite ' }, { data });
+            router.push('/profile');
+        })
+    })
 
 
-    console.log('the two player in this room is 1', player1);
-    console.log('the two player in this room is 2', player2);
+
 
 
     const removeInvitemMode = () => {
@@ -68,8 +76,18 @@ export default function Wiating() {
                     </div>
                     <div className=' w-full h-[200px] relative flex items-center justify-center '>
                         <PlayerPairing player1={player1} player2={player2} />
-                    </div><div onClick={removeInvitemMode} className=' cursor-pointer w-[50px] h-[50px] bg-white fixed top-96 right-52 flex items-center justify-center z-50 rounded-[17px] '>
-                        <img src="../../assets/cross1.svg" alt="" />
+                    </div>
+                    <div onClick={removeInvitemMode} className=' cursor-pointer w-[50px] h-[50px] bg-white fixed top-96 right-52 flex items-center justify-center z-50 rounded-[17px] '>
+                        <Image
+                            src="../../assets/cross1.svg"
+                            alt='crossIcon'
+                            height={20}
+                            width={20}
+                            priority={true}
+                            draggable={false}
+                                       
+                        >
+                        </Image>
                     </div>
                 </div>
             )}

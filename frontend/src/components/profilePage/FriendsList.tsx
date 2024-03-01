@@ -2,16 +2,16 @@
 
 import Image from "next/image";
 import FriendCard, { FriendCardProps } from "./FriendCard";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 // import Lottie from "lottie-react"; 
 // import animationData from '../../../public/assets/EmptyFriends.json';
 import animationData from '../../../public/assets/EmptyFriends.json';
 
 import dynamic from 'next/dynamic';
+import { SocketContext } from "@/app/SocketContext";
 
-// Dynamically import Lottie component
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 
 
@@ -24,7 +24,11 @@ const getFriendsList = async () => {
 };
 
 
+
+
 function FriendsList() {
+  const socketClient = useContext(SocketContext)
+  const queryClient = useQueryClient();
   const [me, setMe] = useState<any>();
   useEffect(() => {
     axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`).then(res => {
@@ -33,6 +37,13 @@ function FriendsList() {
       console.error(err);
     })
   }, [])
+
+
+  useEffect(() => {
+    socketClient.on('updateInfo', () => {
+      queryClient.invalidateQueries('friendsList');
+    })
+  }, [socketClient, queryClient])
 
 
   const {
@@ -47,7 +58,7 @@ function FriendsList() {
 
   return (
     <div className="h-[619px] 2xl:w-[557px] xl:w-[1137px] pb-2 w-full bg-color-0 rounded-[22px] flex flex-col items-center gap-[40px] overflow-x-scroll no-scrollbar  ">
-      <div className="w-full flex items-center justify-center gap-[15px] pt-[18px] c">
+      <div className="w-full flex items-center justify-center gap-[15px] pt-[18px]">
         <div className=" w-[37px] h-[28px] relative sm:flex hidden items-center justify-center pt-3 ">
           <Image
             src="/../../assets/MatchHistoryIcon.svg"
@@ -55,6 +66,7 @@ function FriendsList() {
             fill={true}
             priority={true}
             className="object-cover w-full h-full"
+            draggable={false}
           />
         </div>
         <div className="flex gap-[10px] ">
@@ -87,14 +99,13 @@ function FriendsList() {
             Error: {error.message}
           </div>
         )}
-
-        {!isLoading &&
-          !isError &&
-          friendsList?.map((friend) => (
-            <FriendCard key={friend.id} friend={friend} user={me} />
-          ))}
-
-        {/* <FriendCard friend={friend1} /> */}
+        <div className="flex w-full justify-center px-10 gap-10 items-center flex-wrap pb-6 overflow-x-scroll no-scrollbar">
+          {!isLoading &&
+            !isError &&
+            friendsList?.map((friend) => (
+              <FriendCard key={friend.id} friend={friend} user={me} />
+            ))}
+        </div>
       </div>
     </div>
   );

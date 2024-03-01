@@ -12,6 +12,7 @@ export default function StackItem(props: { logo: string }) {
         height={50}
         priority={true}
         className="animate-pulse"
+        draggable={false}
       />
     </div>
   );
@@ -26,6 +27,7 @@ export  function Tailwind() {
         height={50}
         priority={true}
         className="animate-pulse"
+        draggable={false}
       />
     </div>
   );

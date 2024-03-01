@@ -14,6 +14,9 @@ function Setting() {
             <div className='w-full h-full absolute '>
                 <ParticleBackground />
             </div>
+            <div className="w-full z-[2000] pt-12 2xl:pt-0">
+                <Header />
+            </div>
             <div className="gap-5 flex w-full h-full mx-10 no-scrollbar flex-col 2xl:flex-row items-center justify-center">
                 <SettingsPrompt />
                 <OtpCard />

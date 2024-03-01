@@ -44,30 +44,18 @@ export default function FriendCard({
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      if(user) socketClient.emit('User-status', { status: 'online', providerId: user.providerId });
-    }, 5000); // Emit every 5 seconds
-  
+      if (user) socketClient.emit('User-status', { status: 'online', providerId: user.providerId });
+    }, 2000);
+
     socketClient.on("User-status", (data) => {
-      console.log('get the USER_STATUS from the server [11111]', data);
-        
+
       if (data.providerId === friend.providerId) {
         setStatus(data.status);
       }
     });
-  
-    // Cleanup function to clear the interval when the component is unmounted
+
     return () => clearInterval(intervalId);
   }, []);
-  // useEffect(() => {
-  //   socketClient.on("User-status", (data) => {
-  //     console.log('get the USER_STATUS from the server [11111]', data);
-      
-  //     if (data.providerId === friend.providerId) {
-  //       setStatus(data.status);
-  //     }
-  //   });
-  //   if(user)  socketClient.emit('User-status', { status: 'online',  providerId : user.providerId});
-  // });
 
   return (
     <div className=" w-[200px] h-[200px] bg-color-30 rounded-[22px] relative overflow-hidden flex  flex-col gap-[40px] hover:opacity-90 hover:scale-[1.01]">
@@ -79,10 +67,20 @@ export default function FriendCard({
           width={200}
           priority={true}
           className="object-cover w-full h-full"
+          draggable={false}
         />
       </div>
       <div className="w-full flex items-center justify-center absolute top-[35px] ">
-        <div className="w-[70px] h-[70px] rounded-full relative border border-color-0 overflow-hidden cursor-pointer">
+        <div className="w-[70px] h-[70px] rounded-full relative border-[1px] border-color-0 overflow-hidden cursor-pointer"
+          style={{
+            borderColor:
+              status === "online"
+                ? "green"
+                : status === "inGame"
+                  ? "gray"
+                  : "red",
+          }}
+        >
           <Link href={`/profile/${friend.providerId}`}>
             <Image
               src={friend.avatar}
@@ -91,6 +89,7 @@ export default function FriendCard({
               width={70}
               priority={true}
               className="object-cover w-full h-full"
+              draggable={false}
             />
           </Link>
         </div>
@@ -101,19 +100,21 @@ export default function FriendCard({
               status === "online"
                 ? "green"
                 : status === "inGame"
-                ? "gray"
-                : "red",
+                  ? "gray"
+                  : "red",
           }}
         ></div>
       </div>
       <div className="w-full flex gap-[10px] flex-col ">
         <div className="w-full flex flex-col items-center justify-center">
-          <span className="font-nico-moji text-[14px] text-color-6">
-            {fullName}
+          <span className='font-nico-moji text-[14px] text-color-6'>
+            {`${fullName.substring(0, 15)}${fullName.length > 15 ? '..' : ''}`}
           </span>
+
           <span className="-mt-1 font-nico-moji text-[13px] text-color-29">
-            @{friend.nickName}
+            {`${friend.nickName.substring(0, 10)}${friend.nickName.length > 10 ? '..' : ''}`}
           </span>
+
         </div>
         <div className="w-full flex items-center justify-center gap-[18px]">
           <button
@@ -127,6 +128,7 @@ export default function FriendCard({
                 fill={true}
                 priority={true}
                 className="object-cover w-full h-full"
+                draggable={false}
               />
             </div>
             <span className="font-nico-moji text-[8px] text-color-0">
@@ -144,6 +146,7 @@ export default function FriendCard({
                 fill={true}
                 priority={true}
                 className="object-cover w-full h-full"
+                draggable={false}
               />
             </div>
             <span className="font-nico-moji text-[8px] text-color-0">

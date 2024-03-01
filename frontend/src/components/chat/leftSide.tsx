@@ -21,7 +21,7 @@ function LeftSide() {
 	const UserData: any = useContext(chatslistContext);
 
 	function handelAddNewConversation(icon : string) {
-		setNewIcon(icon)
+		UserData.setPopUpOn(true);
 
 	}
  
@@ -49,7 +49,7 @@ function LeftSide() {
 				<>
 					<div className='flex justify-between items-center  px-3 min-h-[60px] bg-[#FEE7C5] cursor-pointer hover:bg-[#635b4d]' onClick={e => {handelAddNewConversation('channel')}}>
 
-						<h1 className=' text-color-2 text-lg' >  Add New Channel</h1>
+						<h1 className=' text-color-2 text-lg' >  Add New Channel </h1>
 						<Btns icon={"../../assets/addChannel.png"} />
 						
 

@@ -10,9 +10,7 @@ function channels ({chat}) {
     return(
 
         <div className='felx  cursor-pointer w-full h-[80px] px-3 hover:bg-orange-600 justify-between items-center border-t border-[#070401] p-3 min-h-[68px]'>
-            <img    src={chat.members[1].avatar} 
-                    alt={chat.members[1].nickName}
-                    className=' rounded-full w-[60px] ' />
+            
             <h1 className=' font-medium '>{chat.members[1].nickName}</h1>
         </div>
       

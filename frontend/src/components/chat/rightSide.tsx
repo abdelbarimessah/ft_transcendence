@@ -98,7 +98,6 @@ function RightSide () {
                                     width={1024}
                                     height={1080}
                                     className=' rounded-full object-center w-[86px] h-[86px] p-1' />
-
                         </Link>
 
                         {/* info */}
@@ -146,7 +145,7 @@ function RightSide () {
                                 placeholder='type a message'
                                 onChange={handelMessageInput}
                                 ref={inputMessageRef}
-                                
+
                         />
                             <div className='flex items-center justify-end  ml-4 mr-3'>
                                 {UserData.typing ? <Btns icon={"../../assets/addChannel.png"}/> : <Btns icon={"../../assets/ball.png"} onClick={handelSubmit}/>}

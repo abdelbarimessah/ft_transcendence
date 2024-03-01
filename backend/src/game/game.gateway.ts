@@ -101,8 +101,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const roomName = `gameCard-${this.clientNOForCard}`;
       const player1 = this.playerQueue.shift();
       const player2 = this.playerQueue.shift();
-      if(player1.socket.data.user.providerId === player2.socket.data.user.providerId) 
-      {
+      if (
+        player1.socket.data.user.providerId ===
+        player2.socket.data.user.providerId
+      ) {
         this.playerQueue.push(player1);
         socket.emit('youAreInGameFromAntherPage');
         return;
@@ -142,7 +144,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.roomSockets.set(roomName, {
       player1: socket.data.user,
       player2: null,
-    })
+    });
 
     console.log(socket.id, 'join the room :: ', roomName);
     this.server.to(data.receiver.providerId).emit('playRequestFromFriend', {
@@ -160,16 +162,23 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (tmpData) {
       tmpData.player2 = socket.data.user;
       this.roomSockets.set(roomName, tmpData);
-
-    } 
-    this.server.in(roomName).emit('playersReadyInvite', {sender: data.gamePair.sender, receiver: data.gamePair.receiver, inviteNumber: data.gamePair.inviteNumber});
+    }
+    this.server.in(roomName).emit('playersReadyInvite', {
+      sender: data.gamePair.sender,
+      receiver: data.gamePair.receiver,
+      inviteNumber: data.gamePair.inviteNumber,
+    });
   }
 
   @SubscribeMessage('declineInviteGame')
-  handleDeclineInviteGame(socket: Socket, data: any)
-  {
-    console.log({message: 'decline the game invitee in the gateway [11111]'}, data);
-    this.server.to(data.gamePair.sender.providerId).emit('OtherPlayerDeclineTheGame', data);
+  handleDeclineInviteGame(socket: Socket, data: any) {
+    console.log(
+      { message: 'decline the game invitee in the gateway [11111]' },
+      data,
+    );
+    this.server
+      .to(data.gamePair.sender.providerId)
+      .emit('OtherPlayerDeclineTheGame', data);
   }
 
   @SubscribeMessage('endGame')

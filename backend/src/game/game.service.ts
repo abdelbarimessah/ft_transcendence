@@ -4,17 +4,11 @@ const Fuse = require('fuse.js');
 
 @Injectable()
 export class GameService {
-  constructor(private prismaService: PrismaService) { }
+  constructor(private prismaService: PrismaService) {}
 
   async addGameData(providerId: string, gameData: any) {
-    const {
-      opponentId,
-      userScore,
-      opponentScore,
-      status,
-      gameName,
-      gameType,
-    } = gameData;
+    const { opponentId, userScore, opponentScore, status, gameName, gameType } =
+      gameData;
     const count = await this.prismaService.game.count({
       where: {
         gameName: gameName,
@@ -36,8 +30,8 @@ export class GameService {
           },
         },
       });
-      
-      if(status === 'win') await this.addUserLevel(providerId);
+
+      if (status === 'win') await this.addUserLevel(providerId);
 
       const achievementsToUnlock = [
         { name: 'ach7', count: 50 },
@@ -48,17 +42,16 @@ export class GameService {
         { name: 'ach2', count: 1, gameType: 'randomMode' },
         { name: 'ach1', count: 1, gameType: 'friendMode' },
       ];
-      const friendMode = await this.getNumberOfWiningMatchFriendMode(providerId);
-      const randomMode = await this.getNumberOfWiningMatchRandomMode(providerId);
-  
+      const friendMode =
+        await this.getNumberOfWiningMatchFriendMode(providerId);
+      const randomMode =
+        await this.getNumberOfWiningMatchRandomMode(providerId);
+
       for (const { name, count, gameType } of achievementsToUnlock) {
         const winCount = gameType
           ? await this.getNumberOfWiningMatch(gameType, providerId)
-          : Math.max(
-              friendMode.friendModeCount,
-              randomMode.randomModeCount
-            );
-  
+          : Math.max(friendMode.friendModeCount, randomMode.randomModeCount);
+
         if (winCount >= count) {
           const achievement = await this.prismaService.achievement.findFirst({
             where: {
@@ -66,7 +59,7 @@ export class GameService {
               name: name,
             },
           });
-  
+
           if (achievement) {
             await this.prismaService.achievement.update({
               where: {
@@ -81,10 +74,8 @@ export class GameService {
       }
       return game;
     }
-
   }
-  async addUserLevel(providerId: string)
-  {
+  async addUserLevel(providerId: string) {
     const user = await this.prismaService.user.findUnique({
       where: {
         providerId: providerId,
@@ -107,7 +98,7 @@ export class GameService {
       where: {
         userId: id,
         gameType: gameType,
-        status: 'win'
+        status: 'win',
       },
     });
     return winCount;
@@ -118,10 +109,10 @@ export class GameService {
       where: {
         userId: id,
         gameType: 'friendMode',
-        status: 'win'
+        status: 'win',
       },
-    })
-    return { friendModeCount }
+    });
+    return { friendModeCount };
   }
 
   async getNumberOfWiningMatchRandomMode(id: string) {
@@ -129,10 +120,10 @@ export class GameService {
       where: {
         userId: id,
         gameType: 'randomMode',
-        status: 'win'
+        status: 'win',
       },
-    })
-    return { randomModeCount }
+    });
+    return { randomModeCount };
   }
 
   async getMatchHistory(userId: string) {

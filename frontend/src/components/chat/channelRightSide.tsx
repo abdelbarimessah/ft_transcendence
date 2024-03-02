@@ -99,7 +99,7 @@ function ChannelRightSide () {
     
 
                 {/* messages */}
-                {/* <div className="h-full bg-[#FFF0D2] bg-[url('../../public/assets/chat-bg.png')] overflow-y-scroll p-[38px]">
+                <div className="h-full bg-[#FFF0D2] bg-[url('../../public/assets/chat-bg.png')] overflow-y-scroll p-[38px]">
                     
                     
                         {messages.map((msg) => (
@@ -114,7 +114,7 @@ function ChannelRightSide () {
                         <div ref={refToBottum}/>
 
 
-                </div> */}
+                </div>
 
                     {messages.map((chat) => {
 						console.log(chat);

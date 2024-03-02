@@ -411,29 +411,29 @@ export class ChatService {
         `User is not a member of the channel ${channelId}`,
       );
     }
-    if (channel.ownerId === userId) {
-      const nextAdmin = await this.prismaService.channelMembership.findFirst({
-        where: {
-          isAdmin: true,
-          userId: {
-            not: userId,
-          },
-        },
-        orderBy: { joinedAt: 'asc' },
-      });
-      if (!nextAdmin)
-        throw new BadRequestException(
-          'There must be at least one admin to transfer ownership before leaving.`',
-        );
-      await this.prismaService.channel.update({
-        where: {
-          id: channelId,
-        },
-        data: {
-          ownerId: nextAdmin.userId,
-        },
-      });
-    }
+    // if (channel.ownerId === userId) {
+    //   const nextAdmin = await this.prismaService.channelMembership.findFirst({
+    //     where: {
+    //       isAdmin: true,
+    //       userId: {
+    //         not: userId,
+    //       },
+    //     },
+    //     orderBy: { joinedAt: 'asc' },
+    //   });
+    //   if (!nextAdmin)
+    //     throw new BadRequestException(
+    //       'There must be at least one admin to transfer ownership before leaving.`',
+    //     );
+    //   await this.prismaService.channel.update({
+    //     where: {
+    //       id: channelId,
+    //     },
+    //     data: {
+    //       ownerId: nextAdmin.userId,
+    //     },
+    //   });
+    // }
 
     await this.prismaService.channelMembership.delete({
       where: {

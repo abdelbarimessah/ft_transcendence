@@ -162,10 +162,14 @@ const gameInviteNotification: NotificationItemProps = {
 };
 
 const getNotificationList = async () => {
-  const res = await axios.get<NotificationItemProps[]>(
-    "http://localhost:3000/notification"
-  );
-  return res.data;
+  try {
+    const res = await axios.get<NotificationItemProps[]>(
+      "http://localhost:3000/notification"
+    );
+    return res.data;
+  } catch (err) {
+    console.log("Error fetching notification list");
+  }
 };
 
 const NotificationIcon = () => {
@@ -175,7 +179,6 @@ const NotificationIcon = () => {
   const [gamePair, setGamePair] = useState<any>();
   const router = useRouter();
   const [me, setMe] = useState<any>();
-  const [notificationArray, setnotificationArray] = useState<NotificationItemProps[]>();
 
   useEffect(() => {
     axios
@@ -206,7 +209,6 @@ const NotificationIcon = () => {
           avatar: data.sender.avatar,
         },
       };
-
     });
   }, [socketClient]);
 
@@ -291,8 +293,11 @@ const NotificationIcon = () => {
 
                 {!isLoading &&
                   !isError &&
-                  notificationList?.map((notification, index: number) => (
-                    <NotificationItem notification={notification} key={index} />
+                  notificationList?.map((notification: NotificationItemProps) => (
+                    <NotificationItem
+                      notification={notification}
+                      key={notification.id}
+                    />
                   ))}
 
                 {/* <NotificationItem notification={msgNotification} />
@@ -304,7 +309,6 @@ const NotificationIcon = () => {
                     onAccept={handleAcceptInvite}
                     onReject={handleDeclineInvite}
                   />
-
                 )}
               </div>
             </DropdownMenuContent>

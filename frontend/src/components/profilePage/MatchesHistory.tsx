@@ -269,7 +269,7 @@ export type userProps = {
 const getMatchHistoryList = async (userId: string) => {
   try {
     const res = await axios.get<MatchHistoryProps[]>(
-      `http://localhost:3000/matchHistory/${userId}`
+      `http://localhost:3000/game/matchHistory/${userId}`
     );
     return res.data;
   } catch (error) {
@@ -363,7 +363,7 @@ export function MatchesHistory() {
         {/* <MatchHistoryItem historyEntry={matchHistoryTest} /> */}
 
         {!isLoading && matchesHistoryList?.length === 0 && (
-          <div className="">
+          <div className="flex w-full h-full items-center justify-center">
             <Lottie
               autoPlay
               loop

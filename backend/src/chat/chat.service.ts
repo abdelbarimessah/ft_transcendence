@@ -737,7 +737,17 @@ export class ChatService {
             isBanned: false,
           },
           include: {
-            user: true, // To-do select the useful fields
+            user: {
+              select: {
+                id: true,
+                provider: true,
+                nickName: true,
+                firstName: true,
+                lastName: true,
+                avatar: true,
+                level: true,
+              },
+            }, // To-do select the useful fields
           },
         },
       },
@@ -832,6 +842,14 @@ export class ChatService {
         type: {
           in: ['PROTECTED', 'PUBLIC'],
         },
+      },
+      select: {
+        id: true,
+        name: true,
+        type: true,
+        createdAt: true,
+        ownerId: true,
+        avatar: true,
       },
     });
   }

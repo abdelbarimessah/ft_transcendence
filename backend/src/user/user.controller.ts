@@ -22,6 +22,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { OTPGuard } from 'src/auth/Otp.guard';
 import { providerIdDto, updateUserDto } from './user.dto';
 import { Response } from 'express';
+import { User } from '@prisma/client';
 
 @UseGuards(OTPGuard)
 @UseGuards(AuthGuard('jwt'))
@@ -35,7 +36,7 @@ export class UsersController {
   }
 
   @Get('me')
-  async getProfile(@CurrentUser() user: any) {
+  async getProfile(@CurrentUser() user: User) {
     try {
       if (user) {
         this.userService.uploadImage(user.avatar, user.providerId);
@@ -46,7 +47,7 @@ export class UsersController {
     } catch (error) {
       console.error('error', error);
     }
-
+    delete user.secretOpt;
     return user;
   }
 
@@ -89,6 +90,7 @@ export class UsersController {
   @Post('updateInfo')
   async updateInfo(@Body() body: updateUserDto, @CurrentUser() user: any) {
     const res = await this.userService.updateUserData(user.providerId, body);
+    delete res.secretOpt;
     return { message: 'User data updated', data: res };
     // return res.redirect('http://localhost:8000/profile');
   }

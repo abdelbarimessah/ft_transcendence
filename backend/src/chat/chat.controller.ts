@@ -76,12 +76,12 @@ export class ChatController {
     chats.forEach((chat) => {
       this.chatGateway.joinRoom(chat.members[0].id, chat.id);
       this.chatGateway.joinRoom(chat.members[1].id, chat.id);
+      delete chat.members[0].secretOpt;
+      delete chat.members[1].secretOpt;
     });
-    //delete the user info the user should not see it
-    console.log('chats:::::', chats);
     return chats;
   }
-  @Get('get/:id') // GET /chat/:id return the messages of the chat
+  @Get('get/:id') // GET /chat/get/:id return the messages of the chat
   async getChat(@Param('id') id: string, @CurrentUser() user: User) {
     const userId = user.id;
     const chat = await this.chatService.getChatMessages(id, userId);
@@ -168,7 +168,7 @@ export class ChatController {
   async getChannels(@CurrentUser() user: User) {
     const userId = user.id;
 
-    const channels = this.chatService.getUserChannels(userId);
+    const channels = await this.chatService.getUserChannels(userId);
 
     return channels;
   }
@@ -184,6 +184,7 @@ export class ChatController {
       userId,
       data,
     );
+    delete updatedChannel.password;
     this.chatGateway.updateChannel(channelId, updatedChannel);
     return updatedChannel;
   }

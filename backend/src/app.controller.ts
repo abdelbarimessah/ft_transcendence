@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-// normally here we should serve the .html files but next is doing it
+
 @Controller()
 export class AppController {
   @Get('profile')

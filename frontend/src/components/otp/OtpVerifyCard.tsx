@@ -16,7 +16,7 @@ function OtpVerifyCard() {
         if (otp.length === 6) {
             try {
                 const response = await axios.patch('http://localhost:3000/auth/verify/Otp', { otp })
-                if (response.data.valid === true) {
+                if (response.data.otp.verified === true) {
                     toast.success('OTP verified');
                     setTimeout(() => {
                         router.push('/profile');

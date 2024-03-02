@@ -1,5 +1,6 @@
 'use client'
 import * as Phaser from "phaser";
+import { Socket } from "socket.io-client";
 
 export default class aiMode extends Phaser.Scene {
   p1: any;
@@ -23,7 +24,9 @@ export default class aiMode extends Phaser.Scene {
     p2score: number;
   };
   goalScored: boolean;
-  constructor() {
+  constructor(
+    private socketClient: Socket,
+  ) {
     super();
     this.p1score_number = 0;
     this.p2score_number = 0;
@@ -101,7 +104,7 @@ export default class aiMode extends Phaser.Scene {
       this.physics.world.bounds.width / 2 - ("Player 1 wins!".length * 32) / 3,
       this.physics.world.bounds.height / 1.7,
       "you win!",
-      { fontSize: "50px", color: "#fff", font:'poppins' }
+      { fontSize: "50px", color: "#fff", font: 'poppins' }
     );
     this.p1victory.visible = false;
     this.p2victory = this.add.text(
@@ -132,22 +135,24 @@ export default class aiMode extends Phaser.Scene {
     this.p1score_number += 1;
     const p1s = this.p1score_number / 60;
     this.p1goaltext.setText(p1s.toFixed(0));
-    if (p1s === 7) {
+    if (p1s === 5) {
       this.p1victory.visible = true;
       this.p1.setActive(false).setVisible(false);
       this.p2.setActive(false).setVisible(false);
       this.ball.setActive(false).setVisible(false);
+      this.socketClient.emit('endGameAiMode')
     }
   }
   scorep2(): void {
     this.p2score_number += 1;
     const p2s = this.p2score_number / 60;
     this.p2goaltext.setText(p2s.toFixed(0));
-    if (p2s === 7) {
+    if (p2s === 5) {
       this.p2victory.visible = true;
       this.p1.setActive(false).setVisible(false);
       this.p2.setActive(false).setVisible(false);
       this.ball.setActive(false).setVisible(false);
+      this.socketClient.emit('endGameAiMode')
     }
   }
 

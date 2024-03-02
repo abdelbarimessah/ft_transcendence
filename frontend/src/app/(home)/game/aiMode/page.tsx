@@ -1,7 +1,8 @@
 'use client'
+import { SocketContext } from '@/app/SocketContext';
 import CountDownTimer from '@/components/game/CountDowntimer';
 import dynamic from 'next/dynamic'
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 const DynamicComponentWithNoSSR = dynamic(
   () => import('./aiMode'),
   { ssr: false }
@@ -16,6 +17,7 @@ const DynamicComponentWithNoSSR = dynamic(
 
 export default function Home() {
   const [showFirstComponent, setShowFirstComponent] = useState(true);
+  const socketClient = useContext(SocketContext);
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowFirstComponent(false);

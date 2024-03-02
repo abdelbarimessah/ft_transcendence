@@ -18,7 +18,7 @@ import { GameService } from './game.service';
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   nb: number = 0;
   private logger: Logger = new Logger('GameGateway');
-  constructor(private gameService: GameService) {}
+  constructor(private gameService: GameService) { }
 
   @WebSocketServer()
   server: Server;
@@ -101,8 +101,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const roomName = `gameCard-${this.clientNOForCard}`;
       const player1 = this.playerQueue.shift();
       const player2 = this.playerQueue.shift();
-      if(player1.socket.data.user.providerId === player2.socket.data.user.providerId) 
-      {
+      if (player1.socket.data.user.providerId === player2.socket.data.user.providerId) {
         this.playerQueue.push(player1);
         socket.emit('youAreInGameFromAntherPage');
         return;
@@ -161,14 +160,13 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       tmpData.player2 = socket.data.user;
       this.roomSockets.set(roomName, tmpData);
 
-    } 
-    this.server.in(roomName).emit('playersReadyInvite', {sender: data.gamePair.sender, receiver: data.gamePair.receiver, inviteNumber: data.gamePair.inviteNumber});
+    }
+    this.server.in(roomName).emit('playersReadyInvite', { sender: data.gamePair.sender, receiver: data.gamePair.receiver, inviteNumber: data.gamePair.inviteNumber });
   }
 
   @SubscribeMessage('declineInviteGame')
-  handleDeclineInviteGame(socket: Socket, data: any)
-  {
-    console.log({message: 'decline the game invitee in the gateway [11111]'}, data);
+  handleDeclineInviteGame(socket: Socket, data: any) {
+    console.log({ message: 'decline the game invitee in the gateway [11111]' }, data);
     this.server.to(data.gamePair.sender.providerId).emit('OtherPlayerDeclineTheGame', data);
   }
 
@@ -291,6 +289,12 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('move')
   handleMove(socket: Socket, data: any): void {
     this.server.to(data.roomName).emit('moveback', data);
+  }
+
+
+  @SubscribeMessage('endGameAiMode')
+  handleEndGameAiMode(socket: Socket) {
+    socket.emit('endGameAiMode')
   }
 }
 // import { OnGatewayConnection, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';

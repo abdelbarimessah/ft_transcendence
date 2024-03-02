@@ -11,7 +11,6 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { SocketContext } from "@/app/SocketContext";
 
-
 axios.defaults.withCredentials = true;
 
 function ProfileCard() {
@@ -45,10 +44,18 @@ function ProfileCard() {
                 console.error(error);
             }
         }
+        socketClient.on('updateInfo', async (data) => {
+            await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/${params?.id}`).then((res) => {
+                setUser(res.data);
+                setIds(res.data.providerId);
+            }).catch((error) => {
+                console.error(error);
+            })
+        })
+
 
         getData();
     }, [ids, params]);
-
 
     useEffect(() => {
         axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`).then((res) => {
@@ -199,10 +206,13 @@ interface AddFriendProps {
 
 function AddFriend(props: AddFriendProps) {
     const params = useParams<{ id: string; tag: string; item: string }>()
+    const socketClient = useContext(SocketContext);
+
     function handleAddFriend() {
         axios.patch('http://localhost:3000/user/addFriend', { id: params.id })
             .then(response => {
                 props.onSuccess();
+                socketClient.emit('updateInfo', { providerId: params.id });
                 toast.success('user added successfully');
             })
             .catch(error => {
@@ -210,6 +220,8 @@ function AddFriend(props: AddFriendProps) {
                     toast.error('error adding user');
             });
     }
+
+
 
     return (
         <div onClick={handleAddFriend} className=' h-[28px] lg:w-[90px] w-[40px] bg-color-6 rounded-[10px] flex items-center justify-around px-3 hover:scale-[1.01] hover:opacity-90 cursor-pointer'>
@@ -281,10 +293,13 @@ interface RemoveFriendProps {
 
 function RemoveFriend(props: RemoveFriendProps) {
     const params = useParams<{ id: string; tag: string; item: string }>()
+    const socketClient = useContext(SocketContext);
+
     function handleRemoveFriend() {
         axios.patch('http://localhost:3000/user/removeFriend', { id: params.id })
             .then(response => {
                 props.onSuccess();
+                socketClient.emit('updateInfo', { providerId: params.id });
                 toast.success('user removed successfully');
             })
             .catch(error => {

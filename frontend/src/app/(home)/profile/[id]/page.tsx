@@ -44,10 +44,12 @@ export default profile;
 // Todo add the invite to play in the page of other users  ++
 // Todo make solution for the invite of the game in the modeCard ++
 // TODO visite my profile from leaderBoard ++
-// Todo fixe the error in the ai mode (the game doesnt finish)
-// Todo complute the decline of the game invite 
-// Todo make the add/remove friend real time 
-// Todo add the responsive to the search result modale  
-// Todo add the channels property design/UI 
+// Todo fixe the error in the ai mode (the game doesnt finish) ++
+// Todo make the add/remove friend real time ++
+// Todo add the responsive to the search result modale  ++
+// Todo add the channels property design/UI ++
+// Todo make the front of the channels modal
 // Todo add the responsive to the friend list modale in the modeCard 
+// Todo complute the decline of the game invite 
 // Todo fixe the issue in the invite game in the modeCard 
+// Todo change some color in the landing page 

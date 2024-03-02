@@ -179,7 +179,6 @@ export class GameService {
         })
       )
     );
-
     const opponents = await Promise.all(
       games.map((game) =>
         this.prismaService.user.findUnique({
@@ -195,7 +194,6 @@ export class GameService {
       user: users[index],
       opponent: opponents[index],
     }));
-
     return result;
   }
 

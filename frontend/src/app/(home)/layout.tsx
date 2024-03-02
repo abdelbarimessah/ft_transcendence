@@ -18,9 +18,9 @@ export default function RootLayout({
   const [Show, setShow] = useState(true);
   const route = useRouter();
   const socketClient = useContext(SocketContext);
-  socketClient.on("notification", (data) => {
-    console.log(data);
-  });
+  // socketClient.on("notification", (data) => {
+  //   console.log(data);
+  // });
   useEffect(() => {
     const enterRoom = (data: any) => {
       setGameEnded(true)
@@ -57,7 +57,7 @@ export default function RootLayout({
       return;
     }
     socketClient.on('OnePlayerLeaveTheRoom', async (data) => {
-      
+
       if (data.socketId !== socketClient.id ) return;
       const gameData = {
         opponentId: data.oponent.providerId,
@@ -86,7 +86,7 @@ export default function RootLayout({
       return;
     }
     socketClient.on('OnePlayerLeaveTheRoom', async (data) => {
-      
+
       if (data.socketId === socketClient.id ) return;
       const gameData = {
         opponentId: data.user.providerId,

@@ -12,6 +12,7 @@ export type NotificationItemProps = {
   type: string;
   gameId: string | null;
   chatId: string | null;
+  user: userProps;
 };
 
 type userProps = {
@@ -33,6 +34,7 @@ export default function NotificationItem({
 }: Props) {
   const router = useRouter();
   const socketClient = useContext(SocketContext);
+
 
   const [userTD, setUserDT] = useState<userProps>(null);
 

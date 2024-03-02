@@ -375,7 +375,7 @@ export function MatchesHistory() {
         {!isError &&
           !isLoading &&
           matchesHistoryList &&
-          matchesHistoryList.map((matchHistory) => (
+          matchesHistoryList.map((matchHistory: MatchHistoryProps) => (
             <MatchHistoryItem
               key={matchHistory.id}
               historyEntry={matchHistory}

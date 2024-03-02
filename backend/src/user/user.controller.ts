@@ -62,7 +62,7 @@ export class UsersController {
       `/uploads/${user.providerId}${'.png'}`,
       backendUrl,
     );
-    
+
     url.searchParams.append('time', Date.now().toString());
 
     await this.userService.updateAvatar(user.providerId, url.href);

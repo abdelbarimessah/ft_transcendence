@@ -213,11 +213,12 @@ const NotificationIcon = () => {
   }, [socketClient]);
 
   useEffect(() => {
-    socketClient.on("newMessage", (data) => {
-      const newMessafeNotification: NotificationItemProps = {
-        id: JSON.stringify(data.inviteNumber),
-        type: "MESSAGE",
-        gameId: JSON.stringify(data.inviteNumber),
+    socketClient.on("notification", (data) => {
+      console.log('in notification', data);
+      const newNotification: NotificationItemProps = {
+        id: data.id,
+        type: data.type,
+        // gameId: JSON.stringify(data.inviteNumber),
         chatId: data.chatId,
         user: {
           id: data.sender.providerId,
@@ -253,7 +254,7 @@ const NotificationIcon = () => {
   };
 
   const handleUnreadNotifications = () => {
-    socket.emit("notification", { me });
+    socket.emit("notification");
   };
 
   return (

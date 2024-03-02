@@ -7,10 +7,24 @@ import { useEffect, useState } from "react";
 export type MatchHistoryProps = {
   id: number;
   userId: string;
+  userFirstName: string;
+  userLastName: string;
+  userNickName: string;
   userScore: number;
   opponentId: string;
+  opponentFirstName: string;
+  opponentLastName: string;
+  opponentNickName: string;
+  opponentScore: number;
   opponentScore: number;
 };
+// export type MatchHistoryProps = {
+//   id: number;
+//   userId: string;
+//   userScore: number;
+//   opponentId: string;
+//   opponentScore: number;
+// };
 
 type MatchHistoryItemProps = {
   firstName: string;
@@ -23,6 +37,7 @@ const getUserToDisplay = async (user: string) => {
   const userData = await axios.get<MatchHistoryItemProps>(
     `http://localhost:3000/user/${user}`
   );
+  console.log("USER DATAAAAAA -======>", userData.data);
   return userData.data;
 };
 

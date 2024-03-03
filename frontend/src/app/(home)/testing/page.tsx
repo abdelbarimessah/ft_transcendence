@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import axios from "axios";
 
@@ -9,6 +9,8 @@ axios.defaults.withCredentials = true;
 
 export default function App() {
   const [settingModal, setSettingModal] = useState(false);
+  const [passwordState, setPasswordState] = useState(false)
+  const [changeChannelNameState, setChangeChannelNameState] = useState(false)
 
   const handleSettingsClick = () => {
     setSettingModal(true)
@@ -16,6 +18,13 @@ export default function App() {
   const handleCloseSettingModal = () => {
     setSettingModal(false)
   }
+
+  const handleCancelClick = () => {
+    setChangeChannelNameState(false);
+    setPasswordState(false)
+  }
+
+  
 
   return (
     <div className="flex w-full flex-col  items-center justify-center relative bg-color-18">
@@ -71,30 +80,53 @@ export default function App() {
           }
           {settingModal &&
             <div className="flex items-center justify-center flex-col gap-[20px]">
-              <div className="w-[119px] h-[119px] rounded-full bg-color-30 relative object-cover hover:scale-[1.01] ">
-                <Image
-                  src="../../../../assets/ProfileHeaderImage.svg"
-                  alt="avatar"
-                  draggable={false}
-                  fill={true}
-                  priority={true}
-                  className="w-full h-full object-cover"
-                >
-                </Image>
+              <div className='w-[119px] h-[119px] bg-color-6 rounded-full relative border border-color-0 group cursor-pointer'>
+                <div className="w-full h-full absolute rounded-full overflow-hidden">
+                  <Image
+                    src="../../../../assets/ProfileHeaderImage.svg"
+                    alt="Add image icon"
+                    fill={true}
+                    className="object-cover w-full h-full"
+                    priority={true}
+                    sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
+                  />
+                </div>
+                <div className="h-[23px] w-[23px] absolute z-[1000] bottom-2 right-2 bg-color-24 flex items-center justify-center rounded-full ">
+                  <Image
+                    src='/../../assets/EditChannelAvatarIcon.svg'
+                    alt="Add image icon"
+                    height={14}
+                    width={14}
+                    priority={true}
+                  />
+                </div>
+                <div className='h-full w-full rounded-full absolute hidden group-hover:flex  bg-black items-center justify-center text-center bg-slate-600/50 text-white tracking-wider'>Change Avatar</div>
+                <input className='h-full w-full rounded-full absolute opacity-0 z-10 cursor-pointer' type="file" accept=".png, .jpg, .jpeg" />
               </div>
               <div className="flex gap-[10px]">
-                <SetPassowrd />
-                <SetPublic />
+                <SetPassowrd setPasswordState={setPasswordState} passwordState={passwordState} />
+                {passwordState &&
+                  <TypePassword />
+                }
+                <SetChannelName setChangeChannelNameState={setChangeChannelNameState} changeChannelNameState={changeChannelNameState} />
+                {
+                  changeChannelNameState &&
+                  <TypeChannelName />
+                }
               </div>
-              <div className="flex gap-[119px]">
+              <div className="flex gap-[43px]">
                 <SetPrivate />
-                <div className="h-[29px] w-[69px] bg-[#F3FAFF] rounded-[10px] flex items-center justify-center mt-[16px]">
-                  <span className="text-[12px] text-color-31">Save</span>
+                <div className="flex items-center justify-center gap-2">
+                  <div onClick={handleCancelClick} className="h-[29px] w-[69px] bg-[#EBEBEB] rounded-[10px] flex items-center justify-center mt-[16px] cursor-pointer  hover:scale-[1.01] hover:opacity-95 ">
+                    <span className="text-[12px] text-color-31">Cancel</span>
+                  </div>
+                  <div className="h-[29px] w-[69px] bg-color-32 rounded-[10px] flex items-center justify-center mt-[16px] cursor-pointer  hover:scale-[1.01] hover:opacity-95">
+                    <span className="text-[12px] text-color-31">Save</span>
+                  </div>
                 </div>
               </div>
               <div className="w-full h-[2px] bg-color-30">
               </div>
-
             </div>
           }
 
@@ -154,7 +186,7 @@ export default function App() {
 
 function Owner() {
   return (
-    <div className="Chat_owner h-[60px] w-[370px] bg-[#F3FAFF] flex items-center justify-between rounded-[22px] pl-2 pr-10 flex-shrink-0  hover:scale-[1.01]">
+    <div className="Chat_owner h-[60px] w-[370px] bg-color-32 flex items-center justify-between rounded-[22px] pl-2 pr-10 flex-shrink-0  hover:scale-[1.01]">
       <div className="flex items-center justify-center">
         <div className="h-[43px] w-[43px] relative object-cover cursor-pointer">
           <Image
@@ -181,7 +213,7 @@ function Owner() {
 
 function Admin() {
   return (
-    <div className="Chat_owner h-[60px] w-[370px] bg-[#F3FAFF] flex items-center justify-between rounded-[22px] pl-2 pr-10 flex-shrink-0 hover:scale-[1.01]">
+    <div className="Chat_owner h-[60px] w-[370px] bg-color-32 flex items-center justify-between rounded-[22px] pl-2 pr-10 flex-shrink-0 hover:scale-[1.01]">
       <div className="flex items-center justify-center">
         <div className="h-[43px] w-[43px] relative object-cover cursor-pointer">
           <Image
@@ -218,8 +250,27 @@ function Admin() {
 }
 
 function User() {
+  const [showSettings, setShowSettings] = useState(false);
+  const userRef = useRef<HTMLDivElement>(null);
+  const zIndex = showSettings ? 'z-10' : 'z-0';
+
+
+  useEffect(() => {
+    function handleClickOutside(event:MouseEvent) {
+      if (userRef.current && !userRef.current.contains(event.target as Node)) {
+        setShowSettings(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+
   return (
-    <div className="Chat_owner h-[60px] w-[370px] bg-[#F3FAFF] flex items-center justify-between rounded-[22px] pl-2 pr-10 flex-shrink-0  hover:scale-[1.01]">
+    <div ref={userRef}  className={`Chat_owner h-[60px] w-[370px] bg-color-32 flex items-center justify-between rounded-[22px] pl-2 pr-10 flex-shrink-0  hover:scale-[1.01] relative ${zIndex}`}>
       <div className="flex items-center justify-center">
         <div className="h-[43px] w-[43px] relative object-cover cursor-pointer">
           <Image
@@ -237,7 +288,7 @@ function User() {
           <span className="text-color-23 text-[10px] -mt-1">@amessah</span>
         </div>
       </div>
-      <div className="relative h-[18px] w-[4px] object-cover cursor-pointer hover:scale-[1.02] ">
+      <div onClick={(e) => {setShowSettings(true)}} className="relative h-[18px] w-[4px] object-cover cursor-pointer hover:scale-[1.02] ">
         <Image
           src="../../../../assets/threePointChat.svg"
           alt="avatar"
@@ -248,15 +299,17 @@ function User() {
         >
         </Image>
       </div>
+      {showSettings &&
+        <UsersSettingsPoint/>
+      }
     </div>
   )
 }
 
-function SetPassowrd() {
-
+function SetPassowrd(props: any) {
   return (
-    <div className="w-[178px] h-[45px] bg-color-31 gap-4 rounded-[16px] flex items-center justify-center ">
-
+    !props.passwordState &&
+    <div onClick={(e) => props.setPasswordState(true)} className="w-[178px] h-[45px] bg-color-31 gap-4 rounded-[16px] flex items-center justify-center cursor-pointer  hover:scale-[1.01] hover:opacity-95">
       <div className="relative h-[20px] w-[20px] object-cover cursor-pointer hover:scale-[1.02] ">
         <Image
           src="../../../../assets/setPasswordIcon.svg"
@@ -265,8 +318,7 @@ function SetPassowrd() {
           fill={true}
           priority={true}
           className="w-full h-full object-cover"
-        >
-        </Image>
+        />
       </div>
       <div className="">
         <span className="text-[12px] text-color-0">Set Password</span>
@@ -274,10 +326,25 @@ function SetPassowrd() {
     </div>
   )
 }
+
+function TypePassword() {
+
+  return (
+    <div className="w-[178px] h-[45px] bg-color-32 gap-4 rounded-[16px] flex items-center justify-center cursor-pointer  hover:scale-[1.01] hover:opacity-95">
+      <input
+        type="search"
+        placeholder='password...'
+        className='placeholder-color-31 px-3 h-full bg-color-32 tracking-wider placeholder:font-medium font-poppins font-[400] rounded-[16px] text-color-31 text-[16px] w-full focus:outline-none'
+      />
+    </div>
+  )
+}
+
+
 function SetPublic() {
 
   return (
-    <div className="w-[178px] h-[45px] bg-color-31 gap-4 rounded-[16px] flex items-center justify-center ">
+    <div className="w-[178px] h-[45px] bg-color-31 gap-4 rounded-[16px] flex items-center justify-center cursor-pointer  hover:scale-[1.01] hover:opacity-95">
       <div className="relative h-[20px] w-[17px] object-cover cursor-pointer hover:scale-[1.02] ">
         <Image
           src="../../../../assets/setPublicIcon.svg"
@@ -296,9 +363,13 @@ function SetPublic() {
   )
 }
 function SetPrivate() {
+  const handleSetPrivate = () => {
+    console.log('handle the set the of the channel protected');
+
+  }
 
   return (
-    <div className="w-[178px] h-[45px] bg-color-31 gap-4 rounded-[16px] flex items-center justify-center ">
+    <div onClick={handleSetPrivate} className="w-[178px] h-[45px] bg-color-31 gap-4 rounded-[16px] flex items-center justify-center cursor-pointer hover:scale-[1.01] hover:opacity-95">
       <div className="relative h-[20px] w-[17px] object-cover cursor-pointer hover:scale-[1.02] ">
         <Image
           src="../../../../assets/setPrivateIcon.svg"
@@ -318,6 +389,64 @@ function SetPrivate() {
 }
 
 
+function SetChannelName(props: any) {
+  return (
+    !props.changeChannelNameState &&
+    <div onClick={(e) => props.setChangeChannelNameState(true)} className="w-[178px] h-[45px] bg-color-31 gap-4 rounded-[16px] flex items-center justify-center cursor-pointer hover:scale-[1.01] hover:opacity-95">
+      <div className="relative h-[21px] w-[21px] object-cover cursor-pointer hover:scale-[1.02] ">
+        <Image
+          src="../../../../assets/ChannelNameIcon.svg"
+          alt="avatar"
+          draggable={false}
+          fill={true}
+          priority={true}
+          className="w-full h-full object-cover"
+        >
+        </Image>
+      </div>
+      <div className="">
+        <span className="text-[12px] text-color-0">Leet Chess</span>
+      </div>
+    </div>
+  )
+}
+
+function TypeChannelName() {
+
+  return (
+    <div className="w-[178px] h-[45px] bg-color-32 gap-4 rounded-[16px] flex items-center justify-center cursor-pointer  hover:scale-[1.01] hover:opacity-95">
+      <input
+        type="text"
+        placeholder='Leet Chess'
+        className='placeholder-color-31 px-3 h-full bg-color-32 tracking-wider placeholder:font-medium font-poppins font-[400] rounded-[16px] text-color-31 text-[16px] w-full focus:outline-none'
+      />
+    </div>
+  )
+}
 
 
-export { Owner, Admin, User, SetPassowrd, SetPublic, SetPrivate }
+function UsersSettingsPoint() {
+
+  return (
+    <div className="h-[133px] w-[133px] bg-color-31 rounded-b-[22px] rounded-tl-[22px] flex flex-col items-center justify-center overflow-hidden gap-[3px] absolute top-5 right-12 z-[1000]">
+      <div className="h-[27px] w-[119px] bg-color-0 rounded-[22px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
+        <span className="text-color-31 text-[9px]">Make Admin</span>
+      </div>
+      <div className="h-[27px] w-[119px] bg-color-0 rounded-[22px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
+        <span className="text-color-31 text-[9px]">Mute</span>
+      </div>
+      <div className="h-[27px] w-[119px] bg-color-0 rounded-[22px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
+        <span className="text-color-31 text-[9px]">Kick</span>
+      </div>
+      <div className="h-[27px] w-[119px] bg-color-0 rounded-[22px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
+        <span className="text-color-31 text-[9px]">Ban</span>
+      </div>
+    </div>
+  )
+}
+
+
+
+
+
+export { Owner, Admin, User, SetPassowrd, SetPublic, SetPrivate, TypePassword, SetChannelName, TypeChannelName, UsersSettingsPoint }

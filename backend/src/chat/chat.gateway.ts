@@ -50,11 +50,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const decoded = this.jwtService.verify(authToken, { secret });
 
       const userId = decoded.id;
-      console.log(`${userId} joined`);
 
       this.appService.set(userId, client.id);
     } catch (error) {
-      console.error('Error handling socket connection:', error.message);
       client.disconnect(true);
     }
   }

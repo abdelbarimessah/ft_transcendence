@@ -1,13 +1,16 @@
 'use client'
+import { SocketContext } from '@/app/SocketContext';
 import styles from './Prompt.module.css'
 import axios from 'axios';
 import { useRouter } from 'next/navigation'
+import { useContext } from 'react';
 
 axios.defaults.withCredentials = true;
 
 
 function LogoutPrompt(props: any) {
     const router = useRouter()
+    const socketClient = useContext(SocketContext);
     const handleCancelClick = () => {
         props.setShowLogoutPrompt(props.showLogoutPrompt);
     };
@@ -16,6 +19,9 @@ function LogoutPrompt(props: any) {
     async function handleLogoutClick() {
         try {
             await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`);
+            socketClient.emit('customLogout');
+            console.log('handle the custom logOut');
+            
             router.push('/');
         }
         catch (error) {

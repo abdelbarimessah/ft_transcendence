@@ -33,9 +33,9 @@ function profile() {
                         <FriendsList />
                     </QueryClientProvider>
                     <Achievements />
-                    {/* <QueryClientProvider client={MatchesHistoryClient}>
+                    <QueryClientProvider client={MatchesHistoryClient}>
                         <MatchesHistory />
-                    </QueryClientProvider> */}
+                    </QueryClientProvider>
                 </div>
             </div>
         </div>

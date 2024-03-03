@@ -39,8 +39,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private readonly connectedClients: Map<string, Socket> = new Map();
 
   handleConnection(socket: Socket): any {
-    console.log('connect of the socket', socket.id);
-    // this.logger.log(`Client connected: ${socket.id}`);
+    this.logger.log(`Client connected: ${socket.id}`);
   }
 
   @SubscribeMessage('firstTime')
@@ -220,7 +219,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   handleDisconnect(socket: Socket) {
-    console.log('disconnect of the socket', socket.id);
+    this.logger.log('disconnect of the socket', socket.id);
 
     const roomName = this.listRooms.get(socket.id);
     this.playerQueue = this.playerQueue.filter(

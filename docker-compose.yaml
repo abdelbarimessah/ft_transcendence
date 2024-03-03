@@ -20,7 +20,7 @@ services:
   #   ports:
   #     - 8000:8000
   #   env_file:
-  #     - .env
+  #     - ./frontend/.env
   #   environment:
   #     - BACKEND_IP=backend
   #   networks:
@@ -34,7 +34,8 @@ services:
   #   ports:
   #     - 3000:3000
   #   env_file:
-  #     - .env
+
+  #     - ./backend/.env
   #   environment:
   #     - HOST=database
   #   networks:
@@ -44,9 +45,19 @@ services:
 
 networks:
   trans:
-# volumes:
+# services:
 #   db:
-#     driver_opts:
-#       type: none
-#       o: bind
-#       device: /Users/${USER}/Desktop/db
+#     image: postgres:latest
+#     ports:
+#       - 5432:5432
+#     env_file:
+#       - .env
+#     networks:
+#       - trans
+
+volumes:
+  db:
+    driver_opts:
+      type: none
+      o: bind
+      device: /Users/imittous/Desktop/db

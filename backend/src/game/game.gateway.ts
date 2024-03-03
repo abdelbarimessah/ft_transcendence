@@ -140,7 +140,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.roomSockets.set(roomName, {
       player1: socket.data.user,
       player2: null,
-    })
+    });
 
     console.log(socket.id, 'join the room :: ', roomName);
     this.server.to(data.receiver.providerId).emit('playRequestFromFriend', {

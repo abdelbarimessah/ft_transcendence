@@ -16,7 +16,7 @@ import { JwtService } from '@nestjs/jwt';
 @WebSocketGateway({
   cors: {
     origin: 'http://localhost:8000',
-    credentials: true
+    credentials: true,
   },
 })
 export class UserGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -27,13 +27,10 @@ export class UserGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private appService: AppService,
     private configService: ConfigService,
     private jwtService: JwtService,
-  ) { }
-
-
+  ) {}
 
   @WebSocketServer()
   server: Server;
-
 
   handleConnection(socket: Socket) {
     try {
@@ -50,24 +47,21 @@ export class UserGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
       const decoded = this.jwtService.verify(authToken, { secret });
 
-
       this.logger.log(`[UserGateway] Client connected: ${socket.id}`);
       const userId = decoded.providerId;
       socket.data.providerId = userId;
-      socket.join(`User-${userId}`)
-      this.server.emit('User-status', { status: 'online', providerId: userId })
-
+      socket.join(`User-${userId}`);
+      this.server.emit('User-status', { status: 'online', providerId: userId });
     } catch (error) {
       socket.disconnect(true);
     }
-
   }
 
   async handleDisconnect(socket: Socket) {
     const providerId = socket.data.providerId;
     const sockets = await this.server.in(`User-${providerId}`).fetchSockets();
     if (sockets.length === 0) {
-      this.server.emit('User-status', { status: 'offline', providerId })
+      this.server.emit('User-status', { status: 'offline', providerId });
     }
   }
 
@@ -90,7 +84,6 @@ export class UserGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.server.emit('User-status', { status: data.status, providerId: data.providerId })
 
   }
-
 
   @SubscribeMessage('updateInfo')
   handleUpdateInfo(socket: Socket, data: any) {

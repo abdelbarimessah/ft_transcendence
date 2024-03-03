@@ -8,14 +8,8 @@ export class GameService {
   ) { }
 
   async addGameData(providerId: string, gameData: any) {
-    const {
-      opponentId,
-      userScore,
-      opponentScore,
-      status,
-      gameName,
-      gameType,
-    } = gameData;
+    const { opponentId, userScore, opponentScore, status, gameName, gameType } =
+      gameData;
     const count = await this.prismaService.game.count({
       where: {
         gameName: gameName,
@@ -82,7 +76,6 @@ export class GameService {
       }
       return game;
     }
-
   }
   async addUserLevel(providerId: string) {
     const user = await this.prismaService.user.findUnique({
@@ -107,7 +100,7 @@ export class GameService {
       where: {
         userId: id,
         gameType: gameType,
-        status: 'win'
+        status: 'win',
       },
     });
     return winCount;
@@ -118,10 +111,10 @@ export class GameService {
       where: {
         userId: id,
         gameType: 'friendMode',
-        status: 'win'
+        status: 'win',
       },
-    })
-    return { friendModeCount }
+    });
+    return { friendModeCount };
   }
 
   async getNumberOfWiningMatchRandomMode(id: string) {
@@ -129,10 +122,10 @@ export class GameService {
       where: {
         userId: id,
         gameType: 'randomMode',
-        status: 'win'
+        status: 'win',
       },
-    })
-    return { randomModeCount }
+    });
+    return { randomModeCount };
   }
 
   // async getMatchHistory(userId: string) {

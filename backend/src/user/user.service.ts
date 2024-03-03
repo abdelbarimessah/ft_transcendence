@@ -37,10 +37,21 @@ export class UserService {
         providerId: id,
       },
       include: {
-        friendOf: true,
+        friendOf: {
+          select: {
+            id: true,
+            providerId: true,
+            nickName: true,
+            firstName: true,
+            lastName: true,
+            avatar: true,
+            level: true,
+            cover: true,
+          },
+        },
       },
     });
-
+    delete user.secretOpt;
     return user;
   }
 
@@ -58,7 +69,10 @@ export class UserService {
 
       fs.writeFileSync(uploadPath, response.data);
     } catch (error) {
-      console.error('error in the upload of the image in the backend', error);
+      console.error(
+        'error in the upload of the image in the backend',
+        error.message,
+      );
     }
   }
 
@@ -68,7 +82,7 @@ export class UserService {
       data: { avatar: avatarPath },
     });
   }
-  
+
   async updateCover(id: string, coverPath: string) {
     return this.prismaService.user.update({
       where: { providerId: id },

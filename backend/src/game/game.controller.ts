@@ -14,17 +14,15 @@ export class GameController {
   async gameData(@Req() req: Request, @CurrentUser() user: any) {
     const gameData = req.body;
     await this.gameService.addGameData(user.providerId, gameData);
-  }  
-  
+  }
+
   @Get('winFriendMode/:id')
-  async getWinFriendMode(@Req() req: Request, @Param('id') id: string)
-  {
+  async getWinFriendMode(@Req() req: Request, @Param('id') id: string) {
     return this.gameService.getNumberOfWiningMatchFriendMode(id);
   }
-  
+
   @Get('winRandomMode/:id')
-  async getWinRandomMode(@Req() req: Request, @Param('id') id: string)
-  {
+  async getWinRandomMode(@Req() req: Request, @Param('id') id: string) {
     return this.gameService.getNumberOfWiningMatchRandomMode(id);
   }
 

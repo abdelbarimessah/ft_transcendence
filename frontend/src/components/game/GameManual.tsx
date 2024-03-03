@@ -18,7 +18,7 @@ const GameManual = () => {
   return (
     <>
       <button
-        className="fixed bottom-5 right-5 md:bottom-10 md:right-10 z-50 w-14 h-14 md:w-20 md:h-20 md:text-2xl rounded-full bg-color-5 text-white flex items-center justify-center shadow-lg hover:bg-color-6"
+        className="fixed bottom-5 right-5 md:bottom-10 md:right-10 z-50 w-14 h-14 md:w-20 md:h-20 md:text-2xl rounded-full bg-color-6 text-white flex items-center justify-center shadow-lg hover:bg-color-5"
         onClick={toggleManual}
       >
         ?
@@ -30,7 +30,7 @@ const GameManual = () => {
         >
           <div>
             <button
-              className="absolute right-2 top-2 text-slate-500 hover:text-slate-700"
+              className="absolute right-2 top-2 text-color-6 hover:text-color-5"
               onClick={toggleManual}
             >
               ✖️
@@ -39,7 +39,7 @@ const GameManual = () => {
               <button
                 className={`text-sm md:text-base border rounded p-1 md:p-2  ${
                   manual === 0
-                    ? "bg-color-5 text-white shadow"
+                    ? "bg-color-6 text-white shadow"
                     : "bg-slate-200 hover:bg-slate-300"
                 }`}
                 value={0}
@@ -50,7 +50,7 @@ const GameManual = () => {
               <button
                 className={`text-sm md:text-base border rounded p-1 md:p-2  ${
                   manual === 2
-                    ? "bg-color-5 text-white shadow"
+                    ? "bg-color-6 text-white shadow"
                     : "bg-slate-200 hover:bg-slate-300"
                 }`}
                 value={2}
@@ -61,7 +61,7 @@ const GameManual = () => {
               <button
                 className={`text-sm md:text-base border rounded p-1 md:p-2  ${
                   manual === 1
-                    ? "bg-color-5 text-white shadow"
+                    ? "bg-color-6 text-white shadow"
                     : "bg-slate-200 hover:bg-slate-300"
                 }`}
                 value={1}

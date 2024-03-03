@@ -11,17 +11,38 @@ import { SocketContext } from '@/app/SocketContext';
 
 
 
+
+
+
+
+// author: Object { id: "204d1637-d674-426f-8df5-260324a33823", providerId: "94400", avatar: "https://cdn.intra.42.fr/users/aaf6846387f1dfca758132ebf22f9c42/imittous.jpg", … }
+// avatar: "https://cdn.intra.42.fr/users/aaf6846387f1dfca758132ebf22f9c42/imittous.jpg"
+// id: "204d1637-d674-426f-8df5-260324a33823"
+// nickName: "imittous"
+// providerId: "94400"
+
+// authorId: "204d1637-d674-426f-8df5-260324a33823"
+// channelId: "a9e442d5-a4ea-4416-a0af-e7018c36d4dd"
+// chatId: null
+// content: "asd"
+// createdAt: "2024-03-02T11:33:24.113Z"
+// id: "b644bc76-391c-41d3-911a-69b512277d29"
+
+
+
+
+
 function ChannelRightSide () {    
 
     const inputMessageRef = useRef(null);
-    // const refToBottum = useRef(null);
+    const refToBottum = useRef(null);
     const UserData :any = useContext(chatslistContext);
     const socket = useContext(SocketContext);
     
-    // useEffect(() => {
-    //     refToBottum.current?.scrollIntoView({behavior: "smooth"})
+    useEffect(() => {
+        refToBottum.current?.scrollIntoView({behavior: "smooth"})
 
-    // },[UserData.channelChatConversation])
+    },[UserData.channelChatConversation])
     
     console.log("UserData.chatClicked =>>> ", UserData.chatClicked.id);
     console.log("UserData.channelClicked =>>> ", UserData.channelClicked.id);
@@ -29,8 +50,8 @@ function ChannelRightSide () {
     //channelChatConversation
     if (UserData.channelClicked.id != undefined)
     {   
-        console.log("UserData.channelClicked <<<=>>> ", UserData.channelClicked);
-        // const friendSrcImg = UserData.myId.id !== UserData.chatClicked.members[0].id ? UserData.chatClicked.members[0].avatar : UserData.chatClicked.members[1].avatar;
+    console.log("UserData.channelClicked <<<=>>> ", UserData.channelClicked);
+            // const friendSrcImg = UserData.myId.id !== UserData.chatClicked.members[0].id ? UserData.chatClicked.members[0].avatar : UserData.chatClicked.members[1].avatar;
         // const friendNickName = UserData.myId.id !== UserData.chatClicked.members[0].id ? UserData.chatClicked.members[0].nickName : UserData.chatClicked.members[1].nickName;
         // const friendId = UserData.myId.id !== UserData.chatClicked.members[0].id ? UserData.chatClicked.members[0].id : UserData.chatClicked.members[1].id;
         // const friendProviderId = UserData.myId.id !== UserData.chatClicked.members[0].id ? UserData.chatClicked.members[0].providerId : UserData.chatClicked.members[1].providerId;
@@ -80,9 +101,9 @@ function ChannelRightSide () {
         // // console.log("messages = ", messages);
         return(
             //chat 
-            <div className='flex flex-col bg-[#ffff] h-full'>
+            <div className='flex flex-col h-full'>
                 {/* up nav */}
-                <div className='flex justify-between  bg-black h-[130px] border-r border-b border-[#FFEFD9] p-5'>
+                <div className='flex justify-between  bg-[#ffff] h-[130px] border-r border-b border-[#FFEFD9] p-5'>
                    <div className='flex items-center'>
 
                    {/* todo: channel avatar */}
@@ -99,18 +120,17 @@ function ChannelRightSide () {
     
 
                 {/* messages */}
-                <div className="h-full bg-[#FFF0D2] bg-[url('../../public/assets/chat-bg.png')] overflow-y-scroll p-[38px]">
-                    
-                    
-                        {messages.map((msg) => (
+                <div className="h-full bg-[#F3FAFF] bg-[url('../../public/assets/chat-bg.png')] overflow-y-scroll p-[38px]">
+
+                        {/* {messages.map((msg) => (
                             <Messages key={msg.id}
                             msg={msg.content}
                             avatar={msg.author.avatar}
                             nickname={msg.author.nickName}
                             authorId={msg.authorId}
                             time={<Moment format="hh:mm A">{msg.createdAt}</Moment>}
-                            friendId={friendId}/>
-                        ))}
+                            friendId={UserData.myId.id !== msg.authorId ? msg.authorId : UserData.myId.id}/>
+                        ))} */}
                         <div ref={refToBottum}/>
 
 
@@ -123,7 +143,7 @@ function ChannelRightSide () {
                 {/* bott nav */}
 
                 <form onSubmit={handelSubmitrefrech}>
-                    <div className='flex items-center bg-[#FFE0B3] h-[90px] p-4 rounded-lg'>
+                    <div className='flex items-center bg-[#F3FAFF] h-[90px] p-4 rounded-lg'>
                         <input  type="text"
                                 className=' bg-[#eadec4] rounded-lg outline-none text-sm text-[#39362d] w-full h-[50px] m-3 p-3 placeholder:text-sm placeholder:text-[#f3b679] '
                                 placeholder='type a message'

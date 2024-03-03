@@ -9,8 +9,8 @@ function Messages({msg, avatar, nickname, authorId, time, friendId}){
         //container
         
             
-        <div    className={`flex justify-center items-center p-3 my-3 bg-[#FFE1B3] w-fit
-                ${authorId !== friendId ? "text-[#2A3E4D] ml-auto rounded-[30px_0px_30px_30px]" : "text-[#5E0000BA] mr-auto rounded-[0px_30px_30px_30px] "}`}>
+        <div    className={`flex justify-center items-center p-3 my-3 bg-[#FFFFFF] w-fit text-[#496D8B]
+                ${authorId !== friendId ? " ml-auto rounded-[30px_0px_30px_30px]" : " mr-auto rounded-[0px_30px_30px_30px] "}`}>
                 {authorId === friendId && <img src={avatar} alt={nickname} className="w-[40px] h-[40px] rounded-full mr-4" />}
                 <div className="">
                     <p className="text-[#0d0202ba] text-[13px]">{nickname}</p>

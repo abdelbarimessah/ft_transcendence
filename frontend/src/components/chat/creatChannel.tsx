@@ -8,14 +8,10 @@ import { chatslistContext } from '../../app/(home)/chat/page'
 import { Truck } from 'lucide-react'
 
 
-function PopUpChannel() {
+function CreatChannel() {
 
     const UserData  = useContext(chatslistContext);
     const inputMessageRef = useRef(null);
-
-    console.log("we where here !!!!");
-    if (UserData.popUpOn == false) return null;
-
 
     const handelSubmitrefrech = (e) =>
     {
@@ -27,7 +23,7 @@ function PopUpChannel() {
 
     const addChannelToLits = (channel) => {
         const newChannelList = [...UserData.friendChatConversation, channel];
-        UserData.setFriendChatConversation(newChannelList);
+        UserData.setChannelChatConversation(newChannelList);
     }
 
     const handelCreatChannel = async() =>
@@ -57,7 +53,7 @@ function PopUpChannel() {
     console.log("channel list = ", UserData.ChannelsList);
     return (
         <>
-            <div className='flex justify-center items-center fixed w-screen h-screen bg-opacity-25 bg-black '>
+            <div className='flex justify-center items-center  '>
                 <div className='relative flex flex-col '>
                     <button className='felx place-self-end text-[25px]' onClick={() => {UserData.setPopUpOn(false)}}> X </button>
                     
@@ -143,4 +139,4 @@ function PopUpChannel() {
     )
 }
 
-export default PopUpChannel
+export default CreatChannel

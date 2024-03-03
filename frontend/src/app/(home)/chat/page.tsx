@@ -5,9 +5,9 @@ import LeftSide from '@/components/chat/leftSide';
 import RightSide from '@/components/chat/rightSide';
 import axios from 'axios';
 import { useEffect, useState, createContext } from 'react';
-import PopUpChannel from '@/components/chat/channelPopUp';
 import { log } from 'console';
 import { toast } from 'sonner';
+import ChannelOption from '@/components/chat/channelOption';
 
 
 
@@ -22,10 +22,12 @@ function Chat() {
     const [channelChatConversation, setChannelChatConversation] = useState([]);
     const [chatClicked, setChatClicked] = useState([]);
     const [channelClicked, setChannelClicked] = useState([]);
+    const [channelToJoin, setChannelToJoin] = useState([]);
     const [typing, setTyping] = useState(true);
     const [popUpOn, setPopUpOn] = useState(false);
     const [channelType, setchannelType] = useState("");
-    const [whatIcon, setWhatIcon] = useState("") ;
+    const [whatIcon, setWhatIcon] = useState("");
+    const [listChannelsToJoin, setListChannelsToJoin] = useState([]);
 
 
     const fetchData = async () => {
@@ -35,10 +37,11 @@ function Chat() {
           setFriendsList(friendresponse.data);
           
         } 
-        catch (error) {
-          if (error.response.status === 400) {
-            console.error("ERROR AT BEGINGN :", error.response.data);
-          }
+        catch (error: any) {
+            if (error.response && error.response.status === 400) {
+                // console.error("ERROR AT BEGIN: no channel found:", error.response.data);
+                toast.error(error.response.data.message);
+            }
         }
         
         try{
@@ -46,20 +49,23 @@ function Chat() {
           setChannelsList(channelresponse.data);
           
         }
-        catch (error) {
-          if (error.response.status === 400) {
-            // console.error("ERROR AT BEGINGN no channel found:", error.response.data);
-            toast.error(error.response.data.message);
+        catch (error: any) {
+          if (error.response && error.response.status === 400) {
+              // console.error("ERROR AT BEGIN: no channel found:", error.response.data);
+              toast.error(error.response.data.message);
           }
-        }
+      }
         try{
           const myIdResponse = await axios.get('http://localhost:3000/user/me');
           setMyId(myIdResponse.data);
           
         }
-        catch (error) {
-          console.error("ERROR AT BEGINGN :", error.message);
-        }
+        catch (error: any) {
+          if (error.response && error.response.status === 400) {
+              // console.error("ERROR AT BEGIN: no channel found:", error.response.data);
+              toast.error(error.response.data.message);
+          }
+      }
       };
       useEffect(() => {
         fetchData();
@@ -67,13 +73,16 @@ function Chat() {
 
       const fetchFriendConversation = async () =>{
         try {
-          console.log("chatClicked = ", chatClicked);   
           const messageResponse = await axios.get(`http://localhost:3000/chat/message/${chatClicked.id}`);
           setFriendChatConversation(messageResponse.data);
           // console.log("messageResponse = ",messageResponse.data);
-        } catch (error) {
-          console.error("haaaahowa lerroor: ",error.message);
         }
+        catch (error: any) {
+          if (error.response && error.response.status === 400) {
+              // console.error("ERROR AT BEGIN: no channel found:", error.response.data);
+              toast.error(error.response.data.message);
+          }
+      }
       };
 
       useEffect(() => {
@@ -90,9 +99,13 @@ function Chat() {
           const messageResponse = await axios.get(`http://localhost:3000/chat/channel/${channelClicked.id}/messages`);
           setChannelChatConversation(messageResponse.data);
           console.log("messageResponse = ",messageResponse.data);
-        } catch (error) {
-          console.error("haaaahowa lerroor: ",error.message);
-        }
+        } 
+        catch (error: any) {
+          if (error.response && error.response.status === 400) {
+              // console.error("ERROR AT BEGIN: no channel found:", error.response.data);
+              toast.error(error.response.data.message);
+          }
+      }
       };
 
       useEffect(() => {
@@ -107,16 +120,17 @@ function Chat() {
         <chatslistContext.Provider value={{ friendsList, channelsList, myId, friendChatConversation, chatClicked, typing, 
                                             setTyping, setFriendChatConversation, setChatClicked, popUpOn, setPopUpOn,
                                             channelType, setchannelType, setChannelsList, whatIcon, setWhatIcon, channelChatConversation,
-                                            setChannelChatConversation, channelClicked, setChannelClicked}}>
+                                            setChannelChatConversation, channelClicked, setChannelClicked, listChannelsToJoin,
+                                            setListChannelsToJoin, channelToJoin, setChannelToJoin}}>
         <div className='relative flex justify-start chat-bp:justify-center items-center w-screen h-screen overflow-hidden '>
-          <PopUpChannel />
-          <div className="flex justify-start chat-bp:justify-center items-center w-[1731px] h-[1080px] bg-[#ffbb3b] ">
+          <ChannelOption />
+          <div className="flex justify-start chat-bp:justify-center items-center w-[1731px] h-[1080px] bg-[#FFFFFF] ">
 
-              <div className=" bg-[#FFE0B3] min-w-[340px] max-w-[460px] h-full w-full rounded-[29px_0px_0px_29px]">
+              <div className=" bg-[#FFFFFF] min-w-[340px] max-w-[460px] h-full w-full rounded-[29px_0px_0px_29px]">
                 <LeftSide/>
               </div>
 
-              <div className="bg-[#FFF0D2]  min-w-[415px] max-w-[1271px] h-full w-full rounded-[0px_29px_29px_0px]">
+              <div className="bg-[#FFFFFF]  min-w-[415px] max-w-[1271px] h-full w-full rounded-[0px_29px_29px_0px]">
                 <RightSide  />
               </div>
             </div>

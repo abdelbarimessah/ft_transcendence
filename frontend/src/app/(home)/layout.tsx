@@ -23,24 +23,26 @@ export default function RootLayout({
   });
   useEffect(() => {
     const enterRoom = (data: any) => {
-      setGameEnded(true)
+      setGameEnded(true);
       const gameData = {
         opponentId: data.oponent.providerId,
         userScore: data.game.userScore,
         opponentScore: data.game.opponentScore,
         status: data.game.status,
         gameName: data.roomName,
-        gameType: 'randomMode'
+        gameType: "randomMode",
+      };
+      if (data.roomName.startsWith("InviteRoom")) {
+        gameData.gameType = "friendMode";
       }
-      if(data.roomName.startsWith('InviteRoom'))
-      {
-        gameData.gameType = 'friendMode'
-      }
-      axios.post(`${process.env.NEXT_PUBLIC_API_URL}/game/gameData`, gameData).then(res => {
-
-      }).catch(err => {
-        console.error(err);
-      })
+      axios
+        .post(`${process.env.NEXT_PUBLIC_API_URL}/game/gameData`, gameData, {
+          withCredentials: true,
+        })
+        .then((res) => {})
+        .catch((err) => {
+          console.error(err);
+        });
       setTimeout(() => {
         route.push("/game");
       }, 3000);
@@ -56,9 +58,8 @@ export default function RootLayout({
     if (gameEnded) {
       return;
     }
-    socketClient.on('OnePlayerLeaveTheRoom', async (data) => {
-      
-      if (data.socketId !== socketClient.id ) return;
+    socketClient.on("OnePlayerLeaveTheRoom", async (data) => {
+      if (data.socketId !== socketClient.id) return;
       const gameData = {
         opponentId: data.oponent.providerId,
         userScore: 0,
@@ -70,7 +71,9 @@ export default function RootLayout({
 
       try {
         const url = process.env.NEXT_PUBLIC_API_URL;
-        await axios.post(`${url}/game/gameData`, gameData);
+        await axios.post(`${url}/game/gameData`, gameData, {
+          withCredentials: true,
+        });
       } catch (error) {
         console.error(error);
       }
@@ -85,9 +88,8 @@ export default function RootLayout({
     if (gameEnded) {
       return;
     }
-    socketClient.on('OnePlayerLeaveTheRoom', async (data) => {
-      
-      if (data.socketId === socketClient.id ) return;
+    socketClient.on("OnePlayerLeaveTheRoom", async (data) => {
+      if (data.socketId === socketClient.id) return;
       const gameData = {
         opponentId: data.user.providerId,
         userScore: 5,
@@ -99,7 +101,9 @@ export default function RootLayout({
 
       try {
         const url = process.env.NEXT_PUBLIC_API_URL;
-        await axios.post(`${url}/game/gameData`, gameData);
+        await axios.post(`${url}/game/gameData`, gameData, {
+          withCredentials: true,
+        });
       } catch (error) {
         console.error(error);
       }
@@ -113,10 +117,8 @@ export default function RootLayout({
   return (
     <div className="flex  w-screen min-h-screen ">
       <SideNav setShow={setShow} />
-      <div className='flex items-center justify-center flex-1 w-10 '>
-        <SocketProvider>
-            {children}
-        </SocketProvider>
+      <div className="flex items-center justify-center flex-1 w-10 ">
+        <SocketProvider>{children}</SocketProvider>
       </div>
     </div>
   );

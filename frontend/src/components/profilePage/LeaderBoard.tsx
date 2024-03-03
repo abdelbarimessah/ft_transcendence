@@ -21,7 +21,7 @@ export default function LeaderBoard() {
     const [leaders, setLeaders] = useState<Leader[]>([]);
     useEffect(() => {
         setIsLoading(true);
-        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/leaders`)
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/leaders`, {withCredentials: true})
             .then(res => {
                 setLeaders(res.data.leader);
                 setIsLoading(false);
@@ -34,15 +34,18 @@ export default function LeaderBoard() {
 
     useEffect(() => {
         socketClient.on('updateInfo', (data) => {
-            axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/leaders`)
-                .then(res => {
-                    setLeaders(res.data.leader);
-                    setIsLoading(false);
-                })
-                .catch(err => {
-                    setIsLoading(false);
-                    console.error(err);
-                });
+            axios
+              .get(`${process.env.NEXT_PUBLIC_API_URL}/user/leaders`, {
+                withCredentials: true,
+              })
+              .then((res) => {
+                setLeaders(res.data.leader);
+                setIsLoading(false);
+              })
+              .catch((err) => {
+                setIsLoading(false);
+                console.error(err);
+              });
         })
     })
 

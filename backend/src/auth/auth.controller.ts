@@ -106,10 +106,8 @@ export class AuthController {
     res.clearCookie('authorization', {
       httpOnly: true,
     });
-    // console.log('logout');
-
-    // return {ok: 'ok'}
-    return res.redirect('http://localhost:8000');
+    // return res.redirect('http://localhost:8000');
+    return res.json({ success: true, message: 'Logged out successfully' });
   }
 
   @Patch('generate/Otp')

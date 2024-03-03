@@ -18,7 +18,7 @@ const GameManual = () => {
   return (
     <>
       <button
-        className="fixed bottom-5 right-5 md:bottom-10 md:right-10 z-50 w-14 h-14 md:w-20 md:h-20 md:text-2xl rounded-full bg-color-6 text-white flex items-center justify-center shadow-lg hover:bg-color-5"
+        className="fixed bottom-5 right-5 md:bottom-10 md:right-10 z-50 w-14 h-14 md:w-20 md:h-20 md:text-2xl rounded-full bg-color-6 text-white flex items-center justify-center shadow-lg hover:bg-[#587e99]"
         onClick={toggleManual}
       >
         ?

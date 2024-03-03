@@ -1,6 +1,4 @@
-
 // import Image from "next/image"
-
 
 // export function MatchesHistory () {
 //     return (
@@ -244,7 +242,8 @@ import { useQuery } from "react-query";
 
 const getMatchHistoryList = async () => {
   const res = await axios.get<MatchHistoryProps[]>(
-    "http://localhost:3000/matchHistory/"
+    "http://localhost:3000/matchHistory/",
+    { withCredentials: true }
   );
   return res.data;
 };
@@ -305,7 +304,7 @@ export function MatchesHistory() {
           </div>
         )}
 
-<MatchHistoryItem historyEntry={matchHistoryTest} />
+        <MatchHistoryItem historyEntry={matchHistoryTest} />
         {!isError &&
           !isLoading &&
           matchesHistoryList &&

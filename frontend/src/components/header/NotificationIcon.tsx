@@ -14,7 +14,6 @@
 // import { SocketContext, socket } from "@/app/SocketContext";
 // import { useRouter } from "next/navigation";
 
-
 // const NotificationIcon = () => {
 //   const socketClient = useContext(SocketContext);
 //   const [inviteGame, setInviteGame] = useState(false);
@@ -32,7 +31,7 @@
 
 //       setTimeout(() => {
 //           router.push(`/game/match?room=InviteRoom-${data.sender.providerId}-${data.receiver.providerId}-${data.inviteNumber}`);
-//       }, 500)            
+//       }, 500)
 //     })
 //   }, [])
 
@@ -74,7 +73,6 @@
 
 // export default NotificationIcon;
 
-
 // function GameNotification(gamePair: any) {
 //   const socketClient = useContext(SocketContext);
 //   const handleAcceptInvite = () => {
@@ -100,7 +98,6 @@
 // }
 
 // export { GameNotification };
-
 
 "use client";
 
@@ -162,7 +159,8 @@ const gameInviteNotification: NotificationItemProps = {
 
 const getNotificationList = async () => {
   const res = await axios.get<NotificationItemProps[]>(
-    "http://localhost:3000/notification"
+    "http://localhost:3000/notification",
+    { withCredentials: true }
   );
   return res.data;
 };

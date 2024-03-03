@@ -29,6 +29,7 @@ class MyScene extends Phaser.Scene {
 export default function Game() {
     const parentEl = useRef<HTMLDivElement>(null);
     let [game, setGame] = useState<PhaserGame | null>(null);
+    const socketClient = useContext(SocketContext);
 
     useEffect(() => {
       if (!parentEl.current) return;
@@ -49,7 +50,7 @@ export default function Game() {
           width: 900,
           height: 600
         },
-        scene: [aiMode]
+        scene: [new aiMode(socketClient)]
       };
 
       const newGame = new PhaserGame({ ...gameConfig, parent: parentEl.current, width: parentEl.current.offsetWidth, height: parentEl.current.offsetHeight });

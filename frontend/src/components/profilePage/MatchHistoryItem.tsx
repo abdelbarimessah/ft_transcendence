@@ -16,7 +16,6 @@ export default function MatchHistoryItem({
 }: {
   historyEntry: MatchHistoryProps;
 }) {
-  console.log("History Entry =======> ", historyEntry);
 
   return (
     <div className="w-full p-2 flex items-center justify-center gap-2">

@@ -279,6 +279,7 @@ export class ChatController {
       ? { message: 'User has been banned successfully.' }
       : { message: 'User has been unbanned successfully.' };
   }
+
   @Post('channel/:id/kick')
   async kickMember(
     @Param('id') channelId: string,
@@ -289,6 +290,7 @@ export class ChatController {
     this.chatGateway.kickUser(channelId, user.id);
     return { message: 'User has been kicked from the channel.' };
   }
+
   @Get('channel/:id/members')
   async getChannelMembers(@Param('id') channelId, @CurrentUser() user: User) {
     const members = await this.chatService.getChannelMembers(
@@ -297,6 +299,7 @@ export class ChatController {
     );
     return members;
   }
+  
   @Get('channel/:id/messages')
   async getChannelMessages(
     @Param('id') channelId: string,

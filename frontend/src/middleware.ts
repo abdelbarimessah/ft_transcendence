@@ -13,8 +13,6 @@ export async function middleware(request: NextRequest) {
     credentials: "include",
   });
 
-  console.log(" in the middleware", res.ok);
-
   if (!res.ok) return NextResponse.redirect("http://localhost:8000");
 
   return NextResponse.next();

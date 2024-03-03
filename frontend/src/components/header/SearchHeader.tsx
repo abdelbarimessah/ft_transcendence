@@ -82,7 +82,7 @@ const SearchBareHeader = () => {
                 />
             </form>
             {searchInput && (
-                <div className='result bg-color-0 z-[3000] absolute top-[70px] left-0 flex flex-col items-center justify-content-start h-[500px] w-[651px] rounded-[22px] '>
+                <div className='result bg-color-0 z-[3000] absolute top-[70px] left-0 flex flex-col items-center justify-content-start h-[500px] xl:w-[651px] w-full rounded-[22px] pb-5'>
                     <div className='w-full flex items-center pl-5 gap-3 h-[50px] border-b-[2px] border-l-color-30 '>
                         <span className='font-nico-moji text-color-6 text-[20px] capitalize text-center'>People</span>
                         <div className='h-[20px] mt-1  rounded-[5px] bg-color-29/20 flex items-center justify-center' style={{ width: searchResults.length > 9 ? `${searchResults.length / 10 + 30}px` : '25px' }}>
@@ -92,7 +92,7 @@ const SearchBareHeader = () => {
                     <div className='w-full bg-color-30 gap-[2px] flex flex-col overflow-y-auto no-scrollbar'>
                         {searchResults.map((result: Result, index: any) => (
                             <Link key={index} href={`http://localhost:8000/profile/${result?.providerId}`}>
-                                <div className='  h-[66px] w-full bg-color-0 hover:bg-color-30 z-[4000] flex pl-5 items-center justify-start gap-3  hover:scale-[1.01]'>
+                                <div className=' h-[100px] pt-3 xl:pt-0 xl:h-[66px] w-full bg-color-0 hover:bg-color-30 z-[4000] flex xl:flex-row flex-col pl-5 items-center justify-start gap-3  hover:scale-[1.01]'>
                                     <div className='w-[50px] h-[50px] bg-color-15 rounded-full relative overflow-hiddenr'>
                                         <Image
                                             src={result?.avatar}
@@ -104,10 +104,10 @@ const SearchBareHeader = () => {
                                         />
                                     </div>
                                     <div className='flex gap-2 items-center justify-center'>
-                                        <span className='font-nico-moji text-color-6 text-[16px] capitalize text-center'>
+                                        <span className='font-nico-moji hidden lg:block text-color-6 text-[16px] capitalize text-center'>
                                             {`${result?.firstName.substring(0, 10)}${result?.firstName.length > 10 ? '...' : ''}`}
                                         </span>
-                                        <span className='font-nico-moji text-color-6 text-[16px] capitalize text-center'>
+                                        <span className='font-nico-moji  hidden lg:block text-color-6 text-[16px] capitalize text-center'>
                                             {`${result?.lastName.substring(0, 10)}${result?.lastName.length > 10 ? '...' : ''}`}
                                         </span>
                                         <div className='flex'>

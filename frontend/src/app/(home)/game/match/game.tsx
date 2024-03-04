@@ -76,7 +76,7 @@ import { Game as PhaserGame } from "phaser";
 import { useContext, useEffect, useRef, useState } from "react";
 import pongGame from "@/components/game/PongGame";
 import { SocketContext } from "@/app/SocketContext";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function Game() {
   const socketClient = useContext(SocketContext);
@@ -84,6 +84,7 @@ export default function Game() {
   let [game, setGame] = useState<PhaserGame | null>(null);
   const params = useSearchParams();
   const roomName: any = params.get("room");
+  const router = useRouter();
 
   useEffect(() => {
     if (!parentEl.current) return;
@@ -116,6 +117,31 @@ export default function Game() {
     };
 
   }, []);
+
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        // The tab is not active, pause the game
+        console.log('pause the game until i return [333333]');
+        // alert('you left the game')
+        router.push('/game')
+        
+        game?.pause();
+      } else {
+        console.log('resume the game [222222]');
+        // The tab is active, resume the game
+        game?.resume();
+      }
+    };
+  
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+  
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [game]);
+  
 
   useEffect(() => {
     const handlePlayerLeave = () => {

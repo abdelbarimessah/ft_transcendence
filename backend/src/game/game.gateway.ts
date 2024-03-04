@@ -30,7 +30,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private roomSockets = new Map<string, { player1: any; player2: any }>();
 
   players = {};
-  roomName: string = '';
+  // roomName: string = '';
   clientNO: number = 0;
   clientNOForCard: number = 0;
   inviteNumber: number = 0;
@@ -51,7 +51,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('joinRoom')
   handleJoinRoom(socket: Socket, data: any) {
     this.clientNO++;
-    this.roomName = data.roomName;
+    const roomName = data.roomName;
     if (this.clientNO % 2)
       this.listClient.push({
         id: socket.id,
@@ -64,26 +64,26 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         socket: socket,
         wishPlayer: 'player2',
       });
-    socket.join(this.roomName);
-    this.listRooms.set(socket.id, this.roomName);
+    socket.join(roomName);
+    this.listRooms.set(socket.id, roomName);
     this.playerScore.set(socket.id, 0);
-    if (this.numClients[this.roomName] == undefined) {
-      this.numClients[this.roomName] = 1;
+    if (this.numClients[roomName] == undefined) {
+      this.numClients[roomName] = 1;
     } else {
-      this.numClients[this.roomName]++;
+      this.numClients[roomName]++;
     }
     this.server.in(socket.id).emit('enterRoom', {
-      roomName: this.roomName,
+      roomName: roomName,
       wishPlayer: this.listClient[this.listClient.length - 1].wishPlayer,
       providerId: socket.data.providerId,
     });
 
-    if (this.numClients[this.roomName] == 2) {
+    if (this.numClients[roomName] == 2) {
       const initialVelocityX = Math.random() * 600 + 200;
       const initialVelocityY = Math.random() * 600 + 200;
       setTimeout(() => {
-        this.server.in(this.roomName).emit('bothInRoom', {
-          roomName: this.roomName,
+        this.server.in(roomName).emit('bothInRoom', {
+          roomName: roomName,
           initialVelocityX: initialVelocityX,
           initialVelocityY: initialVelocityY,
         });
@@ -257,7 +257,11 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
           initialVelocityY: initialVelocityY,
         });
       }, 2000);
+      this.server.in(roomName).emit('goalScored', { score: this.playerScore.get(socket.id), player: data.wishPlayer })
+      console.log('goal scored in the server {{{{1111}}}}');
+
     } else if (this.playerScore.get(socket.id) == 5) {
+      this.server.in(roomName).emit('goalScored', { score: this.playerScore.get(socket.id), player: data.wishPlayer })
       this.server.in(roomName).emit('gameOver');
     }
   }

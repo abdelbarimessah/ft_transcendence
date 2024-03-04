@@ -93,12 +93,12 @@ export default function LeaderBoard() {
                                                 <Skeleton className="w-[150px] h-[21px] rounded-[22px] bg-color-25" />
                                             )
                                                 : (
-                                                    <div>
+                                                    <div className='flex gap-1 items-center justify-center'>
                                                         <span className='font-nico-moji text-[14px]  text-color-6'>
-                                                            {`${leaders[0].firstName.substring(0, 10)}${leaders[0].firstName.length > 10 ? '..' : ''} `}
+                                                            {`${leaders[0].firstName.substring(0, 6)}${leaders[0].firstName.length > 6 ? '..' : ''} `}
                                                         </span>
                                                         <span className='font-nico-moji text-[12px]  text-color-29'>
-                                                            {` @${leaders[0].nickName.substring(0, 10)}${leaders[0].nickName.length > 10 ? '..' : ''}`}
+                                                            {` @${leaders[0].nickName.substring(0, 6)}${leaders[0].nickName.length > 6 ? '..' : ''}`}
                                                         </span>
                                                     </div>
                                                 )}
@@ -149,12 +149,12 @@ export default function LeaderBoard() {
                                                 <Skeleton className="w-[150px] h-[21px] rounded-[22px] bg-color-25" />
                                             )
                                                 : (
-                                                    <div>
+                                                    <div className='flex gap-1 items-center justify-center'>
                                                         <span className='font-nico-moji text-[14px]  text-color-6'>
-                                                            {`${leaders[1].firstName.substring(0, 10)}${leaders[1].firstName.length > 10 ? '..' : ''} `}
+                                                            {`${leaders[1].firstName.substring(0, 6)}${leaders[1].firstName.length > 6 ? '..' : ''} `}
                                                         </span>
                                                         <span className='font-nico-moji text-[12px]  text-color-29'>
-                                                            {` @${leaders[1].nickName.substring(0, 10)}${leaders[1].nickName.length > 10 ? '..' : ''}`}
+                                                            {` @${leaders[1].nickName.substring(0, 6)}${leaders[1].nickName.length > 6 ? '..' : ''}`}
                                                         </span>
                                                     </div>
                                                 )}
@@ -205,12 +205,12 @@ export default function LeaderBoard() {
                                                 <Skeleton className="w-[150px] h-[21px] rounded-[22px] bg-color-25" />
                                             )
                                                 : (
-                                                    <div>
+                                                    <div className='flex gap-1 items-center justify-center'>
                                                         <span className='font-nico-moji text-[14px]  text-color-6'>
-                                                            {`${leaders[2].firstName.substring(0, 10)}${leaders[2].firstName.length > 10 ? '..' : ''} `}
+                                                            {`${leaders[2].firstName.substring(0, 6)}${leaders[2].firstName.length > 6 ? '..' : ''} `}
                                                         </span>
                                                         <span className='font-nico-moji text-[12px]  text-color-29'>
-                                                            {` @${leaders[2].nickName.substring(0, 10)}${leaders[2].nickName.length > 10 ? '..' : ''}`}
+                                                            {` @${leaders[2].nickName.substring(0, 6)}${leaders[2].nickName.length > 6 ? '..' : ''}`}
                                                         </span>
                                                     </div>
                                                 )}

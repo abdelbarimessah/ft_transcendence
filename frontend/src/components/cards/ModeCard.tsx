@@ -55,13 +55,13 @@ function ModeCard(me: any) {
     const slideLeft = () => {
         var slider = document.getElementById('slider');
         if (slider)
-            slider.scrollBy({ left: -500, behavior: 'smooth' }); // Use scrollBy for a smoother scroll
+            slider.scrollBy({ left: -300, behavior: 'smooth' }); // Use scrollBy for a smoother scroll
     };
 
     const slideRight = () => {
         var slider = document.getElementById('slider');
         if (slider)
-            slider.scrollBy({ left: 500, behavior: 'smooth' }); // Use scrollBy for a smoother scroll
+            slider.scrollBy({ left: 300, behavior: 'smooth' }); // Use scrollBy for a smoother scroll
     };
     //
 
@@ -74,7 +74,7 @@ function ModeCard(me: any) {
         setIsRandomMode(false)
         socketClient.emit('handleRemoveFromQueue');
     }
-    const removeInviteFriendModale = ()  => {
+    const removeInviteFriendModale = () => {
         setInviteModel(false);
     }
 
@@ -193,16 +193,17 @@ function ModeCard(me: any) {
                             <div className=' flex gap-[16px] sm:gap-[31px] items-center justify-center  flex-col  sm:flex-row  w-full'>
                                 <div className='flex gap-[8px] items-center justify-center'>
                                     <div className='rounded-full bg-color-6 h-10 w-10 flex justify-center items-center'>
-                                        <Image
-                                            src="../assets/randomModeIconCercl.svg"
-                                            alt="randomModeIconCercl"
-                                            height={22}
-                                            width={22}
-                                            priority={true}
-                                            sizes='(min-width: 480px) 445px, calc(90.63vw + 28px)'
-                                            draggable={false}
-                                        >
-                                        </Image>
+                                        <div className='flex items-center justify-center h-[22px] w-[22px] object-cover relative'>
+                                            <Image
+                                                src="../assets/randomModeIconCercl.svg"
+                                                alt="randomModeIconCercl"
+                                                fill={true}
+                                                priority={true}
+                                                sizes='(min-width: 480px) 445px, calc(90.63vw + 28px)'
+                                                draggable={false}
+                                            >
+                                            </Image>
+                                        </div>
 
                                     </div>
                                     <div className='flex flex-col'>
@@ -240,16 +241,17 @@ function ModeCard(me: any) {
                             <div className=' flex gap-[16px] sm:gap-[31px] items-center justify-center  flex-col  sm:flex-row  w-full'>
                                 <div className='flex gap-[8px] items-center justify-center'>
                                     <div className="rounded-3xl bg-color-6 h-10 w-10 flex justify-center items-center">
-                                        <Image
-                                            src="../assets/Vector.svg"
-                                            alt="Vector"
-                                            height={24}
-                                            width={24}
-                                            sizes='(min-width: 480px) 445px, calc(90.63vw + 28px)'
-                                            priority={true}
-                                            draggable={false}
-                                        >
-                                        </Image>
+                                        <div className='flex items-center justify-center h-[24px] w-[24px] object-cover relative'>
+                                            <Image
+                                                src="../assets/Vector.svg"
+                                                alt="randomModeIconCercl"
+                                                fill={true}
+                                                priority={true}
+                                                sizes='(min-width: 480px) 445px, calc(90.63vw + 28px)'
+                                                draggable={false}
+                                            >
+                                            </Image>
+                                        </div>
                                     </div>
                                     <div className='flex flex-col'>
                                         <p className="text-[18px] text-color-3 font-poppins font-[400]" >Play with your</p>
@@ -292,8 +294,8 @@ function ModeCard(me: any) {
                 <PlayerPairing player1={player1} player2={player2} />
             )}
             {inviteModal && (
-                <div className='absolute z-[1000] '>
-                    <div className=" w-[1073px] h-[500px] rounded-[22px] bg-[#E3E3E3]/10 relative flex flex-col items-center justify-between pt-10 pb-[100px] gap-[100px] overflow-hidden ">
+                <div className='absolute z-[1000] w-full h-full px-28'>
+                    <div className=" xl:w-[1073px] w-full h-[500px] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-[22px] bg-[#E3E3E3]/10 relative flex flex-col items-center justify-between pt-10 pb-[100px] gap-[100px] overflow-hidden ">
                         <div onClick={removeInviteFriendModale} className='absolute cursor-pointer w-[35px] h-[35px] bg-white flex items-center justify-center z-50 rounded-[12px] top-5 right-5' >
                             <Image
                                 src="../../assets/cross1.svg"
@@ -487,7 +489,7 @@ function InivteModeCard() {
 
     return (
 
-        <div className=" w-[1073px] h-[500px] rounded-[22px] bg-[#E3E3E3]/10 relative flex flex-col items-center justify-between pt-10 pb-[100px] gap-[100px] overflow-hidden ">
+        <div className=" xl:w-[1073px] w-full h-[500px] rounded-[22px] bg-[#E3E3E3]/10 relative flex flex-col items-center justify-between pt-10 pb-[100px] gap-[100px] overflow-hidden ">
             <div className="w-full flex items-center justify-center gap-[15px] pt-[18px]">
                 <div className=" w-[37px] h-[28px] relative sm:flex hidden items-center justify-center pt-3 ">
                     <Image

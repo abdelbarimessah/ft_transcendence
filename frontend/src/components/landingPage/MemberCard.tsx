@@ -18,13 +18,13 @@ export default function MemberCard({ name, login, avatar }: MemberCardProps) {
         width={90}
         height={90}
         priority={true}
-        className="rounded-full border-2 border-color-2 p-1"
+        className="rounded-full border-2 border-color-6 p-1"
         draggable={false}
       />
       <p className="text-color-23 text-[20px] text-center">{name}</p>
-      <h4 className="text-color-2 text-[25px]">
+      <h4 className="text-color-31 text-[25px]">
         @
-        <span className="text-color-10 text-[20px] text-center">
+        <span className="text-color-6 text-[20px] text-center">
           <Link href={`https://profile.intra.42.fr/users/${login}`}>
             {login}
           </Link>

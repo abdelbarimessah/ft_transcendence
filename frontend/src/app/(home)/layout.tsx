@@ -87,7 +87,7 @@ export default function RootLayout({
     }
     socketClient.on('OnePlayerLeaveTheRoom', async (data) => {
       
-      if (data.socketId === socketClient.id ) return;
+      if (data.socketId === socketClient.id || !data.socketId ) return;
       const gameData = {
         opponentId: data.user.providerId,
         userScore: 5,

@@ -11,6 +11,7 @@ export default function App() {
   const [settingModal, setSettingModal] = useState(false);
   const [passwordState, setPasswordState] = useState(false)
   const [changeChannelNameState, setChangeChannelNameState] = useState(false)
+  const [cancelState, setCancelState] = useState("hidden");
 
   const handleSettingsClick = () => {
     setSettingModal(true)
@@ -22,9 +23,10 @@ export default function App() {
   const handleCancelClick = () => {
     setChangeChannelNameState(false);
     setPasswordState(false)
+    setCancelState("hidden");
   }
 
-  
+
 
   return (
     <div className="flex w-full flex-col  items-center justify-center relative bg-color-18">
@@ -104,21 +106,24 @@ export default function App() {
                 <input className='h-full w-full rounded-full absolute opacity-0 z-10 cursor-pointer' type="file" accept=".png, .jpg, .jpeg" />
               </div>
               <div className="flex gap-[10px]">
-                <SetPassowrd setPasswordState={setPasswordState} passwordState={passwordState} />
+                <SetPassowrd setPasswordState={setPasswordState} passwordState={passwordState} setCancelState={setCancelState} />
                 {passwordState &&
                   <TypePassword />
                 }
-                <SetChannelName setChangeChannelNameState={setChangeChannelNameState} changeChannelNameState={changeChannelNameState} />
+                <SetChannelName setChangeChannelNameState={setChangeChannelNameState} changeChannelNameState={changeChannelNameState} setCancelState={setCancelState} />
                 {
                   changeChannelNameState &&
                   <TypeChannelName />
                 }
               </div>
-              <div className="flex gap-[43px]">
+              <div className={` {${cancelState} === 'hidden' ? 'gap-[119px]' : 'gap-[43px]' } flex  w-full justify-between  `}>
                 <SetPrivate />
                 <div className="flex items-center justify-center gap-2">
-                  <div onClick={handleCancelClick} className="h-[29px] w-[69px] bg-[#EBEBEB] rounded-[10px] flex items-center justify-center mt-[16px] cursor-pointer  hover:scale-[1.01] hover:opacity-95 ">
-                    <span className="text-[12px] text-color-31">Cancel</span>
+                  <div onClick={handleCancelClick} className={` ${cancelState} h-[29px] w-[69px] bg-[#EBEBEB] rounded-[10px] items-center justify-center mt-[16px] cursor-pointer  hover:scale-[1.01] hover:opacity-95 `} >
+                    <div className="h-full w-full flex items-center justify-center">
+
+                      <span className="text-[12px] text-color-31">Cancel</span>
+                    </div>
                   </div>
                   <div className="h-[29px] w-[69px] bg-color-32 rounded-[10px] flex items-center justify-center mt-[16px] cursor-pointer  hover:scale-[1.01] hover:opacity-95">
                     <span className="text-[12px] text-color-31">Save</span>
@@ -130,7 +135,7 @@ export default function App() {
             </div>
           }
 
-          <div className="w-full flex flex-col justify-center gap-2">
+          <div className="w-full flex flex-col justify-center gap-2 px-3 ">
             <div className="Chat_members flex justify-start items-center gap-2 pl-4  ">
               <div className="relative h-[16px] w-[22px] object-cover">
                 <Image
@@ -148,7 +153,7 @@ export default function App() {
                 <span className="text-center text-color-6" >Members</span>
               </div>
             </div>
-            <div className="Chat_members_tab w-full h-[473px] flex items-center pt-3 overflow-y-auto gap-1 flex-col  no-scrollbar overflow-hidden ">
+            <div className="Chat_members_tab w-full h-[473px] flex items-center py-3 overflow-y-auto gap-1 flex-col  no-scrollbar overflow-hidden bg-color-6 rounded-[10px]">
               <Owner />
               <Admin />
               <User />
@@ -256,7 +261,7 @@ function User() {
 
 
   useEffect(() => {
-    function handleClickOutside(event:MouseEvent) {
+    function handleClickOutside(event: MouseEvent) {
       if (userRef.current && !userRef.current.contains(event.target as Node)) {
         setShowSettings(false);
       }
@@ -270,7 +275,7 @@ function User() {
 
 
   return (
-    <div ref={userRef}  className={`Chat_owner h-[60px] w-[370px] bg-color-32 flex items-center justify-between rounded-[22px] pl-2 pr-10 flex-shrink-0  hover:scale-[1.01] relative ${zIndex}`}>
+    <div ref={userRef} className={`Chat_owner h-[60px] w-[370px] bg-color-32 flex items-center justify-between rounded-[22px] pl-2 pr-10 flex-shrink-0  hover:scale-[1.01] relative ${zIndex}`}>
       <div className="flex items-center justify-center">
         <div className="h-[43px] w-[43px] relative object-cover cursor-pointer">
           <Image
@@ -288,19 +293,21 @@ function User() {
           <span className="text-color-23 text-[10px] -mt-1">@amessah</span>
         </div>
       </div>
-      <div onClick={(e) => {setShowSettings(true)}} className="relative h-[18px] w-[4px] object-cover cursor-pointer hover:scale-[1.02] ">
-        <Image
-          src="../../../../assets/threePointChat.svg"
-          alt="avatar"
-          draggable={false}
-          fill={true}
-          priority={true}
-          className="w-full h-full object-cover"
-        >
-        </Image>
+      <div onClick={(e) => { setShowSettings(true) }} className="flex items-center justify-center px-3 cursor-pointer hover:scale-[1.02]">
+        <div className="relative h-[18px] w-[4px] object-cover  ">
+          <Image
+            src="../../../../assets/threePointChat.svg"
+            alt="avatar"
+            draggable={false}
+            fill={true}
+            priority={true}
+            className="w-full h-full object-cover"
+          >
+          </Image>
+        </div>
       </div>
       {showSettings &&
-        <UsersSettingsPoint/>
+        <UsersSettingsPoint />
       }
     </div>
   )
@@ -309,7 +316,7 @@ function User() {
 function SetPassowrd(props: any) {
   return (
     !props.passwordState &&
-    <div onClick={(e) => props.setPasswordState(true)} className="w-[178px] h-[45px] bg-color-31 gap-4 rounded-[16px] flex items-center justify-center cursor-pointer  hover:scale-[1.01] hover:opacity-95">
+    <div onClick={(e) => { props.setPasswordState(true); props.setCancelState("") }} className="w-[178px] h-[45px] bg-color-31 gap-4 rounded-[16px] flex items-center justify-center cursor-pointer  hover:scale-[1.01] hover:opacity-95">
       <div className="relative h-[20px] w-[20px] object-cover cursor-pointer hover:scale-[1.02] ">
         <Image
           src="../../../../assets/setPasswordIcon.svg"
@@ -392,7 +399,7 @@ function SetPrivate() {
 function SetChannelName(props: any) {
   return (
     !props.changeChannelNameState &&
-    <div onClick={(e) => props.setChangeChannelNameState(true)} className="w-[178px] h-[45px] bg-color-31 gap-4 rounded-[16px] flex items-center justify-center cursor-pointer hover:scale-[1.01] hover:opacity-95">
+    <div onClick={(e) => { props.setChangeChannelNameState(true); props.setCancelState("") }} className="w-[178px] h-[45px] bg-color-31 gap-4 rounded-[16px] flex items-center justify-center cursor-pointer hover:scale-[1.01] hover:opacity-95">
       <div className="relative h-[21px] w-[21px] object-cover cursor-pointer hover:scale-[1.02] ">
         <Image
           src="../../../../assets/ChannelNameIcon.svg"
@@ -417,6 +424,7 @@ function TypeChannelName() {
     <div className="w-[178px] h-[45px] bg-color-32 gap-4 rounded-[16px] flex items-center justify-center cursor-pointer  hover:scale-[1.01] hover:opacity-95">
       <input
         type="text"
+        defaultValue="leet Chess"
         placeholder='Leet Chess'
         className='placeholder-color-31 px-3 h-full bg-color-32 tracking-wider placeholder:font-medium font-poppins font-[400] rounded-[16px] text-color-31 text-[16px] w-full focus:outline-none'
       />
@@ -428,7 +436,7 @@ function TypeChannelName() {
 function UsersSettingsPoint() {
 
   return (
-    <div className="h-[133px] w-[133px] bg-color-31 rounded-b-[22px] rounded-tl-[22px] flex flex-col items-center justify-center overflow-hidden gap-[3px] absolute top-5 right-12 z-[1000]">
+    <div className="h-[160px] w-[160px] bg-color-31 rounded-b-[22px] rounded-tl-[22px] flex flex-col items-center justify-center overflow-hidden gap-[3px] absolute top-5 right-14 z-[1000]">
       <div className="h-[27px] w-[119px] bg-color-0 rounded-[22px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
         <span className="text-color-31 text-[9px]">Make Admin</span>
       </div>
@@ -440,6 +448,9 @@ function UsersSettingsPoint() {
       </div>
       <div className="h-[27px] w-[119px] bg-color-0 rounded-[22px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
         <span className="text-color-31 text-[9px]">Ban</span>
+      </div>
+      <div className="h-[27px] w-[119px] bg-color-0 rounded-[22px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
+        <span className="text-color-31 text-[9px]">Play With</span>
       </div>
     </div>
   )

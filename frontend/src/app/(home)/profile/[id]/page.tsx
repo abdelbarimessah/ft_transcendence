@@ -38,18 +38,6 @@ function profile() {
 export default profile;
 
 
-// Todo limit the lenght of the nickName firsName lastName in each display of them  ++
-// Todo add the socket when the user change some info (avatar/cover && names) ++
-// Todo change the random mode card (100 player online ) ++
-// Todo add the invite to play in the page of other users  ++
-// Todo make solution for the invite of the game in the modeCard ++
-// TODO visite my profile from leaderBoard ++
-// Todo fixe the error in the ai mode (the game doesnt finish) ++
-// Todo make the add/remove friend real time ++
-// Todo add the responsive to the search result modale  ++
-// Todo add the channels property design/UI ++
-// Todo make the front of the channels modal
-// Todo add the responsive to the friend list modale in the modeCard 
 // Todo complute the decline of the game invite 
 // Todo fixe the issue in the invite game in the modeCard 
-// Todo change some color in the landing page 
+// Todo add the icon to the three point settings in the profile page

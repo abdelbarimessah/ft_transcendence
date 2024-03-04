@@ -47,24 +47,23 @@ export default function Home() {
           />
         </Link>
         <button
-          className="w-[7rem] h-[3rem] text-[16px] rounded-[25px] border-[2px] border-color-1 bg-color-11 shadow-sm shadow-color-1 hover:scale-105 hover:border-[3px]"
+          className="w-[7rem] h-[3rem] text-[16px] rounded-[22px]  bg-color-31 shadow-sm hover:scale-[1.01] hover:opacity-95 "
           onClick={() => setShowModal(!showModal)}
         >
-          Sign In
+          <span className="text-color-0 text-[12px]">Sign In</span>
         </button>
       </nav>
 
       {showModal && <LoginModal closeModal={toggleModal} />}
 
       <hr className="opacity-30" />
-      {/* Main */}
 
-      <div className="w-full my-8 md:my-10 md:py-4 flex flex-col md:flex-row justify-center items-center text-color-1 ">
+      <div className="w-full my-8 md:my-10 md:py-4 flex flex-col md:flex-row justify-center items-center ">
         <div className="w-full h-[18rem] sm:h-[32rem] flex flex-col items-center justify-around sm:justify-center text-center sm:gap-10">
           <h2 className="select-none text-[17px] sm:text-[22px] text-color-29">
             Welcome to the ultimate
           </h2>
-          <h1 className="select-none text-[24px] sm:text-[40px] md:text-[50px] bg-gradient-to-tr from-color-2 to-color-1 bg-clip-text text-transparent animate-pulse">
+          <h1 className="select-none text-[24px] sm:text-[40px] md:text-[50px] bg-gradient-to-tr from-color-31 to-color-6 bg-clip-text text-transparent animate-pulse">
             {"CHAMPION'S CHALLENGE"}
           </h1>
           <h2 className="select-none text-[17px] sm:text-[22px] text-color-29">
@@ -82,22 +81,21 @@ export default function Home() {
             draggable={false}
           />
           <button
-            className="select-none w-3/4 h-16 sm:text-[18px] text-[22px] rounded-[25px] border-[2px] border-color-1 bg-color-11 shadow-sm shadow-color-1 hover:scale-105 hover:border-[3px] animate-bounce"
+            className="select-none w-3/4 h-16 sm:text-[18px] text-[22px] rounded-[22px]  bg-color-31  hover:scale-[1.01] animate-bounce"
             onClick={() => setShowModal(!showModal)}
           >
-            Play Now
+            <span className="text-color-0">Play Now</span>
           </button>
         </div>
       </div>
 
       <hr className="opacity-30" />
-      {/* TEAM */}
 
       <div className="w-full flex flex-col items-center justify-center text-color-3 p-6">
         <h1 className="select-none py-8 text-[40px] sm:text-[50px] md:text-[60px] bg-gradient-to-br from-color-11 to-color-16 bg-clip-text text-transparent">
           TEAM
         </h1>
-        <div className="flex flex-wrap w-full justify-center items-center sm:p-4 sm:gap-16 gap-4">
+        <div className="flex flex-wrap w-full justify-center items-center sm:p-4 sm:gap-5 gap-1">
           <MemberCard
             name="Mustapha Jlem"
             login="mjlem"
@@ -122,7 +120,6 @@ export default function Home() {
       </div>
 
       <hr className="opacity-30" />
-      {/* Stack */}
 
       <div className="w-full h-full flex flex-col items-center justify-center p-6">
         <h1 className=" select-none py-8 text-[40px] sm:text-[50px] md:text-[60px] bg-gradient-to-br from-color-11 to-color-16 bg-clip-text text-transparent">

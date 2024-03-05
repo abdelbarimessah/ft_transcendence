@@ -8,7 +8,9 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ChatGateway } from './chat.gateway';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -28,8 +30,10 @@ import { ChatService } from './chat.service';
 import { NotificationService } from 'src/notification/notification.service';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '@prisma/client';
-
-// move logic to chatService
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
+import { v4 as uuid4 } from 'uuid';
 @UseGuards(OTPGuard)
 @UseGuards(AuthGuard('jwt'))
 @Controller('chat')
@@ -72,10 +76,12 @@ export class ChatController {
     chats.forEach((chat) => {
       this.chatGateway.joinRoom(chat.members[0].id, chat.id);
       this.chatGateway.joinRoom(chat.members[1].id, chat.id);
+      delete chat.members[0].secretOpt;
+      delete chat.members[1].secretOpt;
     });
     return chats;
   }
-  @Get('get/:id') // GET /chat/:id return the messages of the chat
+  @Get('get/:id') // GET /chat/get/:id return the messages of the chat
   async getChat(@Param('id') id: string, @CurrentUser() user: User) {
     const userId = user.id;
     const chat = await this.chatService.getChatMessages(id, userId);
@@ -162,7 +168,7 @@ export class ChatController {
   async getChannels(@CurrentUser() user: User) {
     const userId = user.id;
 
-    const channels = this.chatService.getUserChannels(userId);
+    const channels = await this.chatService.getUserChannels(userId);
 
     return channels;
   }
@@ -178,6 +184,7 @@ export class ChatController {
       userId,
       data,
     );
+    delete updatedChannel.password;
     this.chatGateway.updateChannel(channelId, updatedChannel);
     return updatedChannel;
   }
@@ -266,10 +273,13 @@ export class ChatController {
       targetId.userId,
     );
     this.chatGateway.banUser(id, targetId.userId, updatedMembership.isBanned);
+    this.chatGateway.leaveRoom(user.id, id);
+
     return updatedMembership.isBanned
       ? { message: 'User has been banned successfully.' }
       : { message: 'User has been unbanned successfully.' };
   }
+
   @Post('channel/:id/kick')
   async kickMember(
     @Param('id') channelId: string,
@@ -280,6 +290,7 @@ export class ChatController {
     this.chatGateway.kickUser(channelId, user.id);
     return { message: 'User has been kicked from the channel.' };
   }
+
   @Get('channel/:id/members')
   async getChannelMembers(@Param('id') channelId, @CurrentUser() user: User) {
     const members = await this.chatService.getChannelMembers(
@@ -288,6 +299,7 @@ export class ChatController {
     );
     return members;
   }
+  
   @Get('channel/:id/messages')
   async getChannelMessages(
     @Param('id') channelId: string,
@@ -336,6 +348,26 @@ export class ChatController {
   ) {
     this.chatService.unblockUser(user.id, targetUserId.userId);
     this.chatGateway.unblockUser(targetUserId.userId, user.id);
+  }
+  @Post('upload')
+  @UseInterceptors(
+    FileInterceptor('avatar', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: async (req, file, cb) => {
+          const uniqueName = uuid4(); // Generates a UUID
+          const ext = extname(file.originalname);
+          cb(null, `${uniqueName}${ext}`);
+        },
+      }),
+    }),
+  )
+  uploadChannelAvatar(@UploadedFile() file) {
+    if (!file) {
+      throw new BadRequestException('No file uploaded.');
+    }
+    const filePath = `http://localhost:3000/uploads/${file.filename}`;
+    return { avatar: filePath };
   }
 }
 

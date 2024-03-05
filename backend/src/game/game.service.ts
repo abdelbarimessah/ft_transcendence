@@ -1,20 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-const Fuse = require('fuse.js');
 
 @Injectable()
 export class GameService {
-  constructor(private prismaService: PrismaService) { }
+  constructor(
+    private prismaService: PrismaService
+  ) { }
 
   async addGameData(providerId: string, gameData: any) {
-    const {
-      opponentId,
-      userScore,
-      opponentScore,
-      status,
-      gameName,
-      gameType,
-    } = gameData;
+    const { opponentId, userScore, opponentScore, status, gameName, gameType } =
+      gameData;
     const count = await this.prismaService.game.count({
       where: {
         gameName: gameName,
@@ -36,8 +31,8 @@ export class GameService {
           },
         },
       });
-      
-      if(status === 'win') await this.addUserLevel(providerId);
+
+      if (status === 'win') await this.addUserLevel(providerId);
 
       const achievementsToUnlock = [
         { name: 'ach7', count: 50 },
@@ -50,15 +45,15 @@ export class GameService {
       ];
       const friendMode = await this.getNumberOfWiningMatchFriendMode(providerId);
       const randomMode = await this.getNumberOfWiningMatchRandomMode(providerId);
-  
+
       for (const { name, count, gameType } of achievementsToUnlock) {
         const winCount = gameType
           ? await this.getNumberOfWiningMatch(gameType, providerId)
           : Math.max(
-              friendMode.friendModeCount,
-              randomMode.randomModeCount
-            );
-  
+            friendMode.friendModeCount,
+            randomMode.randomModeCount
+          );
+
         if (winCount >= count) {
           const achievement = await this.prismaService.achievement.findFirst({
             where: {
@@ -66,7 +61,7 @@ export class GameService {
               name: name,
             },
           });
-  
+
           if (achievement) {
             await this.prismaService.achievement.update({
               where: {
@@ -81,10 +76,8 @@ export class GameService {
       }
       return game;
     }
-
   }
-  async addUserLevel(providerId: string)
-  {
+  async addUserLevel(providerId: string) {
     const user = await this.prismaService.user.findUnique({
       where: {
         providerId: providerId,
@@ -107,7 +100,7 @@ export class GameService {
       where: {
         userId: id,
         gameType: gameType,
-        status: 'win'
+        status: 'win',
       },
     });
     return winCount;
@@ -118,10 +111,10 @@ export class GameService {
       where: {
         userId: id,
         gameType: 'friendMode',
-        status: 'win'
+        status: 'win',
       },
-    })
-    return { friendModeCount }
+    });
+    return { friendModeCount };
   }
 
   async getNumberOfWiningMatchRandomMode(id: string) {
@@ -129,11 +122,39 @@ export class GameService {
       where: {
         userId: id,
         gameType: 'randomMode',
-        status: 'win'
+        status: 'win',
       },
-    })
-    return { randomModeCount }
+    });
+    return { randomModeCount };
   }
+
+  // async getMatchHistory(userId: string) {
+  //   const games = await this.prismaService.game.findMany({
+  //     where: {
+  //       userId: userId,
+  //     },
+  //   });
+  //   const users = await Promise.all(
+  //     games.map((game) =>
+  //       this.prismaService.user.findUnique({
+  //         where: {
+  //           providerId: game.userId,
+  //         },
+  //       })
+  //     )
+  //   );
+  //   const oponents = await Promise.all(
+  //     games.map((game) =>
+  //       this.prismaService.user.findUnique({
+  //         where: {
+  //           providerId: game.opponentId,
+  //         },
+  //       })
+  //     )
+  //   );
+
+  //   return {games, users, oponents};
+  // }
 
   async getMatchHistory(userId: string) {
     const games = await this.prismaService.game.findMany({
@@ -141,6 +162,32 @@ export class GameService {
         userId: userId,
       },
     });
-    return games;
+
+    const users = await Promise.all(
+      games.map((game) =>
+        this.prismaService.user.findUnique({
+          where: {
+            providerId: game.userId,
+          },
+        })
+      )
+    );
+    const opponents = await Promise.all(
+      games.map((game) =>
+        this.prismaService.user.findUnique({
+          where: {
+            providerId: game.opponentId,
+          },
+        })
+      )
+    );
+
+    const result = games.map((game, index) => ({
+      game: game,
+      user: users[index],
+      opponent: opponents[index],
+    }));
+    return result;
   }
+
 }

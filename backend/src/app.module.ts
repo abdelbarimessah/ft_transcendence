@@ -33,6 +33,6 @@ import { UserGateway } from './user/user.gateway';
     }),
   ],
   controllers: [AppController],
-  providers: [GameGateway, UserGateway,JwtService, AppService],
+  providers: [GameGateway, UserGateway, JwtService, AppService],
 })
 export class AppModule {}

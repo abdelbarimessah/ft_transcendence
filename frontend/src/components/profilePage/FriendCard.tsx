@@ -48,7 +48,7 @@ export default function FriendCard({
     }, 2000);
 
     socketClient.on("User-status", (data) => {
-
+        
       if (data.providerId === friend.providerId) {
         setStatus(data.status);
       }

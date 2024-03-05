@@ -22,12 +22,13 @@ import { AuthGuard } from '@nestjs/passport';
 import { OTPGuard } from 'src/auth/Otp.guard';
 import { providerIdDto, updateUserDto } from './user.dto';
 import { Response } from 'express';
+import { User } from '@prisma/client';
 
 @UseGuards(OTPGuard)
 @UseGuards(AuthGuard('jwt'))
 @Controller('user')
 export class UsersController {
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService) {}
 
   @Get('All')
   async findAll() {
@@ -35,7 +36,7 @@ export class UsersController {
   }
 
   @Get('me')
-  async getProfile(@CurrentUser() user: any) {
+  async getProfile(@CurrentUser() user: User) {
     try {
       if (user) {
         this.userService.uploadImage(user.avatar, user.providerId);
@@ -46,7 +47,7 @@ export class UsersController {
     } catch (error) {
       console.error('error', error);
     }
-
+    delete user.secretOpt;
     return user;
   }
 
@@ -57,11 +58,8 @@ export class UsersController {
     const uploadPath = path.join(uploadDir, `${user.providerId}${'.png'}`);
     fs.writeFileSync(uploadPath, file.buffer);
 
-    const backendUrl = 'http://localhost:3000'
-    const url = new URL(
-      `/uploads/${user.providerId}${'.png'}`,
-      backendUrl,
-    );
+    const backendUrl = 'http://localhost:3000';
+    const url = new URL(`/uploads/${user.providerId}${'.png'}`, backendUrl);
 
     url.searchParams.append('time', Date.now().toString());
 
@@ -92,6 +90,7 @@ export class UsersController {
   @Post('updateInfo')
   async updateInfo(@Body() body: updateUserDto, @CurrentUser() user: any) {
     const res = await this.userService.updateUserData(user.providerId, body);
+    delete res.secretOpt;
     return { message: 'User data updated', data: res };
     // return res.redirect('http://localhost:8000/profile');
   }
@@ -146,13 +145,18 @@ export class UsersController {
   @Get('friends')
   async getFriends(@CurrentUser() user: any) {
     const res = await this.userService.getFriends(user?.providerId);
-    return res
+    return res;
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string, @CurrentUser() user: any) {
     const { friendOf, ...rest } = await this.userService.getUserById(id);
-    if (id === user.providerId) return 1;
+
+    if (id === user.providerId) {
+      console.log('error in the matching of the user');
+
+      return 1;
+    }
 
     return {
       ...rest,

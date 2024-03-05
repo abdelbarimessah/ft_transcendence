@@ -47,7 +47,7 @@ export default function LeaderBoard() {
     })
 
     return (
-        <div className=" w-full 2xl:w-[596px] xl:w-[1137px] h-[386px] rounded-[22px] bg-color-0 overflow-hidden flex flex-col gap-[40px] ">
+        <div className=" w-full 2xl:w-[596px] xl:w-[1137px] h-[386px] rounded-[22px] bg-color-0 overflow-hidden flex flex-col gap-[40px] px-3">
             <div className="w-full flex items-center justify-center gap-[15px] pt-[18px]">
                 <div className='w-[37px] h-[37px]  relative hidden sm:flex items-center justify-center  '>
                     <Image

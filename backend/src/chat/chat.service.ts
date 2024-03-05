@@ -254,6 +254,7 @@ export class ChatService {
         type: data.type,
         password: hashedPassword,
         ownerId: userId,
+        avatar: data?.avatar,
         members: {
           create: [{ userId, isAdmin: true }],
         },
@@ -305,15 +306,15 @@ export class ChatService {
         'You are not authorized to update this channel',
       );
     }
-    if (data.type === 'PROTECTED' && data.password) {
-      if (data.password.length === 0) {
+    if (data.type === 'PROTECTED') {
+      if (!data.password || data.password.length === 0) {
         throw new BadRequestException(
           'Password is required for protected channels',
         );
       }
       const hashedPassword = await bcrypt.hash(data.password, 10);
       data.password = hashedPassword;
-    } else if (data.type !== 'PROTECTED') {
+    } else {
       data.password = null;
     }
     const updatedChannel = await this.prismaService.channel.update({
@@ -410,12 +411,30 @@ export class ChatService {
         `User is not a member of the channel ${channelId}`,
       );
     }
-    // To-do
-    // if (channel.ownerId === user.id) {
-    //   throw new BadRequestException(
-    //     `Channel owner cannot leave the channel directly.`,
-    //   );
+    // if (channel.ownerId === userId) {
+    //   const nextAdmin = await this.prismaService.channelMembership.findFirst({
+    //     where: {
+    //       isAdmin: true,
+    //       userId: {
+    //         not: userId,
+    //       },
+    //     },
+    //     orderBy: { joinedAt: 'asc' },
+    //   });
+    //   if (!nextAdmin)
+    //     throw new BadRequestException(
+    //       'There must be at least one admin to transfer ownership before leaving.`',
+    //     );
+    //   await this.prismaService.channel.update({
+    //     where: {
+    //       id: channelId,
+    //     },
+    //     data: {
+    //       ownerId: nextAdmin.userId,
+    //     },
+    //   });
     // }
+
     await this.prismaService.channelMembership.delete({
       where: {
         channelId_userId: {
@@ -621,17 +640,20 @@ export class ChatService {
       throw new ForbiddenException('Cannot ban the owner of the channel.');
     }
     // To-do kick target user from channel
-    return await this.prismaService.channelMembership.update({
-      where: {
-        channelId_userId: {
-          channelId,
-          userId: targetId,
+    const updatedMembership = await this.prismaService.channelMembership.update(
+      {
+        where: {
+          channelId_userId: {
+            channelId,
+            userId: targetId,
+          },
+        },
+        data: {
+          isBanned: !targetMembership.isBanned,
         },
       },
-      data: {
-        isBanned: !targetMembership.isBanned,
-      },
-    });
+    );
+    return updatedMembership;
   }
   async kickMember(channelId: string, userId: string, targetId: string) {
     const adminMembership =
@@ -712,10 +734,20 @@ export class ChatService {
       include: {
         members: {
           where: {
-            isBanned: false, //To-do: maybe i wouldn't need it
+            isBanned: false,
           },
           include: {
-            user: true, // To-do select the useful fields
+            user: {
+              select: {
+                id: true,
+                provider: true,
+                nickName: true,
+                firstName: true,
+                lastName: true,
+                avatar: true,
+                level: true,
+              },
+            }, // To-do select the useful fields
           },
         },
       },
@@ -730,6 +762,16 @@ export class ChatService {
       },
       include: {
         messages: {
+          include: {
+            author: {
+              select: {
+                id: true,
+                providerId: true,
+                avatar: true,
+                nickName: true,
+              },
+            },
+          },
           orderBy: {
             createdAt: 'asc',
           },
@@ -800,6 +842,14 @@ export class ChatService {
         type: {
           in: ['PROTECTED', 'PUBLIC'],
         },
+      },
+      select: {
+        id: true,
+        name: true,
+        type: true,
+        createdAt: true,
+        ownerId: true,
+        avatar: true,
       },
     });
   }

@@ -39,6 +39,11 @@ export class createChannelDto {
   @IsNotEmpty()
   @IsOptional()
   password?: string;
+
+  @IsString()
+  @IsOptional()
+  @IsNotEmpty()
+  avatar?: string;
 }
 
 export class UpdateChannelDto {
@@ -46,16 +51,21 @@ export class UpdateChannelDto {
   @MinLength(3)
   @MaxLength(25)
   @IsNotEmpty()
-  name: string;
+  name?: string;
 
   @IsNotEmpty()
   @IsEnum(AccessType)
-  type: AccessType;
+  type?: AccessType;
 
   @IsString()
   @IsNotEmpty()
   @IsOptional()
   password?: string;
+
+  @IsString()
+  @IsOptional()
+  @IsNotEmpty()
+  avatar?: string;
 }
 
 export class JoinChannelDto {

@@ -15,7 +15,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
         socket.emit("firstTime", res.data);
       })
       .catch((err) => {
-        console.error(err);
+        console.error(err.message);
       });
   }, []);
 

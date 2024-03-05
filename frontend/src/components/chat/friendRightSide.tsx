@@ -23,12 +23,27 @@ function FriendRightSide () {
 
     },[UserData.friendChatConversation])
     
-    console.log("UserData.chatClicked =>>> ", UserData.chatClicked.id);
-    console.log("UserData.channelClicked =>>> ", UserData.channelClicked.id);
     
+    
+    const addMessageToChat = (message) => {
+        if (UserData.chatClicked.id === message.chatId)
+        {
+            const newMessageArray = [...UserData.friendChatConversation, message];
+            UserData.setFriendChatConversation(newMessageArray);
+        }
+    }
+    
+    useEffect(() => {
+        socket.on("newMessage", (data) => {
+            addMessageToChat(data);
+        });
+        return (() => {
+            socket.off("newMessage")
+        })
+      }), [];
 
     if (UserData.chatClicked.id != undefined)
-    {   
+    {
         const friendSrcImg = UserData.myId.id !== UserData.chatClicked.members[0].id ? UserData.chatClicked.members[0].avatar : UserData.chatClicked.members[1].avatar;
         const friendNickName = UserData.myId.id !== UserData.chatClicked.members[0].id ? UserData.chatClicked.members[0].nickName : UserData.chatClicked.members[1].nickName;
         const friendId = UserData.myId.id !== UserData.chatClicked.members[0].id ? UserData.chatClicked.members[0].id : UserData.chatClicked.members[1].id;
@@ -42,14 +57,7 @@ function FriendRightSide () {
             inputMessageRef.current.value.length === 0 ? UserData.setTyping(true) : UserData.setTyping(false);
         }
 
-        const addMessageToChat = (message) => {
-            const newMessageArray = [...UserData.friendChatConversation, message];
-            UserData.setFriendChatConversation(newMessageArray);
-        }
 
-        socket.on('newMessage', (data) => {
-            addMessageToChat(data);
-        })
 
         const handelSubmit = async() => {
             try{
@@ -69,19 +77,18 @@ function FriendRightSide () {
                 UserData.setTyping(false);
 
             }
-            catch (error)
+            catch (error:any)
             {
-                console.error(error);
+                console.error(error.message);
             }
         }
         const messages = UserData.friendChatConversation;
-
-        // console.log("messages = ", messages);
+        
         return(
             //chat 
-            <div className='flex flex-col bg-[#ffff] h-full'>
+            <div className='flex flex-col h-full'>
                 {/* up nav */}
-                <div className='flex justify-between  bg-black h-[130px] border-r border-b border-[#FFEFD9] p-5'>
+                <div className='flex justify-between  bg-[#ffff] h-[130px] border-b-[3px] border-[#F3FAFF] p-5'>
                    <div className='flex items-center'>
 
                    {/* todo: profile need to redirect to: /profile/friend */}
@@ -109,7 +116,7 @@ function FriendRightSide () {
     
 
                 {/* messages */}
-                <div className="h-full bg-[#FFF0D2] bg-[url('../../public/assets/chat-bg.png')] overflow-y-scroll p-[38px]">
+                <div className="h-full bg-[#F3FAFF] bg-[url('../../public/assets/chat-bg.png')] overflow-y-scroll p-[38px]">
                     
                     
                         {messages.map((msg) => (
@@ -119,12 +126,10 @@ function FriendRightSide () {
                             nickname={msg.author.nickName}
                             authorId={msg.authorId}
                             time={<Moment format="hh:mm A">{msg.createdAt}</Moment>}
-                            friendId={friendId}/>
+                            myId={UserData.myId.id}/>
                         ))}
                         <div ref={refToBottum}/>
-                    {/* {messages.map((chat) => {
-						console.log(chat);
-					})} */}
+                   
 
 
                 </div>

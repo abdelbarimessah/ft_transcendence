@@ -20,9 +20,9 @@ function LeftSide() {
 		//container
 		// userConte
 		
-		<div className='flex flex-col border-r border-[#FFEFD9] w-full h-full '>
+		<div className='flex flex-col border-r-[4px] border-[#F3FAFF] w-full h-full '>
 			{/* profile */}
-			<div className='flex  justify-between items-center h-[130px] border-r border-b border-[#FFEFD9] p-5'>
+			<div className='flex  justify-between items-center h-[130px]  border-b-[3px] border-[#F3FAFF] p-5'>
 				{/* image */}
 				<Link href="/profile">
 					<img	src={UserData.myId.avatar}

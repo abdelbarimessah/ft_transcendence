@@ -39,7 +39,7 @@ export default function RootLayout({
       axios.post(`${process.env.NEXT_PUBLIC_API_URL}/game/gameData`, gameData).then(res => {
 
       }).catch(err => {
-        console.error(err);
+        console.error(err.message);
       })
       setTimeout(() => {
         route.push("/game");
@@ -71,8 +71,8 @@ export default function RootLayout({
       try {
         const url = process.env.NEXT_PUBLIC_API_URL;
         await axios.post(`${url}/game/gameData`, gameData);
-      } catch (error) {
-        console.error(error);
+      } catch (error:any) {
+        console.error(error.message);
       }
       setTimeout(() => route.push("/game"), 3000);
     });
@@ -100,8 +100,8 @@ export default function RootLayout({
       try {
         const url = process.env.NEXT_PUBLIC_API_URL;
         await axios.post(`${url}/game/gameData`, gameData);
-      } catch (error) {
-        console.error(error);
+      } catch (error:any) {
+        console.error(error.message);
       }
       setTimeout(() => route.push("/game"), 3000);
     });

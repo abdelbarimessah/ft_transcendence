@@ -10,6 +10,7 @@ import { log } from 'console'
 import { toast } from 'sonner'
 import CreatProtected from './creatProtected'
 import { channel } from 'diagnostics_channel'
+import CreatPrivate from './creatPrivate'
 
 
 function CreatChannel() {
@@ -128,8 +129,10 @@ function CreatChannel() {
                                 
                                 </ul>
                             </div>
-                            <CreatProtected />
-                            <CreatPrivate />
+                            <div className='felx flex-col justify-center items-center py-[30px]'>
+                                <CreatProtected />
+                                <CreatPrivate />
+                            </div>
 
                             <button className='flex absolute bottom-0 right-0 m-[30px] p-[15px] w-fit justify-end items-end rounded-lg
                                             text-[#8194a3] bg-[#FFFFFF] border cursor-pointer hover:border-[#adf39d]  hover:text-gray-600

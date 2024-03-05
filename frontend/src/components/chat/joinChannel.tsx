@@ -18,7 +18,7 @@ import { toast } from 'sonner';
 function JoinChannel () {
 
     const UserData :any = useContext(chatslistContext);
-    UserData.setchannelType("");
+    UserData.channelType = "";
  
     return (
         <>

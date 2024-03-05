@@ -25,7 +25,7 @@ export default function NotFound() {
                     </div>
                     <Link href={'/profile'}>
                         <div className='w-[320px] h-[70px] bg-color-30  flex items-center justify-center rounded-[22px] mb-10 z-50 hover:scale-[1.01] hover:opacity-90 cursor-pointer'>
-                            <span className='text-color-31 font-nico-moji text-[16px] '>Take Me Home</span>
+                            <span className='text-color-31 font-nico-moji text-[16px]'>Take Me Home</span>
                         </div>
                     </Link>
                 </div>
@@ -34,3 +34,5 @@ export default function NotFound() {
         </div>
     )
 }
+
+//Todo : make the card of the decline of the invite match

@@ -114,72 +114,33 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SocketContext, socket } from "@/app/SocketContext";
 import { useRouter } from "next/navigation";
-import NotificationItem, { NotificationItemProps } from "./NotificationItem";
+import NotificationItem, { NotificationProps } from "./NotificationItem";
 import axios from "axios";
 import animationData from "../../../public/assets/EmptyFriends.json";
 import dynamic from "next/dynamic";
-import { useQuery } from "react-query";
+import { QueryClient, useQuery, useQueryClient } from "react-query";
 
 axios.defaults.withCredentials = true;
 
-const msgNotification: NotificationItemProps = {
-  id: "1",
-  type: "MESSAGE",
-  gameId: null,
-  chatId: "1",
-  user: {
-    id: "62446",
-    nickName: "odakhch",
-    avatar:
-      "https://cdn.intra.42.fr/users/55f4024603bd18ad1ae965334d9758de/odakhch.jpg",
-  },
-};
-
-const followNotification: NotificationItemProps = {
-  id: "2",
-  type: "FRIEND_REQUEST",
-  gameId: null,
-  chatId: null,
-  user: {
-    id: "62446",
-    nickName: "odakhch",
-    avatar:
-      "https://cdn.intra.42.fr/users/55f4024603bd18ad1ae965334d9758de/odakhch.jpg",
-  },
-};
-
-const gameInviteNotification: NotificationItemProps = {
-  id: "3",
-  type: "GAME_INVITE",
-  gameId: "1",
-  chatId: null,
-  user: {
-    id: "62446",
-    nickName: "odakhch",
-    avatar:
-      "https://cdn.intra.42.fr/users/55f4024603bd18ad1ae965334d9758de/odakhch.jpg",
-  },
-};
-
 const getNotificationList = async () => {
-  try {
-    const res = await axios.get<NotificationItemProps[]>(
-      "http://localhost:3000/notification"
-    );
-    return res.data;
-  } catch (err) {
-    console.log("Error fetching notification list");
-  }
+  const res = await axios.get<NotificationProps[]>(
+    "http://localhost:3000/notification"
+  );
+  return res.data;
 };
 
-const NotificationIcon = () => {
+export default function NotificationIcon() {
   const socketClient = useContext(SocketContext);
-  const [inviteGame, setInviteGame] = useState(false);
-  const [gameNotif, setGameNotif] = useState<NotificationItemProps>();
-  const [gamePair, setGamePair] = useState<any>();
+  const queryClient = useQueryClient();
   const router = useRouter();
+
   const [me, setMe] = useState<any>();
 
+  const [gameNotif, setGameNotif] = useState<NotificationProps>();
+  const [inviteGame, setInviteGame] = useState(false);
+  const [gamePair, setGamePair] = useState<any>();
+
+  // Fetching the user data
   useEffect(() => {
     axios
       .get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`)
@@ -191,50 +152,57 @@ const NotificationIcon = () => {
       });
   }, []);
 
-  useEffect(() => {
-    socketClient.on("playRequestFromFriend", (data) => {
-      console.log("the game pair data is ========= ", data);
-      setInviteGame(true);
-      setGamePair(data);
-      console.log("the game pair data is ========= ", data);
-
-      const newGameInviteNotification: NotificationItemProps = {
-        id: JSON.stringify(data.inviteNumber),
-        type: "GAME_INVITE",
-        gameId: JSON.stringify(data.inviteNumber),
-        chatId: data.chatId,
-        user: {
-          id: data.sender.providerId,
-          nickName: data.sender.nickName,
-          avatar: data.sender.avatar,
-        },
-      };
-    });
-  }, [socketClient]);
-
+  //  Handling New Follow
   useEffect(() => {
     socketClient.on("notification", (data) => {
-      console.log('in notification', data);
-      const newNotification: NotificationItemProps = {
+      const existingNotifications =
+        queryClient.getQueryData<NotificationProps[]>("notifications") || [];
+
+      const newNotification: NotificationProps = {
         id: data.id,
         type: data.type,
-        // gameId: JSON.stringify(data.inviteNumber),
+        gameId: data.gameId,
         chatId: data.chatId,
         user: {
-          id: data.sender.providerId,
-          nickName: data.sender.nickName,
-          avatar: data.sender.avatar,
+          providerId: data.user.providerId,
+          avatar: data.user.avatar,
+          nickName: data.user.nickName,
         },
       };
+      console.log("data in New Notification ===> ", data);
+
+      console.log("Data in existing notifications : ", existingNotifications);
+
+      const updatedNotifications = [...existingNotifications, newNotification];
+      console.log("Data in updated notifications : ", updatedNotifications);
+
+      queryClient.setQueryData("notifications", updatedNotifications);
     });
   }, []);
 
+  // Handling the game invite
+  // useEffect(() => {
+  //   socketClient.on("playRequestFromFriend", (data) => {
+  //     setInviteGame(true);
+  //     setGamePair(data);
+  //     const newGameInviteNotification: NotificationProps = {
+  //       id: data.id,
+  //       type: "GAME_INVITE",
+  //       gameId: data.gameId,
+  //       chatId: data.chatId,
+  //       userId: data.sender.providerId,
+  //     };
+  //     setGameNotif(newGameInviteNotification);
+  //   });
+  // }, [socketClient]);
+
+  // Fetching the notification list
   const {
     data: notificationList,
     isLoading,
     isError,
     error,
-  } = useQuery<NotificationItemProps[], Error>({
+  } = useQuery<NotificationProps[], Error>({
     queryKey: ["notificationList"],
     queryFn: getNotificationList,
   });
@@ -253,6 +221,7 @@ const NotificationIcon = () => {
     setInviteGame(false);
   };
 
+  // Handling READ_NOTIFICATIONS
   const handleUnreadNotifications = () => {
     socket.emit("notification");
   };
@@ -294,23 +263,21 @@ const NotificationIcon = () => {
 
                 {!isLoading &&
                   !isError &&
-                  notificationList?.map((notification: NotificationItemProps) => (
+                  notificationList &&
+                  notificationList?.map((notification: NotificationProps) => (
                     <NotificationItem
-                      notification={notification}
                       key={notification.id}
+                      notification={notification}
                     />
                   ))}
-
-                {/* <NotificationItem notification={msgNotification} />
-                <NotificationItem notification={followNotification} /> */}
-
+                {/*
                 {inviteGame && (
                   <NotificationItem
                     notification={gameNotif}
                     onAccept={handleAcceptInvite}
                     onReject={handleDeclineInvite}
                   />
-                )}
+                )} */}
               </div>
             </DropdownMenuContent>
           </div>
@@ -318,6 +285,4 @@ const NotificationIcon = () => {
       </DropdownMenu>
     </div>
   );
-};
-
-export default NotificationIcon;
+}

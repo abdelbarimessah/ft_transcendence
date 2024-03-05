@@ -2,41 +2,33 @@
 
 import { SocketContext } from "@/app/SocketContext";
 import axios from "axios";
-import { get } from "http";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 
-export type NotificationItemProps = {
+export type NotificationProps = {
   id: string;
   type: string;
   gameId: string | null;
   chatId: string | null;
-  user: userProps;
+  user: {
+    providerId: string;
+    avatar: string;
+    nickName: string;
+  };
 };
 
-type userProps = {
-  id: string;
-  nickName: string;
-  avatar: string;
-};
-
-type Props = {
-  notification: NotificationItemProps;
-  onAccept?: () => void;
-  onReject?: () => void;
-};
-
-export default function NotificationItem({
-  notification: { id, type, gameId, chatId },
-  onAccept,
-  onReject,
-}: Props) {
+export default function NotificationItem(
+  {
+    notification,
+  }: {
+    notification: NotificationProps;
+  },
+  onAccept?: () => void,
+  onReject?: () => void
+) {
   const router = useRouter();
   const socketClient = useContext(SocketContext);
-
-
-  const [userTD, setUserDT] = useState<userProps>(null);
 
   useEffect(() => {
     socketClient.on("playersReadyInvite", (data) => {
@@ -50,36 +42,30 @@ export default function NotificationItem({
   }, []);
 
   const goToChat = () => {
-    router.push(`/chat/${chatId}`);
+    router.push(`/chat/${notification.chatId}`);
   };
   const goToProfile = () => {
-    router.push(`/profile/${id}`);
+    router.push(`/profile/${notification.user.providerId}`);
   };
-
-  const getUserData = async (id: string) => {
-    const res = await axios.get<userProps>(`http://localhost/user/${id}`);
-    setUserDT(res.data);
-    return res.data;
-  };
-
-  getUserData(id);
 
   return (
     <div className="w-full flex items-center justify-between gap-2 border-b-2 border-gray-400 pb-2">
       <Image
         alt="alt-user"
-        src={userTD.avatar}
+        src={notification.user.avatar}
         width={40}
         height={40}
         className="rounded-full"
         priority={true}
       />
 
-      {type === "MESSAGE" && (
+      {notification.type === "MESSAGE" && (
         <div className="w-full flex cursor-pointer" onClick={goToChat}>
           <div className="w-full flex gap-1">
             <p className="text-color-29 font-nico-moji text-[12px]">
-              <span className="font-bold text-color-5">{userTD.nickName}</span>{" "}
+              <span className="font-bold text-color-5">
+                {notification.user.nickName}
+              </span>{" "}
               sent you a message
             </p>
             <div className="flex justify-center items-center">
@@ -95,11 +81,13 @@ export default function NotificationItem({
         </div>
       )}
 
-      {type === "FRIEND_REQUEST" && (
+      {notification.type === "FRIEND_REQUEST" && (
         <div className="w-full flex cursor-pointer" onClick={goToProfile}>
           <div className="w-full flex gap-1">
             <p className="text-color-29 font-nico-moji text-[12px]">
-              <span className="font-bold text-color-5">{userTD.nickName}</span>{" "}
+              <span className="font-bold text-color-5">
+                {notification.user.nickName}
+              </span>{" "}
               started following you
             </p>
             <div className="flex justify-center items-center">
@@ -115,11 +103,13 @@ export default function NotificationItem({
         </div>
       )}
 
-      {type === "GAME_INVITE" && (
+      {notification.type === "GAME_INVITE" && (
         <div className="w-full flex">
           <div className="w-full flex gap-1">
             <p className="text-color-29 font-nico-moji text-[12px]">
-              <span className="font-bold text-color-5">{userTD.nickName}</span>{" "}
+              <span className="font-bold text-color-5">
+                {notification.user.nickName}
+              </span>{" "}
               invited you to play
               <div className="w-full text-color-6 text-[14px] flex justify-evenly gap-3 items-center">
                 <button

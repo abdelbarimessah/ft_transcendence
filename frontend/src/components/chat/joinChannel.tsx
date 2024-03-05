@@ -7,19 +7,19 @@ import Messages from './messages';
 import Moment from 'react-moment';
 import 'moment-timezone';
 import axios from 'axios';
-import { SocketContext } from '@/app/SocketContext';
+import { SocketContext, socket } from '@/app/SocketContext';
 import FriendRightSide from './friendRightSide';
 import ChannelRightSide from './channelRightSide';
 import Channels from './channels';
 import ChannelsToJoin from './listJoinChannel';
+import { toast } from 'sonner';
 
 
 function JoinChannel () {
 
     const UserData :any = useContext(chatslistContext);
-    const inputMessageRef = useRef(null);
-
-    console.log("channel list = ", UserData.ChannelsList);
+    UserData.setchannelType("");
+ 
     return (
         <>
             <div className='flex justify-center items-center '>
@@ -32,13 +32,15 @@ function JoinChannel () {
                             </div>
                                 <div className='border-b-[1px] '> Join for Endless Fun and Excitement </div>
                             <div className='flex w-full overflow-hidden flex-col gap-9 mt-4'> 
-                                {/* to-do chose picture */}
-                                <div className='flex flex-col no-scrollbar overflow-y-scroll  cursor-pointer h-full w-full  px-3'>
+                                
+                                {/* !!-to-do chose picture-!! */}
+                                
+                                <div className='flex flex-col no-scrollbar overflow-y-scroll  h-full w-full  px-3'>
                                     {UserData.listChannelsToJoin.map((chat) => {							
                                     return <ChannelsToJoin key={chat.id} channelToJoin={chat}/>;
                                     })}
                                     {/* {UserData.listChannelsToJoin.map((chat) => {
-                                        console.log("chat to join ==>", chat);
+                                        console.log("channel to join ==>", chat);
                                         
                                     })} */}
                                 </div>

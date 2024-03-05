@@ -389,6 +389,7 @@ export class ChatService {
         userId: userId,
       },
     });
+    return channel;
   }
   async leaveChannel(channelId: string, userId: string) {
     const channel = await this.prismaService.channel.findUnique({

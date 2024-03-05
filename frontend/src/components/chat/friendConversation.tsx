@@ -6,8 +6,6 @@ import Btns from "./commun_component/btns";
 
 function FriendConversation(){
     const UserData: any = useContext(chatslistContext);
-    console.log("icon = ", UserData.whatIcon);
-
     const handelAddNewConversation = () => {
         
     }

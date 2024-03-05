@@ -13,7 +13,6 @@ function ChannelConversation(){
         try {
             const channelresponse = await axios.get('http://localhost:3000/chat/channel/all');
             UserData.setListChannelsToJoin(channelresponse.data);
-            console.log("channelresponse.data", channelresponse.data);
             
         } catch (error: any) {
             if (error.response && error.response.status === 400) {
@@ -27,7 +26,6 @@ function ChannelConversation(){
             fetchData();
         }, [UserData.popUpOn]);
 
-    
     function handelAddNewConversation() {
 		UserData.setPopUpOn(true);
 	}

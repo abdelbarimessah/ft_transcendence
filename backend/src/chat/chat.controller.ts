@@ -149,10 +149,12 @@ export class ChatController {
     @Body() data: createChannelDto,
     @CurrentUser() user: User,
   ) {
+    console.log('here in create channel')
     const userId = user.id;
     try {
       const channel = await this.chatService.createChannel(data, userId);
       this.chatGateway.joinRoom(userId, channel.id);
+      console.log('the created channel:', channel);
       delete channel.password;
       return channel;
     } catch (err) {
@@ -203,10 +205,10 @@ export class ChatController {
     @Body() body: JoinChannelDto,
   ) {
     const userId = user.id;
-    await this.chatService.joinChannel(channelId, userId, body);
+   const channel=  await this.chatService.joinChannel(channelId, userId, body);
     this.chatGateway.joinRoom(userId, channelId);
     this.chatGateway.userJoined(channelId, user);
-    return { message: 'User joined the channel successfully' };
+    return channel;
   }
   @Post('channel/:id/leave')
   async leaveChannel(

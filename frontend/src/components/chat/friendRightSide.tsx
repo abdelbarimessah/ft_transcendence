@@ -23,8 +23,6 @@ function FriendRightSide () {
 
     },[UserData.friendChatConversation])
     
-    console.log("UserData.chatClicked =>>> ", UserData.chatClicked.id);
-    console.log("UserData.channelClicked =>>> ", UserData.channelClicked.id);
     
 
     if (UserData.chatClicked.id != undefined)
@@ -43,13 +41,18 @@ function FriendRightSide () {
         }
 
         const addMessageToChat = (message) => {
-            const newMessageArray = [...UserData.friendChatConversation, message];
-            UserData.setFriendChatConversation(newMessageArray);
+            if (UserData.chatClicked.id === message.chatId)
+            {
+                const newMessageArray = [...UserData.friendChatConversation, message];
+                UserData.setFriendChatConversation(newMessageArray);
+            }
         }
 
         socket.on('newMessage', (data) => {
-            if (friendId === data.authorId)
+            if (UserData.chatClicked.id === data.chatId)
+            {
                 addMessageToChat(data);
+            }
         })
 
         const handelSubmit = async() => {
@@ -70,14 +73,13 @@ function FriendRightSide () {
                 UserData.setTyping(false);
 
             }
-            catch (error)
+            catch (error:any)
             {
-                console.error(error);
+                console.error(error.message);
             }
         }
         const messages = UserData.friendChatConversation;
         
-        console.log("messages = ", messages);
         return(
             //chat 
             <div className='flex flex-col h-full'>
@@ -120,7 +122,7 @@ function FriendRightSide () {
                             nickname={msg.author.nickName}
                             authorId={msg.authorId}
                             time={<Moment format="hh:mm A">{msg.createdAt}</Moment>}
-                            friendId={friendId}/>
+                            myId={UserData.myId.id}/>
                         ))}
                         <div ref={refToBottum}/>
                    

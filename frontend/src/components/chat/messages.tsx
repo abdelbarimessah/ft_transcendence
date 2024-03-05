@@ -1,17 +1,14 @@
 import React from "react";
 
-function Messages({msg, avatar, nickname, authorId, time, friendId}){
+function Messages({msg, avatar, nickname, authorId, time, myId}){
 
     
-
-    // nickname = "imittous";
+    
     return(
-        //container
-        
-            
+
         <div    className={`flex justify-center items-center p-3 my-3 bg-[#FFFFFF] w-fit text-[#496D8B]
-                ${authorId !== friendId ? " ml-auto rounded-[30px_0px_30px_30px]" : " mr-auto rounded-[0px_30px_30px_30px] "}`}>
-                {authorId === friendId && <img src={avatar} alt={nickname} className="w-[40px] h-[40px] rounded-full mr-4" />}
+                ${authorId === myId ? " ml-auto rounded-[30px_0px_30px_30px]" : " mr-auto rounded-[0px_30px_30px_30px] "}`}>
+                {authorId !== myId && <img src={avatar} alt={nickname} className="w-[40px] h-[40px] rounded-full mr-4" />}
                 <div className="">
                     <p className="text-[#0d0202ba] text-[13px]">{nickname}</p>
                     <p className="text-wrap break-words max-w-[350px] mr-3">{msg}</p>

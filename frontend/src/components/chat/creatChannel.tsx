@@ -6,56 +6,64 @@ import Friend from './friend'
 import Channels from './channels'
 import { chatslistContext } from '../../app/(home)/chat/page'
 import { Truck } from 'lucide-react'
+import { log } from 'console'
+import { toast } from 'sonner'
+import CreatProtected from './creatProtected'
+import { channel } from 'diagnostics_channel'
 
 
 function CreatChannel() {
 
     const UserData  = useContext(chatslistContext);
     const inputMessageRef = useRef(null);
-
-    const handelSubmitrefrech = (e) =>
-    {
+    const handelSubmitrefrech = (e) =>{
         e.preventDefault();
     }
-    // UserData.channelsList(creatChannelResponse.data);
-    // UserData.setPopUpOn(false);
-    
 
     const addChannelToLits = (channel) => {
-        const newChannelList = [...UserData.friendChatConversation, channel];
-        UserData.setChannelChatConversation(newChannelList);
+        const newChannelList = [...UserData.channelsList, channel];
+        UserData.setChannelsList(newChannelList);
     }
 
-    const handelCreatChannel = async() =>
-    {
-        if (!UserData.channelType || !inputMessageRef?.current.value)
-            return console.log("3mer kolchi asmitk hh");
-        try{
-            const creatChannelResponse = await axios.post("http://localhost:3000/chat/channel/create" ,
-            {
-                name: inputMessageRef?.current.value,
-                type: UserData.channelType,
-            },
-            {
-                withCredentials: true, // to include cookies in the request   
-            }
-            );
-            // console.log("creatChannelResponse.data = ", creatChannelResponse.data);
+    const handelCreatChannel = async() =>{      
+        
+        if (!inputMessageRef?.current.value || !UserData.channelType)
+            return toast("choose the type of your channel");
+        if ((UserData.channelType == "PROTECTED" && !UserData.inputPassRef?.current.value))
+            return toast("Please enter a pasword");
+
+    try{
+        console.log("UserData.channelType = ", UserData.channelType);
+        console.log("pass value = ", inputMessageRef?.current.value);
+        console.log("inputPass value", UserData.inputPassRef?.current?.value);
+        const creatChannelResponse = await axios.post("http://localhost:3000/chat/channel/create",
+        {
+            name: inputMessageRef?.current.value,
+            type: UserData.channelType,
+            password: UserData.inputPassRef?.current?.value,
+        },
+        {
+            withCredentials: true,
+        });
+        
             UserData.setPopUpOn(false);
+            UserData.setchannelType("");
+            UserData.inputPassRef = "";
             addChannelToLits(creatChannelResponse.data);
         }
-        catch (error)
-        {
-            console.error("ERORR AT CREATING CHANNEL: ",error);
+        catch (error: any) {
+            if (error.response && error.response.status === 400) {
+                toast.error(error.response.data.message);
+            }
         }
     }
 
-    console.log("channel list = ", UserData.ChannelsList);
     return (
+        
         <>
-            <div className='flex justify-center items-center  '>
+            <div className='flex justify-center items-center'>
                 <div className='relative flex flex-col '>
-                    <button className='felx place-self-end text-[25px]' onClick={() => {UserData.setPopUpOn(false)}}> X </button>
+                    <button className='felx place-self-end text-[25px]' onClick={() => {UserData.setchannelType(""); UserData.setPopUpOn(false)}}> X </button>
                     
                     <form onSubmit={handelSubmitrefrech}>
                         
@@ -75,18 +83,12 @@ function CreatChannel() {
                                     <div className='flex justify-start items-center '>
                                         chose name:
                                     </div>
-                                    
                                             <input  type="text"
                                                 className='flex bg-[#ffff] rounded-lg outline-none text-sm text-[#454135]  h-[40px] m-3 p-3 placeholder:text-sm placeholder:text-[#8194a3] '
                                                 placeholder='type a message'
                                                 ref={inputMessageRef}
-
                                             />
                                 </div>
-
-                                
-                                
-
 
                                 {/* choose type of channel */}
                                 <div className=''> 
@@ -95,7 +97,7 @@ function CreatChannel() {
                                 <ul className="flex items-center justify-center  w-full gap-6 md:grid-cols-2">
                                 
                                 <li>
-                                    <input type="radio" id="private" name="typeOfChannel" value="PRIVATE" className ="hidden peer" onChange={e=>{UserData.setchannelType(e.target.value)}}/>
+                                    <input type="radio" id="private" name="typeOfChannel" value="PRIVATE" className ="hidden peer" onClick={e=>{UserData.setchannelType(e.target.value)}}/>
                                     <label htmlFor="private" className='flex items-center justify-center w-[150px] p-5 text-[#8194a3] bg-[#FFFFFF] border rounded-lg cursor-pointer  peer-checked:border-[#6f87de] peer-checked:text-[#6f87de] hover:text-gray-600 hover:bg-gray-100'>
                                         <div>
                                             private
@@ -103,9 +105,9 @@ function CreatChannel() {
                                     </label>
 
                                 </li>
-                                
+
                                 <li>
-                                    <input type="radio" id="public" name="typeOfChannel" value="PUBLIC" className ="hidden peer"  onChange={e=>{UserData.setchannelType(e.target.value)}}/>
+                                    <input type="radio" id="public" name="typeOfChannel" value="PUBLIC" className ="hidden peer"  onClick={e=>{UserData.setchannelType(e.target.value)}}/>
                                     <label htmlFor="public" className='flex items-center justify-center w-[150px] p-5 text-[#8194a3] bg-[#FFFFFF] border rounded-lg cursor-pointer  peer-checked:border-[#6f87de] peer-checked:text-[#6f87de] hover:text-gray-600 hover:bg-gray-100'>
                                         <div>
                                             public
@@ -113,10 +115,10 @@ function CreatChannel() {
                                     </label>
                                     
                                 </li>
-                                    
+
                                 <li>
 
-                                    <input type="radio" id="protected" name="typeOfChannel" value="PROTECTED" className ="hidden peer" onChange={e=>{UserData.setchannelType(e.target.value)}}/>
+                                    <input type="radio" id="protected" name="typeOfChannel" value="PROTECTED" className ="hidden peer" onClick={e=>{UserData.setchannelType(e.target.value)}}/>
                                     <label htmlFor="protected" className='flex items-center justify-center w-[150px] p-5 text-[#8194a3] bg-[#FFFFFF] border rounded-lg cursor-pointer  peer-checked:border-[#6f87de] peer-checked:text-[#6f87de] hover:text-gray-600 hover:bg-gray-100'> 
                                         <div>
                                             protected
@@ -126,16 +128,20 @@ function CreatChannel() {
                                 
                                 </ul>
                             </div>
+                            <CreatProtected />
+                            <CreatPrivate />
 
                             <button className='flex absolute bottom-0 right-0 m-[30px] p-[15px] w-fit justify-end items-end rounded-lg
-                             text-[#8194a3] bg-[#FFFFFF] border cursor-pointer hover:border-[#adf39d]  hover:text-gray-600 hover:bg-[#e5f6e1]' onClick={handelCreatChannel}> submit</button>
-                            
+                                            text-[#8194a3] bg-[#FFFFFF] border cursor-pointer hover:border-[#adf39d]  hover:text-gray-600
+                                            hover:bg-[#e5f6e1]'
+                                    onClick={handelCreatChannel}> submit</button>
                         </div>
                     </form>
 
                 </div>
           </div>
         </>
+        
     )
 }
 

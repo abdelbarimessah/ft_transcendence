@@ -19,7 +19,11 @@ export class NotificationController {
       orderBy: {
         createdAt: 'asc',
       },
+      include: {
+        user: true
+      }
     });
+    // delete notifications.user?.secretOpt
     return notifications;
   }
 }

@@ -58,7 +58,7 @@ export class UsersController {
     const uploadPath = path.join(uploadDir, `${user.providerId}${'.png'}`);
     fs.writeFileSync(uploadPath, file.buffer);
 
-    const backendUrl = 'http://localhost:3000';
+    const backendUrl = process.env.BACKEND_URL || 'http://localhost:3000';
     const url = new URL(`/uploads/${user.providerId}${'.png'}`, backendUrl);
 
     url.searchParams.append('time', Date.now().toString());
@@ -92,7 +92,6 @@ export class UsersController {
     const res = await this.userService.updateUserData(user.providerId, body);
     delete res.secretOpt;
     return { message: 'User data updated', data: res };
-    // return res.redirect('http://localhost:8000/profile');
   }
 
   @Get('leaders')

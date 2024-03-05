@@ -5,10 +5,6 @@ import { Socket, io } from "socket.io-client";
 import { useContext } from 'react';
 import { SocketContext } from '@/app/SocketContext';
 
-// var socketClient = io("http://localhost:3000");
-
-// const socketClient = useContext(SocketContext);
-
 export default class PongGame extends Phaser.Scene {
     p1: any;
     p2: any;

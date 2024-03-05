@@ -546,6 +546,7 @@ export class ChatService {
       },
     });
   }
+
   async muteMember(channelId: string, userId: string, body: userMuteDto) {
     const channelMembership =
       await this.prismaService.channelMembership.findUnique({
@@ -600,6 +601,7 @@ export class ChatService {
     );
     return updatedMembership;
   }
+
   async banMember(channelId: string, userId: string, targetId: string) {
     const membership = await this.prismaService.channelMembership.findUnique({
       where: {
@@ -753,7 +755,7 @@ export class ChatService {
       },
     });
 
-    return channelWithMembers.members;
+    return channelWithMembers;
   }
   async getChannelMessages(channelId: string, userId: string) {
     const channelWithMessages = await this.prismaService.channel.findUnique({

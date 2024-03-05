@@ -5,46 +5,42 @@ import FriendCard, { FriendCardProps } from "./FriendCard";
 import { useQuery, useQueryClient } from "react-query";
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
-// import Lottie from "lottie-react"; 
+// import Lottie from "lottie-react";
 // import animationData from '../../../public/assets/EmptyFriends.json';
-import animationData from '../../../public/assets/EmptyFriends.json';
+import animationData from "../../../public/assets/EmptyFriends.json";
 
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 import { SocketContext } from "@/app/SocketContext";
 
-const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
-
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
 axios.defaults.withCredentials = true;
-
+const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
 const getFriendsList = async () => {
-  const res = await axios.get<FriendCardProps[]>(
-    "http://localhost:3000/user/friends");
+  const res = await axios.get<FriendCardProps[]>(`${backendUrl}/user/friends`);
   return res.data;
 };
 
-
-
-
 function FriendsList() {
-  const socketClient = useContext(SocketContext)
+  const socketClient = useContext(SocketContext);
   const queryClient = useQueryClient();
   const [me, setMe] = useState<any>();
   useEffect(() => {
-    axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`).then(res => {
-      setMe(res.data);
-    }).catch(err => {
-      console.error(err);
-    })
-  }, [])
-
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`)
+      .then((res) => {
+        setMe(res.data);
+      })
+      .catch((err) => {
+        console.error(err.message);
+      });
+  }, []);
 
   useEffect(() => {
-    socketClient.on('updateInfo', () => {
-      queryClient.invalidateQueries('friendsList');
-    })
-  }, [socketClient, queryClient])
-
+    socketClient.on("updateInfo", () => {
+      queryClient.invalidateQueries("friendsList");
+    });
+  }, [socketClient, queryClient]);
 
   const {
     data: friendsList,
@@ -80,7 +76,8 @@ function FriendsList() {
           <Lottie
             autoPlay
             loop
-            style={{ width: 300 }} animationData={animationData}
+            style={{ width: 300 }}
+            animationData={animationData}
           />
         </div>
       )}
@@ -93,7 +90,6 @@ function FriendsList() {
         </div>
       )}
       <div className="flex w-full justify-between px-10 gap-10 items-center flex-wrap pb-6 overflow-x-scroll no-scrollbar">
-
         {isError && (
           <div className="flex w-full h-full items-center justify-center">
             Error: {error.message}

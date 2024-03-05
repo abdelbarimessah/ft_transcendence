@@ -1,12 +1,12 @@
 "use client";
-import { SocketContext } from "@/app/SocketContext";
-import { useContext } from "react";
+// import { SocketContext } from "@/app/SocketContext";
+// import { useContext } from "react";
 import LeftSide from "@/components/chat/leftSide";
 import RightSide from "@/components/chat/rightSide";
 import axios from "axios";
 import { useEffect, useState, createContext } from "react";
 import PopUpChannel from "@/components/chat/channelPopUp";
-import { log } from "console";
+// import { log } from "console";
 import { toast } from "sonner";
 
 export const chatslistContext = createContext();

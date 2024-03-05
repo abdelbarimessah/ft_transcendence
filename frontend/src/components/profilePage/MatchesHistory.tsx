@@ -239,10 +239,10 @@ import Image from "next/image";
 import MatchHistoryItem, { MatchHistoryProps } from "./MatchHistoryItem";
 import axios from "axios";
 import { useQuery } from "react-query";
-
+const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
 const getMatchHistoryList = async () => {
   const res = await axios.get<MatchHistoryProps[]>(
-    "http://localhost:3000/matchHistory/",
+    `${backendUrl}/matchHistory/`,
     { withCredentials: true }
   );
   return res.data;

@@ -20,16 +20,14 @@ const SearchBareHeader = () => {
   const socketClient = useContext(SocketContext);
   const [searchInput, setSearchInput] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-
+  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+  const frontendUrl = process.env.FRONTEND_URL || "http://localhost:8000";
   const debouncedHandleInputChange = debounce(async (value) => {
     try {
-      const response = await axios.get(
-        "http://localhost:3000/user/userSearch",
-        {
-          params: { query: value },
-          withCredentials: true,
-        }
-      );
+      const response = await axios.get(`${backendUrl}/user/userSearch`, {
+        params: { query: value },
+        withCredentials: true,
+      });
 
       setSearchResults(response.data.filtered);
     } catch (error) {
@@ -41,13 +39,10 @@ const SearchBareHeader = () => {
     socketClient.on("updateInfo", async (data) => {
       if (searchInput) {
         try {
-          const response = await axios.get(
-            "http://localhost:3000/user/userSearch",
-            {
-              params: { query: searchInput },
-              withCredentials: true,
-            }
-          );
+          const response = await axios.get(`${backendUrl}/user/userSearch`, {
+            params: { query: searchInput },
+            withCredentials: true,
+          });
 
           setSearchResults(response.data.filtered);
         } catch (error) {
@@ -116,7 +111,7 @@ const SearchBareHeader = () => {
             {searchResults.map((result: Result, index: any) => (
               <Link
                 key={index}
-                href={`http://localhost:8000/profile/${result?.providerId}`}
+                href={`${frontendUrl}/profile/${result?.providerId}`}
               >
                 <div className="  h-[66px] w-full bg-color-0 hover:bg-color-30 z-[4000] flex pl-5 items-center justify-start gap-3  hover:scale-[1.01]">
                   <div className="w-[50px] h-[50px] bg-color-15 rounded-full relative overflow-hiddenr">

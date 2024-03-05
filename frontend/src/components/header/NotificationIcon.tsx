@@ -157,9 +157,11 @@ const gameInviteNotification: NotificationItemProps = {
   },
 };
 
+const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+
 const getNotificationList = async () => {
   const res = await axios.get<NotificationItemProps[]>(
-    "http://localhost:3000/notification",
+    `${backendUrl}/notification`,
     { withCredentials: true }
   );
   return res.data;

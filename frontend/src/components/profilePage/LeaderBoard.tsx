@@ -28,7 +28,7 @@ export default function LeaderBoard() {
             })
             .catch(err => {
                 setIsLoading(false);
-                console.error(err);
+                console.error(err.message);
             });
     }, []);
 
@@ -44,7 +44,7 @@ export default function LeaderBoard() {
               })
               .catch((err) => {
                 setIsLoading(false);
-                console.error(err);
+                console.error(err.message);
               });
         })
     })

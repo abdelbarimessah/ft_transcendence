@@ -7,14 +7,9 @@ import { Server, Socket } from 'socket.io';
 import { AppService } from 'src/app.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 
-// @WebSocketGateway({
-//   cors: {
-//     origin: 'http://localhost:8000',
-//   },
-// })
 @WebSocketGateway({
   cors: {
-    origin: ['http://localhost:8000', 'http://localhost:8000/'],
+    origin: ['http://localhost:8000', process.env.FRONTEND_URL],
     credentials: true,
   },
 })

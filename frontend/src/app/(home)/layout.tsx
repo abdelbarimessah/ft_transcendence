@@ -41,7 +41,7 @@ export default function RootLayout({
         })
         .then((res) => {})
         .catch((err) => {
-          console.error(err);
+          console.error(err.message);
         });
       setTimeout(() => {
         route.push("/game");

@@ -151,11 +151,10 @@ export class UsersController {
   @Get(':id')
   async findOne(@Param('id') id: string, @CurrentUser() user: any) {
     const { friendOf, ...rest } = await this.userService.getUserById(id);
-    
-    if (id === user.providerId) 
-    {
+
+    if (id === user.providerId) {
       console.log('error in the matching of the user');
-      
+
       return 1;
     }
 

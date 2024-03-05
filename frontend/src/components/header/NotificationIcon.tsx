@@ -14,7 +14,6 @@
 // import { SocketContext, socket } from "@/app/SocketContext";
 // import { useRouter } from "next/navigation";
 
-
 // const NotificationIcon = () => {
 //   const socketClient = useContext(SocketContext);
 //   const [inviteGame, setInviteGame] = useState(false);
@@ -32,7 +31,7 @@
 
 //       setTimeout(() => {
 //           router.push(`/game/match?room=InviteRoom-${data.sender.providerId}-${data.receiver.providerId}-${data.inviteNumber}`);
-//       }, 500)            
+//       }, 500)
 //     })
 //   }, [])
 
@@ -74,7 +73,6 @@
 
 // export default NotificationIcon;
 
-
 // function GameNotification(gamePair: any) {
 //   const socketClient = useContext(SocketContext);
 //   const handleAcceptInvite = () => {
@@ -101,7 +99,6 @@
 
 // export { GameNotification };
 
-
 "use client";
 
 import React, { useContext, useEffect, useState } from "react";
@@ -119,7 +116,11 @@ import { SocketContext, socket } from "@/app/SocketContext";
 import { useRouter } from "next/navigation";
 import NotificationItem, { NotificationItemProps } from "./NotificationItem";
 import axios from "axios";
+import animationData from "../../../public/assets/EmptyFriends.json";
+import dynamic from "next/dynamic";
 import { useQuery } from "react-query";
+
+axios.defaults.withCredentials = true;
 
 const msgNotification: NotificationItemProps = {
   id: "1",
@@ -161,10 +162,14 @@ const gameInviteNotification: NotificationItemProps = {
 };
 
 const getNotificationList = async () => {
-  const res = await axios.get<NotificationItemProps[]>(
-    "http://localhost:3000/notification"
-  );
-  return res.data;
+  try {
+    const res = await axios.get<NotificationItemProps[]>(
+      "http://localhost:3000/notification"
+    );
+    return res.data;
+  } catch (err) {
+    console.log("Error fetching notification list");
+  }
 };
 
 const NotificationIcon = () => {
@@ -173,9 +178,22 @@ const NotificationIcon = () => {
   const [gameNotif, setGameNotif] = useState<NotificationItemProps>();
   const [gamePair, setGamePair] = useState<any>();
   const router = useRouter();
+  const [me, setMe] = useState<any>();
+
+  useEffect(() => {
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`)
+      .then((res) => {
+        setMe(res.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
 
   useEffect(() => {
     socketClient.on("playRequestFromFriend", (data) => {
+      console.log("the game pair data is ========= ", data);
       setInviteGame(true);
       setGamePair(data);
       console.log("the game pair data is ========= ", data);
@@ -191,9 +209,25 @@ const NotificationIcon = () => {
           avatar: data.sender.avatar,
         },
       };
-      setGameNotif(newGameInviteNotification);
     });
   }, [socketClient]);
+
+  useEffect(() => {
+    socketClient.on("notification", (data) => {
+      console.log('in notification', data);
+      const newNotification: NotificationItemProps = {
+        id: data.id,
+        type: data.type,
+        // gameId: JSON.stringify(data.inviteNumber),
+        chatId: data.chatId,
+        user: {
+          id: data.sender.providerId,
+          nickName: data.sender.nickName,
+          avatar: data.sender.avatar,
+        },
+      };
+    });
+  }, []);
 
   const {
     data: notificationList,
@@ -207,14 +241,27 @@ const NotificationIcon = () => {
 
   const handleAcceptInvite = () => {
     socketClient.emit("acceptInviteGame", gamePair);
+    router.push(
+      `/game/match?room=InviteRoom-${gamePair.sender.providerId}-${gamePair.receiver.providerId}-${gamePair.inviteNumber}`
+    );
+    setInviteGame(false);
   };
 
   const handleDeclineInvite = () => {
-    socketClient.emit("acceptInviteGame", gamePair);
+    socketClient.emit("declineInviteGame", gamePair);
     console.log("emit the decline of the invite in the receiver [444444]");
+    setInviteGame(false);
   };
+
+  const handleUnreadNotifications = () => {
+    socket.emit("notification");
+  };
+
   return (
-    <div className="w-[66px] h-[66px] bg-color-0 rounded-[22px] flex items-center justify-center  cursor-pointer relative">
+    <div
+      className="w-[66px] h-[66px] bg-color-0 rounded-[22px] flex items-center justify-center  cursor-pointer relative"
+      onClick={handleUnreadNotifications}
+    >
       <DropdownMenu>
         <DropdownMenuTrigger className="focus:outline-none">
           <div className="relative h-full w-full flex items-center justify-center ">
@@ -227,11 +274,11 @@ const NotificationIcon = () => {
             />
             <div className="h-[10px] w-[10px] rounded-full absolute bg-color-22 border-1 border-color-0 animate-ping  top-[15px] right-[20px] flex items-center justify-center"></div>
 
-            <DropdownMenuContent className="absolute h-fit sm:w-[320px] w-[250px] z-[5500] top-3 -right-4 rounded-[15px] bg-color-3 ">
-              <DropdownMenuLabel className="bg-color-10 rounded-[15px] text-center text-md text-color-2">
+            <DropdownMenuContent className="absolute h-fit sm:w-[320px] w-[250px] z-[5500] top-3 -right-8 rounded-[15px] bg-color-0 border-4 border-color-5">
+              <DropdownMenuLabel className="bg-color-5 rounded-[15px] text-center text-md text-color-0">
                 NOTIFICATIONS
               </DropdownMenuLabel>
-              <DropdownMenuSeparator className="bg-color-1 mb-1" />
+              <DropdownMenuSeparator className="bg-color-5 mb-1" />
               <div className="w-full h-[300px] flex flex-col py-0 p-2 gap-2 overflow-x-scroll no-scrollbar">
                 {isLoading && (
                   <div className="flex w-full h-full items-center justify-center text-gray-400">
@@ -245,14 +292,17 @@ const NotificationIcon = () => {
                   </div>
                 )}
 
-                {/* {!isLoading &&
+                {!isLoading &&
                   !isError &&
-                  notificationList?.map((notification, index: number) => (
-                    <NotificationItem notification={notification} key={index} />
-                  ))} */}
+                  notificationList?.map((notification: NotificationItemProps) => (
+                    <NotificationItem
+                      notification={notification}
+                      key={notification.id}
+                    />
+                  ))}
 
-                <NotificationItem notification={msgNotification} />
-                <NotificationItem notification={followNotification} />
+                {/* <NotificationItem notification={msgNotification} />
+                <NotificationItem notification={followNotification} /> */}
 
                 {inviteGame && (
                   <NotificationItem

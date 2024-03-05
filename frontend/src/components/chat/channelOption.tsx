@@ -12,7 +12,6 @@ function ChannelOption() {
   const UserData :any = useContext(chatslistContext);
   
   if (UserData.popUpOn == false) {
-    console.log("kna hna ");
     UserData.inputPassRef = "";
 
     return;  

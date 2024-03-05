@@ -15,15 +15,22 @@ function InviteFriendListe ({chat}: any) {
   
   
   const addNewChannelToList = (channel :any) => {   
-    console.log("channel == ", channel);
-         
-    const newChannelToAdd = [...UserData.channelsList, channel];
-    // UserData.setChannelsList(newChannelToAdd);
-}
-
+    const exists = UserData.channelsList.some(item  => item.id === channel.id);
+    
+    if (exists === false)
+    {
+      const newChannelToAdd = [...UserData.channelsList, channel];
+      UserData.channelClicked(channel);
+      UserData.setChannelsList(newChannelToAdd);
+      
+    }
+  }
+  
   useEffect(() => {
     socket.on("userJoined", (data) => {
       addNewChannelToList(data.channel);
+      console.log("channel == ", data.channel);
+      console.log("channelClicked == ", UserData.channelClicked);
     });
     return (() => {
         socket.off("userJoined")
@@ -42,6 +49,7 @@ function InviteFriendListe ({chat}: any) {
           {
             withCredentials: true,
           });
+          
           console.log(response.data.message);
         } 
         catch (error: any) {

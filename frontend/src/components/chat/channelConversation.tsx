@@ -41,8 +41,11 @@ function ChannelConversation(){
                     <Btns icon={"../../assets/addChannel.png"} onClick={undefined}/>
 
                 </div>
+
+                {console.log("here")}
+                
                     <div className='flex flex-col no-scrollbar overflow-y-scroll  cursor-pointer h-full w-full  px-3'>
-                         {UserData.channelsList.map((chat) => {							
+                         {UserData.channelsList.map((chat) => {						
                             return <Channels key={chat.id} chat={chat}/>;
                         })}
                     </div>

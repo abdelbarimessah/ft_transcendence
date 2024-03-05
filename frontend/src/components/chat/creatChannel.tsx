@@ -48,9 +48,11 @@ function CreatChannel() {
         });
         
             UserData.setPopUpOn(false);
+            UserData.setChannelClicked(creatChannelResponse.data);
             UserData.setchannelType("");
             UserData.inputPassRef = "";
             addChannelToLits(creatChannelResponse.data);
+            UserData.setShowInvite(true);
         }
         catch (error: any) {
             if (error.response && error.response.status === 400) {
@@ -131,7 +133,6 @@ function CreatChannel() {
                             </div>
                             <div className='felx flex-col justify-center items-center py-[30px]'>
                                 <CreatProtected />
-                                <CreatPrivate />
                             </div>
 
                             <button className='flex absolute bottom-0 right-0 m-[30px] p-[15px] w-fit justify-end items-end rounded-lg

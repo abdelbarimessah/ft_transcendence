@@ -24,6 +24,23 @@ function FriendRightSide () {
     },[UserData.friendChatConversation])
     
     
+    
+    const addMessageToChat = (message) => {
+        if (UserData.chatClicked.id === message.chatId)
+        {
+            const newMessageArray = [...UserData.friendChatConversation, message];
+            UserData.setFriendChatConversation(newMessageArray);
+        }
+    }
+    
+    useEffect(() => {
+        socket.on("newMessage", (data) => {
+            addMessageToChat(data);
+        });
+        return (() => {
+            socket.off("newMessage")
+        })
+      }), [];
 
     if (UserData.chatClicked.id != undefined)
     {
@@ -40,20 +57,7 @@ function FriendRightSide () {
             inputMessageRef.current.value.length === 0 ? UserData.setTyping(true) : UserData.setTyping(false);
         }
 
-        const addMessageToChat = (message) => {
-            if (UserData.chatClicked.id === message.chatId)
-            {
-                const newMessageArray = [...UserData.friendChatConversation, message];
-                UserData.setFriendChatConversation(newMessageArray);
-            }
-        }
 
-        socket.on('newMessage', (data) => {
-            if (UserData.chatClicked.id === data.chatId)
-            {
-                addMessageToChat(data);
-            }
-        })
 
         const handelSubmit = async() => {
             try{

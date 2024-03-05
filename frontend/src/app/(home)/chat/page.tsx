@@ -9,6 +9,8 @@ import { log } from 'console';
 import { toast } from 'sonner';
 import ChannelOption from '@/components/chat/channelOption';
 import EnterPassword from '@/components/chat/enterPassword';
+import InviteFriendListe from '@/components/chat/InviteFriendListe';
+import InviteFriend from '@/components/chat/InviteFriend';
 
 
 
@@ -32,6 +34,7 @@ function Chat() {
     const inputPassRef = useRef(null);
     const inputEnterPassRef = useRef(null);
     const [needPassword, setNeedPassword] = useState(false);
+    const [showInvite, setShowInvite] = useState(false);
 
     const fetchData = async () => {
       try {
@@ -106,8 +109,6 @@ function Chat() {
           fetchChannelConversation();        
       }, [channelClicked]);
 
-
-
     return (
         <>
         <chatslistContext.Provider value={{ friendsList, channelsList, myId, friendChatConversation, chatClicked, typing, 
@@ -115,9 +116,11 @@ function Chat() {
                                             channelType, setchannelType, setChannelsList, whatIcon, setWhatIcon, channelChatConversation,
                                             setChannelChatConversation, channelClicked, setChannelClicked, listChannelsToJoin,
                                             setListChannelsToJoin, channelToJoin, setChannelToJoin, inputPassRef,
-                                            needPassword, setNeedPassword, inputEnterPassRef}}>
+                                            needPassword, setNeedPassword, inputEnterPassRef, showInvite, setShowInvite}}>
         <div className='relative flex justify-start chat-bp:justify-center items-center w-screen h-screen overflow-hidden '>
+          
           <ChannelOption />
+          <InviteFriend />
           <div className="flex justify-start chat-bp:justify-center items-center w-[1731px] h-[1080px] bg-[#FFFFFF] ">
 
               <div className=" bg-[#FFFFFF] min-w-[340px] max-w-[460px] h-full w-full rounded-[29px_0px_0px_29px]">

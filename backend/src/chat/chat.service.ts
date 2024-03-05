@@ -791,6 +791,9 @@ export class ChatService {
             userId: userId,
           },
         },
+        include: {
+          channel: true,
+        }
       });
 
     if (!adminMembership || !adminMembership.isAdmin) {
@@ -825,7 +828,7 @@ export class ChatService {
         isBanned: false,
       },
     });
-    return targetUser;
+    return {targetUser, channel: adminMembership.channel};
   }
   async getAllChannel() {
     return await this.prismaService.channel.findMany({

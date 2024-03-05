@@ -9,6 +9,7 @@ import "moment-timezone";
 import axios from "axios";
 import { SocketContext } from "@/app/SocketContext";
 import { toast } from "sonner";
+import CreatPrivate from "./creatPrivate";
 
 // author: Object { id: "204d1637-d674-426f-8df5-260324a33823", providerId: "94400", avatar: "https://cdn.intra.42.fr/users/aaf6846387f1dfca758132ebf22f9c42/imittous.jpg", … }
 // avatar: "https://cdn.intra.42.fr/users/aaf6846387f1dfca758132ebf22f9c42/imittous.jpg"
@@ -34,7 +35,7 @@ function ChannelRightSide() {
   }, [UserData.channelChatConversation]);
 
   const addMessageToChannel = (message) => {
-    
+
     if (UserData.channelClicked.id === message.channelId) {
       UserData.setChannelChatConversation(null);
       const newMessageArray = [...UserData.channelChatConversation, message];

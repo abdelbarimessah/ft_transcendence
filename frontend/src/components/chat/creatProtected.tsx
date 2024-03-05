@@ -12,7 +12,7 @@ import { toast } from 'sonner'
 
 function CreatChannel() {
 
-    const userData = useContext(chatslistContext);
+    const userData :any = useContext(chatslistContext);
     
     
     if (userData.channelType === "PROTECTED")
@@ -24,7 +24,6 @@ function CreatChannel() {
                                     <div className='flex justify-start items-center '>
                                             Enter password:
                                     </div>
-                                    
                                             <input  type="text"
                                                 className='flex bg-[#ffff] rounded-lg outline-none text-sm text-[#454135]  h-[40px] m-3 p-3 placeholder:text-sm placeholder:text-[#8194a3] '
                                                 placeholder='type a message'

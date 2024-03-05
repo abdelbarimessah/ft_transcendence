@@ -14,7 +14,7 @@ function ChannelsToJoin ({channelToJoin}: any) {
     const UserData: any	 = useContext(chatslistContext);
     
 
-    const addNewChannelToList = (channel: string) => {        
+    const addNewChannelToList = (channel :string) => {        
         const newChannelToAdd = [...UserData.channelsList, channel];
         UserData.setChannelsList(newChannelToAdd);
     }
@@ -33,6 +33,7 @@ function ChannelsToJoin ({channelToJoin}: any) {
               }
             );
             console.log("joinResponse.data here here:", joinResponse.data);
+            UserData.setChannelClicked(joinResponse.data);
             addNewChannelToList(joinResponse.data)
         } 
         catch (error: any) {

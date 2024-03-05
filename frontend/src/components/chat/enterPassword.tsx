@@ -49,7 +49,8 @@ function EnterPassword() {
         const handelChanneltoJoin =  () =>{
             
             console.log("UserData.inputEnterPassRef?.current?.value = >", UserData.inputEnterPassRef?.current?.value);
-            UserData.setChannelToJoin(UserData.channelToJoin)
+            UserData.setChannelToJoin(UserData.channelToJoin);
+            UserData.setChannelClicked(UserData.channelToJoin);
             addChannelToList();
             console.log("channelToJoin im at handelChanneltoJoin <= =>", UserData.channelToJoin.id);
         }

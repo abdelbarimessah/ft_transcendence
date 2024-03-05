@@ -389,6 +389,7 @@ export class ChatService {
         userId: userId,
       },
     });
+    return channel;
   }
   async leaveChannel(channelId: string, userId: string) {
     const channel = await this.prismaService.channel.findUnique({
@@ -802,6 +803,9 @@ export class ChatService {
             userId: userId,
           },
         },
+        include: {
+          channel: true,
+        },
       });
 
     if (!adminMembership || !adminMembership.isAdmin) {
@@ -836,7 +840,7 @@ export class ChatService {
         isBanned: false,
       },
     });
-    return targetUser;
+    return { targetUser, channel: adminMembership?.channel };
   }
   async getAllChannel() {
     return await this.prismaService.channel.findMany({

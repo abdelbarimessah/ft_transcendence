@@ -1,20 +1,24 @@
 "use client";
 
 import { SocketContext } from "@/app/SocketContext";
+import axios from "axios";
+import { get } from "http";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 
 export type NotificationItemProps = {
   id: string;
   type: string;
   gameId: string | null;
   chatId: string | null;
-  user: {
-    id: string;
-    nickName: string;
-    avatar: string;
-  };
+  user: userProps;
+};
+
+type userProps = {
+  id: string;
+  nickName: string;
+  avatar: string;
 };
 
 type Props = {
@@ -24,12 +28,15 @@ type Props = {
 };
 
 export default function NotificationItem({
-  notification: { id, type, gameId, chatId, user },
+  notification: { id, type, gameId, chatId },
   onAccept,
   onReject,
 }: Props) {
   const router = useRouter();
   const socketClient = useContext(SocketContext);
+
+
+  const [userTD, setUserDT] = useState<userProps>(null);
 
   useEffect(() => {
     socketClient.on("playersReadyInvite", (data) => {
@@ -49,11 +56,19 @@ export default function NotificationItem({
     router.push(`/profile/${id}`);
   };
 
+  const getUserData = async (id: string) => {
+    const res = await axios.get<userProps>(`http://localhost/user/${id}`);
+    setUserDT(res.data);
+    return res.data;
+  };
+
+  getUserData(id);
+
   return (
-    <div className="w-full flex items-center justify-between gap-4 border-b-2 border-gray-400 pb-2">
+    <div className="w-full flex items-center justify-between gap-2 border-b-2 border-gray-400 pb-2">
       <Image
         alt="alt-user"
-        src={user.avatar}
+        src={userTD.avatar}
         width={40}
         height={40}
         className="rounded-full"
@@ -64,7 +79,7 @@ export default function NotificationItem({
         <div className="w-full flex cursor-pointer" onClick={goToChat}>
           <div className="w-full flex gap-1">
             <p className="text-color-29 font-nico-moji text-[12px]">
-              <span className="font-bold text-color-5">{user.nickName}</span>{" "}
+              <span className="font-bold text-color-5">{userTD.nickName}</span>{" "}
               sent you a message
             </p>
             <div className="flex justify-center items-center">
@@ -84,7 +99,7 @@ export default function NotificationItem({
         <div className="w-full flex cursor-pointer" onClick={goToProfile}>
           <div className="w-full flex gap-1">
             <p className="text-color-29 font-nico-moji text-[12px]">
-              <span className="font-bold text-color-5">{user.nickName}</span>{" "}
+              <span className="font-bold text-color-5">{userTD.nickName}</span>{" "}
               started following you
             </p>
             <div className="flex justify-center items-center">
@@ -104,7 +119,7 @@ export default function NotificationItem({
         <div className="w-full flex">
           <div className="w-full flex gap-1">
             <p className="text-color-29 font-nico-moji text-[12px]">
-              <span className="font-bold text-color-5">{user.nickName}</span>{" "}
+              <span className="font-bold text-color-5">{userTD.nickName}</span>{" "}
               invited you to play
               <div className="w-full text-color-6 text-[14px] flex justify-evenly gap-3 items-center">
                 <button

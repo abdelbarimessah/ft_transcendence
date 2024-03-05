@@ -8,7 +8,7 @@ import { CurrentUser } from 'src/auth/current-user.decorator';
 @UseGuards(AuthGuard('jwt'))
 @Controller('game')
 export class GameController {
-  constructor(private gameService: GameService) {}
+  constructor(private gameService: GameService) { }
 
   @Post('gameData')
   async gameData(@Req() req: Request, @CurrentUser() user: any) {
@@ -29,6 +29,8 @@ export class GameController {
   @Get('matchHistory/:id')
   async handleMatchHistory(@Req() req: Request, @Param('id') id: string) {
     const result = await this.gameService.getMatchHistory(id);
+    console.log('the match history is', result);
+
     return result;
   }
 }

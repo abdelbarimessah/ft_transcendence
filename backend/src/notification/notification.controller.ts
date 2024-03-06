@@ -32,6 +32,7 @@ export class NotificationController {
         },
       },
     });
+    // delete notifications.user?.secretOpt
     return notifications;
   }
 }

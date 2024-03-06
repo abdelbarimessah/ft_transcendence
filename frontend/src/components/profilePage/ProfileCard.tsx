@@ -64,6 +64,7 @@ function ProfileCard() {
             }
         })
     })
+    
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         setChangeAvatar(true);
         const file = event.target.files?.[0];
@@ -78,7 +79,7 @@ function ProfileCard() {
             const formData = new FormData();
             formData.append('cover', avatar);
             const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/user/updateCover`, formData)
-            socketClient.emit('updateInfo', {providerId: user.providerId})
+            socketClient.emit('updateInfo', { providerId: user.providerId })
             toast.success('cover updated successfully')
             setUser({ ...user, cover: res.data.url });
         }
@@ -148,14 +149,15 @@ function ProfileCard() {
                             )}
                     </div>
                 </div>
-                <div onClick={handleSettingsClick} className='h-[21px] w-[6px] bg-color-0 flex items-center justify-center  pt-[15px] cursor-pointer'>
-                    <Image
-                        src="/../../assets/SettingsPoints.svg"
-                        alt='profile image'
-                        width={6}
-                        height={21}
-                        draggable={false}
-                    />
+                <div onClick={handleSettingsClick} className="p-2 cursor-pointer">
+                    <div className='h-[21px] w-[6px] relative flex items-center justify-center  pt-[15px] cursor-pointer'>
+                        <Image
+                            src="/../../assets/SettingsPoints.svg"
+                            alt='profile image'
+                            fill={true}
+                            draggable={false}
+                        />
+                    </div>
                 </div>
                 {isSettingsVisible && <SettingsPoint />}
             </div>
@@ -194,7 +196,7 @@ const SettingsPoint = () => {
     async function handleLogoutClick() {
 
         try {
-            await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {withCredentials: true});
+            await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, { withCredentials: true });
             router.push('/');
         }
         catch (error) {
@@ -203,14 +205,35 @@ const SettingsPoint = () => {
     }
 
     return (
-        <div className="w-[130px] h-[59px] bg-color-0 border border-[#DDD] rounded-[10px] flex flex-col items-center justify-center absolute top-12 right-[100px] z-[3000]">
-            <Link href={`${process.env.NEXT_PUBLIC_FRONTEND_URL}/setting`}>
-                <div className="w-full flex items-center justify-center border-b border-[#DDD]  hover:scale-105">
-                    <span className="font-nico-moji text-[12px] text-color-6 pb-[5px] cursor-pointer capitalize">Settings</span>
+        <div className="w-[157px] h-[71px] bg-color-0 border border-[#DDD] rounded-[10px] flex flex-col items-center justify-center absolute top-12 right-[100px] z-[3000]">
+            <div className="w-full px-[21px] ">
+                <Link href={`${process.env.NEXT_PUBLIC_FRONTEND_URL}/setting`}>
+                    <div className="w-full flex items-center justify-between border-b border-[#DDD]  hover:scale-105">
+                        <span className="font-nico-moji text-[12px] text-color-6 pb-[5px] cursor-pointer capitalize">Settings</span>
+                        <div className="w-[13px] h-[14px] mb-[5px] flex items-center justify-center relative object-cover">
+                            <Image
+                                src="/../../assets/SettingIconProfile.svg"
+                                alt='profile image'
+                                fill={true}
+                                draggable={false}
+                            />
+                        </div>
+                    </div>
+
+                </Link>
+            </div>
+            <div className="w-full px-[21px] ">
+                <div onClick={handleLogoutClick} className=" w-full flex items-center justify-between  hover:scale-105 cursor-pointer">
+                    <span className=" font-nico-moji text-[12px] text-color-6 pt-[4px] capitalize">Logout</span>
+                    <div className="w-[13px] h-[14px] mt-1 flex items-center justify-center relative object-cover">
+                        <Image
+                            src="/../../assets/LogoutIconProfile.svg"
+                            alt='profile image'
+                            fill={true}
+                            draggable={false}
+                        />
+                    </div>
                 </div>
-            </Link>
-            <div onClick={handleLogoutClick} className="w-full flex items-center justify-center  hover:scale-105">
-                <span className=" font-nico-moji text-[12px] text-color-6 pt-[4px] cursor-pointer capitalize">Logout</span>
             </div>
         </div>
     )

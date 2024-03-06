@@ -387,7 +387,7 @@ function PlayerPairing({ player1, player2 }: any) {
                     />
                 </div>
                 <div className="w-full  z-1 absolute flex items-center justify-center gap-[45px] pt-5">
-                    <div className="w-[80px] h-[80px] bg-color-2 rounded-full relative overflow-hidden">
+                    <div className="w-[80px] h-[80px] bg-color-6 rounded-full relative overflow-hidden">
 
                         <Image
                             src={player1.avatar}
@@ -410,7 +410,7 @@ function PlayerPairing({ player1, player2 }: any) {
                             draggable={false}
                         />
                     </div>
-                    <div className="w-[80px] h-[80px] bg-color-2 rounded-full relative overflow-hidden ">
+                    <div className="w-[80px] h-[80px] bg-color-30 rounded-full relative overflow-hidden ">
                         <Image
                             src={player2.avatar}
                             alt="player 2 avatar"

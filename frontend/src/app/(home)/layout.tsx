@@ -6,6 +6,7 @@ import { Providers } from "../providers";
 import { SocketContext, SocketProvider } from "../SocketContext";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 axios.defaults.withCredentials = true;
 
@@ -18,6 +19,8 @@ export default function RootLayout({
   const [Show, setShow] = useState(true);
   const route = useRouter();
   const socketClient = useContext(SocketContext);
+  const [win, setWin] = useState(false);
+  const [lose, setLose] = useState(false);
   // socketClient.on("notification", (data) => {
   //   console.log(data);
   // });
@@ -32,8 +35,11 @@ export default function RootLayout({
         gameName: data.roomName,
         gameType: 'randomMode'
       }
-      if(data.roomName.startsWith('InviteRoom'))
-      {
+      if(data.game.status == lose)
+        setLose(true)
+      else
+        setWin(true);
+      if (data.roomName.startsWith('InviteRoom')) {
         gameData.gameType = 'friendMode'
       }
       axios.post(`${process.env.NEXT_PUBLIC_API_URL}/game/gameData`, gameData).then(res => {
@@ -58,7 +64,7 @@ export default function RootLayout({
     }
     socketClient.on('OnePlayerLeaveTheRoom', async (data) => {
 
-      if (data.socketId !== socketClient.id ) return;
+      if (data.socketId !== socketClient.id) return;
       const gameData = {
         opponentId: data.oponent.providerId,
         userScore: 0,
@@ -67,6 +73,7 @@ export default function RootLayout({
         gameName: data.roomName,
         gameType: "randomMode",
       };
+      setLose(true);
 
       try {
         const url = process.env.NEXT_PUBLIC_API_URL;
@@ -80,14 +87,28 @@ export default function RootLayout({
       socketClient.off("OnePlayerLeaveTheRoom");
     };
   }, [socketClient]);
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    if (win || lose) {
+      timeoutId = setTimeout(() => {
+        setWin(false);
+        setLose(false);
+      }, 5000);
+    }
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [win, lose]);
 
   useEffect(() => {
     if (gameEnded) {
       return;
     }
     socketClient.on('OnePlayerLeaveTheRoom', async (data) => {
-      
-      if (data.socketId === socketClient.id || !data.socketId ) return;
+
+      if (data.socketId === socketClient.id || !data.socketId) return;
       const gameData = {
         opponentId: data.user.providerId,
         userScore: 5,
@@ -96,6 +117,8 @@ export default function RootLayout({
         gameName: data.roomName,
         gameType: "randomMode",
       };
+      setWin(true);
+      toast.success('The other player left the game')
 
       try {
         const url = process.env.NEXT_PUBLIC_API_URL;
@@ -115,8 +138,20 @@ export default function RootLayout({
       <SideNav setShow={setShow} />
       <div className='flex items-center justify-center flex-1 w-10 '>
         <SocketProvider>
-            {children}
+          {children}
         </SocketProvider>
+        {win && (
+          <div className=' w-[282px] h-[195px] bg-color-30 rounded-[22px] flex flex-col items-center justify-center absolute top-1/2 left-[50%] ml-[70px] transform -translate-x-1/2 -translate-y-1/2 z-[1000]'>
+            <span className='font-nico-moji text-[64px] text-color-6'>you</span>
+            <span className='font-nico-moji text-[64px] text-color-6 -mt-7'> win</span>
+          </div>
+        )}
+        {lose && (
+          <div className=' w-[282px] h-[195px] bg-color-30 rounded-[22px] flex flex-col items-center justify-center absolute top-1/2 left-[50%] ml-[7´0px] transform -translate-x-1/2 -translate-y-1/2 z-[1000]'>
+            <span className='font-nico-moji text-[64px] text-color-6'>you</span>
+            <span className='font-nico-moji text-[64px] text-color-6 -mt-7'>lose</span>
+          </div>
+        )}
       </div>
     </div>
   );

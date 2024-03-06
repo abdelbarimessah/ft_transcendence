@@ -74,7 +74,7 @@ function FriendsList() {
         </div>
       </div>
       {!isLoading && friendsList?.length === 0 && (
-        <div className="">
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
           <Lottie
             autoPlay
             loop

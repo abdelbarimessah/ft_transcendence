@@ -21,6 +21,7 @@ export type MatchHistoryProps = {
     updatedAt: string;
     userScore: number;
     opponentScore: number;
+    status: string;
   };
   user: {
     providerId: string;
@@ -75,37 +76,38 @@ export function MatchesHistory() {
   }, [socketClient, queryClient]);
 
   const getMatchHistoryList = async (userId: string) => {
-    try {
-      const res = await axios.get<MatchHistoryProps[]>(
-        `http://localhost:3000/game/matchHistory/${userId}`
-      );
+    if (userId) {
+      try {
+        const res = await axios.get<MatchHistoryProps[]>(
+          `http://localhost:3000/game/matchHistory/${userId}`
+        );
 
-      return res.data.map((item) => ({
-        game: {
-          id: item.game.id,
-          updatedAt: item.game.updatedAt,
-
-          userScore: item.game.userScore,
-          opponentScore: item.game.opponentScore,
-        },
-        user: {
-          providerId: item.user.providerId,
-          firstName: item.user.firstName,
-          lastName: item.user.lastName,
-          nickName: item.user.nickName,
-          avatar: item.user.avatar,
-        },
-        opponent: {
-          providerId: item.opponent.providerId,
-          firstName: item.opponent.firstName,
-          lastName: item.opponent.lastName,
-          nickName: item.opponent.nickName,
-          avatar: item.opponent.avatar,
-        },
-      }));
-    } catch (error) {
-      console.error(error);
-      return [];
+        return res.data.map((item) => ({
+          game: {
+            id: item.game.id,
+            updatedAt: item.game.updatedAt,
+            userScore: item.game.userScore,
+            opponentScore: item.game.opponentScore,
+          },
+          user: {
+            providerId: item.user.providerId,
+            firstName: item.user.firstName,
+            lastName: item.user.lastName,
+            nickName: item.user.nickName,
+            avatar: item.user.avatar,
+          },
+          opponent: {
+            providerId: item.opponent.providerId,
+            firstName: item.opponent.firstName,
+            lastName: item.opponent.lastName,
+            nickName: item.opponent.nickName,
+            avatar: item.opponent.avatar,
+          },
+        }));
+      } catch (error) {
+        console.error(error);
+        return [];
+      }
     }
   };
 
@@ -120,7 +122,7 @@ export function MatchesHistory() {
   });
 
   return (
-    <div className="h-[619px] 2xl:w-[596px] xl:w-[1137px] w-full bg-color-0 rounded-[22px] flex flex-col items-center overflow-x-scroll no-scrollbar">
+    <div className="h-[619px] 2xl:w-[596px] xl:w-[1137px] w-full bg-color-0 rounded-[22px] flex flex-col items-center overflow-x-scroll no-scrollbar relative">
       <div className="w-full flex items-center justify-center gap-[15px] py-3">
         <div className="w-[37px] h-[28px] relative sm:flex hidden items-center justify-center">
           <Image
@@ -141,7 +143,7 @@ export function MatchesHistory() {
         </div>
       </div>
 
-      <div className="w-full h-full flex flex-col gap-2 overflow-x-scroll no-scrollbar pb-6">
+      <div className="w-full h-full flex flex-col gap-2 overflow-x-scroll no-scrollbar pb-6 ">
         {isLoading && (
           <div className="flex w-full h-full items-center justify-center ">
             <span className="font-nico-moji text-[25px] text-color-6 capitalize text-center">
@@ -157,7 +159,7 @@ export function MatchesHistory() {
         )}
 
         {!isLoading && matchesHistoryList?.length === 0 && (
-          <div className="flex w-full h-full items-center justify-center">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
             <Lottie
               autoPlay
               loop

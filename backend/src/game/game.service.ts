@@ -128,39 +128,14 @@ export class GameService {
     return { randomModeCount };
   }
 
-  // async getMatchHistory(userId: string) {
-  //   const games = await this.prismaService.game.findMany({
-  //     where: {
-  //       userId: userId,
-  //     },
-  //   });
-  //   const users = await Promise.all(
-  //     games.map((game) =>
-  //       this.prismaService.user.findUnique({
-  //         where: {
-  //           providerId: game.userId,
-  //         },
-  //       })
-  //     )
-  //   );
-  //   const oponents = await Promise.all(
-  //     games.map((game) =>
-  //       this.prismaService.user.findUnique({
-  //         where: {
-  //           providerId: game.opponentId,
-  //         },
-  //       })
-  //     )
-  //   );
-
-  //   return {games, users, oponents};
-  // }
-
   async getMatchHistory(userId: string) {
     const games = await this.prismaService.game.findMany({
       where: {
         userId: userId,
       },
+      orderBy: {
+        createdAt: 'desc',
+      }
     });
 
     const users = await Promise.all(

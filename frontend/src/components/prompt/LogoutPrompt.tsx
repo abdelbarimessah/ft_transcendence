@@ -4,7 +4,6 @@ import styles from "./Prompt.module.css";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
-("use client");
 
 axios.defaults.withCredentials = true;
 

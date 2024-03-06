@@ -27,7 +27,7 @@ function Achievements() {
         const getAchievements = async () => {
             try {
                 setIsLoading(true);
-                const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/achievements`);
+                const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/achievements`, {withCredentials: true});
                 setAch1(res.data.achievements.find((ach: { name: string; }) => ach.name === 'ach1'))
                 setAch2(res.data.achievements.find((ach: { name: string; }) => ach.name === 'ach2'));
                 setAch3(res.data.achievements.find((ach: { name: string; }) => ach.name === 'ach3'));

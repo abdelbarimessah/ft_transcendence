@@ -21,8 +21,6 @@ services:
   #     - 8000:8000
   #   env_file:
   #     - ./frontend/.env
-  #   environment:
-  #     - BACKEND_IP=backend
   #   networks:
   #     - trans
   #   depends_on:
@@ -45,15 +43,6 @@ services:
 
 networks:
   trans:
-# services:
-#   db:
-#     image: postgres:latest
-#     ports:
-#       - 5432:5432
-#     env_file:
-#       - .env
-#     networks:
-#       - trans
 
 volumes:
   db:

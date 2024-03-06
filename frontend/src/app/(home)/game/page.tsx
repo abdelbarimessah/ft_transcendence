@@ -12,12 +12,14 @@ function choseMode() {
 
   useEffect(() => {
     axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`)
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`, {
+        withCredentials: true,
+      })
       .then((res) => {
         setMe(res.data);
       })
       .catch((err) => {
-        console.error(err);
+        console.error(err.message);
       });
   }, []);
   function closeMenu() {

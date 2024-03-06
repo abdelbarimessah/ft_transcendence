@@ -5,5 +5,5 @@ dist
 .next
 .DS_Store
 uploads
-NOTES.md
 prisma/migrations
+note.txt

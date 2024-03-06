@@ -4,8 +4,9 @@ db:
 	docker run --name mypostgresdb -e POSTGRES_USER=messah -e POSTGRES_PASSWORD=123123 -e POSTGRES_DB=mydb -p 5432:5432 -d postgres
 run:
 	bash f.sh
-	cd backend && npm i && npm run start:dev
+	cd $(PWD)/backend && npm i && npm run start:dev
 	
+ts:
 
 all:
 	cd frontend && npm i && npm run dev &

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import FriendCard from "./FriendCard";
-
+const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
 const friend1 = {
   id: 1,
   nickname: "abziouzi",
@@ -8,7 +8,7 @@ const friend1 = {
   lastName: "Ziouziou",
   avatar:
     "https://cdn.intra.42.fr/users/9e1ca2e516ae09da7301b880ee3d7edc/abziouzi.jpg",
-  cover: "http://localhost:3000/uploads/DefaultCover.svg",
+  cover: `${backendUrl}/uploads/DefaultCover.svg`,
 };
 
 function FriendsList() {

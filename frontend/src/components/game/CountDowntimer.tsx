@@ -12,7 +12,7 @@ const CountDownTimer = () => {
   }, []);
 
   return (
-    <div className='h-full w-full  flex items-center justify-center'>
+    <div className='h-full w-full  flex items-center justify-center select-none' >
       <p className={` ${styles.playCard} text-color-0 font-nico-moji text-[200px]  `}>{countdown} </p>
     </div>
   );

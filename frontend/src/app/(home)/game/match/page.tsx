@@ -1,5 +1,6 @@
 'use client'
 import { SocketContext, socket } from '@/app/SocketContext';
+import { PlayerPairing } from '@/components/cards/ModeCard';
 import CountDownTimer from '@/components/game/CountDowntimer';
 import axios from 'axios';
 import { use } from 'matter';
@@ -43,6 +44,7 @@ export default function Home() {
 
     socketClient.emit('checkRoom', { roomName });
     socketClient.on('youAreNotinRoom', (data) => {
+      
       route.push('/game');
     });
 

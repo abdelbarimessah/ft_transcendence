@@ -77,6 +77,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import pongGame from "@/components/game/PongGame";
 import { SocketContext } from "@/app/SocketContext";
 import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 
 export default function Game() {
   const socketClient = useContext(SocketContext);
@@ -125,6 +126,7 @@ export default function Game() {
         // The tab is not active, pause the game
         console.log('pause the game until i return [333333]');
         // alert('you left the game')
+        toast.error('You left the game Page !')
         router.push('/game')
         
         game?.pause();

@@ -20,8 +20,17 @@ export class NotificationController {
         createdAt: 'asc',
       },
       include: {
-        user: true
-      }
+        user: {
+          select: {
+            id: true,
+            providerId: true,
+            avatar: true,
+            nickName: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
     });
     // delete notifications.user?.secretOpt
     return notifications;

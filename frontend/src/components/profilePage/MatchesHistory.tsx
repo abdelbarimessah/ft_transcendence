@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import MatchHistoryItem, { MatchHistoryProps } from "./MatchHistoryItem";
+import MatchHistoryItem from "./MatchHistoryItem";
 import axios from "axios";
 import { useQuery, useQueryClient } from "react-query";
 import animationData from "../../../public/assets/EmptyFriends.json";

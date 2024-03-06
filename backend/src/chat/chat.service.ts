@@ -908,11 +908,9 @@ export class ChatService {
         },
       },
     });
-
     if (alreadyBlocked) {
       throw new BadRequestException('User is already blocked.');
     }
-
     await this.prismaService.user.update({
       where: {
         id: userId,
@@ -925,6 +923,7 @@ export class ChatService {
         },
       },
     });
+    return alreadyBlocked;
   }
   async unblockUser(userId: string, targetId: string) {
     // ? maybe this method should be optimized

@@ -137,6 +137,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   blockUser(targetId: string, userId: string) {
     const socketId = this.getSocketByUserId(targetId);
     if (socketId) {
+      console.log(targetId, "blocked user id")
       this.server.to(socketId).emit('blockUser', { userId });
     }
   }

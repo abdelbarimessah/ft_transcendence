@@ -104,14 +104,14 @@ export class ChatController {
     let receiverId;
     const targetId = await this.chatService.checkChat(chatId, channelId);
     if (chatId) {
-      this.chatService.isBlocked(chatId, userId);
+      await this.chatService.isBlocked(chatId, userId);
       receiverId =
         targetId.members[1].id == user.id
           ? targetId.members[1].id
           : targetId.members[0].id;
     } else if (channelId) {
-      this.chatService.isBanned(channelId, userId);
-      this.chatService.isMuted(channelId, userId);
+      await this.chatService.isBanned(channelId, userId);
+      await this.chatService.isMuted(channelId, userId);
     }
     const message = await this.chatService.createMessage(
       userId,
@@ -206,9 +206,14 @@ export class ChatController {
     @Body() body: JoinChannelDto,
   ) {
     const userId = user.id;
+    console.log('before join');
+    
    const channel=  await this.chatService.joinChannel(channelId, userId, body);
+   console.log('after join');
     this.chatGateway.joinRoom(userId, channelId);
     this.chatGateway.userJoined(channel, user);
+    console.log('after gatewaye join');
+    
     return channel;
   }
   @Post('channel/:id/leave')
@@ -319,7 +324,7 @@ export class ChatController {
     @CurrentUser() user: User,
     @Body() body: userIdDto,
   ) {
-    const {targetUser, channel }= await this.chatService.addUserChannel(
+    const {targetUser, channel } = await this.chatService.addUserChannel(
       channelId,
       user.id,
       body.userId,
@@ -332,7 +337,7 @@ export class ChatController {
   }
   @Get('channel/all')
   async getAllChannel() {
-    const channels = this.chatService.getAllChannel();
+    const channels = await this.chatService.getAllChannel();
     return channels;
   }
   @Get('channel/search')
@@ -342,16 +347,20 @@ export class ChatController {
   }
   @Post('block')
   async blockUser(@CurrentUser() user: User, @Body() targetUserId: userIdDto) {
-    this.chatService.blockUser(user.id, targetUserId.userId);
-    this.chatGateway.blockUser(targetUserId.userId, user.id);
+      
+      await this.chatService.blockUser(user.id, targetUserId.userId);
+      this.chatGateway.blockUser(targetUserId.userId, user.id);
+      
+      return {message: 'user is blocked'}
   }
   @Post('unblock')
   async unblockUser(
     @CurrentUser() user: User,
     @Body() targetUserId: userIdDto,
   ) {
-    this.chatService.unblockUser(user.id, targetUserId.userId);
+    await this.chatService.unblockUser(user.id, targetUserId.userId);
     this.chatGateway.unblockUser(targetUserId.userId, user.id);
+    return {message: 'user is unblocked'}
   }
   @Post('upload')
   @UseInterceptors(

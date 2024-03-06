@@ -585,7 +585,9 @@ export class ChatService {
     if (targetMembership.userId === channelMembership.channel.ownerId) {
       throw new ForbiddenException('Cannot mute the owner of the channel.');
     }
-
+    const expiresAt = body.expiresAt
+      ? body.expiresAt
+      : new Date(Date.now() + 5 * 60 * 1000);
     const updatedMembership = await this.prismaService.channelMembership.update(
       {
         where: {
@@ -596,7 +598,7 @@ export class ChatService {
         },
         data: {
           isMuted: !targetMembership.isMuted,
-          expiresAt: body.expiresAt,
+          expiresAt,
         },
       },
     );
@@ -652,7 +654,7 @@ export class ChatService {
           },
         },
         data: {
-          isBanned: !targetMembership.isBanned,
+          isBanned: true, // !targetMembership.isBanned
         },
       },
     );

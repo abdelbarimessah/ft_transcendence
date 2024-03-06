@@ -103,14 +103,14 @@ export class ChatController {
     let receiverId;
     const targetId = await this.chatService.checkChat(chatId, channelId);
     if (chatId) {
-      this.chatService.isBlocked(chatId, userId);
+      await this.chatService.isBlocked(chatId, userId);
       receiverId =
         targetId.members[1].id == user.id
           ? targetId.members[1].id
           : targetId.members[0].id;
     } else if (channelId) {
-      this.chatService.isBanned(channelId, userId);
-      this.chatService.isMuted(channelId, userId);
+      await this.chatService.isBanned(channelId, userId);
+      await this.chatService.isMuted(channelId, userId);
     }
     const message = await this.chatService.createMessage(
       userId,
@@ -289,7 +289,7 @@ export class ChatController {
     @Body() body: userIdDto,
   ) {
     await this.chatService.kickMember(channelId, user.id, body.userId);
-    this.chatGateway.kickUser(channelId, user.id);
+    this.chatGateway.kickUser(channelId, body.userId);
     return { message: 'User has been kicked from the channel.' };
   }
   @Get('channel/:id/members')
@@ -322,7 +322,7 @@ export class ChatController {
       user.id,
       body.userId,
     );
-    this.chatGateway.joinRoom(user.id, channelId);
+    this.chatGateway.joinRoom(body.userId, channelId);
     this.chatGateway.userJoined(channel, targetUser);
     return { message: 'User successfully added to the channel.' };
   }
@@ -338,7 +338,7 @@ export class ChatController {
   }
   @Post('block')
   async blockUser(@CurrentUser() user: User, @Body() targetUserId: userIdDto) {
-    this.chatService.blockUser(user.id, targetUserId.userId);
+    await this.chatService.blockUser(user.id, targetUserId.userId);
     this.chatGateway.blockUser(targetUserId.userId, user.id);
   }
   @Post('unblock')
@@ -346,7 +346,7 @@ export class ChatController {
     @CurrentUser() user: User,
     @Body() targetUserId: userIdDto,
   ) {
-    this.chatService.unblockUser(user.id, targetUserId.userId);
+    await this.chatService.unblockUser(user.id, targetUserId.userId);
     this.chatGateway.unblockUser(targetUserId.userId, user.id);
   }
 

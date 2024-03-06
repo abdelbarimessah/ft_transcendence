@@ -70,6 +70,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   joinRoom(userId: string, chatId: string) {
     const socketId = this.getSocketByUserId(userId);
     if (socketId) {
+      console.log('user have a socket', userId);
       const client = this.server.sockets.sockets.get(socketId);
       client.join(chatId);
     }
@@ -130,6 +131,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   blockUser(targetId: string, userId: string) {
     const socketId = this.getSocketByUserId(targetId);
     if (socketId) {
+      console.log(targetId, "blocked user id")
       this.server.to(socketId).emit('blockUser', { userId });
     }
   }

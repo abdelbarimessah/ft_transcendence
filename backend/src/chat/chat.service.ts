@@ -842,7 +842,7 @@ export class ChatService {
         isBanned: false,
       },
     });
-    return { targetUser, channel: adminMembership?.channel };
+    return {targetUser, channel: adminMembership?.channel};
   }
   async getAllChannel() {
     return await this.prismaService.channel.findMany({
@@ -912,11 +912,9 @@ export class ChatService {
         },
       },
     });
-
     if (alreadyBlocked) {
       throw new BadRequestException('User is already blocked.');
     }
-
     await this.prismaService.user.update({
       where: {
         id: userId,
@@ -929,6 +927,7 @@ export class ChatService {
         },
       },
     });
+    return alreadyBlocked;
   }
   async unblockUser(userId: string, targetId: string) {
     // ? maybe this method should be optimized

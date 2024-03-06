@@ -10,6 +10,7 @@ import axios from 'axios';
 import { SocketContext } from '@/app/SocketContext';
 import FriendRightSide from './friendRightSide';
 import ChannelRightSide from './channelRightSide';
+import FriendMenu from './friendMenu';
 
 
 function RightSide () {

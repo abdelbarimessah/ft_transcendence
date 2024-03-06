@@ -123,11 +123,9 @@ export default function RootLayout({
 
       try {
         const url = process.env.NEXT_PUBLIC_API_URL;
-        await axios.post(`${url}/game/gameData`, gameData, {
-          withCredentials: true,
-        });
-      } catch (error) {
-        console.error(error);
+        await axios.post(`${url}/game/gameData`, gameData);
+      } catch (error:any) {
+        console.error(error.message);
       }
       setTimeout(() => route.push("/game"), 3000);
     });

@@ -69,6 +69,7 @@ CREATE TABLE "Channel" (
     "password" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "ownerId" TEXT NOT NULL,
+    "avatar" TEXT,
 
     CONSTRAINT "Channel_pkey" PRIMARY KEY ("id")
 );

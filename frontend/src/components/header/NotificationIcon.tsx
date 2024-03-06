@@ -140,6 +140,7 @@ export default function NotificationIcon() {
   const [inviteGame, setInviteGame] = useState(false);
   const [gamePair, setGamePair] = useState<any>();
 
+  const [newNotif, setNewNotif] = useState<any>();
   // Fetching the user data
   useEffect(() => {
     axios
@@ -155,9 +156,17 @@ export default function NotificationIcon() {
   //  Handling New Follow
   useEffect(() => {
     socketClient.on("notification", (data) => {
+      console.log("data in New Notification ===> ", data);
       const existingNotifications =
-        queryClient.getQueryData<NotificationProps[]>("notifications") || [];
+        queryClient.getQueryData<NotificationProps[]>("notificationList") || [];
 
+      // const newNotification: NotificationProps = {
+      //   id: data.id,
+      //   type: data.type,
+      //   gameId: data.gameId,
+      //   chatId: data.chatId,
+      //   userId: data.userId,
+      // };
       const newNotification: NotificationProps = {
         id: data.id,
         type: data.type,
@@ -169,16 +178,19 @@ export default function NotificationIcon() {
           nickName: data.user.nickName,
         },
       };
-      console.log("data in New Notification ===> ", data);
+      setNewNotif(newNotification);
+
+      console.log("data in New Notification ===> ", newNotification);
+      console.log("data in newNotif ===> ", newNotif);
 
       console.log("Data in existing notifications : ", existingNotifications);
 
-      const updatedNotifications = [...existingNotifications, newNotification];
+      const updatedNotifications = [...existingNotifications, newNotif];
       console.log("Data in updated notifications : ", updatedNotifications);
 
-      queryClient.setQueryData("notifications", updatedNotifications);
+      queryClient.setQueryData("notificationList", updatedNotifications);
     });
-  }, []);
+  }, [socketClient, queryClient, newNotif]);
 
   // Handling the game invite
   // useEffect(() => {
@@ -198,7 +210,7 @@ export default function NotificationIcon() {
 
   // Fetching the notification list
   const {
-    data: notificationList,
+    data: notificationsList,
     isLoading,
     isError,
     error,
@@ -263,12 +275,8 @@ export default function NotificationIcon() {
 
                 {!isLoading &&
                   !isError &&
-                  notificationList &&
-                  notificationList?.map((notification: NotificationProps) => (
-                    <NotificationItem
-                      key={notification.id}
-                      notification={notification}
-                    />
+                  notificationsList?.map((notification, index: number) => (
+                    <NotificationItem key={index} notification={notification} />
                   ))}
                 {/*
                 {inviteGame && (

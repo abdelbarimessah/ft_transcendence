@@ -6,6 +6,13 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 
+// export type NotificationProps = {
+//   id: string;
+//   type: string;
+//   gameId: string | null;
+//   chatId: string | null;
+//   userId: string;
+// };
 export type NotificationProps = {
   id: string;
   type: string;
@@ -29,6 +36,7 @@ export default function NotificationItem(
 ) {
   const router = useRouter();
   const socketClient = useContext(SocketContext);
+  console.log("Notification received in NotificationItem -> ", notification);
 
   useEffect(() => {
     socketClient.on("playersReadyInvite", (data) => {
@@ -52,7 +60,9 @@ export default function NotificationItem(
     <div className="w-full flex items-center justify-between gap-2 border-b-2 border-gray-400 pb-2">
       <Image
         alt="alt-user"
-        src={notification.user.avatar}
+        src={
+          notification.user ? notification.user.avatar : "/assets/Add-User.png"
+        }
         width={40}
         height={40}
         className="rounded-full"

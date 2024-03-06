@@ -324,7 +324,9 @@ export class ChatController {
       user.id,
       body.userId,
     );
-    this.chatGateway.joinRoom(user.id, channelId);
+    // console.log('added user to the channel', body.userId);
+    // console.log(`${channel.id} === ${channelId}`);
+    this.chatGateway.joinRoom(body.userId, channelId);
     this.chatGateway.userJoined(channel, targetUser);
     return { message: 'User successfully added to the channel.' };
   }

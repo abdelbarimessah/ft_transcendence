@@ -9,6 +9,7 @@ import Moment from 'react-moment';
 import 'moment-timezone';
 import axios from 'axios';
 import { SocketContext } from '@/app/SocketContext';
+import FriendMenu from './friendMenu';
 
 
 function FriendRightSide () {
@@ -48,6 +49,9 @@ function FriendRightSide () {
         const friendNickName = UserData.myId.id !== UserData.chatClicked.members[0].id ? UserData.chatClicked.members[0].nickName : UserData.chatClicked.members[1].nickName;
         const friendId = UserData.myId.id !== UserData.chatClicked.members[0].id ? UserData.chatClicked.members[0].id : UserData.chatClicked.members[1].id;
         const friendProviderId = UserData.myId.id !== UserData.chatClicked.members[0].id ? UserData.chatClicked.members[0].providerId : UserData.chatClicked.members[1].providerId;
+        const firstName = UserData.myId.id !== UserData.chatClicked.members[0].id ? UserData.chatClicked.members[0].firstName : UserData.chatClicked.members[1].firstName;
+        const lastName = UserData.myId.id !== UserData.chatClicked.members[0].id ? UserData.chatClicked.members[0].lastName : UserData.chatClicked.members[1].lastName;
+        
 
         const handelSubmitrefrech = (e) =>{
             e.preventDefault();
@@ -85,75 +89,83 @@ function FriendRightSide () {
         const messages = UserData.friendChatConversation;
         
         return(
-            //chat 
-            <div className='flex flex-col h-full'>
-                {/* up nav */}
-                <div className='flex justify-between  bg-[#ffff] h-[130px] border-b-[3px] border-[#F3FAFF] p-5'>
-                   <div className='flex items-center'>
+            //chat
+            <div className='flex w-full h-full'>
 
-                   {/* todo: profile need to redirect to: /profile/friend */}
-                        <Link href={`/profile/${friendProviderId}`}>
-                            <Image    
-                                    src={friendSrcImg}
-                                    alt={friendNickName}
-                                    width={1024}
-                                    height={1080}
-                                    className=' rounded-full object-center w-[86px] h-[86px] p-1' />
-                        </Link>
+                <div className='flex relative flex-col h-full w-full'>
+                    {/* up nav */}
+                    <div className='flex justify-between w-full  bg-[#ffff] h-[130px] border-b-[3px] border-[#F3FAFF] p-5'>
+                    <div className='flex items-center'>
 
-                        {/* info */}
-                        <div className='felx flex-col p-3'>
-                            <div className=' text-white '>{friendNickName}</div>
-                            <div className=' text-xs text-white'>online</div>
-                        </div>
-        
-                   </div>
-                   <div className=' flex items-center justify-end w-[146px]'>
-                        <Btns icon={"../../assets/addChannel.png"}/>
-                   </div>
-    
-                </div>
-    
+                    {/* todo: profile need to redirect to: /profile/friend */}
+                            <Link href={`/profile/${friendProviderId}`}>
+                                <Image    
+                                        src={friendSrcImg}
+                                        alt={friendNickName}
+                                        width={1024}
+                                        height={1080}
+                                        className=' rounded-full object-center w-[86px] h-[86px] p-1' />
+                            </Link>
 
-                {/* messages */}
-                <div className="h-full bg-[#F3FAFF] bg-[url('../../public/assets/chat-bg.png')] overflow-y-scroll p-[38px]">
-                    
-                    
-                        {messages.map((msg) => (
-                            <Messages key={msg.id}
-                            msg={msg.content}
-                            avatar={msg.author.avatar}
-                            nickname={msg.author.nickName}
-                            authorId={msg.authorId}
-                            time={<Moment format="hh:mm A">{msg.createdAt}</Moment>}
-                            myId={UserData.myId.id}/>
-                        ))}
-                        <div ref={refToBottum}/>
-                   
-
-
-                </div>
-
-
-                {/* bott nav */}
-
-                <form onSubmit={handelSubmitrefrech}>
-                    <div className='flex items-center bg-[#FFE0B3] h-[90px] p-4 rounded-lg'>
-                        <input  type="text"
-                                className=' bg-[#eadec4] rounded-lg outline-none text-sm text-[#39362d] w-full h-[50px] m-3 p-3 placeholder:text-sm placeholder:text-[#f3b679] '
-                                placeholder='type a message'
-                                onChange={handelMessageInput}
-                                ref={inputMessageRef}
-
-                        />
-                            <div className='flex items-center justify-end  ml-4 mr-3'>
-                                {UserData.typing ? <Btns icon={"../../assets/addChannel.png"}/> : <Btns icon={"../../assets/ball.png"} onClick={handelSubmit}/>}
-                                
+                            {/* info */}
+                            <div className='felx flex-col p-3'>
+                                <div className=' text-white '>{friendNickName}</div>
+                                <div className=' text-xs text-white'>online</div>
                             </div>
+
+                    </div>
+                    <div className=' flex items-center justify-end w-[146px]'>
+                            <Btns icon={"../../assets/addChannel.png"} onClick={() => {UserData.setShowFriendMenu(true)}}/>
+                    </div>
+        
+                    </div>
+        
+
+                    {/* messages */}
+                    <div className="h-full w-full bg-[#F3FAFF] bg-[url('../../public/assets/chat-bg.png')] overflow-y-scroll p-[38px]">
+                        
+                        
+                            {messages.map((msg) => (
+                                <Messages key={msg.id}
+                                msg={msg.content}
+                                avatar={msg.author.avatar}
+                                nickname={msg.author.nickName}
+                                authorId={msg.authorId}
+                                time={<Moment format="hh:mm A">{msg.createdAt}</Moment>}
+                                myId={UserData.myId.id}/>
+                            ))}
+                            <div ref={refToBottum}/>
+                    
+
+
                     </div>
 
-                </form>
-    
+
+                    {/* bott nav */}
+
+                    <form onSubmit={handelSubmitrefrech}>
+                        <div className='flex items-center bg-[#FFE0B3] w-full h-[90px] p-4 rounded-lg'>
+                            <input  type="text"
+                                    className=' bg-[#eadec4] rounded-lg outline-none text-sm text-[#39362d] w-full h-[50px] m-3 p-3 placeholder:text-sm placeholder:text-[#f3b679] '
+                                    placeholder='type a message'
+                                    onChange={handelMessageInput}
+                                    ref={inputMessageRef}
+
+                            />
+                                <div className='flex items-center justify-end  ml-4 mr-3'>
+                                    {UserData.typing ? <Btns icon={"../../assets/addChannel.png"}/> : <Btns icon={"../../assets/ball.png"} onClick={handelSubmit}/>}
+                                    
+                                </div>
+                        </div>
+
+                    </form>
+                </div>
+                    <FriendMenu avatar={friendSrcImg} 
+                                nickName={friendNickName}
+                                firstName={firstName}
+                                lastName={lastName}
+                                friendProviderId={friendProviderId}
+                                />
             </div>
         )
 

@@ -14,33 +14,10 @@ function InviteFriendListe ({chat}: any) {
   const frinend = UserData.myId.id != chat.members[0].id ? chat.members[0]: chat.members[1];
   
   
-  const addNewChannelToList = (channel :any) => {   
-    const exists = UserData.channelsList.some(item  => item.id === channel.id);
-    
-    if (exists === false)
-    {
-      const newChannelToAdd = [...UserData.channelsList, channel];
-      UserData.channelClicked(channel);
-      UserData.setChannelsList(newChannelToAdd);
-      
-    }
-  }
-  
-  useEffect(() => {
-    socket.on("userJoined", (data) => {
-      addNewChannelToList(data.channel);
-      console.log("channel == ", data.channel);
-      console.log("channelClicked == ", UserData.channelClicked);
-    });
-    return (() => {
-        socket.off("userJoined")
-    })
-  }), [];
 
   const addUserToChannel = async (chatClicked) =>{
         console.log("chatClicked", chatClicked);
         console.log("UserData.channelClicked", UserData.channelClicked);
-        
           try {
           const response = await axios.post(`http://localhost:3000/chat/channel/${UserData.channelClicked.id}/add`,
           {

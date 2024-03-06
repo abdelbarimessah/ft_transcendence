@@ -1,5 +1,5 @@
 'use client'
-import { SocketContext } from '@/app/SocketContext';
+import { SocketContext, socket } from '@/app/SocketContext';
 import { useContext, useRef } from 'react';
 import LeftSide from '@/components/chat/leftSide';
 import RightSide from '@/components/chat/rightSide';
@@ -11,6 +11,7 @@ import ChannelOption from '@/components/chat/channelOption';
 import EnterPassword from '@/components/chat/enterPassword';
 import InviteFriendListe from '@/components/chat/InviteFriendListe';
 import InviteFriend from '@/components/chat/InviteFriend';
+import FriendMenu from '@/components/chat/friendMenu';
 
 
 
@@ -30,11 +31,12 @@ function Chat() {
     const [typing, setTyping] = useState(true);
     const [popUpOn, setPopUpOn] = useState(false);
     const [channelType, setchannelType] = useState("");
-    const [whatIcon, setWhatIcon] = useState("");
+    const [whatIcon, setWhatIcon] = useState("channel");
     const inputPassRef = useRef(null);
     const inputEnterPassRef = useRef(null);
     const [needPassword, setNeedPassword] = useState(false);
     const [showInvite, setShowInvite] = useState(false);
+    const [showFriendMenu, setShowFriendMenu] = useState(false);
 
     const fetchData = async () => {
       try {
@@ -109,6 +111,31 @@ function Chat() {
           fetchChannelConversation();        
       }, [channelClicked]);
 
+
+
+
+
+      const addNewChannelToList = (channel :any) => {   
+        const exists = channelsList.some(item  => item.id === channel.id);
+        
+        if (exists === false)
+        {
+          const newChannelToAdd = [...channelsList, channel];
+          setChannelsList(newChannelToAdd);
+        }
+      }
+    
+      useEffect(() => {
+        socket.on("userJoined", (data) => {
+          addNewChannelToList(data.channel);
+          console.log("channel == ", data.channel);
+          console.log("channelClicked == ", channelClicked);
+        });
+        return (() => {
+            socket.off("userJoined")
+        })
+      }), [];
+      
     return (
         <>
         <chatslistContext.Provider value={{ friendsList, channelsList, myId, friendChatConversation, chatClicked, typing, 
@@ -116,7 +143,8 @@ function Chat() {
                                             channelType, setchannelType, setChannelsList, whatIcon, setWhatIcon, channelChatConversation,
                                             setChannelChatConversation, channelClicked, setChannelClicked, listChannelsToJoin,
                                             setListChannelsToJoin, channelToJoin, setChannelToJoin, inputPassRef,
-                                            needPassword, setNeedPassword, inputEnterPassRef, showInvite, setShowInvite}}>
+                                            needPassword, setNeedPassword, inputEnterPassRef, showInvite, setShowInvite, showFriendMenu,
+                                            setShowFriendMenu}}>
         <div className='relative flex justify-start chat-bp:justify-center items-center w-screen h-screen overflow-hidden '>
           
           <ChannelOption />
@@ -127,8 +155,9 @@ function Chat() {
                 <LeftSide/>
               </div>
 
-              <div className="bg-[#FFFFFF]  min-w-[415px] max-w-[1271px] h-full w-full rounded-[0px_29px_29px_0px]">
+              <div className="bg-[#FFFFFF]  h-full w-full rounded-[0px_29px_29px_0px]">
                 <RightSide  />
+                
               </div>
             </div>
         </div>

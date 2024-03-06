@@ -1,4 +1,3 @@
-'use client'
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import axios from "axios";
@@ -7,7 +6,7 @@ import axios from "axios";
 
 axios.defaults.withCredentials = true;
 
-export default function App() {
+export default function ChannelMenu() {
   const [settingModal, setSettingModal] = useState(false);
   const [passwordState, setPasswordState] = useState(false)
   const [changeChannelNameState, setChangeChannelNameState] = useState(false)
@@ -125,6 +124,9 @@ export default function App() {
                       <span className="text-[12px] text-color-31">Cancel</span>
                     </div>
                   </div>
+
+                  {/* sed the data collected */}
+
                   <div className="h-[29px] w-[69px] bg-color-32 rounded-[10px] flex items-center justify-center mt-[16px] cursor-pointer  hover:scale-[1.01] hover:opacity-95">
                     <span className="text-[12px] text-color-31">Save</span>
                   </div>
@@ -153,11 +155,11 @@ export default function App() {
                 <span className="text-center text-color-6" >Members</span>
               </div>
             </div>
+            
             <div className="Chat_members_tab w-full h-[473px] flex items-center py-3 overflow-y-auto gap-1 flex-col  no-scrollbar overflow-hidden bg-color-6 rounded-[10px]">
               <Owner />
               <Admin />
               <User />
-
             </div>
           </div>
         </div>
@@ -299,7 +301,6 @@ function User() {
             className="w-full h-full object-cover"
           >
           </Image>
-          
         </div>
       </div>
       {showSettings &&

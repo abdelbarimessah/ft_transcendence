@@ -19,6 +19,18 @@ export class NotificationController {
       orderBy: {
         createdAt: 'asc',
       },
+      include: {
+        user: {
+          select: {
+            id: true,
+            providerId: true,
+            avatar: true,
+            nickName: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
     });
     return notifications;
   }

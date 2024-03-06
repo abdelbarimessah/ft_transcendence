@@ -140,7 +140,7 @@ export default function NotificationIcon() {
   const [inviteGame, setInviteGame] = useState(false);
   const [gamePair, setGamePair] = useState<any>();
 
-  const [newNotif, setNewNotif] = useState<any>();
+  // const [newNotif, setNewNotif] = useState<any>();
   // Fetching the user data
   useEffect(() => {
     axios
@@ -178,35 +178,39 @@ export default function NotificationIcon() {
           nickName: data.user.nickName,
         },
       };
-      setNewNotif(newNotification);
+      // setNewNotif(newNotification);
 
       console.log("data in New Notification ===> ", newNotification);
-      console.log("data in newNotif ===> ", newNotif);
+      console.log("data in newNotif ===> ", newNotification);
 
       console.log("Data in existing notifications : ", existingNotifications);
 
-      const updatedNotifications = [...existingNotifications, newNotif];
+      const updatedNotifications = [...existingNotifications, newNotification];
       console.log("Data in updated notifications : ", updatedNotifications);
 
       queryClient.setQueryData("notificationList", updatedNotifications);
     });
-  }, [socketClient, queryClient, newNotif]);
+  }, [socketClient, queryClient]);
 
   // Handling the game invite
-  // useEffect(() => {
-  //   socketClient.on("playRequestFromFriend", (data) => {
-  //     setInviteGame(true);
-  //     setGamePair(data);
-  //     const newGameInviteNotification: NotificationProps = {
-  //       id: data.id,
-  //       type: "GAME_INVITE",
-  //       gameId: data.gameId,
-  //       chatId: data.chatId,
-  //       userId: data.sender.providerId,
-  //     };
-  //     setGameNotif(newGameInviteNotification);
-  //   });
-  // }, [socketClient]);
+  useEffect(() => {
+    socketClient.on("playRequestFromFriend", (data) => {
+      setInviteGame(true);
+      setGamePair(data);
+      const newGameInviteNotification: NotificationProps = {
+        id: data.id,
+        type: "GAME_INVITE",
+        gameId: data.gameId,
+        chatId: data.chatId,
+        user: {
+          avatar: data.sender.avatar,
+          nickName: data.sender.nickName,
+          providerId:  data.sender.providerId,
+        }
+      };
+      setGameNotif(newGameInviteNotification);
+    });
+  }, [socketClient]);
 
   // Fetching the notification list
   const {

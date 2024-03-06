@@ -389,6 +389,7 @@ export class ChatService {
         userId: userId,
       },
     });
+    return channel;
   }
   async leaveChannel(channelId: string, userId: string) {
     const channel = await this.prismaService.channel.findUnique({
@@ -546,6 +547,7 @@ export class ChatService {
       },
     });
   }
+
   async muteMember(channelId: string, userId: string, body: userMuteDto) {
     const channelMembership =
       await this.prismaService.channelMembership.findUnique({
@@ -583,7 +585,9 @@ export class ChatService {
     if (targetMembership.userId === channelMembership.channel.ownerId) {
       throw new ForbiddenException('Cannot mute the owner of the channel.');
     }
-
+    const expiresAt = body.expiresAt
+      ? body.expiresAt
+      : new Date(Date.now() + 5 * 60 * 1000);
     const updatedMembership = await this.prismaService.channelMembership.update(
       {
         where: {
@@ -594,12 +598,13 @@ export class ChatService {
         },
         data: {
           isMuted: !targetMembership.isMuted,
-          expiresAt: body.expiresAt,
+          expiresAt,
         },
       },
     );
     return updatedMembership;
   }
+
   async banMember(channelId: string, userId: string, targetId: string) {
     const membership = await this.prismaService.channelMembership.findUnique({
       where: {
@@ -649,7 +654,7 @@ export class ChatService {
           },
         },
         data: {
-          isBanned: !targetMembership.isBanned,
+          isBanned: true, // !targetMembership.isBanned
         },
       },
     );
@@ -753,7 +758,7 @@ export class ChatService {
       },
     });
 
-    return channelWithMembers.members;
+    return channelWithMembers;
   }
   async getChannelMessages(channelId: string, userId: string) {
     const channelWithMessages = await this.prismaService.channel.findUnique({
@@ -800,6 +805,9 @@ export class ChatService {
             userId: userId,
           },
         },
+        include: {
+          channel: true,
+        },
       });
 
     if (!adminMembership || !adminMembership.isAdmin) {
@@ -834,7 +842,7 @@ export class ChatService {
         isBanned: false,
       },
     });
-    return targetUser;
+    return { targetUser, channel: adminMembership?.channel };
   }
   async getAllChannel() {
     return await this.prismaService.channel.findMany({

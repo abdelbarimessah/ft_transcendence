@@ -15,8 +15,7 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
     super({
       clientID: configService.get('intra_Client_ID'),
       clientSecret: configService.get('intra_Client_Secret'),
-      // callbackURL: configService.get('intra_Client_callback'),
-      callbackURL: 'http://localhost:3000/auth/42/callback',
+      callbackURL: configService.get('intra_Client_callback'),
     });
     this.defaultCoverImage = `${this.configService.get(
       'NEXT_PUBLIC_API_URL',

@@ -13,19 +13,13 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { AppService } from 'src/app.service';
 
-// @WebSocketGateway({
-//   cors: {
-//     origin: 'http://localhost:8000',
-//   },
-// })
 @WebSocketGateway({
   cors: {
-    origin: ['http://localhost:8000', 'http://localhost:8000/'],
+    origin: ['http://localhost:8000', process.env.FRONTEND_URL],
     credentials: true,
   },
 })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
-  // private userSocket = new Map<string, string>();
   @WebSocketServer()
   server: Server;
   constructor(
@@ -111,8 +105,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.server.to(channelId).emit('deleteChannel', channelId);
   }
 
-  userJoined(channelId: string, user: User) {
-    this.server.to(channelId).emit('userJoined', { channelId, user });
+  userJoined(channel: Channel, user: User) {
+    this.server.to(channel.id).emit('userJoined', { channel, user });
   }
 
   userLeft(channelId: string, user: User) {

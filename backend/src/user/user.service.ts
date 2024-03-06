@@ -51,7 +51,7 @@ export class UserService {
         },
       },
     });
-    delete user.secretOpt;
+    delete user?.secretOpt;
     return user;
   }
 

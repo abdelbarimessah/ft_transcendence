@@ -161,10 +161,13 @@ const gameInviteNotification: NotificationItemProps = {
   },
 };
 
+const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+
 const getNotificationList = async () => {
   try {
     const res = await axios.get<NotificationItemProps[]>(
-      "http://localhost:3000/notification"
+      `${backendUrl}/notification`,
+      { withCredentials: true }
     );
     return res.data;
   } catch (err) {
@@ -214,7 +217,7 @@ const NotificationIcon = () => {
 
   useEffect(() => {
     socketClient.on("notification", (data) => {
-      console.log('in notification', data);
+      console.log("in notification", data);
       const newNotification: NotificationItemProps = {
         id: data.id,
         type: data.type,
@@ -294,12 +297,14 @@ const NotificationIcon = () => {
 
                 {!isLoading &&
                   !isError &&
-                  notificationList?.map((notification: NotificationItemProps) => (
-                    <NotificationItem
-                      notification={notification}
-                      key={notification.id}
-                    />
-                  ))}
+                  notificationList?.map(
+                    (notification: NotificationItemProps) => (
+                      <NotificationItem
+                        notification={notification}
+                        key={notification.id}
+                      />
+                    )
+                  )}
 
                 {/* <NotificationItem notification={msgNotification} />
                 <NotificationItem notification={followNotification} /> */}

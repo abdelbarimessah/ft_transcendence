@@ -31,9 +31,9 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   async googleAuthCallback(@Req() req, @Res() res) {
     const user = req.user.user;
-
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:8000';
     if (!req.user) {
-      return res.redirect('http://localhost:8000');
+      return res.redirect(frontendUrl);
     }
 
     const payload = {
@@ -52,12 +52,12 @@ export class AuthController {
     });
     const isNew = req.user.isNew;
     if (user.otpIsEnabled) {
-      return res.redirect(`http://localhost:8000/auth`);
+      return res.redirect(`${frontendUrl}/auth`);
     } else {
       if (isNew) {
-        return res.redirect('http://localhost:8000/setting');
+        return res.redirect(`${frontendUrl}/setting`);
       } else {
-        return res.redirect('http://localhost:8000/profile');
+        return res.redirect(`${frontendUrl}/profile`);
       }
     }
   }
@@ -70,11 +70,11 @@ export class AuthController {
   @UseGuards(AuthGuard('42'))
   async intraAuthCallback(@Req() req, @Res() res) {
     const user = req.user.user;
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:8000';
     if (!req.user) {
-      return res.redirect('http://localhost:8000');
+      return res.redirect(frontendUrl);
     }
 
-    const isNew = req.user.isNew;
     const payload = {
       id: user.id,
       providerId: user.providerId,
@@ -89,13 +89,14 @@ export class AuthController {
       sameSite: 'lax',
       expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
     });
+    const isNew = req.user.isNew;
     if (user.otpIsEnabled) {
-      return res.redirect(`http://localhost:8000/auth`);
+      return res.redirect(`${frontendUrl}/auth`);
     } else {
       if (isNew) {
-        return res.redirect('http://localhost:8000/setting');
+        return res.redirect(`${frontendUrl}/setting`);
       } else {
-        return res.redirect('http://localhost:8000/profile');
+        return res.redirect(`${frontendUrl}/profile`);
       }
     }
   }
@@ -106,10 +107,7 @@ export class AuthController {
     res.clearCookie('authorization', {
       httpOnly: true,
     });
-    // console.log('logout');
-
-    // return {ok: 'ok'}
-    return res.redirect('http://localhost:8000');
+    return res.json({ success: true, message: 'Logged out successfully' });
   }
 
   @Patch('generate/Otp')

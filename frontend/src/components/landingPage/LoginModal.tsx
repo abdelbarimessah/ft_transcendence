@@ -7,6 +7,7 @@ interface LoginModalProps {
 }
 
 const LoginModal: React.FC<LoginModalProps> = ({ closeModal }) => {
+  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
   return (
     <div className="z-50 fixed top-0 left-0 w-full h-full flex items-center justify-center backdrop-filter backdrop-blur-sm text-color-0">
       <div

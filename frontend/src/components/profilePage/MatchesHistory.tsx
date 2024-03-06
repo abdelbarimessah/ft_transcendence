@@ -3,6 +3,7 @@
 import Image from "next/image";
 import MatchHistoryItem, { MatchHistoryProps } from "./MatchHistoryItem";
 import axios from "axios";
+<<<<<<< HEAD
 import { useQuery, useQueryClient } from "react-query";
 import animationData from "../../../public/assets/EmptyFriends.json";
 
@@ -11,6 +12,17 @@ import { useContext, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { user } from "@nextui-org/react";
 import { SocketContext } from "@/app/SocketContext";
+=======
+import { useQuery } from "react-query";
+const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+const getMatchHistoryList = async () => {
+  const res = await axios.get<MatchHistoryProps[]>(
+    `${backendUrl}/matchHistory/`,
+    { withCredentials: true }
+  );
+  return res.data;
+};
+>>>>>>> wip-game-man
 
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 axios.defaults.withCredentials = true;
@@ -156,6 +168,7 @@ export function MatchesHistory() {
           </div>
         )}
 
+<<<<<<< HEAD
         {!isLoading && matchesHistoryList?.length === 0 && (
           <div className="flex w-full h-full items-center justify-center">
             <Lottie
@@ -166,6 +179,9 @@ export function MatchesHistory() {
             />
           </div>
         )}
+=======
+        <MatchHistoryItem historyEntry={matchHistoryTest} />
+>>>>>>> wip-game-man
         {!isError &&
           !isLoading &&
           matchesHistoryList &&

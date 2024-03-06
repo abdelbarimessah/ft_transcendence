@@ -15,11 +15,9 @@ import { SocketContext } from "@/app/SocketContext";
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
 axios.defaults.withCredentials = true;
-
+const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
 const getFriendsList = async () => {
-  const res = await axios.get<FriendCardProps[]>(
-    "http://localhost:3000/user/friends"
-  );
+  const res = await axios.get<FriendCardProps[]>(`${backendUrl}/user/friends`);
   return res.data;
 };
 
@@ -34,7 +32,7 @@ function FriendsList() {
         setMe(res.data);
       })
       .catch((err) => {
-        console.error(err);
+        console.error(err.message);
       });
   }, []);
 

@@ -50,12 +50,13 @@ export default function ChannelMenu() {
   
   useEffect(() => {
     if (userData.showChannelMenu === true)
-    fetchChannelMembers();        
+      fetchChannelMembers();        
   }, [userData.showChannelMenu]);
 
 
   if(userData.showChannelMenu === true)
   {
+    console.log("channel members === ", userData.channelMembers);
       return (
         <div className="flex w-full flex-col  items-center justify-center relative bg-color-18">
           <div className="select-none h-[1077px] w-[422px] bg-color-0 flex items-center justify-between flex-col pt-[113px] pb-[19px] relative" >
@@ -189,7 +190,7 @@ export default function ChannelMenu() {
                   <Owner />
                   <Admin />
                   
-                  {userData.channelMembers.map((members) => (
+                  {userData.channelMembers?.members?.map((members) => (
                     <User key={members.user.id}
                           avatar={members.user.avatar}
                           nickName={members.user.nickName}
@@ -199,6 +200,7 @@ export default function ChannelMenu() {
                           />
                   ))}
                 </div>
+
               </div>
             </div>
     
@@ -290,7 +292,7 @@ function Admin() {
   )
 }
 
-function User({avatar, nickName, firstName, lastName, role, friendProviderId}) {
+function User({avatar, nickName, firstName, lastName, role}) {
   
   const [showSettings, setShowSettings] = useState(false);
   const userRef = useRef<HTMLDivElement>(null);

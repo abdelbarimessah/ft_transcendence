@@ -10,6 +10,7 @@ import 'moment-timezone';
 import axios from 'axios';
 import { SocketContext } from '@/app/SocketContext';
 import FriendMenu from './friendMenu';
+import { toast } from 'sonner';
 
 
 function FriendRightSide () {
@@ -18,13 +19,11 @@ function FriendRightSide () {
     const refToBottum = useRef(null);
     const UserData :any = useContext(chatslistContext);
     const socket = useContext(SocketContext);
-    
+
     useEffect(() => {
         refToBottum.current?.scrollIntoView({behavior: "smooth"})
 
     },[UserData.friendChatConversation])
-    
-    
     
     const addMessageToChat = (message) => {
         if (UserData.chatClicked.id === message.chatId)
@@ -80,19 +79,20 @@ function FriendRightSide () {
                 inputMessageRef.current.value = "";
                 UserData.setTyping(false);
 
-            }
-            catch (error:any)
-            {
-                console.error(error.message);
-            }
+            } catch (error: any) {
+                if (error.response) {
+                  toast.error(error.response.data.message);
+                }
+              }
+
         }
         const messages = UserData.friendChatConversation;
         
         return(
             //chat
-            <div className='flex w-full h-full'>
+            <div className='flex flex-row w-full h-full'>
 
-                <div className='flex relative flex-col h-full w-full'>
+                <div className='flex flex-col h-full w-full'>
                     {/* up nav */}
                     <div className='flex justify-between w-full  bg-[#ffff] h-[130px] border-b-[3px] border-[#F3FAFF] p-5'>
                     <div className='flex items-center'>
@@ -115,7 +115,7 @@ function FriendRightSide () {
 
                     </div>
                     <div className=' flex items-center justify-end w-[146px]'>
-                            <Btns icon={"../../assets/addChannel.png"} onClick={() => {UserData.setShowFriendMenu(true)}}/>
+                            <Btns icon={"../../assets/addChannel.png"} onClick={() => {UserData.showFriendMenu == true ? UserData.setShowFriendMenu(false) : UserData.setShowFriendMenu(true)}}/>
                     </div>
         
                     </div>
@@ -160,12 +160,15 @@ function FriendRightSide () {
 
                     </form>
                 </div>
-                    <FriendMenu avatar={friendSrcImg} 
+                <div>
+                    <FriendMenu avatar={friendSrcImg}
                                 nickName={friendNickName}
                                 firstName={firstName}
                                 lastName={lastName}
                                 friendProviderId={friendProviderId}
+                                friendId={friendId}
                                 />
+                </div>
             </div>
         )
 

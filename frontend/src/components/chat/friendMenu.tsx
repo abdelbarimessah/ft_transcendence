@@ -4,29 +4,31 @@ import Image from "next/image";
 import { chatslistContext } from "../../app/(home)/chat/page";
 import { SocketContext } from "@/app/SocketContext";
 import Link from "next/link";
+import axios from "axios";
 
-export default function FriendMenu({
-  avatar,
-  nickName,
-  firstName,
-  lastName,
-  friendProviderId,
-}) {
-  // let user = {
-  //   firstName: String,
-  //   lastName: String,
-  //   nickName: String,
-  // }
+axios.defaults.withCredentials = true ;
+export default function FriendMenu({avatar ,nickName,firstName,lastName,friendProviderId,friendId}) {
+
   const userData = useContext(chatslistContext);
 
   if (userData.showFriendMenu === true) {
-    const handelVisitProfile = () => {
-      <Link href={`/profile/${friendProviderId}`}></Link>;
-    };
-    console.log(friendProviderId);
+    const handlBlockUser = async() => {
+      try{
+          const postMsgResponse = await axios.post("http://localhost:3000/chat/block",
+          {
+              userId: friendId,
+          }
+          );
+          console.log('res in block', postMsgResponse);
+      }
+      catch (error:any)
+      {
+          console.error(error.response);
+      }
+  }
 
     return (
-      <div className="select-none h-[1077px] w-[422px] bg-color-0 flex items-center justify-between flex-col pt-[113px] pb-[19px]">
+      <div className=" h-[1077px] w-[422px] bg-color-0 flex items-center justify-between flex-col pt-[113px] pb-[19px]">
         <div className="w-full flex flex-col  items-center justify-center gap-[20px] ">
           <div className="w-[156px] h-[156px] rounded-full bg-color-30 relative object-cover hover:scale-[1.01]">
             <Image
@@ -70,9 +72,7 @@ export default function FriendMenu({
             </div>
             <Link href={`/profile/${friendProviderId}`}>
               <div
-                className="w-[370px] h-[60px] bg-[#F3FAFF] rounded-[22px] flex items-center justify-between px-5 hover:scale-[1.01] hover:opacity-95 cursor-pointer"
-                onClick={handelVisitProfile}
-              >
+                className="w-[370px] h-[60px] bg-[#F3FAFF] rounded-[22px] flex items-center justify-between px-5 hover:scale-[1.01] hover:opacity-95 cursor-pointer">
                 <div className="flex items-center justify-center">
                   <span className="text-color-6">Visite Profile</span>
                 </div>
@@ -91,7 +91,8 @@ export default function FriendMenu({
           </div>
         </div>
 
-        <div className="w-[370px] h-[60px] bg-[#FFF3F3] rounded-[22px] flex items-center justify-between px-5 hover:scale-[1.01] hover:opacity-95 cursor-pointer">
+        <div className="w-[370px] h-[60px] bg-[#FFF3F3] rounded-[22px] flex items-center justify-between px-5 hover:scale-[1.01] hover:opacity-95 cursor-pointer"
+              onClick={handlBlockUser}>
           <div className="flex items-center justify-center">
             <span className="text-[#763232]">Block</span>
           </div>

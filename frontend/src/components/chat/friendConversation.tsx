@@ -6,6 +6,7 @@ import Btns from "./commun_component/btns";
 
 function FriendConversation(){
     const UserData: any = useContext(chatslistContext);
+    
     const handelAddNewConversation = () => {
         
     }
@@ -17,7 +18,7 @@ function FriendConversation(){
         return (
             <>
                 <div className='flex  justify-between items-center  px-3 min-h-[60px] border-[#F3FAFF] bg-[#ffffff] cursor-pointer hover:bg-[#e2eef6]'
-                 onClick={() => {handelAddNewConversation('friend')}}>
+                 onClick={handelAddNewConversation}>
 
                     <h1 className=' text-[#6D8CA3] text-lg' >  Find New Friend</h1>
                     <Btns icon={"../../assets/addChannel.png"} onClick={undefined} />

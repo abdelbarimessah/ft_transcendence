@@ -18,7 +18,7 @@ function ChannelOption() {
   }
   return (
     <>
-      <div className=" bg-opacity-25 bg-black  flex justify-center items-center fixed w-screen h-screen">
+      <div className="z-50 bg-opacity-25 bg-black  flex justify-center items-center fixed w-screen h-screen">
           <Tabs defaultValue="joinChanenl" className=" flex mt-0 w-[400px] items-center justify-center flex-col">
 
             <TabsList>

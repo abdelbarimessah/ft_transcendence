@@ -37,6 +37,8 @@ function Chat() {
     const [needPassword, setNeedPassword] = useState(false);
     const [showInvite, setShowInvite] = useState(false);
     const [showFriendMenu, setShowFriendMenu] = useState(false);
+    const [showChannelMenu, setShowChannelMenu] = useState(false);
+    const [channelMembers, setChannelMembers] = useState([]);
 
     const fetchData = async () => {
       try {
@@ -144,11 +146,11 @@ function Chat() {
                                             setChannelChatConversation, channelClicked, setChannelClicked, listChannelsToJoin,
                                             setListChannelsToJoin, channelToJoin, setChannelToJoin, inputPassRef,
                                             needPassword, setNeedPassword, inputEnterPassRef, showInvite, setShowInvite, showFriendMenu,
-                                            setShowFriendMenu}}>
+                                            setShowFriendMenu, showChannelMenu, setShowChannelMenu, channelMembers, setChannelMembers}}>
         <div className='relative flex justify-start chat-bp:justify-center items-center w-screen h-screen overflow-hidden '>
           
-          <ChannelOption />
           <InviteFriend />
+          <ChannelOption />
           <div className="flex justify-start chat-bp:justify-center items-center w-[1731px] h-[1080px] bg-[#FFFFFF] ">
 
               <div className=" bg-[#FFFFFF] min-w-[340px] max-w-[460px] h-full w-full rounded-[29px_0px_0px_29px]">

@@ -55,15 +55,3 @@ function ChannelConversation(){
 }
 
 export default ChannelConversation
-
-
-
-// if (UserData.popUpOn === true)
-// {
-//     UserData.setListChannelsToJoin(chatClicked);
-// }
-// else if (UserData.popUpOn === false)
-// {
-//     UserData.setChannelClicked(chatClicked);
-//     UserData.setChatClicked([]);
-// }

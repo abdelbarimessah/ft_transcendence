@@ -8,6 +8,7 @@ import {
 import { Logger } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
 import { GameService } from './game.service';
+import { NotificationService } from 'src/notification/notification.service';
 
 @WebSocketGateway({
   cors: {
@@ -18,7 +19,10 @@ import { GameService } from './game.service';
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   nb: number = 0;
   private logger: Logger = new Logger('GameGateway');
-  constructor(private gameService: GameService) { }
+  constructor(
+    private gameService: GameService,
+    private notificationService : NotificationService
+  ) { }
 
   @WebSocketServer()
   server: Server;
@@ -100,6 +104,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const roomName = `gameCard-${this.clientNOForCard}`;
       const player1 = this.playerQueue.shift();
       const player2 = this.playerQueue.shift();
+      console.log('the two player ids :1  ', player1.socket.data.user.providerId);
+      console.log('the two player ids :2  ', player2.socket.data.user.providerId);
+      
       if (player1.socket.data.user.providerId === player2.socket.data.user.providerId) {
         this.playerQueue.push(player1);
         socket.emit('youAreInGameFromAntherPage');
@@ -141,8 +148,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       player1: socket.data.user,
       player2: null,
     });
-
-    console.log(socket.id, 'join the room :: ', roomName);
+    this.notificationService.gameNotification(data.sender.id, data.receiver.id, this.inviteNumber);
     this.server.to(data.receiver.providerId).emit('playRequestFromFriend', {
       sender: data.sender,
       receiver: data.receiver,
@@ -152,7 +158,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('acceptInviteGame')
   async handleAcceptInviteGame(socket: Socket, data: any) {
-    const roomName = `InviteRoom-${data.gamePair.sender.providerId}-${data.gamePair.receiver.providerId}-${data.gamePair.inviteNumber}`;
+    console.log('the data  geted on the acceptInviteGame [8888888] : ', data);
+    const roomName = `InviteRoom-${data.sender.providerId}-${data.receiver.providerId}-${data.inviteNumber}`;
+    console.log(' the roomName is : ', roomName);
+    
     socket.join(roomName);
     const tmpData = this.roomSockets.get(roomName);
     if (tmpData) {
@@ -160,18 +169,18 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       this.roomSockets.set(roomName, tmpData);
 
     }
-    this.server.in(roomName).emit('playersReadyInvite', { sender: data.gamePair.sender, receiver: data.gamePair.receiver, inviteNumber: data.gamePair.inviteNumber });
+    
+    this.server.in(roomName).emit('playersReadyInvite', { sender: data.sender, receiver: data.receiver, inviteNumber: data.inviteNumber });
   }
 
   @SubscribeMessage('declineInviteGame')
   handleDeclineInviteGame(socket: Socket, data: any) {
     console.log({ message: 'decline the game invitee in the gateway [11111]' }, data);
-    this.server.to(data.gamePair.sender.providerId).emit('OtherPlayerDeclineTheGame', data);
+    this.server.to(data.sender.providerId).emit('OtherPlayerDeclineTheGame', data);
   }
 
   @SubscribeMessage('endGame')
   async handleEndGame(socket: Socket, data: any) {
-    console.log('the data in the endGane after the finish [ppppp]', data);
 
     const roomName = data.gameData.roomName;
     const sockets = this.roomSockets.get(roomName);
@@ -193,6 +202,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         user: socket.data.user,
         oponent: sockets.player1,
       });
+      
     }
   }
 
@@ -250,13 +260,16 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (this.playerScore.get(socket.id) < 5) {
       const initialVelocityX = Math.random() * 600 + 200;
       const initialVelocityY = Math.random() * 600 + 200;
-      setTimeout(() => {
+      const rand = Math.random() % 2 > 1/2 ? -1 : 1;
+      console.log('the random direction of the ball : .....' , {rand});
+      
+      // setTimeout(() => {
         this.server.in(roomName).emit('bothInRoom', {
           roomName: roomName,
-          initialVelocityX: initialVelocityX,
+          initialVelocityX: initialVelocityX ,
           initialVelocityY: initialVelocityY,
         });
-      }, 2000);
+      // }, 2000);
       this.server.in(roomName).emit('goalScored', { score: this.playerScore.get(socket.id), player: data.wishPlayer })
       console.log('goal scored in the server {{{{1111}}}}');
 

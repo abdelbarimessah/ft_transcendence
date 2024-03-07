@@ -37,7 +37,8 @@ export default function MatchHistoryItem({
       {/* Score */}
 
       {/* <div className="rounded-[22px] bg-[#fef1f1] py-1 px-3 flex justify-center items-center gap-4"> */}
-      <div className="rounded-[22px] bg-[#eefbef] py-1 px-3 flex justify-center items-center gap-4">
+
+      <div className={`rounded-[22px]  ${historyEntry.game.status === "win" ? 'bg-[#eefbef]' : 'bg-[#fdeaeb]'} py-1 px-3 flex justify-center items-center gap-4`}>
         <span className="text-[20px] text-color-6">
           {historyEntry.game.userScore}
         </span>

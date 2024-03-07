@@ -7,7 +7,7 @@ export class NotificationService {
   constructor(
     private prismaService: PrismaService,
     private notificationGateway: NotificationGateway,
-  ) {}
+  ) { }
 
   async messageNotification(
     userId: string,
@@ -65,4 +65,34 @@ export class NotificationService {
 
     return notification;
   }
+
+  async gameNotification(
+    userId: string,
+    receiverId: string,
+    inviteNumber : number
+  ) {
+    
+    const notification = await this.prismaService.notification.create({
+      data: {
+        type: 'GAME_INVITE',
+        userId: userId,
+        receiverId: receiverId,
+        gameId:  inviteNumber.toString()
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            providerId: true,
+            nickName: true,
+            firstName: true,
+            lastName: true,
+            avatar: true,
+          },
+        },
+      },
+    });
+    return notification
+  }
+
 }

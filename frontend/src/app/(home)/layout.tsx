@@ -21,9 +21,8 @@ export default function RootLayout({
   const socketClient = useContext(SocketContext);
   const [win, setWin] = useState(false);
   const [lose, setLose] = useState(false);
-  // socketClient.on("notification", (data) => {
-  //   console.log(data);
-  // });
+
+  
   useEffect(() => {
     const enterRoom = (data: any) => {
       setGameEnded(true);
@@ -59,6 +58,7 @@ export default function RootLayout({
     };
   }, [socketClient]);
 
+
   useEffect(() => {
     if (gameEnded) {
       return;
@@ -89,6 +89,8 @@ export default function RootLayout({
       socketClient.off("OnePlayerLeaveTheRoom");
     };
   }, [socketClient]);
+
+
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
     if (win || lose) {
@@ -133,6 +135,8 @@ export default function RootLayout({
       socketClient.off("OnePlayerLeaveTheRoom");
     };
   }, [socketClient]);
+
+
 
   return (
     <div className="flex  w-screen min-h-screen ">

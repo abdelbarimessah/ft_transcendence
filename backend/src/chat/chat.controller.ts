@@ -148,7 +148,7 @@ export class ChatController {
     @Body() data: createChannelDto,
     @CurrentUser() user: User,
   ) {
-    console.log('here in create channel')
+    console.log('here in create channel');
     const userId = user.id;
     try {
       const channel = await this.chatService.createChannel(data, userId);
@@ -270,7 +270,7 @@ export class ChatController {
   async banMember(
     @Param('id') id: string,
     @CurrentUser() user: User,
-    targetId: userIdDto,
+    @Body() targetId: userIdDto,
   ) {
     const updatedMembership = await this.chatService.banMember(
       id,
@@ -304,7 +304,7 @@ export class ChatController {
     );
     return members;
   }
-  
+
   @Get('channel/:id/messages')
   async getChannelMessages(
     @Param('id') channelId: string,
@@ -343,11 +343,10 @@ export class ChatController {
   }
   @Post('block')
   async blockUser(@CurrentUser() user: User, @Body() targetUserId: userIdDto) {
-      
-      await this.chatService.blockUser(user.id, targetUserId.userId);
-      this.chatGateway.blockUser(targetUserId.userId, user.id);
-      
-      return {message: 'user is blocked'}
+    await this.chatService.blockUser(user.id, targetUserId.userId);
+    this.chatGateway.blockUser(targetUserId.userId, user.id);
+
+    return { message: 'user is blocked' };
   }
   @Post('unblock')
   async unblockUser(
@@ -356,7 +355,7 @@ export class ChatController {
   ) {
     await this.chatService.unblockUser(user.id, targetUserId.userId);
     this.chatGateway.unblockUser(targetUserId.userId, user.id);
-    return {message: 'user is unblocked'}
+    return { message: 'user is unblocked' };
   }
 
   @Post('upload')

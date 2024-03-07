@@ -42,7 +42,7 @@ export default function NotificationItem(
   }, []);
 
   const handleAcceptInvite = () => {
-    
+
     const gamePair = {
       sender : {
         providerId: notification.user.providerId,
@@ -53,7 +53,7 @@ export default function NotificationItem(
       },
       inviteNumber:  notification.gameId,
     }
-    
+
     socketClient.emit("acceptInviteGame", gamePair);
     router.push(
       `/game/match?room=InviteRoom-${notification.user.providerId}-${me.providerId}-${notification.gameId}`
@@ -80,7 +80,7 @@ export default function NotificationItem(
 
   useEffect(() => {
     socketClient.on("playersReadyInvite", (data) => {
-      
+
       setTimeout(() => {
         router.push(
           `/game/match?room=InviteRoom-${data.sender.providerId}-${data.receiver.providerId}-${data.inviteNumber}`
@@ -121,7 +121,7 @@ export default function NotificationItem(
             <div className="flex justify-center items-center">
               <Image
                 alt="alt-user"
-                src="/assets/NewMessage.png"
+                src="/assets/Message.png"
                 width={38}
                 height={15}
                 priority={true}
@@ -143,7 +143,7 @@ export default function NotificationItem(
             <div className="flex justify-center items-center">
               <Image
                 alt="alt-user"
-                src="/assets/NewFollower.png"
+                src="/assets/Notif-AddUser.png"
                 width={38}
                 height={38}
                 priority={true}
@@ -179,7 +179,7 @@ export default function NotificationItem(
             <div className="flex justify-center items-center">
               <Image
                 alt="alt-user"
-                src="/assets/GameInvite.png"
+                src="/assets/Notif-Game.png"
                 width={38}
                 height={38}
                 priority={true}

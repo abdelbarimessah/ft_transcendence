@@ -148,7 +148,7 @@ export class ChatController {
     @Body() data: createChannelDto,
     @CurrentUser() user: User,
   ) {
-    console.log('here in create channel')
+    console.log('here in create channel');
     const userId = user.id;
     try {
       const channel = await this.chatService.createChannel(data, userId);
@@ -173,6 +173,7 @@ export class ChatController {
 
     return channels;
   }
+
   @Patch('channel/:id')
   async updateChannel(
     @Body() data: UpdateChannelDto,
@@ -189,6 +190,7 @@ export class ChatController {
     this.chatGateway.updateChannel(channelId, updatedChannel);
     return updatedChannel;
   }
+
   @Delete('channel/:id')
   async deleteChannel(
     @Param('id') channelId: string,
@@ -229,8 +231,12 @@ export class ChatController {
     @CurrentUser() user: User,
     @Body() body: userIdDto,
   ) {
-    await this.chatService.addAdmin(channelId, user.id, body.userId);
-    this.chatGateway.addAdmin(channelId, body.userId);
+    const updatedMembership = await this.chatService.addAdmin(
+      channelId,
+      user.id,
+      body.userId,
+    );
+    this.chatGateway.addAdmin(channelId, updatedMembership);
     return {
       message: `User has been made an admin of the channel .`,
     };
@@ -242,9 +248,13 @@ export class ChatController {
     @CurrentUser() user: User,
     @Body() body: userIdDto,
   ) {
-    await this.chatService.removeAdmin(channelId, user.id, body.userId);
-    this.chatGateway.removeAdmin(channelId, body.userId);
-    return { message: 'Admin rights removed successfully.' };
+    const updatedMembership = await this.chatService.removeAdmin(
+      channelId,
+      user.id,
+      body.userId,
+    );
+    this.chatGateway.removeAdmin(channelId, updatedMembership);
+    return updatedMembership;
   }
 
   @Post('channel/:id/mute')
@@ -305,7 +315,7 @@ export class ChatController {
     );
     return members;
   }
-  
+
   @Get('channel/:id/messages')
   async getChannelMessages(
     @Param('id') channelId: string,
@@ -344,11 +354,10 @@ export class ChatController {
   }
   @Post('block')
   async blockUser(@CurrentUser() user: User, @Body() targetUserId: userIdDto) {
-      
-      await this.chatService.blockUser(user.id, targetUserId.userId);
-      this.chatGateway.blockUser(targetUserId.userId, user.id);
-      
-      return {message: 'user is blocked'}
+    await this.chatService.blockUser(user.id, targetUserId.userId);
+    this.chatGateway.blockUser(targetUserId.userId, user.id);
+
+    return { message: 'user is blocked' };
   }
   @Post('unblock')
   async unblockUser(
@@ -357,7 +366,7 @@ export class ChatController {
   ) {
     await this.chatService.unblockUser(user.id, targetUserId.userId);
     this.chatGateway.unblockUser(targetUserId.userId, user.id);
-    return {message: 'user is unblocked'}
+    return { message: 'user is unblocked' };
   }
 
   @Post('upload')

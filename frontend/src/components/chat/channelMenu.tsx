@@ -11,40 +11,40 @@ import RenderFromUser from "@/components/chat/renderFromUser";
 axios.defaults.withCredentials = true;
 
 export default function ChannelMenu() {
-
-  const userData :any = useContext(chatslistContext);
+  const userData: any = useContext(chatslistContext);
 
   console.log("channel clicked == ", userData.channelClicked);
   const [settingModal, setSettingModal] = useState(false);
-  const [passwordState, setPasswordState] = useState(false)
-  const [changeChannelNameState, setChangeChannelNameState] = useState(false)
+  const [passwordState, setPasswordState] = useState(false);
+  const [changeChannelNameState, setChangeChannelNameState] = useState(false);
   const [cancelState, setCancelState] = useState("hidden");
 
   const handleSettingsClick = () => {
-    setSettingModal(true)
-  }
+    setSettingModal(true);
+  };
   const handleCloseSettingModal = () => {
-    setSettingModal(false)
-  }
+    setSettingModal(false);
+  };
 
   const handleCancelClick = () => {
     setChangeChannelNameState(false);
-    setPasswordState(false)
+    setPasswordState(false);
     setCancelState("hidden");
-  }
-  const fetchChannelMembers = async() => {
+  };
+  const fetchChannelMembers = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/chat/channel/${userData.channelClicked.id}/members`);
+      const response = await axios.get(
+        `http://localhost:3000/chat/channel/${userData.channelClicked.id}/members`
+      );
       userData.setChannelMembers(response.data);
-    }
-    catch (error: any) {
+    } catch (error: any) {
       if (error.response && error.response.status === 400) {
-          toast.error(error.response.data.message);
+        toast.error(error.response.data.message);
       }
     }
-  }
+  };
   console.log("channelMembers ==> ", userData.channelMembers);
-  
+
   useEffect(() => {
     if (userData.showChannelMenu === true)
       fetchChannelMembers();        
@@ -385,41 +385,45 @@ function User({ avatar, nickName, firstName, lastName, admin, myId, ownerId, use
 
 function SetPassowrd(props: any) {
   return (
-    !props.passwordState &&
-    <div onClick={(e) => { props.setPasswordState(true); props.setCancelState("") }} className="w-[178px] h-[45px] bg-color-31 gap-4 rounded-[16px] flex items-center justify-center cursor-pointer  hover:scale-[1.01] hover:opacity-95">
-      <div className="relative h-[20px] w-[20px] object-cover cursor-pointer hover:scale-[1.02] ">
-        <Image
-          src="../../../../assets/setPasswordIcon.svg"
-          alt="avatar"
-          draggable={false}
-          fill={true}
-          priority={true}
-          className="w-full h-full object-cover"
-        />
+    !props.passwordState && (
+      <div
+        onClick={(e) => {
+          props.setPasswordState(true);
+          props.setCancelState("");
+        }}
+        className="w-[178px] h-[45px] bg-color-31 gap-4 rounded-[16px] flex items-center justify-center cursor-pointer  hover:scale-[1.01] hover:opacity-95"
+      >
+        <div className="relative h-[20px] w-[20px] object-cover cursor-pointer hover:scale-[1.02] ">
+          <Image
+            src="../../../../assets/setPasswordIcon.svg"
+            alt="avatar"
+            draggable={false}
+            fill={true}
+            priority={true}
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div className="">
+          <span className="text-[12px] text-color-0">Set Password</span>
+        </div>
       </div>
-      <div className="">
-        <span className="text-[12px] text-color-0">Set Password</span>
-      </div>
-    </div>
-  )
+    )
+  );
 }
 
 function TypePassword() {
-
   return (
     <div className="w-[178px] h-[45px] bg-color-32 gap-4 rounded-[16px] flex items-center justify-center cursor-pointer  hover:scale-[1.01] hover:opacity-95">
       <input
         type="search"
-        placeholder='password...'
-        className='placeholder-color-31 px-3 h-full bg-color-32 tracking-wider placeholder:font-medium font-poppins font-[400] rounded-[16px] text-color-31 text-[16px] w-full focus:outline-none'
+        placeholder="password..."
+        className="placeholder-color-31 px-3 h-full bg-color-32 tracking-wider placeholder:font-medium font-poppins font-[400] rounded-[16px] text-color-31 text-[16px] w-full focus:outline-none"
       />
     </div>
-  )
+  );
 }
 
-
 function SetPublic() {
-
   return (
     <div className="w-[178px] h-[45px] bg-color-31 gap-4 rounded-[16px] flex items-center justify-center cursor-pointer  hover:scale-[1.01] hover:opacity-95">
       <div className="relative h-[20px] w-[17px] object-cover cursor-pointer hover:scale-[1.02] ">
@@ -430,23 +434,24 @@ function SetPublic() {
           fill={true}
           priority={true}
           className="w-full h-full object-cover"
-        >
-        </Image>
+        ></Image>
       </div>
       <div className="">
         <span className="text-[12px] text-color-0">Set Public</span>
       </div>
     </div>
-  )
+  );
 }
 function SetPrivate() {
   const handleSetPrivate = () => {
-    console.log('handle the set the of the channel protected');
-
-  }
+    console.log("handle the set the of the channel protected");
+  };
 
   return (
-    <div onClick={handleSetPrivate} className="w-[178px] h-[45px] bg-color-31 gap-4 rounded-[16px] flex items-center justify-center cursor-pointer hover:scale-[1.01] hover:opacity-95">
+    <div
+      onClick={handleSetPrivate}
+      className="w-[178px] h-[45px] bg-color-31 gap-4 rounded-[16px] flex items-center justify-center cursor-pointer hover:scale-[1.01] hover:opacity-95"
+    >
       <div className="relative h-[20px] w-[17px] object-cover cursor-pointer hover:scale-[1.02] ">
         <Image
           src="../../../../assets/setPrivateIcon.svg"
@@ -455,53 +460,55 @@ function SetPrivate() {
           fill={true}
           priority={true}
           className="w-full h-full object-cover"
-        >
-        </Image>
+        ></Image>
       </div>
       <div className="">
         <span className="text-[12px] text-color-0">Set private</span>
       </div>
     </div>
-  )
+  );
 }
-
 
 function SetChannelName(props: any) {
   return (
-    !props.changeChannelNameState &&
-    <div onClick={(e) => { props.setChangeChannelNameState(true); props.setCancelState("") }} className="w-[178px] h-[45px] bg-color-31 gap-4 rounded-[16px] flex items-center justify-center cursor-pointer hover:scale-[1.01] hover:opacity-95">
-      <div className="relative h-[21px] w-[21px] object-cover cursor-pointer hover:scale-[1.02] ">
-        <Image
-          src="../../../../assets/ChannelNameIcon.svg"
-          alt="avatar"
-          draggable={false}
-          fill={true}
-          priority={true}
-          className="w-full h-full object-cover"
-        >
-        </Image>
+    !props.changeChannelNameState && (
+      <div
+        onClick={(e) => {
+          props.setChangeChannelNameState(true);
+          props.setCancelState("");
+        }}
+        className="w-[178px] h-[45px] bg-color-31 gap-4 rounded-[16px] flex items-center justify-center cursor-pointer hover:scale-[1.01] hover:opacity-95"
+      >
+        <div className="relative h-[21px] w-[21px] object-cover cursor-pointer hover:scale-[1.02] ">
+          <Image
+            src="../../../../assets/ChannelNameIcon.svg"
+            alt="avatar"
+            draggable={false}
+            fill={true}
+            priority={true}
+            className="w-full h-full object-cover"
+          ></Image>
+        </div>
+        <div className="">
+          <span className="text-[12px] text-color-0">Leet Chess</span>
+        </div>
       </div>
-      <div className="">
-        <span className="text-[12px] text-color-0">Leet Chess</span>
-      </div>
-    </div>
-  )
+    )
+  );
 }
 
 function TypeChannelName() {
-
   return (
     <div className="w-[178px] h-[45px] bg-color-32 gap-4 rounded-[16px] flex items-center justify-center cursor-pointer  hover:scale-[1.01] hover:opacity-95">
       <input
         type="text"
         defaultValue="leet Chess"
-        placeholder='Leet Chess'
-        className='placeholder-color-31 px-3 h-full bg-color-32 tracking-wider placeholder:font-medium font-poppins font-[400] rounded-[16px] text-color-31 text-[16px] w-full focus:outline-none'
+        placeholder="Leet Chess"
+        className="placeholder-color-31 px-3 h-full bg-color-32 tracking-wider placeholder:font-medium font-poppins font-[400] rounded-[16px] text-color-31 text-[16px] w-full focus:outline-none"
       />
     </div>
-  )
+  );
 }
-
 
 
 function UsersSettingsPoint({userId}) {

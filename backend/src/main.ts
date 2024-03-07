@@ -10,7 +10,9 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 // require('dotenv').config();
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule,  {abortOnError: false});
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    abortOnError: false,
+  });
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.use(cookieParser());
 

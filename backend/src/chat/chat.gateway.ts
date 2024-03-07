@@ -7,7 +7,13 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { Channel, Chat, Message, User } from '@prisma/client';
+import {
+  Channel,
+  ChannelMembership,
+  Chat,
+  Message,
+  User,
+} from '@prisma/client';
 import * as cookie from 'cookie';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -113,11 +119,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   userLeft(channelId: string, user: User) {
     this.server.to(channelId).emit('userLeft', { channelId, user });
   }
-  addAdmin(channelId: string, userId: string) {
-    this.server.to(channelId).emit('addAdmin', { channelId, userId });
+  addAdmin(channelId: string, user: ChannelMembership) {
+    this.server.to(channelId).emit('addAdmin', { channelId, user });
   }
-  removeAdmin(channelId: string, userId: string) {
-    this.server.to(channelId).emit('removeAdmin', { channelId, userId });
+  removeAdmin(channelId: string, user: ChannelMembership) {
+    this.server.to(channelId).emit('removeAdmin', { channelId, user });
   }
   muteUser(channelId: string, userId: string, mute: boolean) {
     this.server.to(channelId).emit('muteUser', { channelId, userId, mute });
@@ -131,7 +137,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   blockUser(targetId: string, userId: string) {
     const socketId = this.getSocketByUserId(targetId);
     if (socketId) {
-      console.log(targetId, "blocked user id")
       this.server.to(socketId).emit('blockUser', { userId });
     }
   }

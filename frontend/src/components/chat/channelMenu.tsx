@@ -5,9 +5,10 @@ import { chatslistContext } from "../../app/(home)/chat/page";
 import { SocketContext } from "@/app/SocketContext";
 import { toast } from "sonner";
 import Link from "next/link";
-
-
-// to do the channel need  to change if i joined it and not if i was invited!!!!!!!
+import Owner from "@/components/chat/ownerId"
+import RenderFromUser from "@/components/chat/RenderFromUser"
+// to-do the channel need  to change if i joined it and not if i was invited!!!!!!!
+// to-do changing the 
 
 
 
@@ -51,8 +52,9 @@ export default function ChannelMenu() {
   useEffect(() => {
     if (userData.showChannelMenu === true)
       fetchChannelMembers();        
-  }, [userData.showChannelMenu]);
+  }, [userData.channelClicked, userData.showChannelMenu]);
 
+  const ownerId = userData.channelMembers.ownerId;
 
   if(userData.showChannelMenu === true)
   {
@@ -90,6 +92,7 @@ export default function ChannelMenu() {
               {!settingModal &&
                 <div className="">
                   <div className="w-[156px] h-[156px] rounded-full bg-color-30 relative object-cover hover:scale-[1.01]">
+                    {/* set channel avatar */}
                     <Image
                       src="../../../../assets/ProfileHeaderImage.svg"
                       alt="avatar"
@@ -97,12 +100,13 @@ export default function ChannelMenu() {
                       fill={true}
                       priority={true}
                       className="w-full h-full object-cover"
-                    >
+                      >
                     </Image>
                   </div>
+                  
                   <div className="w-full h-[54px]  flex flex-col items-center justify-center">
                     <span className='font-nico-moji text-color-6 sm:text-[24px] text-[18px] capitalize'>
-                      Leet Chess
+                      {userData.channelClicked.name}
                     </span>
                   </div>
                   <div className="w-full h-[2px] bg-color-30">
@@ -113,8 +117,10 @@ export default function ChannelMenu() {
                 <div className="flex items-center justify-center flex-col gap-[20px]">
                   <div className='w-[119px] h-[119px] bg-color-6 rounded-full relative border border-color-0 group cursor-pointer'>
                     <div className="w-full h-full absolute rounded-full overflow-hidden">
+                      
+                      {/* set channel avatar */}
                       <Image
-                        src="../../../../assets/ProfileHeaderImage.svg"
+                        src="../../../../assets/Profilee.svg"
                         alt="Add image icon"
                         fill={true}
                         className="object-cover w-full h-full"
@@ -170,6 +176,7 @@ export default function ChannelMenu() {
               <div className="w-full flex flex-col justify-center gap-2 px-3 ">
                 <div className="Chat_members flex justify-start items-center gap-2 pl-4  ">
                   <div className="relative h-[16px] w-[22px] object-cover">
+                    
                     <Image
                       src="../../../../assets/groupMembersChat.svg"
                       alt="avatar"
@@ -187,18 +194,29 @@ export default function ChannelMenu() {
                 </div>
                 
                 <div className="Chat_members_tab w-full h-[473px] flex items-center py-3 overflow-y-auto gap-1 flex-col  no-scrollbar overflow-hidden bg-color-6 rounded-[10px]">
-                  <Owner />
-                  <Admin />
-                  
-                  {userData.channelMembers?.members?.map((members) => (
-                    <User key={members.user.id}
-                          avatar={members.user.avatar}
-                          nickName={members.user.nickName}
-                          firstName={members.user.firstName}
-                          lastName={members.user.lastName}
-                          role={members.isAdmin}
-                          />
-                  ))}
+
+                  {userData.channelMembers?.members?.map((members)=>(
+                    
+                    members.user.id === ownerId ? <Owner key={members.user.id}
+                                                          userId={members.user.id}
+                                                          ownerId={ownerId}
+                                                          avatar={members.user.avatar}
+                                                          nickName={members.user.nickName}
+                                                          firstName={members.user.firstName}
+                                                          lastName={members.user.lastName}
+                                                          admin={members.isAdmin} />
+                                                        :
+                                                        <User key={members.user.id}
+                                                              myId={userData.myId.id}
+                                                          avatar={members.user.avatar}
+                                                          nickName={members.user.nickName}
+                                                          firstName={members.user.firstName}
+                                                          lastName={members.user.lastName}
+                                                          admin={members.isAdmin}
+                                                          ownerId={ownerId}
+                                                          userId={members.user.id}
+                                                        />
+                    ))}
                 </div>
 
               </div>
@@ -226,35 +244,9 @@ export default function ChannelMenu() {
   }
 
 
-
-function Owner() {
-  return (
-    <div className="Chat_owner h-[60px] w-[370px] bg-color-32 flex items-center justify-between rounded-[22px] pl-2 pr-10 flex-shrink-0  hover:scale-[1.01]">
-      <div className="flex items-center justify-center">
-        <div className="h-[43px] w-[43px] relative object-cover cursor-pointer">
-          <Image
-            src="../../../../assets/ProfileHeaderImage.svg"
-            alt="avatar"
-            draggable={false}
-            fill={true}
-            priority={true}
-            className="w-full h-full object-cover"
-          >
-          </Image>
-        </div>
-        <div className="Chat_names flex flex-col items-start justify-center pl-[10px]">
-          <span className="text-color-6 text-[14px]">abdelbari messah</span>
-          <span className="text-color-23 text-[10px] -mt-1">@amessah</span>
-        </div>
-      </div>
-      <div className="Chat_role">
-        <span className="text-[#325176]/50 text-[14px]">Owner</span>
-      </div>
-    </div>
-  )
-}
-
 function Admin() {
+  console.log("hehehhee");
+  
   return (
     <div className="Chat_owner h-[60px] w-[370px] bg-color-32 flex items-center justify-between rounded-[22px] pl-2 pr-10 flex-shrink-0 hover:scale-[1.01]">
       <div className="flex items-center justify-center">
@@ -292,13 +284,14 @@ function Admin() {
   )
 }
 
-function User({avatar, nickName, firstName, lastName, role}) {
-  
+
+
+function User({avatar, nickName, firstName, lastName, admin, myId, ownerId, userId}) {
+
   const [showSettings, setShowSettings] = useState(false);
   const userRef = useRef<HTMLDivElement>(null);
   const zIndex = showSettings ? 'z-10' : 'z-0';
   
-
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (userRef.current && !userRef.current.contains(event.target as Node)) {
@@ -312,45 +305,74 @@ function User({avatar, nickName, firstName, lastName, role}) {
     };
   }, []);
 
-
-  return (
-    <div ref={userRef} className={`Chat_owner h-[60px] w-[370px] bg-color-32 flex items-center justify-between rounded-[22px] pl-2 pr-10 flex-shrink-0  hover:scale-[1.01] relative ${zIndex}`}>
-      <div className="flex items-center justify-center">
-        <div className="h-[43px] w-[43px] relative object-cover cursor-pointer">
-          {/* <Link href={`/profile/${friendProviderId}`}> */}
-          <Image
-            src={avatar}
-            alt={nickName}
-            draggable={false}
-            fill={true}
-            priority={true}
-            className="w-full h-full rounded-full object-cover"
-          />
-          {/* </Link> */}
+  if(admin === true && userId === myId)
+  {
+    console.log("here at else");
+    return (
+      <RenderFromUser   
+      avatar={avatar}
+      nickName={nickName}
+      firstName={firstName}
+      lastName={lastName}
+      zIndex={zIndex}
+      userRef={userRef}/>
+      )
+    }
+    else if (admin === true || myId === ownerId)
+    {
+      console.log("here at else");
+    return (
+      <div ref={userRef} className={`Chat_owner h-[60px] w-[370px] bg-color-32 flex items-center justify-between rounded-[22px] pl-2 pr-10 flex-shrink-0  hover:scale-[1.01] relative ${zIndex}`}>
+        <div className="flex items-center justify-center">
+          <div className="h-[43px] w-[43px] relative object-cover cursor-pointer">
+            {/* <Link href={`/profile/${friendProviderId}`}> */}
+            <Image
+              src={avatar}
+              alt={nickName}
+              draggable={false}
+              fill={true}
+              priority={true}
+              className="w-full h-full rounded-full object-cover"
+            />
+            {/* </Link> */}
+          </div>
+          <div className="Chat_names flex flex-col items-start justify-center pl-[10px]">
+            <span className="text-color-6 text-[14px]">{firstName} {lastName}</span>
+            <span className="text-color-23 text-[10px] -mt-1">{nickName}</span>
+          </div>
         </div>
-        <div className="Chat_names flex flex-col items-start justify-center pl-[10px]">
-          <span className="text-color-6 text-[14px]">{firstName} {lastName}</span>
-          <span className="text-color-23 text-[10px] -mt-1">{nickName}</span>
+        <div onClick={(e) => { setShowSettings(true) }} className="flex items-center justify-center px-3 cursor-pointer hover:scale-[1.02]">
+          <div className="relative h-[18px] w-[4px] object-cover  ">
+            <Image
+              src="../../../../assets/threePointChat.svg"
+              alt="avatar"
+              draggable={false}
+              fill={true}
+              priority={true}
+              className="w-full h-full object-cover"
+            >
+            </Image>
+          </div>
         </div>
+        {showSettings &&
+          <UsersSettingsPoint userId={userId}/>
+        }
       </div>
-      <div onClick={(e) => { setShowSettings(true) }} className="flex items-center justify-center px-3 cursor-pointer hover:scale-[1.02]">
-        <div className="relative h-[18px] w-[4px] object-cover  ">
-          <Image
-            src="../../../../assets/threePointChat.svg"
-            alt="avatar"
-            draggable={false}
-            fill={true}
-            priority={true}
-            className="w-full h-full object-cover"
-          >
-          </Image>
-        </div>
-      </div>
-      {showSettings &&
-        <UsersSettingsPoint />
-      }
-    </div>
-  )
+    )
+  }
+  else
+  {
+    console.log("here at else");
+    return (
+      <RenderFromUser   
+                        avatar={avatar}
+                        nickName={nickName}
+                        firstName={firstName}
+                        lastName={lastName}
+                        zIndex={zIndex}
+                        userRef={userRef}/>
+    )
+  }
 }
 
 function SetPassowrd(props: any) {
@@ -472,25 +494,113 @@ function TypeChannelName() {
   )
 }
 
+//http://localhost:3000/chat/channel/${channelId}/admin
 
-function UsersSettingsPoint() {
+
+function UsersSettingsPoint({userId}) {
+  
+  const userData = useContext(chatslistContext);
+  
+  const handelAddAdmin = async() =>{      
+          
+    try{
+      const addAdminResponse = await axios.post(`http://localhost:3000/chat/channel/${userData.channelClicked.id}/admin`,
+      {
+        userId: userId
+      },
+      {
+          withCredentials: true,
+      });
+      toast.message(addAdminResponse.data.message);
+      }
+      catch (error: any) {
+          if (error.response && error.response.status === 400) {
+              toast.error(error.response.data.message);
+          }
+      }
+  }
+  
+    
+  const handelMute = async() =>{      
+    try{
+      const muteResponse = await axios.post(`http://localhost:3000/chat/channel/${userData.channelClicked.id}/mute`,
+      {
+        userId: userId
+      },
+      {
+          withCredentials: true,
+      });
+      console.log("muteResponse.data =", muteResponse.data);
+      
+      // toast.message(muteResponse.data);
+      }
+      catch (error: any) {
+          if (error.response && error.response.status === 400) {
+              toast.error(error.response.data.message);
+          }
+      }
+  }
+  
+  
+  const handelKick = async() =>{      
+    try{
+      const kickResponse = await axios.post(`http://localhost:3000/chat/channel/${userData.channelClicked.id}/kick`,
+      {
+        userId: userId
+      },
+      {
+          withCredentials: true,
+      });
+      console.log("kickResponse.data =", kickResponse.data);
+      
+      // toast.message(kickResponse.data);
+      }
+      catch (error: any) {
+          if (error.response && error.response.status === 400) {
+              toast.error(error.response.data.message);
+          }
+      }
+  }
+  /* ban is not working cuzing server to get down   */
+  const handelBan = async() =>{      
+    try{
+      const bankResponse = await axios.post(`http://localhost:3000/chat/channel/${userData.channelClicked.id}/ban`,
+      {
+        userId: userId
+      },
+      {
+          withCredentials: true,
+      });
+      console.log("bankResponse.data =", bankResponse.data);
+      
+      // toast.message(bankResponse.data);
+      }
+      catch (error: any) {
+          if (error.response && error.response.status === 400) {
+              toast.error(error.response.data.message);
+          }
+      }
+  }
+
+  
 
   return (
     <div className="h-[160px] w-[160px] bg-color-31 rounded-b-[22px] rounded-tl-[22px] flex flex-col items-center justify-center overflow-hidden gap-[3px] absolute top-5 right-14 z-[1000]">
       <div className="h-[27px] w-[119px] bg-color-0 rounded-[22px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
-        <span className="text-color-31 text-[9px]">Make Admin</span>
+        <span className="text-color-31 text-[9px]" onClick={handelAddAdmin}>Make Admin</span>
       </div>
       <div className="h-[27px] w-[119px] bg-color-0 rounded-[22px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
-        <span className="text-color-31 text-[9px]">Mute</span>
+        <span className="text-color-31 text-[9px]" onClick={handelMute}>Mute</span>
       </div>
       <div className="h-[27px] w-[119px] bg-color-0 rounded-[22px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
-        <span className="text-color-31 text-[9px]">Kick</span>
+        <span className="text-color-31 text-[9px]" onClick={handelKick}>Kick</span>
       </div>
       <div className="h-[27px] w-[119px] bg-color-0 rounded-[22px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
-        <span className="text-color-31 text-[9px]">Ban</span>
+        <span className="text-color-31 text-[9px]" onClick={handelBan}>Ban</span>
       </div>
+      {/* to-do request play game */}
       <div className="h-[27px] w-[119px] bg-color-0 rounded-[22px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
-        <span className="text-color-31 text-[9px]">Play With</span>
+        <span className="text-color-31 text-[9px]" onClick={undefined}>Play With</span>
       </div>
     </div>
   )

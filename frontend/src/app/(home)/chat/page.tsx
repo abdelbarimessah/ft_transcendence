@@ -39,6 +39,7 @@ function Chat() {
     const [showFriendMenu, setShowFriendMenu] = useState(false);
     const [showChannelMenu, setShowChannelMenu] = useState(false);
     const [channelMembers, setChannelMembers] = useState([]);
+    
 
     const fetchData = async () => {
       try {

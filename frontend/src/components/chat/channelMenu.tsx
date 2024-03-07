@@ -7,10 +7,6 @@ import { toast } from "sonner";
 import Link from "next/link";
 import Owner from "@/components/chat/ownerId"
 import RenderFromUser from "@/components/chat/RenderFromUser"
-// to-do the channel need  to change if i joined it and not if i was invited!!!!!!!
-// to-do changing the 
-
-
 
 axios.defaults.withCredentials = true;
 
@@ -55,6 +51,52 @@ export default function ChannelMenu() {
   }, [userData.channelClicked, userData.showChannelMenu]);
 
   const ownerId = userData.channelMembers.ownerId;
+
+  
+  const handelLeaveChannel = async() =>{      
+    try{
+      const bankResponse = await axios.post(`http://localhost:3000/chat/channel/${userData.channelClicked.id}/leave`,
+      {
+        userId: userData.myId.id,
+      },
+      {
+          withCredentials: true,
+      });
+      console.log("bankResponse.data =", bankResponse.data);
+      
+      // toast.message(bankResponse.data);
+      }
+      catch (error: any) {
+          if (error.response && error.response.status === 400) {
+              toast.error(error.response.data.message);
+          }
+      }
+    }
+    //THIS ONE NEED TO BE FILL WITH ITS VALUES
+    // i would prefer the holw list of updated channels from back
+    const handelChangeChannelSetting = async()=> {
+      try{
+        const newSettingResponse = await axios.patch(`http://localhost:3000/chat/channel/${userData.channelClicked.id}`,
+        {
+          name: "hello",
+          type: "PROTECTED",
+          password: "123",
+        },
+        {
+            withCredentials: true,
+        });
+        console.log("newSettingResponse.data =", newSettingResponse.data);
+        console.log("channels = =", userData.channelsList);
+        
+        // toast.message(newSettingResponse.data);
+        }
+        catch (error: any) {
+            if (error.response) {
+                toast.error(error.response.data.message);
+            }
+        }
+
+    }
 
   if(userData.showChannelMenu === true)
   {
@@ -163,7 +205,8 @@ export default function ChannelMenu() {
     
                       {/* set the data collected */}
     
-                      <div className="h-[29px] w-[69px] bg-color-32 rounded-[10px] flex items-center justify-center mt-[16px] cursor-pointer  hover:scale-[1.01] hover:opacity-95">
+                      <div className="h-[29px] w-[69px] bg-color-32 rounded-[10px] flex items-center justify-center mt-[16px] cursor-pointer  hover:scale-[1.01] hover:opacity-95"
+                            onClick={handelChangeChannelSetting}>
                         <span className="text-[12px] text-color-31">Save</span>
                       </div>
                     </div>
@@ -222,7 +265,8 @@ export default function ChannelMenu() {
               </div>
             </div>
     
-            <div className="w-[370px] h-[60px] bg-[#FFF9F9] rounded-[22px] flex items-center justify-between px-5 hover:scale-[1.01] hover:opacity-95 cursor-pointer">
+            <div  className="w-[370px] h-[60px] bg-[#FFF9F9] rounded-[22px] flex items-center justify-between px-5 hover:scale-[1.01] hover:opacity-95 cursor-pointer"
+                  onClick={handelLeaveChannel}>
               <div className="flex items-center justify-center">
                 <span className="text-[#763232]">Exit Group</span>
               </div>
@@ -242,49 +286,6 @@ export default function ChannelMenu() {
       );
     }
   }
-
-
-function Admin() {
-  console.log("hehehhee");
-  
-  return (
-    <div className="Chat_owner h-[60px] w-[370px] bg-color-32 flex items-center justify-between rounded-[22px] pl-2 pr-10 flex-shrink-0 hover:scale-[1.01]">
-      <div className="flex items-center justify-center">
-        <div className="h-[43px] w-[43px] relative object-cover cursor-pointer">
-          <Image
-            src="../../../../assets/ProfileHeaderImage.svg"
-            alt="avatar"
-            draggable={false}
-            fill={true}
-            priority={true}
-            className="w-full h-full object-cover"
-          >
-          </Image>
-        </div>
-        <div className="Chat_names flex flex-col items-start justify-center pl-[10px]">
-          <span className="text-color-6 text-[14px]">abdelbari messah</span>
-          <span className="text-color-23 text-[10px] -mt-1">@amessah</span>
-        </div>
-      </div>
-      <div className="Chat_role flex items-center justify-center gap-8">
-        <span className="text-[#325176]/50 text-[14px]">Admin</span>
-        <div className="relative h-[18px] w-[4px]  object-cover cursor-pointer hover:scale-[1.02]">
-          <Image
-            src="../../../../assets/threePointChat.svg"
-            alt="avatar"
-            draggable={false}
-            fill={true}
-            priority={true}
-            className="w-full h-full object-cover"
-          >
-          </Image>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-
 
 function User({avatar, nickName, firstName, lastName, admin, myId, ownerId, userId}) {
 
@@ -307,7 +308,7 @@ function User({avatar, nickName, firstName, lastName, admin, myId, ownerId, user
 
   if(admin === true && userId === myId)
   {
-    console.log("here at else");
+    console.log("first if");
     return (
       <RenderFromUser   
       avatar={avatar}
@@ -315,12 +316,12 @@ function User({avatar, nickName, firstName, lastName, admin, myId, ownerId, user
       firstName={firstName}
       lastName={lastName}
       zIndex={zIndex}
-      userRef={userRef}/>
+      userRef={userRef}
+      admin={admin}/>
       )
     }
     else if (admin === true || myId === ownerId)
     {
-      console.log("here at else");
     return (
       <div ref={userRef} className={`Chat_owner h-[60px] w-[370px] bg-color-32 flex items-center justify-between rounded-[22px] pl-2 pr-10 flex-shrink-0  hover:scale-[1.01] relative ${zIndex}`}>
         <div className="flex items-center justify-center">
@@ -339,7 +340,12 @@ function User({avatar, nickName, firstName, lastName, admin, myId, ownerId, user
           <div className="Chat_names flex flex-col items-start justify-center pl-[10px]">
             <span className="text-color-6 text-[14px]">{firstName} {lastName}</span>
             <span className="text-color-23 text-[10px] -mt-1">{nickName}</span>
+            
+
           </div>
+          {admin === true && <div className="Chat_role">
+            <span className="text-[#325176]/50 text-[14px] pl-[45px]">Admin</span>
+          </div>}
         </div>
         <div onClick={(e) => { setShowSettings(true) }} className="flex items-center justify-center px-3 cursor-pointer hover:scale-[1.02]">
           <div className="relative h-[18px] w-[4px] object-cover  ">
@@ -370,7 +376,8 @@ function User({avatar, nickName, firstName, lastName, admin, myId, ownerId, user
                         firstName={firstName}
                         lastName={lastName}
                         zIndex={zIndex}
-                        userRef={userRef}/>
+                        userRef={userRef}
+                        admin={admin}/>
     )
   }
 }
@@ -585,23 +592,24 @@ function UsersSettingsPoint({userId}) {
   
 
   return (
-    <div className="h-[160px] w-[160px] bg-color-31 rounded-b-[22px] rounded-tl-[22px] flex flex-col items-center justify-center overflow-hidden gap-[3px] absolute top-5 right-14 z-[1000]">
-      <div className="h-[27px] w-[119px] bg-color-0 rounded-[22px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
-        <span className="text-color-31 text-[9px]" onClick={handelAddAdmin}>Make Admin</span>
+    <div className="h-[160px] w-[160px] bg-color-31 rounded-b-[9px] rounded-tl-[9px] flex flex-col items-center justify-center overflow-hidden gap-[3px] absolute top-5 right-14 z-[1000]">
+      <div className="h-[27px] w-[135px] bg-color-0 rounded-[6px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
+        <span className="text-color-31 text-[13px]" onClick={handelAddAdmin}>Make Admin</span>
       </div>
-      <div className="h-[27px] w-[119px] bg-color-0 rounded-[22px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
-        <span className="text-color-31 text-[9px]" onClick={handelMute}>Mute</span>
+      <div className="h-[27px] w-[135px] bg-color-0 rounded-[6px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
+        <span className="text-color-31 text-[13px]" onClick={undefined}>Play With</span>
       </div>
-      <div className="h-[27px] w-[119px] bg-color-0 rounded-[22px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
-        <span className="text-color-31 text-[9px]" onClick={handelKick}>Kick</span>
+      <div className="h-[27px] w-[135px] bg-color-0 rounded-[6px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
+        <span className="text-color-31 text-[13px]" onClick={handelMute}>Mute</span>
       </div>
-      <div className="h-[27px] w-[119px] bg-color-0 rounded-[22px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
-        <span className="text-color-31 text-[9px]" onClick={handelBan}>Ban</span>
+      <div className="h-[27px] w-[135px] bg-color-0 rounded-[6px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
+        <span className="text-color-31 text-[13px]" onClick={handelKick}>Kick</span>
       </div>
+      <div className="h-[27px] w-[135px] bg-color-0 rounded-[6px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
+        <span className="text-color-31 text-[13px]" onClick={handelBan}>Ban</span>
+      </div>
+      
       {/* to-do request play game */}
-      <div className="h-[27px] w-[119px] bg-color-0 rounded-[22px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
-        <span className="text-color-31 text-[9px]" onClick={undefined}>Play With</span>
-      </div>
     </div>
   )
 }
@@ -610,4 +618,4 @@ function UsersSettingsPoint({userId}) {
 
 
 
-export { Owner, Admin, User, SetPassowrd, SetPublic, SetPrivate, TypePassword, SetChannelName, TypeChannelName, UsersSettingsPoint }
+export { User, SetPassowrd, SetPublic, SetPrivate, TypePassword, SetChannelName, TypeChannelName, UsersSettingsPoint }

@@ -131,8 +131,9 @@ function Chat() {
       useEffect(() => {
         socket.on("userJoined", (data) => {
           addNewChannelToList(data.channel);
-          console.log("channel == ", data.channel);
-          console.log("channelClicked == ", channelClicked);
+        });
+        socket.on("", (data) => {
+          addNewChannelToList(data.channel);
         });
         return (() => {
             socket.off("userJoined")

@@ -1,0 +1,11 @@
+- change setting of channel (working on it)
+
+
+
+- creat new chats at user interface from friends end-point
+- add typse (:any hhh)
+- to-do the channel need  to change if i joined it and not if i was invited!!!!!!!
+- ban is not working (probablly backend)
+- listen to events realTime 
+- response with new member channel (from backend)
+- switch between mute and unmute

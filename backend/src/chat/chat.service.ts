@@ -488,17 +488,20 @@ export class ChatService {
       throw new BadRequestException('User is already an admin.');
     }
 
-    await this.prismaService.channelMembership.update({
-      where: {
-        channelId_userId: {
-          channelId,
-          userId: targetId,
+    const updatedMembership = await this.prismaService.channelMembership.update(
+      {
+        where: {
+          channelId_userId: {
+            channelId,
+            userId: targetId,
+          },
+        },
+        data: {
+          isAdmin: true,
         },
       },
-      data: {
-        isAdmin: true,
-      },
-    });
+    );
+    return updatedMembership;
   }
   async removeAdmin(channelId: string, userId: string, targetId: string) {
     const channelMembership =
@@ -542,17 +545,20 @@ export class ChatService {
         'The specified user is not an admin of this channel.',
       );
     }
-    await this.prismaService.channelMembership.update({
-      where: {
-        channelId_userId: {
-          channelId: channelId,
-          userId: targetId,
+    const updatedMembership = await this.prismaService.channelMembership.update(
+      {
+        where: {
+          channelId_userId: {
+            channelId: channelId,
+            userId: targetId,
+          },
+        },
+        data: {
+          isAdmin: false,
         },
       },
-      data: {
-        isAdmin: false,
-      },
-    });
+    );
+    return updatedMembership;
   }
 
   async muteMember(channelId: string, userId: string, body: userMuteDto) {
@@ -662,6 +668,13 @@ export class ChatService {
         },
         data: {
           isBanned: true, // !targetMembership.isBanned
+        },
+        include: {
+          channel: {
+            include: {
+              members: true,
+            },
+          },
         },
       },
     );

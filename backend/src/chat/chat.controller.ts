@@ -106,8 +106,8 @@ export class ChatController {
       await this.chatService.isBlocked(chatId, userId);
       receiverId =
         targetId.members[1].id == user.id
-          ? targetId.members[1].id
-          : targetId.members[0].id;
+          ? targetId.members[0].id
+          : targetId.members[1].id;
     } else if (channelId) {
       await this.chatService.isBanned(channelId, userId);
       await this.chatService.isMuted(channelId, userId);
@@ -237,9 +237,7 @@ export class ChatController {
       body.userId,
     );
     this.chatGateway.addAdmin(channelId, updatedMembership);
-    return {
-      message: `User has been made an admin of the channel .`,
-    };
+    return updatedMembership;
   }
 
   @Delete('channel/:id/admin')
@@ -268,11 +266,22 @@ export class ChatController {
       user.id,
       body,
     );
-    this.chatGateway.muteUser(
+    this.chatGateway.muteUser(channelId, updatedMembership);
+    return updatedMembership;
+  }
+
+  @Post('channel/:id/unmute')
+  async unmuteMember(
+    @Param('id') channelId: string,
+    @CurrentUser() user: User,
+    @Body() body: userMuteDto,
+  ) {
+    const updatedMembership = await this.chatService.unmuteMember(
       channelId,
-      body.userId,
-      updatedMembership.isMuted,
+      user.id,
+      body,
     );
+    this.chatGateway.unmuteUser(channelId, updatedMembership);
     return updatedMembership;
   }
 
@@ -287,12 +296,10 @@ export class ChatController {
       user.id,
       targetId.userId,
     );
-    this.chatGateway.banUser(id, targetId.userId, updatedMembership.isBanned);
+    this.chatGateway.banUser(id, updatedMembership);
     this.chatGateway.leaveRoom(user.id, id);
 
-    return updatedMembership.isBanned
-      ? { message: 'User has been banned successfully.' }
-      : { message: 'User has been unbanned successfully.' };
+    return updatedMembership;
   }
 
   @Post('channel/:id/kick')

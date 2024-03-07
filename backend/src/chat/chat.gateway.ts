@@ -125,11 +125,14 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   removeAdmin(channelId: string, user: ChannelMembership) {
     this.server.to(channelId).emit('removeAdmin', { channelId, user });
   }
-  muteUser(channelId: string, userId: string, mute: boolean) {
-    this.server.to(channelId).emit('muteUser', { channelId, userId, mute });
+  muteUser(channelId: string, user: ChannelMembership) {
+    this.server.to(channelId).emit('muteUser', { channelId, user });
   }
-  banUser(channelId: string, userId: string, ban: boolean) {
-    this.server.to(channelId).emit('banUser', { channelId, userId, ban });
+  unmuteUser(channelId: string, user: ChannelMembership) {
+    this.server.to(channelId).emit('unmuteUser', { channelId, user });
+  }
+  banUser(channelId: string, user: ChannelMembership) {
+    this.server.to(channelId).emit('banUser', { channelId, user });
   }
   kickUser(channelId: string, userId: string) {
     this.server.to(channelId).emit('kickUser', { channelId, userId });

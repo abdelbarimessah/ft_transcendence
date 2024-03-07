@@ -610,8 +610,62 @@ export class ChatService {
           },
         },
         data: {
-          isMuted: !targetMembership.isMuted,
+          isMuted: true,
           expiresAt,
+        },
+      },
+    );
+    return updatedMembership;
+  }
+
+  async unmuteMember(channelId: string, userId: string, body: userMuteDto) {
+    const channelMembership =
+      await this.prismaService.channelMembership.findUnique({
+        where: {
+          channelId_userId: {
+            channelId: channelId,
+            userId: userId,
+          },
+        },
+        include: {
+          channel: true,
+        },
+      });
+
+    if (!channelMembership || !channelMembership.isAdmin) {
+      throw new ForbiddenException(
+        'You do not have permission to mute members in this channel.',
+      );
+    }
+    const targetMembership =
+      await this.prismaService.channelMembership.findUnique({
+        where: {
+          channelId_userId: {
+            channelId: channelId,
+            userId: body.userId,
+          },
+        },
+      });
+
+    if (!targetMembership) {
+      throw new BadRequestException(
+        'The specified user is not a member of this channel.',
+      );
+    }
+    if (targetMembership.userId === channelMembership.channel.ownerId) {
+      throw new ForbiddenException('Cannot mute the owner of the channel.');
+    }
+    const updatedMembership = await this.prismaService.channelMembership.update(
+      {
+        where: {
+          channelId_userId: {
+            channelId: channelId,
+            userId: body.userId,
+          },
+        },
+        data: {
+          isMuted: false,
+          expiresAt: new Date(Date.now() - 1),
         },
       },
     );
@@ -668,13 +722,6 @@ export class ChatService {
         },
         data: {
           isBanned: true, // !targetMembership.isBanned
-        },
-        include: {
-          channel: {
-            include: {
-              members: true,
-            },
-          },
         },
       },
     );
@@ -765,12 +812,11 @@ export class ChatService {
             user: {
               select: {
                 id: true,
-                provider: true,
+                providerId: true,
                 nickName: true,
                 firstName: true,
                 lastName: true,
                 avatar: true,
-                level: true,
               },
             }, // To-do select the useful fields
           },

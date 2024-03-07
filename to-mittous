@@ -1,0 +1,11 @@
+add join new channel 
+|
+|===> list all channels
+      |
+      |==>if protected show password input
+      |==>if public enter join the cahnnel directlly
+
+creat channel
+|
+|==> if protected render pass input field
+|==> if private render invite friend

@@ -15,7 +15,6 @@ import { toast } from 'sonner';
 
 axios.defaults.withCredentials = true;
 
-
 export default function Wiating() {
     const socketClient = useContext(SocketContext);
 
@@ -68,44 +67,75 @@ export default function Wiating() {
   },[socketClient]);
 
 
+  useEffect(() => {
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`)
+      .then((res) => {
+        setPlayer1(res.data);
+      })
+      .catch((err) => {
+        console.error(err.message);
+      });
+  }, []);
+  useEffect(() => {
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/user/${player2Id}`)
+      .then((res) => {
+        setplayer2(res.data);
+      })
+      .catch((err) => {
+        console.error(err.message);
+      });
+  }, []);
 
+  useEffect(() => {
+    socketClient.on("OtherPlayerDeclineTheGame", (data) => {
+      console.log(
+        { message: "the other player decline the game invite " },
+        { data }
+      );
+      router.push("/profile");
+    });
+  });
 
-    const removeInvitemMode = () => {
-        setIsRandomMode(false)
-        router.push('/profile')
-    }
+  const removeInvitemMode = () => {
+    setIsRandomMode(false);
+    router.push("/profile");
+  };
 
-    return (
-        <div className='h-full w-full flex flex-col items-center justify-center relative'>
-            <div className='w-full h-full absolute '>
-                <ParticleBackground />
-            </div>
-            {isRandomMode && player1 && player2 && (
-                <div className='w-full h-full`'>
-                    <div className='w-full h-[300px] flex items-center justify-center  relative'>
-                        <Lottie
-                            autoPlay
-                            loop
-                            style={{ width: 300 }} animationData={animationData}
-                        />
-                    </div>
-                    <div className=' w-full h-[200px] relative flex items-center justify-center '>
-                        <PlayerPairing player1={player1} player2={player2} />
-                    </div>
-                    <div onClick={removeInvitemMode} className=' cursor-pointer w-[50px] h-[50px] bg-white fixed top-96 right-52 flex items-center justify-center z-50 rounded-[17px] '>
-                        <Image
-                            src="../../assets/cross1.svg"
-                            alt='crossIcon'
-                            height={20}
-                            width={20}
-                            priority={true}
-                            draggable={false}
-                                       
-                        >
-                        </Image>
-                    </div>
-                </div>
-            )}
+  return (
+    <div className="h-full w-full flex flex-col items-center justify-center relative">
+      <div className="w-full h-full absolute ">
+        <ParticleBackground />
+      </div>
+      {isRandomMode && player1 && player2 && (
+        <div className="w-full h-full`">
+          <div className="w-full h-[300px] flex items-center justify-center  relative">
+            <Lottie
+              autoPlay
+              loop
+              style={{ width: 300 }}
+              animationData={animationData}
+            />
+          </div>
+          <div className=" w-full h-[200px] relative flex items-center justify-center ">
+            <PlayerPairing player1={player1} player2={player2} />
+          </div>
+          <div
+            onClick={removeInvitemMode}
+            className=" cursor-pointer w-[50px] h-[50px] bg-white fixed top-96 right-52 flex items-center justify-center z-50 rounded-[17px] "
+          >
+            <Image
+              src="../../assets/cross1.svg"
+              alt="crossIcon"
+              height={20}
+              width={20}
+              priority={true}
+              draggable={false}
+            ></Image>
+          </div>
         </div>
-    )
+      )}
+    </div>
+  );
 }

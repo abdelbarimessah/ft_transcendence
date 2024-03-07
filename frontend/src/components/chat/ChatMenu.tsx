@@ -19,7 +19,7 @@ interface User {
 const ChatMenu = ({}) => {
   useEffect(() => {
     const res = axios
-      .get("http://localhost:3000/user/me")
+      .get("http://localhost:3000/user/me", { withCredentials: true })
       .then((res) => {
         // console.log(res.data);
         setUser(res.data);

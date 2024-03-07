@@ -22,14 +22,14 @@ function Friend ({chat}: any) {
     }
     
     return(
-        <div    className='flex justify-between items-center border-t border-[#070401] p-3 min-h-[68px]'
+        <div    className='flex justify-between items-center border-t-[2px] border-[#cdd7dd] p-3 min-h-[68px]'
         onClick={e  => {handelChahtConv(chat)}}>
 
                 <img    src={UserData.myId.id != chat.members[0].id ? chat.members[0].avatar: chat.members[1].avatar}
                         alt={UserData.myId.id != chat.members[0].id ? chat.members[0].nickName: chat.members[1].nickName}
                         className=' rounded-full w-[60px] ' />
                 
-                    <h1 className=' font-medium '>{UserData.myId.id != chat.members[0].id ? chat.members[0].nickName: chat.members[1].nickName}</h1>
+                    <h1 className=' font-medium text-[#325876]'>{UserData.myId.id != chat.members[0].id ? chat.members[0].nickName: chat.members[1].nickName}</h1>
             </div>
     )
 }

@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function middleware(request: NextRequest) {
   const cookie = request.cookies.get("authorization");
+  const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+  if (!cookie) return NextResponse.redirect(frontendUrl);
+  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
 
-  if (!cookie) return NextResponse.redirect("http://localhost:8000");
-  const backendIp = process.env.BACKEND_IP || "localhost";
-
-  const res = await fetch(`http://${backendIp}:3000/user/me`, {
+  const res = await fetch(`${backendUrl}/user/me`, {
     headers: {
       Cookie: `authorization=${cookie.value}`,
     },

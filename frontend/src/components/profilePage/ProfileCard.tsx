@@ -23,7 +23,7 @@ function ProfileCard() {
     const [changeAvatar, setChangeAvatar] = useState(false);
     const [photoPath, setPhotoPath] = useState<any>(null);
     const [avatar, setAvatar] = useState<File | null>(null);
-
+    const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
     const handleSettingsClick = () => {
         setIsSettingsVisible(!isSettingsVisible);
     };
@@ -52,7 +52,7 @@ function ProfileCard() {
             if (user && data.providerId === user.providerId) {
                 try {
                     setIsLoading(true);
-                    const res = await axios.get(`http://localhost:3000/user/me`);
+                    const res = await axios.get(`${backendUrl}/user/me`);
 
                     setUser(res.data);
                     setIsLoading(false);

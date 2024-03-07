@@ -7,14 +7,9 @@ import { Server, Socket } from 'socket.io';
 import { AppService } from 'src/app.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 
-// @WebSocketGateway({
-//   cors: {
-//     origin: 'http://localhost:8000',
-//   },
-// })
 @WebSocketGateway({
   cors: {
-    origin: ['http://localhost:8000', 'http://localhost:8000/'],
+    origin: ['http://localhost:8000', process.env.FRONTEND_URL],
     credentials: true,
   },
 })
@@ -47,9 +42,6 @@ export class NotificationGateway {
     socket.join(data.providerId);
   }
   async sendNotification(receiver: string, notification: any) {
-    // TODO (abdelhamid)
-    console.log('the notif send : ', notification);
-    
     this.server.to(receiver).emit('notification', notification);
   }
 }

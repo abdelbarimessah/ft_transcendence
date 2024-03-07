@@ -10,7 +10,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 // require('dotenv').config();
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule,  {abortOnError: false});
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.use(cookieParser());
 
@@ -23,8 +23,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
   //CORS
+  const frontend = process.env.FRONTEND_URL || 'http://localhost:8000';
   app.enableCors({
-    origin: ['http://localhost:8000', 'http://localhost:8000/'],
+    origin: [frontend, 'http://localhost:8000'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });

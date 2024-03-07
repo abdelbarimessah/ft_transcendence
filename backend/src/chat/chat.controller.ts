@@ -270,8 +270,9 @@ export class ChatController {
   async banMember(
     @Param('id') id: string,
     @CurrentUser() user: User,
-    targetId: userIdDto,
+    @Body() targetId: userIdDto,
   ) {
+    console.log('in ban id:', targetId);
     const updatedMembership = await this.chatService.banMember(
       id,
       user.id,

@@ -10,6 +10,7 @@ import ParticleBackground from '@/components/particles/Tsparticles';
 import { useContext } from 'react';
 import { SocketContext } from '@/app/SocketContext';
 import Image from 'next/image';
+import { toast } from 'sonner';
 
 
 axios.defaults.withCredentials = true;
@@ -47,10 +48,24 @@ export default function Wiating() {
     useEffect(() => {
         socketClient.on('OtherPlayerDeclineTheGame', (data) => {
             console.log({ message: 'the other player decline the game invite ' }, { data });
+            toast.error('The other player declined your invitation')
             router.push('/profile');
         })
-    })
+    }, [socketClient])
 
+
+  useEffect(() => {
+    socketClient.on("playersReadyInvite", (data) => {
+      // console.log();
+      console.log("================= the game pair data is ========= ", data);
+      
+      setTimeout(() => {
+        router.push(
+          `/game/match?room=InviteRoom-${data.sender.providerId}-${data.receiver.providerId}-${data.inviteNumber}`
+        );
+      }, 500);
+    });
+  },[socketClient]);
 
 
 

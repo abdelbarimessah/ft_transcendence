@@ -88,6 +88,7 @@ export function MatchesHistory() {
             updatedAt: item.game.updatedAt,
             userScore: item.game.userScore,
             opponentScore: item.game.opponentScore,
+            status : item.game.status
           },
           user: {
             providerId: item.user.providerId,

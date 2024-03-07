@@ -28,7 +28,7 @@ export class NotificationGateway {
   @SubscribeMessage('notification')
   async readNotification(client: any, payload: any) {
     const userId = this.appService.getUserIdFromSocketId(client.id);
-    console.log(payload);
+    console.log('notif read', userId);
     const notificationUpdate = await this.prismaService.notification.updateMany(
       {
         where: {
@@ -48,6 +48,8 @@ export class NotificationGateway {
   }
   async sendNotification(receiver: string, notification: any) {
     // TODO (abdelhamid)
+    console.log('the notif send : ', notification);
+    
     this.server.to(receiver).emit('notification', notification);
   }
 }

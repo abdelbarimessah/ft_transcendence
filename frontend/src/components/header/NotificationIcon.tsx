@@ -107,135 +107,85 @@ import Image from "next/image";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SocketContext, socket } from "@/app/SocketContext";
-import { useRouter } from "next/navigation";
 import NotificationItem, { NotificationProps } from "./NotificationItem";
 import axios from "axios";
-import animationData from "../../../public/assets/EmptyFriends.json";
-import dynamic from "next/dynamic";
-import { QueryClient, useQuery, useQueryClient } from "react-query";
 
 axios.defaults.withCredentials = true;
 
-const getNotificationList = async () => {
-  const res = await axios.get<NotificationProps[]>(
-    "http://localhost:3000/notification"
-  );
-  return res.data;
-};
-
 export default function NotificationIcon() {
   const socketClient = useContext(SocketContext);
-  const queryClient = useQueryClient();
-  const router = useRouter();
 
-  const [me, setMe] = useState<any>();
 
-  const [gameNotif, setGameNotif] = useState<NotificationProps>();
-  const [inviteGame, setInviteGame] = useState(false);
   const [gamePair, setGamePair] = useState<any>();
+  const [notificationLists, setNotificationLists] = useState<any[]>([]);
 
-  const [newNotif, setNewNotif] = useState<any>();
-  // Fetching the user data
-  useEffect(() => {
-    axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`)
-      .then((res) => {
-        setMe(res.data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, []);
 
-  //  Handling New Follow
+
   useEffect(() => {
     socketClient.on("notification", (data) => {
-      console.log("data in New Notification ===> ", data);
-      const existingNotifications =
-        queryClient.getQueryData<NotificationProps[]>("notificationList") || [];
-
-      // const newNotification: NotificationProps = {
-      //   id: data.id,
-      //   type: data.type,
-      //   gameId: data.gameId,
-      //   chatId: data.chatId,
-      //   userId: data.userId,
-      // };
       const newNotification: NotificationProps = {
         id: data.id,
         type: data.type,
-        gameId: data.gameId,
+        gameId: data.inviteNumber,
         chatId: data.chatId,
         user: {
+          id: data.user.id,
           providerId: data.user.providerId,
           avatar: data.user.avatar,
           nickName: data.user.nickName,
         },
       };
-      setNewNotif(newNotification);
 
-      console.log("data in New Notification ===> ", newNotification);
-      console.log("data in newNotif ===> ", newNotif);
+      setNotificationLists(prev => [...prev, newNotification]);
 
-      console.log("Data in existing notifications : ", existingNotifications);
-
-      const updatedNotifications = [...existingNotifications, newNotif];
-      console.log("Data in updated notifications : ", updatedNotifications);
-
-      queryClient.setQueryData("notificationList", updatedNotifications);
     });
-  }, [socketClient, queryClient, newNotif]);
+  }, []);
 
-  // Handling the game invite
-  // useEffect(() => {
-  //   socketClient.on("playRequestFromFriend", (data) => {
-  //     setInviteGame(true);
-  //     setGamePair(data);
-  //     const newGameInviteNotification: NotificationProps = {
-  //       id: data.id,
-  //       type: "GAME_INVITE",
-  //       gameId: data.gameId,
-  //       chatId: data.chatId,
-  //       userId: data.sender.providerId,
-  //     };
-  //     setGameNotif(newGameInviteNotification);
-  //   });
-  // }, [socketClient]);
+  useEffect(() => {
+    const getData = async () => {
 
-  // Fetching the notification list
-  const {
-    data: notificationsList,
-    isLoading,
-    isError,
-    error,
-  } = useQuery<NotificationProps[], Error>({
-    queryKey: ["notificationList"],
-    queryFn: getNotificationList,
-  });
+      const res = await axios.get<NotificationProps[]>(
+        "http://localhost:3000/notification"
+      );
+      setNotificationLists(res.data);
+    }
+    getData();
 
-  const handleAcceptInvite = () => {
-    socketClient.emit("acceptInviteGame", gamePair);
-    router.push(
-      `/game/match?room=InviteRoom-${gamePair.sender.providerId}-${gamePair.receiver.providerId}-${gamePair.inviteNumber}`
-    );
-    setInviteGame(false);
-  };
+  }, [])
 
-  const handleDeclineInvite = () => {
-    socketClient.emit("declineInviteGame", gamePair);
-    console.log("emit the decline of the invite in the receiver [444444]");
-    setInviteGame(false);
-  };
+  useEffect(() => {
+    socketClient.on("playRequestFromFriend", (data) => {
+      setGamePair(data);
+
+      const newGameInviteNotification: NotificationProps = {
+        id: data.sender.providerId,
+        type: 'GAME_INVITE',
+        gameId: data.inviteNumber,
+        chatId: '',
+        user: {
+          id: data.sender.id,
+          providerId: data.sender.providerId,
+          avatar: data.sender.avatar,
+          nickName: data.sender.nickName,
+        },
+      };
+
+      setNotificationLists(prev => [...prev, newGameInviteNotification]);
+
+
+    });
+  }, []);
+
 
   // Handling READ_NOTIFICATIONS
   const handleUnreadNotifications = () => {
     socket.emit("notification");
+    setNotificationLists([])
   };
 
   return (
@@ -245,7 +195,7 @@ export default function NotificationIcon() {
     >
       <DropdownMenu>
         <DropdownMenuTrigger className="focus:outline-none">
-          <div className="relative h-full w-full flex items-center justify-center ">
+          <div className="relative h-full w-full flex items-center justify-center b ">
             <Image
               alt="logo"
               height="35"
@@ -261,31 +211,9 @@ export default function NotificationIcon() {
               </DropdownMenuLabel>
               <DropdownMenuSeparator className="bg-color-5 mb-1" />
               <div className="w-full h-[300px] flex flex-col py-0 p-2 gap-2 overflow-x-scroll no-scrollbar">
-                {isLoading && (
-                  <div className="flex w-full h-full items-center justify-center text-gray-400">
-                    Loading Notifications List...
-                  </div>
-                )}
-
-                {isError && (
-                  <div className="flex w-full h-full items-center justify-center text-red-500">
-                    Error: {error.message}
-                  </div>
-                )}
-
-                {!isLoading &&
-                  !isError &&
-                  notificationsList?.map((notification, index: number) => (
-                    <NotificationItem key={index} notification={notification} />
-                  ))}
-                {/*
-                {inviteGame && (
-                  <NotificationItem
-                    notification={gameNotif}
-                    onAccept={handleAcceptInvite}
-                    onReject={handleDeclineInvite}
-                  />
-                )} */}
+                {notificationLists?.map((notification: any, index: number) => (
+                  <NotificationItem key={index} notification={notification} />
+                ))}
               </div>
             </DropdownMenuContent>
           </div>

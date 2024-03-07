@@ -16,6 +16,8 @@ export class GameService {
       },
     });
     if (count < 2) {
+      console.log('the game data in the services : ' , gameData);
+      
       const game = await this.prismaService.game.create({
         data: {
           opponentId,

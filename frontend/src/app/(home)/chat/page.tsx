@@ -127,14 +127,25 @@ function Chat() {
           setChannelsList(newChannelToAdd);
         }
       }
+      
+      
+      const updateMembers = (channel :any) => {   
+        const newMembers = channelMembers.members.map()
+
+        if (exists === false)
+        {
+          const newChannelToAdd = [...channelsList, channel];
+          setChannelsList(newChannelToAdd);
+        }
+      }
     
       useEffect(() => {
         socket.on("userJoined", (data) => {
           addNewChannelToList(data.channel);
         });
-        socket.on("", (data) => {
-          addNewChannelToList(data.channel);
-        });
+        // socket.on("addAdmin", (data) => {
+        //   addNewChannelToList(data.channel);
+        // });
         return (() => {
             socket.off("userJoined")
         })

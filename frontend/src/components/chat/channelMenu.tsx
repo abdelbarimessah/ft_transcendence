@@ -5,8 +5,8 @@ import { chatslistContext } from "../../app/(home)/chat/page";
 import { SocketContext } from "@/app/SocketContext";
 import { toast } from "sonner";
 import Link from "next/link";
-import Owner from "@/components/chat/ownerId"
-import RenderFromUser from "@/components/chat/RenderFromUser"
+import Owner from "@/components/chat/ownerId";
+import RenderFromUser from "@/components/chat/renderFromUser";
 
 axios.defaults.withCredentials = true;
 
@@ -264,22 +264,23 @@ export default function ChannelMenu() {
 
               </div>
             </div>
-    
-            <div  className="w-[370px] h-[60px] bg-[#FFF9F9] rounded-[22px] flex items-center justify-between px-5 hover:scale-[1.01] hover:opacity-95 cursor-pointer"
-                  onClick={handelLeaveChannel}>
-              <div className="flex items-center justify-center">
-                <span className="text-[#763232]">Exit Group</span>
-              </div>
-              <div className="w-[25px] h-[25px] relative flex items-center justify-center object-cover">
-                <Image
-                  src="../../../../assets/exitGroupChat.svg"
-                  alt="avatar"
-                  draggable={false}
-                  fill={true}
-                  priority={true}
-                >
-                </Image>
-              </div>
+          </div>
+
+          <div
+            className="w-[370px] h-[60px] bg-[#FFF9F9] rounded-[22px] flex items-center justify-between px-5 hover:scale-[1.01] hover:opacity-95 cursor-pointer"
+            onClick={handelLeaveChannel}
+          >
+            <div className="flex items-center justify-center">
+              <span className="text-[#763232]">Exit Group</span>
+            </div>
+            <div className="w-[25px] h-[25px] relative flex items-center justify-center object-cover">
+              <Image
+                src="../../../../assets/exitGroupChat.svg"
+                alt="avatar"
+                draggable={false}
+                fill={true}
+                priority={true}
+              />
             </div>
           </div>
         </div>
@@ -287,8 +288,8 @@ export default function ChannelMenu() {
     }
   }
 
-function User({avatar, nickName, firstName, lastName, admin, myId, ownerId, userId}) {
-
+function User({ avatar, nickName, firstName, lastName, admin, myId, ownerId, userId,}) 
+{
   const [showSettings, setShowSettings] = useState(false);
   const userRef = useRef<HTMLDivElement>(null);
   const zIndex = showSettings ? 'z-10' : 'z-0';
@@ -501,7 +502,6 @@ function TypeChannelName() {
   )
 }
 
-//http://localhost:3000/chat/channel/${channelId}/admin
 
 
 function UsersSettingsPoint({userId}) {

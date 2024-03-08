@@ -116,7 +116,7 @@ function Chat() {
 
 
       const addNewChannelToList = (channel :any) => {   
-        const exists = channelsList.some(item  => item.id === channel.id);
+        const exists = channelsList.some(item  => item.id === channel?.id);
         
         if (exists === false)
         {
@@ -135,16 +135,18 @@ function Chat() {
 
       const updateChannelList = (channelId) =>
       {
+        console.log("channel members", channelMembers);
         const newChannelList = channelsList.filter((channel) => {
           return channel?.id != channelId;
         })
-
+        
         setChannelsList(newChannelList);
         setChannelClicked([]);
       }
-
+      
       const removeUserFromMembers = (userId) =>
       {
+        console.log("channel members", channelMembers);
         const newChannelMember = channelMembers?.members.filter((member) =>{
           return member?.userId != userId;
         })
@@ -155,7 +157,7 @@ function Chat() {
 
       useEffect(() => {
         socket.on("userJoined", (data) => {
-          addNewChannelToList(data.channel);
+          addNewChannelToList(data.user.channel);
           updateMembers(data.user);
           console.log("data", data);
           
@@ -180,6 +182,18 @@ function Chat() {
         });
         
         socket.on("kickUser", (data) => { 
+          console.log('on event listner userkick: ', channelMembers);
+          if (myId.id === data.userId){
+            updateChannelList(data.channelId);
+          }
+          else{
+            removeUserFromMembers(data.userId);
+          }
+        });
+
+        socket.on("userLeft", (data) => {
+          console.log('on event listner usrleft: ', channelMembers);
+          
           if (myId.id === data.userId){
             updateChannelList(data.channelId);
           }
@@ -194,6 +208,7 @@ function Chat() {
             socket.off("kickUser")
             socket.off("muteUser")
             socket.off("banUser")
+            socket.off("userLeft")
         })
       }), [];
       

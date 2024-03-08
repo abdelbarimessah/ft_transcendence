@@ -62,7 +62,7 @@ export default function ChannelMenu() {
       {
           withCredentials: true,
       });
-      toast.message("You leave sucsesfouli hhh");
+      toast.message("You leave sucsesfouli ");
       }
       catch (error: any) {
           if (error.response && error.response.status === 400) {
@@ -262,12 +262,11 @@ export default function ChannelMenu() {
 
               </div>
             </div>
-          </div>
 
           <div
             className="w-[370px] h-[60px] bg-[#FFF9F9] rounded-[22px] flex items-center justify-between px-5 hover:scale-[1.01] hover:opacity-95 cursor-pointer"
             onClick={handelLeaveChannel}
-          >
+            >
             <div className="flex items-center justify-center">
               <span className="text-[#763232]">Exit Group</span>
             </div>
@@ -278,7 +277,8 @@ export default function ChannelMenu() {
                 draggable={false}
                 fill={true}
                 priority={true}
-              />
+                />
+            </div>
             </div>
           </div>
         </div>

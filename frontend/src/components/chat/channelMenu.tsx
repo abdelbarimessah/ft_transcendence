@@ -62,9 +62,7 @@ export default function ChannelMenu() {
       {
           withCredentials: true,
       });
-      console.log("bankResponse.data =", bankResponse.data);
-      
-      // toast.message(bankResponse.data);
+      toast.message("You leave sucsesfouli hhh");
       }
       catch (error: any) {
           if (error.response && error.response.status === 400) {
@@ -514,17 +512,18 @@ function TypeChannelName() {
 function UsersSettingsPoint({userId}) {
   
   const userData = useContext(chatslistContext);
-  
+
   const handelAddAdmin = async() =>{      
-          
-    try{
-      const addAdminResponse = await axios.post(`http://localhost:3000/chat/channel/${userData.channelClicked.id}/admin`,
-      {
-        userId: userId
-      },
-      {
+      // console.log("at handelAddAdmin channelMembers  ==", userData.channelMembers);
+      try{
+        const addAdminResponse = await axios.post(`http://localhost:3000/chat/channel/${userData.channelClicked.id}/admin`,
+        {
+          userId: userId
+        },
+        {
           withCredentials: true,
-      });
+        });
+        console.log("addAdminResponse at handelAddAdmin ==", addAdminResponse);
       toast.message(addAdminResponse.data.message);
       }
       catch (error: any) {

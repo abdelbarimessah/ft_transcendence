@@ -9,8 +9,8 @@ import { log } from 'console';
 import { toast } from 'sonner';
 import ChannelOption from '@/components/chat/channelOption';
 import EnterPassword from '@/components/chat/enterPassword';
-import InviteFriendListe from '@/components/chat/InviteFriendListe';
-import InviteFriend from '@/components/chat/InviteFriend';
+import InviteFriendListe from '@/components/chat/inviteFriendListe';
+import InviteFriend from '@/components/chat/inviteFriend';
 import FriendMenu from '@/components/chat/friendMenu';
 
 
@@ -115,9 +115,6 @@ function Chat() {
       }, [channelClicked]);
 
 
-
-
-
       const addNewChannelToList = (channel :any) => {   
         const exists = channelsList.some(item  => item.id === channel.id);
         
@@ -127,27 +124,76 @@ function Chat() {
           setChannelsList(newChannelToAdd);
         }
       }
-      
-      
-      const updateMembers = (channel :any) => {   
-        const newMembers = channelMembers.members.map()
 
-        if (exists === false)
-        {
-          const newChannelToAdd = [...channelsList, channel];
-          setChannelsList(newChannelToAdd);
-        }
+      const updateMembers = (updatedMember :any) => {
+        const userMembers = channelMembers?.members?.map((member) => {
+          return member.userId === updatedMember?.userId ? {...member, ...updatedMember} : member
+        })
+        const newUpdate = {...channelMembers, members:userMembers};
+        setChannelMembers(newUpdate);        
       }
-    
+
+      const updateChannelList = (channelId) =>
+      {
+        const newChannelList = channelsList.filter((channel) => {
+          return channel?.id != channelId;
+        })
+
+        setChannelsList(newChannelList);
+        setChannelClicked([]);
+      }
+
+      const removeUserFromMembers = (userId) =>
+      {
+        const newChannelMember = channelMembers?.members.filter((member) =>{
+          return member?.userId != userId;
+        })
+        const newUpdate = {...channelMembers, members:newChannelMember};
+        setChannelMembers(newUpdate);
+      }
+
+
       useEffect(() => {
         socket.on("userJoined", (data) => {
           addNewChannelToList(data.channel);
+          updateMembers(data.user);
+          console.log("data", data);
+          
         });
-        // socket.on("addAdmin", (data) => {
-        //   addNewChannelToList(data.channel);
-        // });
+        socket.on("addAdmin", (data) => {
+          console.log("add admin data", data);
+          
+          updateMembers(data.user);
+        });
+        socket.on("muteUser", (data) => {
+          updateMembers(data.user);
+          
+        });
+        socket.on("banUser", (data) => {
+          
+          if (myId.id === data.userId){
+            updateChannelList(data.channelId);
+          }
+          else{
+            removeUserFromMembers(data.userId);
+          }
+        });
+        
+        socket.on("kickUser", (data) => { 
+          if (myId.id === data.userId){
+            updateChannelList(data.channelId);
+          }
+          else{
+            removeUserFromMembers(data.userId);
+          }
+        });
+
         return (() => {
             socket.off("userJoined")
+            socket.off("addAdmin")
+            socket.off("kickUser")
+            socket.off("muteUser")
+            socket.off("banUser")
         })
       }), [];
       

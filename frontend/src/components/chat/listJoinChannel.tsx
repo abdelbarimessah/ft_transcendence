@@ -20,7 +20,7 @@ function ChannelsToJoin ({channelToJoin}: any) {
     }
 
     const addChannelToList = async(channelToJoin) => {
-        
+
         console.log("UserData.channelToJoin = >", channelToJoin.id);
         try {
             const joinResponse = await axios.post(

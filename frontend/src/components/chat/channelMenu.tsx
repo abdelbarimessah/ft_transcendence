@@ -13,6 +13,7 @@ axios.defaults.withCredentials = true;
 export default function ChannelMenu() {
   const userData: any = useContext(chatslistContext);
 
+  console.log("channel clicked == ", userData.channelClicked);
   const [settingModal, setSettingModal] = useState(false);
   const [passwordState, setPasswordState] = useState(false);
   const [changeChannelNameState, setChangeChannelNameState] = useState(false);
@@ -44,10 +45,15 @@ export default function ChannelMenu() {
       }
     }
   };
+  let amdinId: string = "";
+  const myStatus: string = userData.channelMembers?.members?.map((member) => {
+    if (member.userId === userData.myId.id && member.isAdmin === true) {
+      return (amdinId = member.userId);
+    }
+  });
 
   useEffect(() => {
     if (userData.showChannelMenu === true) fetchChannelMembers();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData.channelClicked, userData.showChannelMenu]);
 
   const ownerId = userData.channelMembers.ownerId;
@@ -63,7 +69,7 @@ export default function ChannelMenu() {
           withCredentials: true,
         }
       );
-      toast.message("You leave sucsesfouli hhh");
+      toast.message("You leave sucsesfouli ");
     } catch (error: any) {
       if (error.response && error.response.status === 400) {
         toast.error(error.response.data.message);
@@ -71,7 +77,7 @@ export default function ChannelMenu() {
     }
   };
   //THIS ONE NEED TO BE FILL WITH ITS VALUES
-  // i would prefer the hole list of updated channels from back
+  // i would prefer the holw list of updated channels from back
   const handelChangeChannelSetting = async () => {
     try {
       const data: any = {};
@@ -88,7 +94,6 @@ export default function ChannelMenu() {
           withCredentials: true,
         }
       );
-
       toast.message("channel updated");
       userData.setShowChannelMenu(false);
       handleCloseSettingModal();
@@ -111,39 +116,41 @@ export default function ChannelMenu() {
     return (
       <div className="flex w-full flex-col  items-center justify-center relative bg-color-18">
         <div className="select-none h-[1077px] w-[422px] bg-color-0 flex items-center justify-between flex-col pt-[113px] pb-[19px] relative">
-          {!settingModal && (
-            <div
-              onClick={handleSettingsClick}
-              className="absolute w-[25px] h-[27px] flex items-center justify-center top-3 right-3 hover:scale-[1.03] cursor-pointer"
-            >
-              <Image
-                src="../../../../assets/settingIconChatGroup.svg"
-                alt="avatar"
-                draggable={false}
-                fill={true}
-                priority={true}
-                className="w-full h-full object-cover"
-              ></Image>
-            </div>
-          )}
-          {settingModal && (
-            <div
-              onClick={handleCloseSettingModal}
-              className="absolute w-[26px] h-[26px] flex items-center justify-center top-3 right-3 hover:scale-[1.03] cursor-pointer"
-            >
-              <Image
-                src="../../../../assets/closeSettingModal.svg"
-                alt="avatar"
-                draggable={false}
-                fill={true}
-                priority={true}
-                className="w-full h-full object-cover"
-              ></Image>
-            </div>
-          )}
+          {userData.channelClicked.ownerId === userData.myId.id &&
+            !settingModal && (
+              <div
+                onClick={handleSettingsClick}
+                className="absolute w-[25px] h-[27px] flex items-center justify-center top-3 right-3 hover:scale-[1.03] cursor-pointer"
+              >
+                <Image
+                  src="../../../../assets/settingIconChatGroup.svg"
+                  alt="avatar"
+                  draggable={false}
+                  fill={true}
+                  priority={true}
+                  className="w-full h-full object-cover"
+                ></Image>
+              </div>
+            )}
+          {userData.channelClicked.ownerId === userData.myId.id &&
+            settingModal && (
+              <div
+                onClick={handleCloseSettingModal}
+                className="absolute w-[26px] h-[26px] flex items-center justify-center top-3 right-3 hover:scale-[1.03] cursor-pointer"
+              >
+                <Image
+                  src="../../../../assets/closeSettingModal.svg"
+                  alt="avatar"
+                  draggable={false}
+                  fill={true}
+                  priority={true}
+                  className="w-full h-full object-cover"
+                ></Image>
+              </div>
+            )}
           <div className="w-full flex flex-col  items-center justify-center gap-[10px] relative">
             {!settingModal && (
-              <div className="flex flex-col items-center justify-center">
+              <div className="">
                 <div className="w-[156px] h-[156px] rounded-full bg-color-30 relative object-cover hover:scale-[1.01]">
                   {/* set channel avatar */}
                   <Image
@@ -199,7 +206,7 @@ export default function ChannelMenu() {
                 <div className="flex gap-[10px]">
                   {userData.channelClicked.type !== "PROTECTED" && (
                     <>
-                      <SetPassword
+                      <SetPassowrd
                         setPasswordState={setPasswordState}
                         passwordState={passwordState}
                         setCancelState={setCancelState}
@@ -223,7 +230,7 @@ export default function ChannelMenu() {
                   )}
                   {userData.channelClicked.type === "PROTECTED" && (
                     <>
-                      <SetPassword
+                      <SetPassowrd
                         setPasswordState={setPasswordState}
                         passwordState={passwordState}
                         setCancelState={setCancelState}
@@ -275,7 +282,7 @@ export default function ChannelMenu() {
               </div>
 
               <div className="Chat_members_tab w-full h-[473px] flex items-center py-3 overflow-y-auto gap-1 flex-col  no-scrollbar overflow-hidden bg-color-6 rounded-[10px]">
-                {userData.channelMembers?.members?.map((members: any) =>
+                {userData.channelMembers?.members?.map((members) =>
                   members.user.id === ownerId ? (
                     <Owner
                       key={members.user.id}
@@ -298,29 +305,31 @@ export default function ChannelMenu() {
                       admin={members.isAdmin}
                       ownerId={ownerId}
                       userId={members.user.id}
+                      isMuted={members.isMuted}
+                      amdinId={amdinId}
                     />
                   )
                 )}
               </div>
             </div>
           </div>
-        </div>
 
-        <div
-          className="w-[370px] h-[60px] bg-[#FFF9F9] rounded-[22px] flex items-center justify-between px-5 hover:scale-[1.01] hover:opacity-95 cursor-pointer"
-          onClick={handelLeaveChannel}
-        >
-          <div className="flex items-center justify-center">
-            <span className="text-[#763232]">Exit Group</span>
-          </div>
-          <div className="w-[25px] h-[25px] relative flex items-center justify-center object-cover">
-            <Image
-              src="../../../../assets/exitGroupChat.svg"
-              alt="avatar"
-              draggable={false}
-              fill={true}
-              priority={true}
-            />
+          <div
+            className="w-[370px] h-[60px] bg-[#FFF9F9] rounded-[22px] flex items-center justify-between px-5 hover:scale-[1.01] hover:opacity-95 cursor-pointer"
+            onClick={handelLeaveChannel}
+          >
+            <div className="flex items-center justify-center">
+              <span className="text-[#763232]">Exit Group</span>
+            </div>
+            <div className="w-[25px] h-[25px] relative flex items-center justify-center object-cover">
+              <Image
+                src="../../../../assets/exitGroupChat.svg"
+                alt="avatar"
+                draggable={false}
+                fill={true}
+                priority={true}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -337,7 +346,9 @@ function User({
   myId,
   ownerId,
   userId,
-}: any) {
+  isMuted,
+  amdinId,
+}) {
   const [showSettings, setShowSettings] = useState(false);
   const userRef = useRef<HTMLDivElement>(null);
   const zIndex = showSettings ? "z-10" : "z-0";
@@ -367,7 +378,9 @@ function User({
         admin={admin}
       />
     );
-  } else if (admin === true || myId === ownerId) {
+  } else if (myId === amdinId) {
+    console.log("here here");
+
     return (
       <div
         ref={userRef}
@@ -417,10 +430,13 @@ function User({
             ></Image>
           </div>
         </div>
-        {showSettings && <UsersSettingsPoint userId={userId} />}
+        {showSettings && (
+          <UsersSettingsPoint userId={userId} isMuted={isMuted} />
+        )}
       </div>
     );
   } else {
+    console.log("isAdmin == ", admin);
     return (
       <RenderFromUser
         avatar={avatar}
@@ -435,7 +451,7 @@ function User({
   }
 }
 
-function SetPassword(props: any) {
+function SetPassowrd(props: any) {
   return (
     !props.passwordState && (
       <div
@@ -467,9 +483,9 @@ function TypePassword({ setPass }: any) {
   return (
     <div className="w-[178px] h-[45px] bg-color-32 gap-4 rounded-[16px] flex items-center justify-center cursor-pointer  hover:scale-[1.01] hover:opacity-95">
       <input
-        onChange={(e) => {
-          setPass(e.target.value);
-        }}
+      onChange={(e) => {
+        setPass(e.target.value);
+      }}
         type="text"
         placeholder="password..."
         className="placeholder-color-31 px-3 h-full bg-color-32 tracking-wider placeholder:font-medium font-poppins font-[400] rounded-[16px] text-color-31 text-[16px] w-full focus:outline-none"
@@ -481,20 +497,33 @@ function TypePassword({ setPass }: any) {
 function SetPublic() {
   const userData: any = useContext(chatslistContext);
   const handleSetPublic = async () => {
-    const newSettingResponse = await axios
-      .patch(
-        `http://localhost:3000/chat/channel/${userData.channelClicked.id}`,
-        {
-          type: "PUBLIC",
-        },
-        {
-          withCredentials: true,
-        }
-      )
-      .then((res) => {
-        userData.setShowChannelMenu(false);
-      })
-      .catch((error) => {});
+    try {
+
+      const newSettingResponse = await axios
+        .patch(
+          `http://localhost:3000/chat/channel/${userData.channelClicked.id}`,
+          {
+            type: "PUBLIC",
+          },
+          {
+            withCredentials: true,
+          }
+        )
+        
+          const newChannelList = userData.channelsList.map((channel: any) =>
+          channel.id === newSettingResponse.data.id
+            ? newSettingResponse.data
+            : channel
+        );
+        userData.setChannelsList(newChannelList);
+        userData.setChannelClicked(newSettingResponse.data);
+          userData.setShowChannelMenu(false);
+    }
+    catch(error: any){
+      if (error.response) {
+        toast.error(error.response.data.message);
+      }
+    };
   };
   return (
     <div
@@ -520,21 +549,35 @@ function SetPublic() {
 function SetPrivate() {
   const userData: any = useContext(chatslistContext);
   const handleSetPrivate = async () => {
-    const newSettingResponse = await axios
-      .patch(
-        `http://localhost:3000/chat/channel/${userData.channelClicked.id}`,
-        {
-          type: "PRIVATE",
-        },
-        {
-          withCredentials: true,
-        }
-      )
-      .then((res) => {
-        userData.setShowChannelMenu(false);
-      })
-      .catch((error) => {});
+    try {
+
+      const newSettingResponse = await axios
+        .patch(
+          `http://localhost:3000/chat/channel/${userData.channelClicked.id}`,
+          {
+            type: "PRIVATE",
+          },
+          {
+            withCredentials: true,
+          }
+        )
+        
+          const newChannelList = userData.channelsList.map((channel: any) =>
+          channel.id === newSettingResponse.data.id
+            ? newSettingResponse.data
+            : channel
+        );
+        userData.setChannelsList(newChannelList);
+        userData.setChannelClicked(newSettingResponse.data);
+          userData.setShowChannelMenu(false);
+    }
+    catch(error: any){
+      if (error.response) {
+        toast.error(error.response.data.message);
+      }
+    };
   };
+
   return (
     <div
       onClick={handleSetPrivate}
@@ -598,9 +641,8 @@ function TypeChannelName({ setName }: any) {
   );
 }
 
-function UsersSettingsPoint({ userId }: any) {
-  const userData = useContext(chatslistContext);
-
+function UsersSettingsPoint({ userId, isMuted }) {
+  const userData: any = useContext(chatslistContext);
   const handelAddAdmin = async () => {
     // console.log("at handelAddAdmin channelMembers  ==", userData.channelMembers);
     try {
@@ -613,6 +655,7 @@ function UsersSettingsPoint({ userId }: any) {
           withCredentials: true,
         }
       );
+      console.log("addAdminResponse at handelAddAdmin ==", addAdminResponse);
       toast.message(addAdminResponse.data.message);
     } catch (error: any) {
       if (error.response && error.response.status === 400) {
@@ -632,6 +675,29 @@ function UsersSettingsPoint({ userId }: any) {
           withCredentials: true,
         }
       );
+      console.log("MuteResponse.data =", muteResponse.data);
+      userData.setIsMuted("Unmute");
+      // toast.message(muteResponse.data);
+    } catch (error: any) {
+      if (error.response && error.response.status === 400) {
+        toast.error(error.response.data.message);
+      }
+    }
+  };
+
+  const handelUnMute = async () => {
+    try {
+      const muteResponse = await axios.post(
+        `http://localhost:3000/chat/channel/${userData.channelClicked.id}/unmute`,
+        {
+          userId: userId,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      userData.setIsMuted("Mute");
+      console.log("unMuteResponse.data =", muteResponse.data);
 
       // toast.message(muteResponse.data);
     } catch (error: any) {
@@ -652,6 +718,7 @@ function UsersSettingsPoint({ userId }: any) {
           withCredentials: true,
         }
       );
+      console.log("kickResponse.data =", kickResponse.data);
 
       // toast.message(kickResponse.data);
     } catch (error: any) {
@@ -660,7 +727,7 @@ function UsersSettingsPoint({ userId }: any) {
       }
     }
   };
-
+  /* ban is not working cuzing server to get down   */
   const handelBan = async () => {
     try {
       const bankResponse = await axios.post(
@@ -672,6 +739,7 @@ function UsersSettingsPoint({ userId }: any) {
           withCredentials: true,
         }
       );
+      console.log("bankResponse.data =", bankResponse.data);
 
       // toast.message(bankResponse.data);
     } catch (error: any) {
@@ -683,30 +751,50 @@ function UsersSettingsPoint({ userId }: any) {
 
   return (
     <div className="h-[160px] w-[160px] bg-color-31 rounded-b-[9px] rounded-tl-[9px] flex flex-col items-center justify-center overflow-hidden gap-[3px] absolute top-5 right-14 z-[1000]">
-      <div className="h-[27px] w-[135px] bg-color-0 rounded-[6px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
-        <span className="text-color-31 text-[13px]" onClick={handelAddAdmin}>
-          Make Admin
-        </span>
+      <div
+        className="h-[27px] w-[135px] bg-color-0 rounded-[6px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer"
+        onClick={handelAddAdmin}
+      >
+        <span className="text-color-31 text-[13px]">Make Admin</span>
       </div>
       <div className="h-[27px] w-[135px] bg-color-0 rounded-[6px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
         <span className="text-color-31 text-[13px]" onClick={undefined}>
           Play With
         </span>
       </div>
-      <div className="h-[27px] w-[135px] bg-color-0 rounded-[6px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
-        <span className="text-color-31 text-[13px]" onClick={handelMute}>
-          Mute
-        </span>
+
+      {userData.isMuted === "Mute" ? (
+        <div
+          className="h-[27px] w-[135px] bg-color-0 rounded-[6px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer"
+          onClick={handelMute}
+        >
+          <span className="text-color-31 text-[13px]">
+            {" "}
+            tz{userData.isMuted}{" "}
+          </span>
+        </div>
+      ) : (
+        <div
+          className="h-[27px] w-[135px] bg-color-0 rounded-[6px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer"
+          onClick={handelUnMute}
+        >
+          <span className="text-color-31 text-[13px]">
+            tr {userData.isMuted}{" "}
+          </span>
+        </div>
+      )}
+
+      <div
+        className="h-[27px] w-[135px] bg-color-0 rounded-[6px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer"
+        onClick={handelKick}
+      >
+        <span className="text-color-31 text-[13px]">Kick</span>
       </div>
-      <div className="h-[27px] w-[135px] bg-color-0 rounded-[6px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
-        <span className="text-color-31 text-[13px]" onClick={handelKick}>
-          Kick
-        </span>
-      </div>
-      <div className="h-[27px] w-[135px] bg-color-0 rounded-[6px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
-        <span className="text-color-31 text-[13px]" onClick={handelBan}>
-          Ban
-        </span>
+      <div
+        className="h-[27px] w-[135px] bg-color-0 rounded-[6px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer"
+        onClick={handelBan}
+      >
+        <span className="text-color-31 text-[13px]">Ban</span>
       </div>
 
       {/* to-do request play game */}
@@ -716,7 +804,7 @@ function UsersSettingsPoint({ userId }: any) {
 
 export {
   User,
-  SetPassword,
+  SetPassowrd,
   SetPublic,
   SetPrivate,
   TypePassword,

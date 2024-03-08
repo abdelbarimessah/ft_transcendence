@@ -8,12 +8,11 @@ function FriendConversation(){
     const UserData: any = useContext(chatslistContext);
     
     const handelAddNewConversation = () => {
-        
+        UserData.setShowNewFriendsList(true);
     }
 
     if (UserData.whatIcon == "friend")
     {
-        
 
         return (
             <>
@@ -24,7 +23,7 @@ function FriendConversation(){
                     <Btns icon={"../../assets/addChannel.png"} onClick={undefined} />
 
                 </div>
-                    <div className='felx  flex-col justify-between items-center cursor-pointer w-full h-[85px] px-3 hover:bg-[#e2eef6]'>
+                    <div className='flex flex-col no-scrollbar overflow-y-scroll h-full w-full  px-3'>
                          {UserData.friendsList.map((chat) => {								
                             return <Friend key={chat.id} chat={chat}/>;
                         })}

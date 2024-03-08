@@ -20,7 +20,7 @@ function Channels ({chat}: any) {
     }
 
     return(// felx  flex-col justify-between items-center cursor-pointer w-full  px-3 hover:bg-[#e2eef6]
-        <div    className=' flex justify-between items-center border-t-[2px] border-[#cdd7dd] p-3 min-h-[68px]'
+        <div    className=' flex justify-between items-center border-t-[2px] border-[#cdd7dd] p-3 min-h-[68px] cursor-pointer w-full h-[85px] px-3 hover:bg-[#e2eef6]'
         onClick={e  => {handelChahtConv(chat)}}>
 
                 <img    src="../../assets/friend_icon.png"

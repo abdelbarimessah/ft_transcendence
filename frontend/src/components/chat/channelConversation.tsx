@@ -13,7 +13,7 @@ function ChannelConversation(){
         try {
             const channelresponse = await axios.get('http://localhost:3000/chat/channel/all');
             UserData.setListChannelsToJoin(channelresponse.data);
-            
+
         } catch (error: any) {
             if (error.response && error.response.status === 400) {
                 // console.error("ERROR AT BEGIN: no channel found:", error.response.data);
@@ -44,7 +44,7 @@ function ChannelConversation(){
 
                 {console.log("here")}
                 
-                    <div className='flex flex-col no-scrollbar overflow-y-scroll  cursor-pointer h-full w-full  px-3'>
+                    <div className='flex flex-col no-scrollbar overflow-y-scroll h-full w-full  px-3'>
                          {UserData.channelsList.map((chat) => {						
                             return <Channels key={chat.id} chat={chat}/>;
                         })}

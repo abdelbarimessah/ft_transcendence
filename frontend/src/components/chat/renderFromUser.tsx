@@ -5,9 +5,9 @@ import axios from "axios";
 import { chatslistContext } from "../../app/(home)/chat/page";
 import { SocketContext } from "@/app/SocketContext";
 
-function RenderFromUser ({avatar, nickName, firstName, lastName, zIndex, userRef, admin})
+function RenderFromUser ({avatar, nickName, firstName, lastName, zIndex, userRef, admin, isMuted})
 {
-    
+
   return (
       <div ref={userRef} className={`Chat_owner h-[60px] w-[370px] bg-color-32 flex items-center justify-between rounded-[22px] pl-2 pr-10 flex-shrink-0  hover:scale-[1.01] relative ${zIndex}`}>
         <div className="flex items-center justify-center">

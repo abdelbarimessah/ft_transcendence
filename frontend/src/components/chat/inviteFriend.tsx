@@ -22,7 +22,7 @@ function InviteFriend() {
     {
         return(
             <>
-            <div className='bg-opacity-25 bg-black  flex justify-center items-center fixed w-screen h-screen'>
+            <div className='bg-opacity-25 bg-black z-10  flex justify-center items-center fixed w-screen h-screen'>
                 <div className='flex flex-col items-center w-[571px] h-[500px] bg-[#F3FAFF] rounded-[29px] border border-black'>
                 <button className='felx place-self-end text-[25px] p-2' onClick={() => {UserData.setShowInvite(false)}}> X </button>
 
@@ -32,7 +32,7 @@ function InviteFriend() {
                     
                         <div className='felx pt-5 flex-col justify-between items-center w-full h-[65px] px-3'>
                          {UserData.friendsList.map((chat:any) => {								
-                             return <InviteFriendListe key={chat.id} chat={chat}/>;
+                             return <InviteFriendListe key={chat.id} chat={chat} friendList={undefined}/>;
                             })}
                         </div>
                     </div>

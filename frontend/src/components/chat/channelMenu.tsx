@@ -98,11 +98,10 @@ export default function ChannelMenu() {
 
   if(userData.showChannelMenu === true)
   {
-    console.log("channel members === ", userData.channelMembers);
       return (
         <div className="flex w-full flex-col  items-center justify-center relative bg-color-18">
           <div className="select-none h-[1077px] w-[422px] bg-color-0 flex items-center justify-between flex-col pt-[113px] pb-[19px] relative" >
-            {!settingModal &&
+            {userData.channelClicked.ownerId === userData.myId.id &&  !settingModal &&
               <div onClick={handleSettingsClick} className="absolute w-[25px] h-[27px] flex items-center justify-center top-3 right-3 hover:scale-[1.03] cursor-pointer">
                 <Image
                   src="../../../../assets/settingIconChatGroup.svg"
@@ -115,7 +114,7 @@ export default function ChannelMenu() {
                 </Image>
               </div>
             }
-            {settingModal &&
+            {userData.channelClicked.ownerId === userData.myId.id && settingModal &&
               <div onClick={handleCloseSettingModal} className="absolute w-[26px] h-[26px] flex items-center justify-center top-3 right-3 hover:scale-[1.03] cursor-pointer">
                 <Image
                   src="../../../../assets/closeSettingModal.svg"
@@ -129,7 +128,7 @@ export default function ChannelMenu() {
               </div>
             }
             <div className="w-full flex flex-col  items-center justify-center gap-[10px] relative">
-              {!settingModal &&
+              {( !settingModal) &&
                 <div className="">
                   <div className="w-[156px] h-[156px] rounded-full bg-color-30 relative object-cover hover:scale-[1.01]">
                     {/* set channel avatar */}

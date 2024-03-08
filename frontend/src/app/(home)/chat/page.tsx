@@ -12,14 +12,17 @@ import EnterPassword from '@/components/chat/enterPassword';
 import InviteFriendListe from '@/components/chat/inviteFriendListe';
 import InviteFriend from '@/components/chat/inviteFriend';
 import FriendMenu from '@/components/chat/friendMenu';
+import ShowListNewFriend from '@/components/chat/showListNewFriend';
 
 
 
-export const chatslistContext = createContext();
+export const chatslistContext = createContext("");
 
 function Chat() {
 
     const [friendsList, setFriendsList] = useState([]);
+    const [newFriendsList, setNewFriendsList] = useState([]);
+    const [showNewFriendsList, setShowNewFriendsList] = useState(false);
     const [channelsList, setChannelsList] = useState([]);
     const [myId, setMyId] = useState([]);
     const [friendChatConversation, setFriendChatConversation] = useState([]);
@@ -39,6 +42,7 @@ function Chat() {
     const [showFriendMenu, setShowFriendMenu] = useState(false);
     const [showChannelMenu, setShowChannelMenu] = useState(false);
     const [channelMembers, setChannelMembers] = useState([]);
+    const [isMuted, setIsMuted] = useState("Mute");
     
 
     const fetchData = async () => {
@@ -51,7 +55,7 @@ function Chat() {
                 toast.error(error.response.data.message);
             }
         }
-        
+
         try{
           const channelresponse = await axios.get('http://localhost:3000/chat/channel');
           setChannelsList(channelresponse.data);
@@ -61,7 +65,19 @@ function Chat() {
           if (error.response && error.response.status === 400) {
               toast.error(error.response.data.message);
           }
-      }
+        }
+          try{
+          const NewFriendsListResponse = await axios.get('http://localhost:3000/user/friends');
+          console.log("NewFriendsListResponse: -----", NewFriendsListResponse.data);
+          
+          setNewFriendsList(NewFriendsListResponse.data);
+          
+        }
+        catch (error: any) {
+          if (error.response && error.response.status === 400) {
+              toast.error(error.response.data.message);
+          }
+        }
         try{
           const myIdResponse = await axios.get('http://localhost:3000/user/me');
           setMyId(myIdResponse.data);
@@ -147,7 +163,7 @@ function Chat() {
       const removeUserFromMembers = (userId) =>
       {
         console.log("channel members", channelMembers);
-        const newChannelMember = channelMembers?.members.filter((member) =>{
+        const newChannelMember = channelMembers?.members?.filter((member) =>{
           return member?.userId != userId;
         })
         const newUpdate = {...channelMembers, members:newChannelMember};
@@ -220,10 +236,12 @@ function Chat() {
                                             setChannelChatConversation, channelClicked, setChannelClicked, listChannelsToJoin,
                                             setListChannelsToJoin, channelToJoin, setChannelToJoin, inputPassRef,
                                             needPassword, setNeedPassword, inputEnterPassRef, showInvite, setShowInvite, showFriendMenu,
-                                            setShowFriendMenu, showChannelMenu, setShowChannelMenu, channelMembers, setChannelMembers}}>
+                                            setShowFriendMenu, showChannelMenu, setShowChannelMenu, channelMembers, setChannelMembers,
+                                            isMuted, setIsMuted, newFriendsList, setNewFriendsList, showNewFriendsList, setShowNewFriendsList}}>
         <div className='relative flex justify-start chat-bp:justify-center items-center w-screen h-screen overflow-hidden '>
           
           <InviteFriend />
+          <ShowListNewFriend />
           <ChannelOption />
           <div className="flex justify-start chat-bp:justify-center items-center w-[1731px] h-[1080px] bg-[#FFFFFF] ">
 

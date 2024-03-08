@@ -35,21 +35,27 @@ export default function ChannelMenu() {
     try {
       const response = await axios.get(
         `http://localhost:3000/chat/channel/${userData.channelClicked.id}/members`
-      );
-      userData.setChannelMembers(response.data);
-    } catch (error: any) {
-      if (error.response && error.response.status === 400) {
-        toast.error(error.response.data.message);
+        );
+        userData.setChannelMembers(response.data);
+      } catch (error: any) {
+        if (error.response && error.response.status === 400) {
+          toast.error(error.response.data.message);
+        }
       }
-    }
-  };
-  console.log("channelMembers ==> ", userData.channelMembers);
+    };
+    let amdinId :string = "";
+    const myStatus:string = userData.channelMembers?.members?.map((member) => {
+       if (member.userId === userData.myId.id && member.isAdmin === true) 
+        {
+          return (amdinId = member.userId)
+        }
+    })
 
-  useEffect(() => {
-    if (userData.showChannelMenu === true)
+    useEffect(() => {
+      if (userData.showChannelMenu === true)
       fetchChannelMembers();        
   }, [userData.channelClicked, userData.showChannelMenu]);
-
+  
   const ownerId = userData.channelMembers.ownerId;
 
   
@@ -255,6 +261,8 @@ export default function ChannelMenu() {
                                                           admin={members.isAdmin}
                                                           ownerId={ownerId}
                                                           userId={members.user.id}
+                                                          isMuted={members.isMuted}
+                                                          amdinId={amdinId}
                                                         />
                     ))}
                 </div>
@@ -285,7 +293,7 @@ export default function ChannelMenu() {
     }
   }
 
-function User({ avatar, nickName, firstName, lastName, admin, myId, ownerId, userId,}) 
+function User({ avatar, nickName, firstName, lastName, admin, myId, ownerId, userId, isMuted, amdinId}) 
 {
   const [showSettings, setShowSettings] = useState(false);
   const userRef = useRef<HTMLDivElement>(null);
@@ -304,9 +312,8 @@ function User({ avatar, nickName, firstName, lastName, admin, myId, ownerId, use
     };
   }, []);
 
-  if(admin === true && userId === myId)
+  if((admin === true && userId === myId))
   {
-    console.log("first if");
     return (
       <RenderFromUser   
       avatar={avatar}
@@ -318,8 +325,10 @@ function User({ avatar, nickName, firstName, lastName, admin, myId, ownerId, use
       admin={admin}/>
       )
     }
-    else if (admin === true || myId === ownerId)
+    else if (myId === amdinId)
     {
+      console.log("here here");
+      
     return (
       <div ref={userRef} className={`Chat_owner h-[60px] w-[370px] bg-color-32 flex items-center justify-between rounded-[22px] pl-2 pr-10 flex-shrink-0  hover:scale-[1.01] relative ${zIndex}`}>
         <div className="flex items-center justify-center">
@@ -358,15 +367,17 @@ function User({ avatar, nickName, firstName, lastName, admin, myId, ownerId, use
             </Image>
           </div>
         </div>
-        {showSettings &&
-          <UsersSettingsPoint userId={userId}/>
+        {showSettings && 
+          <UsersSettingsPoint userId={userId}
+                              isMuted={isMuted}/>
         }
       </div>
     )
   }
   else
   {
-    console.log("here at else");
+
+    console.log("isAdmin == ", admin);
     return (
       <RenderFromUser   
                         avatar={avatar}
@@ -508,10 +519,9 @@ function TypeChannelName() {
 }
 
 
-function UsersSettingsPoint({userId}) {
+function UsersSettingsPoint({userId, isMuted}) {
   
-  const userData = useContext(chatslistContext);
-
+  const userData :any = useContext(chatslistContext);
   const handelAddAdmin = async() =>{      
       // console.log("at handelAddAdmin channelMembers  ==", userData.channelMembers);
       try{
@@ -533,7 +543,8 @@ function UsersSettingsPoint({userId}) {
   }
   
     
-  const handelMute = async() =>{      
+  const handelMute = async() =>{    
+
     try{
       const muteResponse = await axios.post(`http://localhost:3000/chat/channel/${userData.channelClicked.id}/mute`,
       {
@@ -542,7 +553,29 @@ function UsersSettingsPoint({userId}) {
       {
           withCredentials: true,
       });
-      console.log("muteResponse.data =", muteResponse.data);
+      console.log("MuteResponse.data =", muteResponse.data);
+      userData.setIsMuted("Unmute");
+      // toast.message(muteResponse.data);
+      }
+      catch (error: any) {
+          if (error.response && error.response.status === 400) {
+              toast.error(error.response.data.message);
+          }
+      }
+  }
+  
+  const handelUnMute = async() =>{  
+
+    try{
+      const muteResponse = await axios.post(`http://localhost:3000/chat/channel/${userData.channelClicked.id}/unmute`,
+      {
+        userId: userId
+      },
+      {
+        withCredentials: true,
+      });
+      userData.setIsMuted("Mute");
+      console.log("unMuteResponse.data =", muteResponse.data);
       
       // toast.message(muteResponse.data);
       }
@@ -598,20 +631,31 @@ function UsersSettingsPoint({userId}) {
 
   return (
     <div className="h-[160px] w-[160px] bg-color-31 rounded-b-[9px] rounded-tl-[9px] flex flex-col items-center justify-center overflow-hidden gap-[3px] absolute top-5 right-14 z-[1000]">
-      <div className="h-[27px] w-[135px] bg-color-0 rounded-[6px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
-        <span className="text-color-31 text-[13px]" onClick={handelAddAdmin}>Make Admin</span>
+      <div  className="h-[27px] w-[135px] bg-color-0 rounded-[6px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer"
+            onClick={handelAddAdmin}>
+        <span className="text-color-31 text-[13px]">Make Admin</span>
       </div>
       <div className="h-[27px] w-[135px] bg-color-0 rounded-[6px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
         <span className="text-color-31 text-[13px]" onClick={undefined}>Play With</span>
       </div>
-      <div className="h-[27px] w-[135px] bg-color-0 rounded-[6px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
-        <span className="text-color-31 text-[13px]" onClick={handelMute}>Mute</span>
+
+      {userData.isMuted === "Mute" ? 
+        <div  className="h-[27px] w-[135px] bg-color-0 rounded-[6px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer"
+              onClick={handelMute}>
+          <span className="text-color-31 text-[13px]"> tz{userData.isMuted} </span>
+        </div>
+        : <div  className="h-[27px] w-[135px] bg-color-0 rounded-[6px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer"
+                onClick={handelUnMute}>
+          <span className="text-color-31 text-[13px]">tr {userData.isMuted} </span>
+        </div>}
+      
+      <div  className="h-[27px] w-[135px] bg-color-0 rounded-[6px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer"
+             onClick={handelKick}>
+        <span className="text-color-31 text-[13px]">Kick</span>
       </div>
-      <div className="h-[27px] w-[135px] bg-color-0 rounded-[6px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
-        <span className="text-color-31 text-[13px]" onClick={handelKick}>Kick</span>
-      </div>
-      <div className="h-[27px] w-[135px] bg-color-0 rounded-[6px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer">
-        <span className="text-color-31 text-[13px]" onClick={handelBan}>Ban</span>
+      <div  className="h-[27px] w-[135px] bg-color-0 rounded-[6px] flex items-center justify-center hover:scale-[1.01] hover:opacity-95 cursor-pointer"
+            onClick={handelBan}>
+        <span className="text-color-31 text-[13px]" >Ban</span>
       </div>
       
       {/* to-do request play game */}

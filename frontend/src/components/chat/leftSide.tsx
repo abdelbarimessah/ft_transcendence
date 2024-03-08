@@ -31,9 +31,9 @@ function LeftSide() {
 				</Link>
 				{/* icons */}
 				<div className='flex justify-between items-center w-[146px]'>
-					<Btns icon={"../../assets/channel_icon.png"} onClick={() => { UserData.setWhatIcon('channel') }} />
+					<Btns icon={"../../assets/channel_icon.png"} onClick={() => { UserData.setWhatIcon('channel') ; UserData.setShowFriendMenu(false);UserData.setChatClicked([]) }} />
 					<img src="../../assets/separator_icon.png" alt="separator" />
-					<Btns icon={"../../assets/friend_icon.png"} onClick={() => { UserData.setWhatIcon('friend') }} />
+					<Btns icon={"../../assets/friend_icon.png"} onClick={() => { UserData.setWhatIcon('friend') ; UserData.setShowChannelMenu(false); UserData.setChannelClicked([]) }} />
 				</div>
 			</div>
 			{/* search bar */}

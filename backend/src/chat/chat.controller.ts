@@ -291,6 +291,7 @@ export class ChatController {
     @CurrentUser() user: User,
     @Body() targetId: userIdDto,
   ) {
+    console.log('in ban id:', targetId);
     const updatedMembership = await this.chatService.banMember(
       id,
       user.id,

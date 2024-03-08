@@ -39,6 +39,7 @@ function Chat() {
     const [showFriendMenu, setShowFriendMenu] = useState(false);
     const [showChannelMenu, setShowChannelMenu] = useState(false);
     const [channelMembers, setChannelMembers] = useState([]);
+    
 
     const fetchData = async () => {
       try {
@@ -126,13 +127,25 @@ function Chat() {
           setChannelsList(newChannelToAdd);
         }
       }
+      
+      
+      const updateMembers = (channel :any) => {   
+        const newMembers = channelMembers.members.map()
+
+        if (exists === false)
+        {
+          const newChannelToAdd = [...channelsList, channel];
+          setChannelsList(newChannelToAdd);
+        }
+      }
     
       useEffect(() => {
         socket.on("userJoined", (data) => {
           addNewChannelToList(data.channel);
-          console.log("channel == ", data.channel);
-          console.log("channelClicked == ", channelClicked);
         });
+        // socket.on("addAdmin", (data) => {
+        //   addNewChannelToList(data.channel);
+        // });
         return (() => {
             socket.off("userJoined")
         })

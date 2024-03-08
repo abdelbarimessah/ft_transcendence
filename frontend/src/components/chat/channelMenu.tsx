@@ -18,6 +18,8 @@ export default function ChannelMenu() {
   const [passwordState, setPasswordState] = useState(false);
   const [changeChannelNameState, setChangeChannelNameState] = useState(false);
   const [cancelState, setCancelState] = useState("hidden");
+  const [pass, setPass] = useState("");
+  const [name, setName] = useState("");
 
   const handleSettingsClick = () => {
     setSettingModal(true);
@@ -73,21 +75,31 @@ export default function ChannelMenu() {
   // i would prefer the holw list of updated channels from back
   const handelChangeChannelSetting = async () => {
     try {
+      const data: any = {};
+      if (name) data.name = name;
+      if (pass) {
+        data.pass = pass;
+        data.type = "PROTECTED";
+      }
       const newSettingResponse = await axios.patch(
         `http://localhost:3000/chat/channel/${userData.channelClicked.id}`,
-        {
-          name: "hello",
-          type: "PROTECTED",
-          password: "123",
-        },
+        data,
         {
           withCredentials: true,
         }
       );
-      console.log("newSettingResponse.data =", newSettingResponse.data);
-      console.log("channels = =", userData.channelsList);
 
-      // toast.message(newSettingResponse.data);
+      toast.message("channel updated");
+      userData.setShowChannelMenu(false);
+      handleCloseSettingModal();
+      handleCancelClick();
+      const newChannelList = userData.channelsList.map((channel: any) =>
+        channel.id === newSettingResponse.data.id
+          ? newSettingResponse.data
+          : channel
+      );
+      userData.setChannelsList(newChannelList);
+      userData.setChannelClicked(newSettingResponse.data);
     } catch (error: any) {
       if (error.response) {
         toast.error(error.response.data.message);
@@ -132,7 +144,7 @@ export default function ChannelMenu() {
           )}
           <div className="w-full flex flex-col  items-center justify-center gap-[10px] relative">
             {!settingModal && (
-              <div className="">
+              <div className="flex flex-col items-center justify-center">
                 <div className="w-[156px] h-[156px] rounded-full bg-color-30 relative object-cover hover:scale-[1.01]">
                   {/* set channel avatar */}
                   <Image
@@ -193,7 +205,7 @@ export default function ChannelMenu() {
                         passwordState={passwordState}
                         setCancelState={setCancelState}
                       />
-                      {passwordState && <TypePassword />}
+                      {passwordState && <TypePassword setPass={setPass} />}
                     </>
                   )}
                   {userData.channelClicked.type !== "PRIVATE" && <SetPrivate />}
@@ -207,27 +219,38 @@ export default function ChannelMenu() {
                     changeChannelNameState={changeChannelNameState}
                     setCancelState={setCancelState}
                   />
-                  {changeChannelNameState && <TypeChannelName />}
-                  <div className="flex items-center justify-center gap-2">
-                    <div
-                      onClick={handleCancelClick}
-                      className={` ${cancelState} h-[29px] w-[69px] bg-[#EBEBEB] rounded-[10px] items-center justify-center mt-[16px] cursor-pointer  hover:scale-[1.01] hover:opacity-95 `}
-                    >
-                      <div className="h-full w-full flex items-center justify-center">
-                        <span className="text-[12px] text-color-31">
-                          Cancel
-                        </span>
-                      </div>
+                  {changeChannelNameState && (
+                    <TypeChannelName setName={setName} />
+                  )}
+                  {userData.channelClicked.type === "PROTECTED" && (
+                    <>
+                      <SetPassword
+                        setPasswordState={setPasswordState}
+                        passwordState={passwordState}
+                        setCancelState={setCancelState}
+                      />
+                      {passwordState && <TypePassword setPass={setPass} />}
+                    </>
+                  )}
+                </div>
+                <div className="flex items-center justify-center gap-2">
+                  <div
+                    onClick={handleCancelClick}
+                    className={` ${cancelState} h-[29px] w-[69px] bg-[#EBEBEB] rounded-[10px] items-center justify-center mt-[16px] cursor-pointer  hover:scale-[1.01] hover:opacity-95 `}
+                  >
+                    <div className="h-full w-full flex items-center justify-center">
+                      <span className="text-[12px] text-color-31">
+                        {" "}
+                        Cancel{" "}
+                      </span>
                     </div>
+                  </div>
 
-                    {/* set the data collected */}
-
-                    <div
-                      className="h-[29px] w-[69px] bg-color-32 rounded-[10px] flex items-center justify-center mt-[16px] cursor-pointer  hover:scale-[1.01] hover:opacity-95"
-                      onClick={handelChangeChannelSetting}
-                    >
-                      <span className="text-[12px] text-color-31">Save</span>
-                    </div>
+                  <div
+                    className="h-[29px] w-[69px] bg-color-32 rounded-[10px] flex items-center justify-center mt-[16px] cursor-pointer  hover:scale-[1.01] hover:opacity-95"
+                    onClick={handelChangeChannelSetting}
+                  >
+                    <span className="text-[12px] text-color-31">Save</span>
                   </div>
                 </div>
                 <div className="w-full h-[2px] bg-color-30"></div>
@@ -253,7 +276,7 @@ export default function ChannelMenu() {
               </div>
 
               <div className="Chat_members_tab w-full h-[473px] flex items-center py-3 overflow-y-auto gap-1 flex-col  no-scrollbar overflow-hidden bg-color-6 rounded-[10px]">
-                {userData.channelMembers?.members?.map((members) =>
+                {userData.channelMembers?.members?.map((members: any) =>
                   members.user.id === ownerId ? (
                     <Owner
                       key={members.user.id}
@@ -315,7 +338,7 @@ function User({
   myId,
   ownerId,
   userId,
-}) {
+}: any) {
   const [showSettings, setShowSettings] = useState(false);
   const userRef = useRef<HTMLDivElement>(null);
   const zIndex = showSettings ? "z-10" : "z-0";
@@ -443,11 +466,14 @@ function SetPassword(props: any) {
   );
 }
 
-function TypePassword() {
+function TypePassword({ setPass }: any) {
   return (
     <div className="w-[178px] h-[45px] bg-color-32 gap-4 rounded-[16px] flex items-center justify-center cursor-pointer  hover:scale-[1.01] hover:opacity-95">
       <input
-        type="search"
+        onChange={(e) => {
+          setPass(e.target.value);
+        }}
+        type="text"
         placeholder="password..."
         className="placeholder-color-31 px-3 h-full bg-color-32 tracking-wider placeholder:font-medium font-poppins font-[400] rounded-[16px] text-color-31 text-[16px] w-full focus:outline-none"
       />
@@ -456,8 +482,30 @@ function TypePassword() {
 }
 
 function SetPublic() {
+  const userData: any = useContext(chatslistContext);
+  const handleSetPublic = async () => {
+    const newSettingResponse = await axios
+      .patch(
+        `http://localhost:3000/chat/channel/${userData.channelClicked.id}`,
+        {
+          type: "PUBLIC",
+        },
+        {
+          withCredentials: true,
+        }
+      )
+      .then((res) => {
+        userData.setShowChannelMenu(false);
+      })
+      .catch((error) => {
+        console.error(error.response.data);
+      });
+  };
   return (
-    <div className="w-[178px] h-[45px] bg-color-31 gap-4 rounded-[16px] flex items-center justify-center cursor-pointer  hover:scale-[1.01] hover:opacity-95">
+    <div
+      onClick={handleSetPublic}
+      className="w-[178px] h-[45px] bg-color-31 gap-4 rounded-[16px] flex items-center justify-center cursor-pointer  hover:scale-[1.01] hover:opacity-95"
+    >
       <div className="relative h-[20px] w-[17px] object-cover cursor-pointer hover:scale-[1.02] ">
         <Image
           src="../../../../assets/setPublicIcon.svg"
@@ -475,10 +523,25 @@ function SetPublic() {
   );
 }
 function SetPrivate() {
-  const handleSetPrivate = () => {
-    console.log("handle the set the of the channel protected");
+  const userData: any = useContext(chatslistContext);
+  const handleSetPrivate = async () => {
+    const newSettingResponse = await axios
+      .patch(
+        `http://localhost:3000/chat/channel/${userData.channelClicked.id}`,
+        {
+          type: "PRIVATE",
+        },
+        {
+          withCredentials: true,
+        }
+      )
+      .then((res) => {
+        userData.setShowChannelMenu(false);
+      })
+      .catch((error) => {
+        console.error(error.response.data);
+      });
   };
-
   return (
     <div
       onClick={handleSetPrivate}
@@ -529,12 +592,12 @@ function SetChannelName(props: any) {
   );
 }
 
-function TypeChannelName() {
+function TypeChannelName({ setName }: any) {
   return (
     <div className="w-[178px] h-[45px] bg-color-32 gap-4 rounded-[16px] flex items-center justify-center cursor-pointer  hover:scale-[1.01] hover:opacity-95">
       <input
+        onChange={(e) => setName(e.target.value)}
         type="text"
-        defaultValue="leet Chess"
         placeholder="Leet Chess"
         className="placeholder-color-31 px-3 h-full bg-color-32 tracking-wider placeholder:font-medium font-poppins font-[400] rounded-[16px] text-color-31 text-[16px] w-full focus:outline-none"
       />
@@ -542,7 +605,7 @@ function TypeChannelName() {
   );
 }
 
-function UsersSettingsPoint({ userId }) {
+function UsersSettingsPoint({ userId }: any) {
   const userData = useContext(chatslistContext);
 
   const handelAddAdmin = async () => {

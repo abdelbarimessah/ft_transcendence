@@ -148,12 +148,10 @@ export class ChatController {
     @Body() data: createChannelDto,
     @CurrentUser() user: User,
   ) {
-    console.log('here in create channel');
     const userId = user.id;
     try {
       const channel = await this.chatService.createChannel(data, userId);
       this.chatGateway.joinRoom(userId, channel.id);
-      console.log('the created channel:', channel);
       delete channel.password;
       return channel;
     } catch (err) {
@@ -223,8 +221,6 @@ export class ChatController {
     @Param('id') channelId: string,
     @CurrentUser() user: User,
   ) {
-    console.log('you left');
-
     await this.chatService.leaveChannel(channelId, user.id);
     this.chatGateway.userLeft(channelId, user.id);
     this.chatGateway.leaveRoom(user.id, channelId);
@@ -297,7 +293,6 @@ export class ChatController {
     @CurrentUser() user: User,
     @Body() targetId: userIdDto,
   ) {
-    console.log('in ban id:', targetId);
     const updatedMembership = await this.chatService.banMember(
       id,
       user.id,
@@ -322,8 +317,6 @@ export class ChatController {
 
   @Get('channel/:id/members')
   async getChannelMembers(@Param('id') channelId, @CurrentUser() user: User) {
-    console.log('you got membets');
-    
     const members = await this.chatService.getChannelMembers(
       channelId,
       user.id,

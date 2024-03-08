@@ -67,22 +67,24 @@ export class UserGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('customLogout')
   async handleCustomLogout(socket: Socket) {
-    console.log('cusotom logout in the usergateway [3232]', { socketId: socket.id });
     const userId = socket.data.user.providerId;
-    this.server.socketsLeave(`User-${userId}`)
+    this.server.socketsLeave(`User-${userId}`);
     const sockets = await this.server.in(`User-${userId}`).fetchSockets();
-    console.log('the socket lenght of the logout is ', {lenght :sockets.length});
-    
+
     if (sockets.length === 0) {
-      console.log('customo logout send to all the users' , {userId});
-      this.server.emit('User-status', { status: 'offline', providerId: userId })
+      this.server.emit('User-status', {
+        status: 'offline',
+        providerId: userId,
+      });
     }
   }
 
   @SubscribeMessage('User-status')
   async handleUserStatus(socket: Socket, data: any) {
-    this.server.emit('User-status', { status: data.status, providerId: data.providerId })
-
+    this.server.emit('User-status', {
+      status: data.status,
+      providerId: data.providerId,
+    });
   }
 
   @SubscribeMessage('updateInfo')

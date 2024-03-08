@@ -21,9 +21,9 @@ export class NotificationGateway {
     private appService: AppService,
   ) {}
   @SubscribeMessage('notification')
-  async readNotification(client: any, payload: any) {
+  async readNotification(client: any) {
     const userId = this.appService.getUserIdFromSocketId(client.id);
-    console.log(payload);
+
     const notificationUpdate = await this.prismaService.notification.updateMany(
       {
         where: {

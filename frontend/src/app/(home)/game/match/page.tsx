@@ -38,13 +38,30 @@ export default function Home() {
 
   const params = useSearchParams();
   const roomName: any = params.get("room");
+  // const roomName: any = 'gameCard-1';
+
+  // const [roomName, setRoomName] = useState('');
+  
+  // useEffect(() => {
+  //   if (typeof window !== 'undefined') {
+  //     console.log('enter to the window ///////');
+      
+  //     const path = window.location.pathname + window.location.search;
+  //     let paths  =path.split('/match')[1]
+  //     let room = paths.split('=')[1] 
+  //     setRoomName(room);
+  //   }
+  // });
+
+  // console.log('the room name is 22222', roomName);
+  
+
 
 
   useEffect(() => {
 
     socketClient.emit('checkRoom', { roomName });
     socketClient.on('youAreNotinRoom', (data) => {
-      
       route.push('/game');
     });
 

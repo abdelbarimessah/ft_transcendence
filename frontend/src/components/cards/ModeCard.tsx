@@ -81,7 +81,7 @@ function ModeCard(me: any) {
     useEffect(() => {
         const enterRoom = (data: any) => {
             setRoomName(data.roomName);
-            if(!me) return;
+            if(!me || !me.me) return;
             if (data.player1.providerId === me.me.providerId) {
                 setPlayer1(data.player1);
                 setPlayer2(data.player2);

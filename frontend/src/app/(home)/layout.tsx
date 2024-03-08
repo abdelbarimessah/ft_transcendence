@@ -22,7 +22,7 @@ export default function RootLayout({
   const [win, setWin] = useState(false);
   const [lose, setLose] = useState(false);
 
-  
+
   useEffect(() => {
     const enterRoom = (data: any) => {
       setGameEnded(true);
@@ -43,7 +43,7 @@ export default function RootLayout({
         .post(`${process.env.NEXT_PUBLIC_API_URL}/game/gameData`, gameData, {
           withCredentials: true,
         })
-        .then((res) => {})
+        .then((res) => { })
         .catch((err) => {
           console.error(err.message);
         });
@@ -73,7 +73,7 @@ export default function RootLayout({
         gameName: data.roomName,
         gameType: "randomMode",
       };
-      setLose(true);
+      setWin(true);
 
       try {
         const url = process.env.NEXT_PUBLIC_API_URL;
@@ -120,13 +120,13 @@ export default function RootLayout({
         gameName: data.roomName,
         gameType: "randomMode",
       };
-      setWin(true);
+      setLose(true);
       toast.success("The other player left the game");
 
       try {
         const url = process.env.NEXT_PUBLIC_API_URL;
         await axios.post(`${url}/game/gameData`, gameData);
-      } catch (error:any) {
+      } catch (error: any) {
         console.error(error.message);
       }
       setTimeout(() => route.push("/game"), 3000);
@@ -135,7 +135,6 @@ export default function RootLayout({
       socketClient.off("OnePlayerLeaveTheRoom");
     };
   }, [socketClient]);
-
 
 
   return (
@@ -153,9 +152,10 @@ export default function RootLayout({
           </div>
         )}
         {lose && (
-          <div className=" w-[282px] h-[195px] bg-color-30 rounded-[22px] flex flex-col items-center justify-center absolute top-1/2 left-[50%] ml-[7´0px] transform -translate-x-1/2 -translate-y-1/2 z-[1000]">
+          <div className=" w-[282px] h-[195px] bg-color-30 rounded-[22px] flex flex-col items-center justify-center absolute top-1/2 left-[50%] ml-[70px] transform -translate-x-1/2 -translate-y-1/2 z-[1000]">
             <span className="font-nico-moji text-[64px] text-color-6">you</span>
             <span className="font-nico-moji text-[64px] text-color-6 -mt-7">
+              {" "}
               lose
             </span>
           </div>

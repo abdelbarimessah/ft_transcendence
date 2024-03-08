@@ -260,18 +260,15 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (this.playerScore.get(socket.id) < 5) {
       const initialVelocityX = Math.random() * 600 + 200;
       const initialVelocityY = Math.random() * 600 + 200;
-      const rand = Math.random() % 2 > 1/2 ? -1 : 1;
-      console.log('the random direction of the ball : .....' , {rand});
       
-      // setTimeout(() => {
+      setTimeout(() => {
         this.server.in(roomName).emit('bothInRoom', {
           roomName: roomName,
           initialVelocityX: initialVelocityX ,
           initialVelocityY: initialVelocityY,
         });
-      // }, 2000);
+      }, 2500);
       this.server.in(roomName).emit('goalScored', { score: this.playerScore.get(socket.id), player: data.wishPlayer })
-      console.log('goal scored in the server {{{{1111}}}}');
 
     } else if (this.playerScore.get(socket.id) == 5) {
       this.server.in(roomName).emit('goalScored', { score: this.playerScore.get(socket.id), player: data.wishPlayer })

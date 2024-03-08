@@ -85,37 +85,57 @@ export default function Game() {
   let [game, setGame] = useState<PhaserGame | null>(null);
   const params = useSearchParams();
   const roomName: any = params.get("room");
+
+
   const router = useRouter();
+  // const [roomName, setRoomName] = useState('');
+
+  // useEffect(() => {
+  //   if (typeof window !== 'undefined') {
+  //     const path = window.location.pathname + window.location.search;
+  //     let paths = path.split('/match')[1]
+  //     let room = paths.split('=')[1]
+  //     setRoomName(room);
+  //   }
+  // });
+  
+  // console.log('room name int the game is [3333333]', roomName);
+  
+
 
   useEffect(() => {
-    if (!parentEl.current) return;
+    // if (roomName != '') {
+      console.log('romm name is [444444]', roomName);
+      
+      if (!parentEl.current) return;
 
-    const gameConfig: Phaser.Types.Core.GameConfig = {
-      type: Phaser.CANVAS,
-      width: 900,
-      height: 600,
-      physics: {
-        default: 'arcade',
-        arcade: {
-          gravity: { y: 0 },
-          fps: 120,
-        }
-      },
-      scale: {
-        mode: Phaser.Scale.FIT,
+      const gameConfig: Phaser.Types.Core.GameConfig = {
+        type: Phaser.CANVAS,
         width: 900,
-        height: 600
-      },
-      scene: [new pongGame(socketClient, roomName)]
-    };
+        height: 600,
+        physics: {
+          default: 'arcade',
+          arcade: {
+            gravity: { y: 0 },
+            fps: 120,
+          }
+        },
+        scale: {
+          mode: Phaser.Scale.FIT,
+          width: 900,
+          height: 600
+        },
+        scene: [new pongGame(socketClient, roomName)]
+      };
 
-    const newGame = new PhaserGame({ ...gameConfig, parent: parentEl.current, width: parentEl.current.offsetWidth, height: parentEl.current.offsetHeight });
-    setGame(newGame);
+      const newGame = new PhaserGame({ ...gameConfig, parent: parentEl.current, width: parentEl.current.offsetWidth, height: parentEl.current.offsetHeight });
+      setGame(newGame);
 
-    return () => {
-      newGame?.destroy(true);
-      console.log("🐲 DESTROY 🐲");
-    };
+      return () => {
+        newGame?.destroy(true);
+        console.log("🐲 DESTROY 🐲");
+      };
+    // }
 
   }, []);
 
@@ -128,7 +148,7 @@ export default function Game() {
         // alert('you left the game')
         toast.error('You left the game Page !')
         router.push('/game')
-        
+
         game?.pause();
       } else {
         console.log('resume the game [222222]');
@@ -136,14 +156,14 @@ export default function Game() {
         game?.resume();
       }
     };
-  
+
     document.addEventListener('visibilitychange', handleVisibilityChange);
-  
+
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [game]);
-  
+
 
   useEffect(() => {
     const handlePlayerLeave = () => {

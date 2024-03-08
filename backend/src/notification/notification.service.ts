@@ -72,6 +72,8 @@ export class NotificationService {
     inviteNumber : number
   ) {
     
+    console.log('data in the services : ', userId, receiverId, inviteNumber);
+    
     const notification = await this.prismaService.notification.create({
       data: {
         type: 'GAME_INVITE',

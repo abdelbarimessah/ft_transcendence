@@ -21,7 +21,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private logger: Logger = new Logger('GameGateway');
   constructor(
     private gameService: GameService,
-    private notificationService : NotificationService
+    private notificationService: NotificationService
   ) { }
 
   @WebSocketServer()
@@ -106,7 +106,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const player2 = this.playerQueue.shift();
       console.log('the two player ids :1  ', player1.socket.data.user.providerId);
       console.log('the two player ids :2  ', player2.socket.data.user.providerId);
-      
+
       if (player1.socket.data.user.providerId === player2.socket.data.user.providerId) {
         this.playerQueue.push(player1);
         socket.emit('youAreInGameFromAntherPage');
@@ -149,6 +149,11 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       player2: null,
     });
     this.notificationService.gameNotification(data.sender.id, data.receiver.id, this.inviteNumber);
+    setTimeout(() => {
+      socket.emit('inviteCallback', data);
+      console.log('send the callBack ;;;;;;');
+    }, 3000)
+
     this.server.to(data.receiver.providerId).emit('playRequestFromFriend', {
       sender: data.sender,
       receiver: data.receiver,
@@ -161,13 +166,12 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log('the data  geted on the acceptInviteGame [8888888] : ', data);
     const roomName = `InviteRoom-${data.sender.providerId}-${data.receiver.providerId}-${data.inviteNumber}`;
     console.log(' the roomName is : ', roomName);
-    
+
     socket.join(roomName);
     const tmpData = this.roomSockets.get(roomName);
     if (tmpData) {
       tmpData.player2 = socket.data.user;
       this.roomSockets.set(roomName, tmpData);
-
     }
     
     this.server.in(roomName).emit('playersReadyInvite', { sender: data.sender, receiver: data.receiver, inviteNumber: data.inviteNumber });
@@ -202,7 +206,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         user: socket.data.user,
         oponent: sockets.player1,
       });
-      
+
     }
   }
 
@@ -217,6 +221,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     );
     const roomName = data.roomName;
     const sockets = this.roomSockets.get(roomName);
+    console.log('the OnePlayerLeaveTheRoom sent to the player ');
+
     this.server.to(data.roomName).emit('OnePlayerLeaveTheRoom', {
       roomName: data.roomName,
       user: sockets.player1,
@@ -260,16 +266,16 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (this.playerScore.get(socket.id) < 5) {
       const initialVelocityX = Math.random() * 600 + 200;
       const initialVelocityY = Math.random() * 600 + 200;
-      const rand = Math.random() % 2 > 1/2 ? -1 : 1;
-      console.log('the random direction of the ball : .....' , {rand});
-      
-      // setTimeout(() => {
+      const rand = Math.random() % 2 > 1 / 2 ? -1 : 1;
+      console.log('the random direction of the ball : .....', { rand });
+
+      setTimeout(() => {
         this.server.in(roomName).emit('bothInRoom', {
           roomName: roomName,
-          initialVelocityX: initialVelocityX ,
+          initialVelocityX: initialVelocityX,
           initialVelocityY: initialVelocityY,
         });
-      // }, 2000);
+      }, 2500);
       this.server.in(roomName).emit('goalScored', { score: this.playerScore.get(socket.id), player: data.wishPlayer })
       console.log('goal scored in the server {{{{1111}}}}');
 

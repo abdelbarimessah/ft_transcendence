@@ -13,7 +13,6 @@ axios.defaults.withCredentials = true;
 export default function ChannelMenu() {
   const userData: any = useContext(chatslistContext);
 
-  console.log("channel clicked == ", userData.channelClicked);
   const [settingModal, setSettingModal] = useState(false);
   const [passwordState, setPasswordState] = useState(false);
   const [changeChannelNameState, setChangeChannelNameState] = useState(false);
@@ -45,10 +44,10 @@ export default function ChannelMenu() {
       }
     }
   };
-  console.log("channelMembers ==> ", userData.channelMembers);
 
   useEffect(() => {
     if (userData.showChannelMenu === true) fetchChannelMembers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData.channelClicked, userData.showChannelMenu]);
 
   const ownerId = userData.channelMembers.ownerId;
@@ -72,13 +71,14 @@ export default function ChannelMenu() {
     }
   };
   //THIS ONE NEED TO BE FILL WITH ITS VALUES
-  // i would prefer the holw list of updated channels from back
+  // i would prefer the hole list of updated channels from back
   const handelChangeChannelSetting = async () => {
     try {
       const data: any = {};
       if (name) data.name = name;
       if (pass) {
-        data.pass = pass;
+        console.log("new pass", pass);
+        data.password = pass;
         data.type = "PROTECTED";
       }
       const newSettingResponse = await axios.patch(
@@ -108,7 +108,6 @@ export default function ChannelMenu() {
   };
 
   if (userData.showChannelMenu === true) {
-    console.log("channel members === ", userData.channelMembers);
     return (
       <div className="flex w-full flex-col  items-center justify-center relative bg-color-18">
         <div className="select-none h-[1077px] w-[422px] bg-color-0 flex items-center justify-between flex-col pt-[113px] pb-[19px] relative">
@@ -357,7 +356,6 @@ function User({
   }, []);
 
   if (admin === true && userId === myId) {
-    console.log("first if");
     return (
       <RenderFromUser
         avatar={avatar}
@@ -423,7 +421,6 @@ function User({
       </div>
     );
   } else {
-    console.log("here at else");
     return (
       <RenderFromUser
         avatar={avatar}
@@ -497,9 +494,7 @@ function SetPublic() {
       .then((res) => {
         userData.setShowChannelMenu(false);
       })
-      .catch((error) => {
-        console.error(error.response.data);
-      });
+      .catch((error) => {});
   };
   return (
     <div
@@ -538,9 +533,7 @@ function SetPrivate() {
       .then((res) => {
         userData.setShowChannelMenu(false);
       })
-      .catch((error) => {
-        console.error(error.response.data);
-      });
+      .catch((error) => {});
   };
   return (
     <div
@@ -620,7 +613,6 @@ function UsersSettingsPoint({ userId }: any) {
           withCredentials: true,
         }
       );
-      console.log("addAdminResponse at handelAddAdmin ==", addAdminResponse);
       toast.message(addAdminResponse.data.message);
     } catch (error: any) {
       if (error.response && error.response.status === 400) {
@@ -640,7 +632,6 @@ function UsersSettingsPoint({ userId }: any) {
           withCredentials: true,
         }
       );
-      console.log("muteResponse.data =", muteResponse.data);
 
       // toast.message(muteResponse.data);
     } catch (error: any) {
@@ -661,7 +652,6 @@ function UsersSettingsPoint({ userId }: any) {
           withCredentials: true,
         }
       );
-      console.log("kickResponse.data =", kickResponse.data);
 
       // toast.message(kickResponse.data);
     } catch (error: any) {
@@ -670,7 +660,7 @@ function UsersSettingsPoint({ userId }: any) {
       }
     }
   };
-  /* ban is not working cuzing server to get down   */
+
   const handelBan = async () => {
     try {
       const bankResponse = await axios.post(
@@ -682,7 +672,6 @@ function UsersSettingsPoint({ userId }: any) {
           withCredentials: true,
         }
       );
-      console.log("bankResponse.data =", bankResponse.data);
 
       // toast.message(bankResponse.data);
     } catch (error: any) {

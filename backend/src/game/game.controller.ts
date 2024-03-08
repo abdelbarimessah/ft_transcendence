@@ -29,7 +29,6 @@ export class GameController {
   @Get('matchHistory/:id')
   async handleMatchHistory(@Req() req: Request, @Param('id') id: string) {
     const result = await this.gameService.getMatchHistory(id);
-    console.log('the match history is', result);
 
     return result;
   }

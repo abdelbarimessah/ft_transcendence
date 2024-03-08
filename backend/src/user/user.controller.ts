@@ -10,6 +10,7 @@ import {
   Patch,
   Res,
   Query,
+  BadRequestException,
   // BadRequestException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -41,8 +42,7 @@ export class UsersController {
       if (user) {
         this.userService.uploadImage(user.avatar, user.providerId);
       } else {
-        console.log(`No user found`);
-        // throw new BadRequestException();
+        throw new BadRequestException('user not found');
       }
     } catch (error) {
       console.error('error', error);
@@ -151,11 +151,9 @@ export class UsersController {
   async findOne(@Param('id') id: string, @CurrentUser() user: any) {
     const { friendOf, ...rest } = await this.userService.getUserById(id);
 
-    if (id === user.providerId) {
-      console.log('error in the matching of the user');
-
-      return 1;
-    }
+    // if (id === user.providerId) {
+    //   return 1;
+    // }
 
     return {
       ...rest,

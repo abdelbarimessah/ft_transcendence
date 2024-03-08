@@ -155,9 +155,7 @@ export class UserService {
         }
       }
       return userWithFriends?.friends;
-    } catch (err) {
-      console.log(err.message);
-    }
+    } catch (err) {}
   }
 
   async getUserSearch(query: string, id: string) {
@@ -232,7 +230,6 @@ export class UserService {
     let user: User | null = null;
     let suffix = '';
 
-    console.log('data', data);
     const achievements = [
       'ach1',
       'ach2',

@@ -392,13 +392,28 @@ export class ChatService {
         'This channel is private and cannot be joined freely',
       );
     }
-    await this.prismaService.channelMembership.create({
-      data: {
-        channelId: channelId,
-        userId: userId,
+    const channelMembership = await this.prismaService.channelMembership.create(
+      {
+        data: {
+          channelId: channelId,
+          userId: userId,
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              providerId: true,
+              nickName: true,
+              firstName: true,
+              lastName: true,
+              avatar: true,
+            },
+          },
+          channel: true,
+        },
       },
-    });
-    return channel;
+    );
+    return channelMembership;
   }
   async leaveChannel(channelId: string, userId: string) {
     const channel = await this.prismaService.channel.findUnique({
@@ -894,23 +909,38 @@ export class ChatService {
       throw new BadRequestException('User does not exist.');
     }
 
-    await this.prismaService.channelMembership.upsert({
-      where: {
-        channelId_userId: {
+    const channelMembership = await this.prismaService.channelMembership.upsert(
+      {
+        where: {
+          channelId_userId: {
+            channelId,
+            userId: targetId,
+          },
+        },
+        create: {
           channelId,
           userId: targetId,
+          isAdmin: false,
+        },
+        update: {
+          isBanned: false,
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              providerId: true,
+              nickName: true,
+              firstName: true,
+              lastName: true,
+              avatar: true,
+            },
+          },
+          channel: true,
         },
       },
-      create: {
-        channelId,
-        userId: targetId,
-        isAdmin: false,
-      },
-      update: {
-        isBanned: false,
-      },
-    });
-    return { targetUser, channel: adminMembership?.channel };
+    );
+    return channelMembership;
   }
   async getAllChannel() {
     return await this.prismaService.channel.findMany({

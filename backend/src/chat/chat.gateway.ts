@@ -7,13 +7,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import {
-  Channel,
-  ChannelMembership,
-  Chat,
-  Message,
-  User,
-} from '@prisma/client';
+import { Channel, ChannelMembership, Chat, Message } from '@prisma/client';
 import * as cookie from 'cookie';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -112,12 +106,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.server.to(channelId).emit('deleteChannel', channelId);
   }
 
-  userJoined(channel: Channel, user: User) {
-    this.server.to(channel.id).emit('userJoined', { channel, user });
+  userJoined(channelId: string, user: ChannelMembership) {
+    this.server.to(channelId).emit('userJoined', { channelId, user });
   }
 
-  userLeft(channelId: string, user: User) {
-    this.server.to(channelId).emit('userLeft', { channelId, user });
+  userLeft(channelId: string, userId: string) {
+    this.server.to(channelId).emit('userLeft', { channelId, userId });
   }
   addAdmin(channelId: string, user: ChannelMembership) {
     this.server.to(channelId).emit('addAdmin', { channelId, user });
@@ -131,8 +125,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   unmuteUser(channelId: string, user: ChannelMembership) {
     this.server.to(channelId).emit('unmuteUser', { channelId, user });
   }
-  banUser(channelId: string, user: ChannelMembership) {
-    this.server.to(channelId).emit('banUser', { channelId, user });
+  banUser(channelId: string, userId: string) {
+    this.server.to(channelId).emit('banUser', { channelId, userId });
   }
   kickUser(channelId: string, userId: string) {
     this.server.to(channelId).emit('kickUser', { channelId, userId });

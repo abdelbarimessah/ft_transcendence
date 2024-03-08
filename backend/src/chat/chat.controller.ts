@@ -208,10 +208,14 @@ export class ChatController {
     @Body() body: JoinChannelDto,
   ) {
     const userId = user.id;
-    const channel = await this.chatService.joinChannel(channelId, userId, body);
+    const channelMembership = await this.chatService.joinChannel(
+      channelId,
+      userId,
+      body,
+    );
     this.chatGateway.joinRoom(userId, channelId);
-    this.chatGateway.userJoined(channel, user);
-    return channel;
+    this.chatGateway.userJoined(channelMembership.channelId, channelMembership);
+    return channelMembership.channel;
   }
 
   @Post('channel/:id/leave')
@@ -220,7 +224,7 @@ export class ChatController {
     @CurrentUser() user: User,
   ) {
     await this.chatService.leaveChannel(channelId, user.id);
-    this.chatGateway.userLeft(channelId, user);
+    this.chatGateway.userLeft(channelId, user.id);
     this.chatGateway.leaveRoom(user.id, channelId);
     return { message: `User has successfully left the channel.` };
   }
@@ -297,8 +301,8 @@ export class ChatController {
       user.id,
       targetId.userId,
     );
-    this.chatGateway.banUser(id, updatedMembership);
-    this.chatGateway.leaveRoom(user.id, id);
+    this.chatGateway.banUser(id, targetId.userId);
+    this.chatGateway.leaveRoom(targetId.userId, id);
 
     return updatedMembership;
   }
@@ -340,14 +344,14 @@ export class ChatController {
     @CurrentUser() user: User,
     @Body() body: userIdDto,
   ) {
-    const { targetUser, channel } = await this.chatService.addUserChannel(
+    const channelMembership = await this.chatService.addUserChannel(
       channelId,
       user.id,
       body.userId,
     );
     this.chatGateway.joinRoom(body.userId, channelId);
-    this.chatGateway.userJoined(channel, targetUser);
-    return { message: 'User successfully added to the channel.' };
+    this.chatGateway.userJoined(channelMembership.channelId, channelMembership);
+    return channelMembership;
   }
   @Get('channel/all')
   async getAllChannel() {

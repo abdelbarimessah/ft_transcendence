@@ -641,6 +641,7 @@ function UsersSettingsPoint({ userId }: any) {
     }
   };
 
+  
   const handelKick = async () => {
     try {
       const kickResponse = await axios.post(

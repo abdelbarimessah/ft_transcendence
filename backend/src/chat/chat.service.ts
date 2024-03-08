@@ -367,13 +367,13 @@ export class ChatService {
       },
     });
 
+    if (isMember) {
     if (isMember.isBanned) {
-      if (isMember) {
-        throw new BadRequestException(
-          'User is already a member of the channel',
-        );
-      }
       throw new BadRequestException('User is banned form channel');
+    }
+    throw new BadRequestException(
+      'User is already a member of the channel',
+    );
     }
     if (channel.type === 'PROTECTED') {
       if (!body.password) {

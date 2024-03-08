@@ -223,6 +223,8 @@ export class ChatController {
     @Param('id') channelId: string,
     @CurrentUser() user: User,
   ) {
+    console.log('you left');
+
     await this.chatService.leaveChannel(channelId, user.id);
     this.chatGateway.userLeft(channelId, user.id);
     this.chatGateway.leaveRoom(user.id, channelId);
@@ -320,6 +322,8 @@ export class ChatController {
 
   @Get('channel/:id/members')
   async getChannelMembers(@Param('id') channelId, @CurrentUser() user: User) {
+    console.log('you got membets');
+    
     const members = await this.chatService.getChannelMembers(
       channelId,
       user.id,

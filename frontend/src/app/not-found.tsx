@@ -20,7 +20,7 @@ export default function NotFound() {
                             <span className='text-color-0 font-nico-moji text-[25px]'>OOPS! There Is Nothing Here !</span>
                         </div>
                         <div className='-mt-3 flex items-center justify-center'>
-                            <span className='text-color-6 text-[18px] font-nico-moji'>Sorry, The Page You're Looking For IS Nowhere To Be Seen</span>
+                            <span className='text-color-6 text-[18px] font-nico-moji'>Sorry, The Page You&apos;re Looking For IS Nowhere To Be Seen</span>
                         </div>
                     </div>
                     <Link href={'/profile'}>

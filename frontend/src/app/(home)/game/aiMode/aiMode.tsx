@@ -41,7 +41,7 @@ export default function Game() {
         physics: {
           default: 'arcade',
           arcade: {
-            gravity: { y: 0 },
+            gravity: { x: 0, y: 0 },
             fps: 120,
           }
         },
@@ -58,9 +58,8 @@ export default function Game() {
 
       return () => {
         newGame?.destroy(true);
-        console.log("🐲 DESTROY 🐲");
       };
-    }, []);
+    }, [socketClient]);
 
     return (
         <div ref={parentEl}  className="flex items-center justify-center w-full flex-1"/>

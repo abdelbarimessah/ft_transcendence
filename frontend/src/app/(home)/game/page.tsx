@@ -6,7 +6,7 @@ import ParticleBackground from "@/components/particles/Tsparticles";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-function choseMode() {
+function ChoseMode() {
   const [close, setClose] = useState(true);
   const [me, setMe] = useState<any>();
 
@@ -19,6 +19,7 @@ function choseMode() {
         setMe(res.data);
       })
       .catch((err) => {
+        // eslint-disable-next-line no-console
         console.error(err.message);
       });
   }, []);
@@ -43,4 +44,4 @@ function choseMode() {
   );
 }
 
-export default choseMode;
+export default ChoseMode;

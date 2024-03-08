@@ -9,7 +9,6 @@ import animationData from "../../../public/assets/EmptyFriends.json";
 import dynamic from "next/dynamic";
 import { useContext, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { user } from "@nextui-org/react";
 import { SocketContext } from "@/app/SocketContext";
 
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
@@ -49,23 +48,25 @@ export function MatchesHistory() {
   const pathname = usePathname();
   const params = pathname.split("/");
 
-  const getUserToFetch = async () => {
-    try {
-      if (params.length === 2) {
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/user/me`
-        );
-        setMe(res.data.providerId);
-        setUserToFetch(res.data.providerId);
-      } else {
-        setUserToFetch(params[2]);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
+  
   useEffect(() => {
+    const getUserToFetch = async () => {
+      try {
+        if (params.length === 2) {
+          const res = await axios.get(
+            `${process.env.NEXT_PUBLIC_API_URL}/user/me`
+          );
+          setMe(res.data.providerId);
+          setUserToFetch(res.data.providerId);
+        } else {
+          setUserToFetch(params[2]);
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      }
+    };
+
     getUserToFetch();
   }, [pathname]);
 
@@ -76,40 +77,12 @@ export function MatchesHistory() {
   }, [socketClient, queryClient]);
 
   const getMatchHistoryList = async (userId: string) => {
-    if (userId) {
-      try {
-        const res = await axios.get<MatchHistoryProps[]>(
-          `http://localhost:3000/game/matchHistory/${userId}`
-        );
+    if(!userId) return [];
+    const res = await axios.get<MatchHistoryProps[]>(
+      `http://localhost:3000/game/matchHistory/${userId}`
+    );
 
-        return res.data.map((item) => ({
-          game: {
-            id: item.game.id,
-            updatedAt: item.game.updatedAt,
-            userScore: item.game.userScore,
-            opponentScore: item.game.opponentScore,
-            status : item.game.status
-          },
-          user: {
-            providerId: item.user.providerId,
-            firstName: item.user.firstName,
-            lastName: item.user.lastName,
-            nickName: item.user.nickName,
-            avatar: item.user.avatar,
-          },
-          opponent: {
-            providerId: item.opponent.providerId,
-            firstName: item.opponent.firstName,
-            lastName: item.opponent.lastName,
-            nickName: item.opponent.nickName,
-            avatar: item.opponent.avatar,
-          },
-        }));
-      } catch (error) {
-        console.error(error);
-        return [];
-      }
-    }
+    return res.data;
   };
 
   const {
@@ -160,7 +133,14 @@ export function MatchesHistory() {
         )}
 
         {!isLoading && matchesHistoryList?.length === 0 && (
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
+            }}
+          >
             <Lottie
               autoPlay
               loop
@@ -171,8 +151,7 @@ export function MatchesHistory() {
         )}
         {!isError &&
           !isLoading &&
-          matchesHistoryList &&
-          matchesHistoryList.map((matchHistory: MatchHistoryProps) => (
+          matchesHistoryList?.map((matchHistory: MatchHistoryProps) => (
             <MatchHistoryItem
               key={matchHistory.game.id}
               historyEntry={matchHistory}

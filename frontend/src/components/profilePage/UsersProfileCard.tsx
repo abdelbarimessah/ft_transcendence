@@ -32,7 +32,6 @@ function ProfileCard() {
         );
 
         if (res.data === 1) {
-          console.log("the res of the profile page", res.data);
           setSameProfile(true);
           router.push("/profile");
         }
@@ -41,6 +40,7 @@ function ProfileCard() {
         setIsLoading(false);
       } catch (error) {
         setIsLoading(false);
+        // eslint-disable-next-line no-console
         console.error(error);
       }
     };
@@ -52,12 +52,13 @@ function ProfileCard() {
           setIds(res.data.providerId);
         })
         .catch((error) => {
+          // eslint-disable-next-line no-console
           console.error(error);
         });
     });
 
     getData();
-  }, [ids, params]);
+  }, [ids, params, socketClient, router]);
 
   useEffect(() => {
     axios
@@ -66,20 +67,15 @@ function ProfileCard() {
         setMe(res);
       })
       .catch((error) => {
+        // eslint-disable-next-line no-console
         console.error(error);
       });
-  }, [me]);
+  }, []);
 
   const handlePlayWith = () => {
-    socketClient.emit("playInvite", { sender: me, receiver: user });
-    console.log("the user is : ", user);
-    console.log("me in the invite ", me);
-
-    setTimeout(() => {
-      router.push(
-        `/game/waiting?room=InviteRoom-${me.providerId}-${user.providerId}`
-      );
-    }, 500);
+    
+    socketClient.emit("playInvite", { sender: me.data, receiver: user });
+    router.push(`/game/waiting/${me.data.providerId}${user.providerId}`);
   };
 
   return (
@@ -123,11 +119,9 @@ function ProfileCard() {
                   <Skeleton className="w-[200px] h-[20px] rounded-full bg-color-25" />
                 ) : (
                   <span className="font-nico-moji text-color-6 lg:text-[21px] text-[18px] capitalize">
-                    {`${user.firstName.substring(0, 10)}${
-                      user.firstName.length > 10 ? ".." : ""
-                    } ${user.lastName.substring(0, 10)}${
-                      user.lastName.length > 10 ? ".." : ""
-                    }`}
+                    {`${user.firstName.substring(0, 10)}${user.firstName.length > 10 ? ".." : ""
+                      } ${user.lastName.substring(0, 10)}${user.lastName.length > 10 ? ".." : ""
+                      }`}
                   </span>
                 )}
                 {isLoading ? (

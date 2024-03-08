@@ -9,6 +9,7 @@ import { useEffect } from "react";
 
 
 function Setting() {
+    
     return (
         <div className=" bg-color-18 flex items-center no-scrollbar justify-center w-full gap-20  py-10 flex-col">
             <div className='w-full h-full absolute '>

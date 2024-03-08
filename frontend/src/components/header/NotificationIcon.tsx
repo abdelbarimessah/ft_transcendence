@@ -144,7 +144,7 @@ export default function NotificationIcon() {
       setNotificationLists(prev => [...prev, newNotification]);
 
     });
-  }, []);
+  }, [socketClient]);
 
   useEffect(() => {
     const getData = async () => {
@@ -176,10 +176,8 @@ export default function NotificationIcon() {
       };
 
       setNotificationLists(prev => [...prev, newGameInviteNotification]);
-
-
     });
-  }, []);
+  }, [socketClient]);
 
 
   // Handling READ_NOTIFICATIONS

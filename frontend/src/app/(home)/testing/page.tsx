@@ -1,11 +1,27 @@
-import React from "react";
+'use client'
+import React, { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Image from "next/image";
 
 import userImgae from '../../../../public/assets/Profile.svg'
+import { useParams, usePathname } from "next/navigation";
 
 
 export default function App() {
+
+  // const param = usePathname();
+  // console.log('the param in the testing', param);
+  // const [pathAfterTesting, setPathAfterTesting] = useState('');
+  
+  // useEffect(() => {
+  //   if (typeof window !== 'undefined') {
+  //     const path = window.location.pathname + window.location.search;
+  //     setPathAfterTesting(path.split('/testing')[1]);
+      
+  //   }
+  // }, []);
+  // console.log('the data in the useEfffect ', pathAfterTesting);
+
   let user = {
     firstName: String,
     lastName: String,

@@ -22,7 +22,7 @@ export default function RootLayout({
   const [win, setWin] = useState(false);
   const [lose, setLose] = useState(false);
 
-  
+
   useEffect(() => {
     const enterRoom = (data: any) => {
       setGameEnded(true);
@@ -43,8 +43,9 @@ export default function RootLayout({
         .post(`${process.env.NEXT_PUBLIC_API_URL}/game/gameData`, gameData, {
           withCredentials: true,
         })
-        .then((res) => {})
+        .then((res) => { })
         .catch((err) => {
+          // eslint-disable-next-line no-console
           console.error(err.message);
         });
       setTimeout(() => {
@@ -56,7 +57,7 @@ export default function RootLayout({
     return () => {
       socketClient.off("endGameClient");
     };
-  }, [socketClient]);
+  }, [socketClient, lose, route]);
 
 
   useEffect(() => {
@@ -66,21 +67,24 @@ export default function RootLayout({
     socketClient.on("OnePlayerLeaveTheRoom", async (data) => {
       if (data.socketId !== socketClient.id) return;
       const gameData = {
-        opponentId: data.oponent.providerId,
+        opponentId: data.user.providerId,
         userScore: 0,
         opponentScore: 5,
         status: "lose",
         gameName: data.roomName,
         gameType: "randomMode",
       };
+      console.log('the data in the layout 1111', gameData);
+      
       setLose(true);
-
+      
       try {
         const url = process.env.NEXT_PUBLIC_API_URL;
         await axios.post(`${url}/game/gameData`, gameData, {
           withCredentials: true,
         });
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error(error);
       }
       setTimeout(() => route.push("/game"), 3000);
@@ -88,9 +92,9 @@ export default function RootLayout({
     return () => {
       socketClient.off("OnePlayerLeaveTheRoom");
     };
-  }, [socketClient]);
+  }, [socketClient, gameEnded, route]);
 
-
+  
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
     if (win || lose) {
@@ -113,20 +117,22 @@ export default function RootLayout({
     socketClient.on("OnePlayerLeaveTheRoom", async (data) => {
       if (data.socketId === socketClient.id || !data.socketId) return;
       const gameData = {
-        opponentId: data.user.providerId,
+        opponentId: data.oponent.providerId,
         userScore: 5,
         opponentScore: 0,
         status: "win",
         gameName: data.roomName,
         gameType: "randomMode",
       };
+      console.log('the data in the layout 222222', gameData);
       setWin(true);
       toast.success("The other player left the game");
-
+      
       try {
         const url = process.env.NEXT_PUBLIC_API_URL;
         await axios.post(`${url}/game/gameData`, gameData);
-      } catch (error:any) {
+      } catch (error: any) {
+        // eslint-disable-next-line no-console
         console.error(error.message);
       }
       setTimeout(() => route.push("/game"), 3000);
@@ -134,7 +140,7 @@ export default function RootLayout({
     return () => {
       socketClient.off("OnePlayerLeaveTheRoom");
     };
-  }, [socketClient]);
+  }, [socketClient, gameEnded, route]);
 
 
 

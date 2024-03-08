@@ -37,6 +37,7 @@ function OtpCard() {
         toast.success("OTP Disabled successfully");
       });
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error(error);
     }
   };
@@ -50,6 +51,7 @@ function OtpCard() {
         setId(res.data.providerId);
         setOtpDisable(res.data.otpIsEnabled);
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error(error);
       }
     };
@@ -63,10 +65,11 @@ function OtpCard() {
         setIsLoading(false);
       })
       .catch((error) => {
+        // eslint-disable-next-line no-console
         console.error(error.message);
         setIsLoading(false);
       });
-  }, []);
+  }, [setIsLoading, backendUrl]);
 
   return (
     <>

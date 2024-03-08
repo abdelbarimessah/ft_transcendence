@@ -38,6 +38,7 @@ function SettingPrompt() {
             }
             catch (error) {
                 setIsLoading(false);
+                // eslint-disable-next-line no-console
                 console.error(error);
             }
         }

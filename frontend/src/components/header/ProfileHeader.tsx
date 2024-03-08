@@ -24,6 +24,7 @@ const ProfileHeader = () => {
         setIsLoading(false);
       } catch (error) {
         setIsLoading(false);
+        // eslint-disable-next-line no-console
         console.error(error);
       }
     };
@@ -32,6 +33,7 @@ const ProfileHeader = () => {
 
   useEffect(() => {
     socketClient.on("updateInfo", async (data) => {
+      
       if (user && data.providerId === user.providerId) {
         try {
           setIsLoading(true);
@@ -41,11 +43,12 @@ const ProfileHeader = () => {
           setIsLoading(false);
         } catch (error) {
           setIsLoading(false);
+          // eslint-disable-next-line no-console
           console.error(error);
         }
       }
     });
-  });
+  }, []);
 
   return (
     <Link href="/profile">

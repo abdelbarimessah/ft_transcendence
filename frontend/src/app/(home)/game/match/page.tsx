@@ -36,8 +36,24 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, [showFirstComponent]);
 
+
+  // const [roomName, setRoomName] = useState('');
+  
+  // useEffect(() => {
+  //   if (typeof window !== 'undefined') {
+  //     const path = window.location.pathname + window.location.search;
+      
+  //     let paths  =path.split('/match')[1]
+  //     let room = paths.split('=')[1] 
+  //     setRoomName(room);
+  //   }
+  // }, []);
+  // console.log('roomName in the game [12312312313]', roomName);
+
   const params = useSearchParams();
   const roomName: any = params.get("room");
+  
+  // const roomName: any = '1231231';
 
 
   useEffect(() => {
@@ -48,7 +64,7 @@ export default function Home() {
       route.push('/game');
     });
 
-  }, []);
+  }, [socketClient, roomName, route]);
 
   useEffect(() => {
     const enterRoom = (data: any) => {
@@ -62,7 +78,7 @@ export default function Home() {
     return () => {
       handleUnload();
     };
-  }, []);
+  }, [roomName, socketClient]);
 
   return (
     <div className='ml-6 mr-5 h-full flex items-center justify-center w-10 flex-1 relative'>

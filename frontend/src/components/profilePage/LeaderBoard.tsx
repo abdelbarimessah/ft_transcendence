@@ -28,6 +28,7 @@ export default function LeaderBoard() {
             })
             .catch(err => {
                 setIsLoading(false);
+                // eslint-disable-next-line no-console
                 console.error(err.message);
             });
     }, []);
@@ -44,6 +45,7 @@ export default function LeaderBoard() {
               })
               .catch((err) => {
                 setIsLoading(false);
+                // eslint-disable-next-line no-console
                 console.error(err.message);
               });
         })
@@ -136,7 +138,7 @@ export default function LeaderBoard() {
                             <div className=' w-full flex gap-[35px]  items-center justify-center'>
                                 <div className='w-[69px] h-[59px] relative sm:block hidden'>
                                     <Image
-                                        src="/../../assets/Secondplace.svg"
+                                        src="/../../assets/secondPlaceImage.svg"
                                         alt='First Place Icon'
                                         fill={true}
                                         priority={true}

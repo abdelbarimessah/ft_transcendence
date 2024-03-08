@@ -37,6 +37,7 @@ function ModeCard(me: any) {
         axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`).then(res => {
             setMy(res.data);
         }).catch(err => {
+            // eslint-disable-next-line no-console
             console.error(err);
         })
     }, [])
@@ -44,10 +45,10 @@ function ModeCard(me: any) {
     useEffect(() => {
         axios.get('http://localhost:3000/user/friends').then((res) => {
             setIsloading(true)
-            console.log({ response: res.data });
             setFriends(res.data);
             setIsloading(false)
         }).catch((error) => {
+            // eslint-disable-next-line no-console
             console.error(error)
             setIsloading(true)
         })
@@ -101,7 +102,7 @@ function ModeCard(me: any) {
         return () => {
             socketClient.off('enterRoomFromCard', enterRoom);
         }
-    }, [isRandomMode, router, socketClient, roomName]);
+    }, [isRandomMode, router, socketClient, roomName, me]);
 
     useEffect(() => {
         const yourOpponent = (data: any) => {
@@ -116,7 +117,6 @@ function ModeCard(me: any) {
 
     useEffect(() => {
         socketClient.on('youAreInGameFromAntherPage', () => {
-            console.log('youAreInGameFromAntherPage [12213231]');
             toast.error('you are already in game');
             router.push('/profile')
         })
@@ -129,7 +129,7 @@ function ModeCard(me: any) {
             <div className={` ${isRandomMode || playerPairingState ? 'blur' : ''} ${inviteModal ? 'hidden' : ''} select-none   w-full max-h-full flex flex-wrap items-center justify-center gap-[24px] pb-10 pt-10 `}>
                 <div className={` ${styles.playCard} cursor-pointer w-full max-w-[391px] h-[500px] rounded-[30px] overflow-hidden flex relative hover:opacity-90 hover:scale-[1.01] `}>
                     <Image
-                        src="/../../assets/3.jpg"
+                        src="/../../assets/aiCoverImage.svg"
                         alt="My Gallery Image"
                         fill={true}
                         sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
@@ -179,7 +179,7 @@ function ModeCard(me: any) {
 
                 <div className={`${styles.playCard} cursor-pointer w-full max-w-[391px] h-[500px]  rounded-[30px] overflow-hidden flex relative hover:opacity-90  hover:scale-[1.01]`}>
                     <Image
-                        src="/../../assets/4.jpg"
+                        src="/../../assets/randomCoverImage.svg"
                         alt="My Gallery Image"
                         fill={true}
                         sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
@@ -227,7 +227,7 @@ function ModeCard(me: any) {
                 </div>
                 <div className={`${styles.playCard} cursor-pointer xl:mb-0 w-full max-w-[391px] h-[500px] rounded-[30px] overflow-hidden flex relative hover:opacity-90  hover:scale-[1.01]`}>
                     <Image
-                        src="/../../assets/2.jpg"
+                        src="/../../assets/friendCoverImage.svg"
                         alt="My Gallery Image"
                         fill={true}
                         sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
@@ -460,6 +460,7 @@ function InivteModeCard() {
         axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`).then(res => {
             setMy(res.data);
         }).catch(err => {
+            // eslint-disable-next-line no-console
             console.error(err);
         })
     }, [])
@@ -467,14 +468,14 @@ function InivteModeCard() {
     useEffect(() => {
         axios.get('http://localhost:3000/user/friends').then((res) => {
             setIsloading(true)
-            console.log({ response: res.data });
             setFriends(res.data);
             setIsloading(false)
         }).catch((error) => {
+            // eslint-disable-next-line no-console
             console.error(error)
             setIsloading(true)
         })
-    }, [])
+    }, [friends])
     const slideLeft = () => {
         var slider = document.getElementById('slider');
         if (slider)

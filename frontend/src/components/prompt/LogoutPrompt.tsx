@@ -26,6 +26,7 @@ function LogoutPrompt(props: any) {
         router.push("/");
       }
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error("Logout failed", error);
     }
   }

@@ -31,6 +31,7 @@ const SearchBareHeader = () => {
 
       setSearchResults(response.data.filtered);
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error(error);
     }
   }, 500);
@@ -48,6 +49,7 @@ const SearchBareHeader = () => {
 
           setSearchResults(response.data.filtered);
         } catch (error) {
+          // eslint-disable-next-line no-console
           console.error(error);
         }
       }
@@ -69,7 +71,7 @@ const SearchBareHeader = () => {
       <div className="h-full w-[60px] flex items-center justify-center">
         <div className=" w-[30px] h-[30px] relative ">
           <Image
-            src="/../../assets/SearchIcon.svg"
+            src="/../../assets/searchIconProfileHeader.svg"
             alt="My Gallery Image"
             fill={true}
             priority={true}

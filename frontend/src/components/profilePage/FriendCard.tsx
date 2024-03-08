@@ -30,12 +30,7 @@ export default function FriendCard({
 
   const handlePlayWith = () => {
     socketClient.emit("playInvite", { sender: user, receiver: friend });
-
-    setTimeout(() => {
-      router.push(
-        `/game/waiting?room=InviteRoom-${user.providerId}-${friend.providerId}`
-      );
-    }, 500);
+    router.push(`/game/waiting/${user.providerId}${friend.providerId}`);
   };
 
   const handleMessageToFriend = () => {
@@ -48,14 +43,14 @@ export default function FriendCard({
     }, 2000);
 
     socketClient.on("User-status", (data) => {
-        
+
       if (data.providerId === friend.providerId) {
         setStatus(data.status);
       }
     });
 
     return () => clearInterval(intervalId);
-  }, []);
+  }, [socketClient, user, friend.providerId]);
 
   return (
     <div className=" w-[200px] h-[200px] bg-color-30 rounded-[22px] relative overflow-hidden flex  flex-col gap-[40px] hover:opacity-90 hover:scale-[1.01]">

@@ -39,11 +39,12 @@ function UsersAchievements() {
         setAch6(achievements.find((ach) => ach.name === "ach6"));
         setAch7(achievements.find((ach) => ach.name === "ach7"));
       } catch (err) {
+        // eslint-disable-next-line no-console
         console.error(err);
       }
     };
     getAchievements();
-  }, [params.id]);
+  }, [params.id, achievements]);
 
   return (
     <div className="h-[619px] 2xl:w-[557px] xl:w-[1137px] w-full bg-color-0 rounded-[22px] flex flex-col gap-[40px]">

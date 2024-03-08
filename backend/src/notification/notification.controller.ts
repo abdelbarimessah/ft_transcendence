@@ -32,7 +32,7 @@ export class NotificationController {
         },
       },
     });
-    
+    console.log('notifications', notifications);
     // delete notifications.user?.secretOpt
     return notifications;
   }

@@ -152,6 +152,7 @@ export default function NotificationIcon() {
       const res = await axios.get<NotificationProps[]>(
         "http://localhost:3000/notification"
       );
+      console.log('notif daata', res.data);
       setNotificationLists(res.data);
     }
     getData();
@@ -176,8 +177,6 @@ export default function NotificationIcon() {
       };
 
       setNotificationLists(prev => [...prev, newGameInviteNotification]);
-
-
     });
   }, []);
 

@@ -65,8 +65,8 @@ function UsersAchievements() {
         </div>
       </div>
       <div className="groupache flex flex-col gap-[20px] relative ">
-        <div className="w-full flex gap-[50px]  justify-center">
-          <div className="relative w-[97px] h-[125px] overflow-hidden   mt-[73px]  hover:scale-110">
+        <div className="w-full flex gap-[50px]  justify-center ">
+          <div className="relative w-[97px] h-[125px] overflow-hidden bg-red-300 mt-[73px]  hover:scale-110">
             <Image
               src="/../../assets/lockIcon.svg"
               alt="Leader Board Icon"
@@ -77,6 +77,7 @@ function UsersAchievements() {
                 ach5?.locked ? "hidden" : "block"
               }  w-[18px] h-[19px] absolute top-[75px] z-[2000] left-1/2 transform -translate-x-1/2 -translate-y-1/2 `}
               draggable={false}
+              title="adsadsasdasdasdasdaAlooo ??"
             />
             <div className="w-[58px] h-[58px] absolute z-[1000]  top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
               <div className="relative w-[58px] h-[58px] overflow-hidden">
@@ -88,6 +89,7 @@ function UsersAchievements() {
                     priority={true}
                     className="object-cover w-full h-full"
                     draggable={false}
+                    title="Alooo ??"
                   />
                 ) : (
                   <Image
@@ -97,6 +99,7 @@ function UsersAchievements() {
                     priority={true}
                     className="object-cover w-full h-full"
                     draggable={false}
+                    title="Alooo ??"
                   />
                 )}
               </div>
@@ -114,6 +117,7 @@ function UsersAchievements() {
                   priority={true}
                   className="object-cover w-full h-full"
                   draggable={false}
+                  title="Alooo ??"
                 />
               ) : (
                 <Image
@@ -123,6 +127,7 @@ function UsersAchievements() {
                   priority={true}
                   className="object-cover w-full h-full"
                   draggable={false}
+                  title="Alooo ??"
                 />
               )}
             </div>
@@ -219,6 +224,7 @@ function UsersAchievements() {
                     priority={true}
                     className="object-cover w-full h-full"
                     draggable={false}
+                    title="Alooo ??"
                   />
                 )}
               </div>
@@ -245,6 +251,7 @@ function UsersAchievements() {
                   priority={true}
                   className="object-cover w-full h-full"
                   draggable={false}
+                  title="Alooo ??"
                 />
               )}
             </div>

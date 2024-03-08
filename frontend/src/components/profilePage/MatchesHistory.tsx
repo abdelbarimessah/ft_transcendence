@@ -76,40 +76,11 @@ export function MatchesHistory() {
   }, [socketClient, queryClient]);
 
   const getMatchHistoryList = async (userId: string) => {
-    if (userId) {
-      try {
-        const res = await axios.get<MatchHistoryProps[]>(
-          `http://localhost:3000/game/matchHistory/${userId}`
-        );
+    const res = await axios.get<MatchHistoryProps[]>(
+      `http://localhost:3000/game/matchHistory/${userId}`
+    );
 
-        return res.data.map((item) => ({
-          game: {
-            id: item.game.id,
-            updatedAt: item.game.updatedAt,
-            userScore: item.game.userScore,
-            opponentScore: item.game.opponentScore,
-            status : item.game.status
-          },
-          user: {
-            providerId: item.user.providerId,
-            firstName: item.user.firstName,
-            lastName: item.user.lastName,
-            nickName: item.user.nickName,
-            avatar: item.user.avatar,
-          },
-          opponent: {
-            providerId: item.opponent.providerId,
-            firstName: item.opponent.firstName,
-            lastName: item.opponent.lastName,
-            nickName: item.opponent.nickName,
-            avatar: item.opponent.avatar,
-          },
-        }));
-      } catch (error) {
-        console.error(error);
-        return [];
-      }
-    }
+    return res.data;
   };
 
   const {
@@ -160,7 +131,14 @@ export function MatchesHistory() {
         )}
 
         {!isLoading && matchesHistoryList?.length === 0 && (
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
+            }}
+          >
             <Lottie
               autoPlay
               loop
@@ -171,8 +149,7 @@ export function MatchesHistory() {
         )}
         {!isError &&
           !isLoading &&
-          matchesHistoryList &&
-          matchesHistoryList.map((matchHistory: MatchHistoryProps) => (
+          matchesHistoryList?.map((matchHistory: MatchHistoryProps) => (
             <MatchHistoryItem
               key={matchHistory.game.id}
               historyEntry={matchHistory}

@@ -65,6 +65,12 @@ export class ChatService {
             updatedAt: 'asc',
           },
         },
+        blockedUsers: {
+          select: {
+            id: true,
+            provider: true,
+          },
+        },
       },
     });
   }
@@ -149,12 +155,10 @@ export class ChatService {
           },
         });
 
-        if (
-          blocked &&
-          (blocked.blockedUsers.length > 0 || blocked.blockedBy.length > 0)
-        ) {
+        if (blocked && blocked.blockedUsers.length > 0) {
+          throw new ForbiddenException('You blocked the user.');
+        } else if (blocked.blockedBy.length > 0)
           throw new ForbiddenException('You are blocked by the user.');
-        }
       }
     }
   }
@@ -363,6 +367,9 @@ export class ChatService {
       },
     });
 
+    if (isMember.isBanned) {
+      throw new BadRequestException('User is banned form channel');
+    }
     if (isMember) {
       throw new BadRequestException('User is already a member of the channel');
     }
@@ -842,7 +849,7 @@ export class ChatService {
         isBanned: false,
       },
     });
-    return {targetUser, channel: adminMembership?.channel};
+    return { targetUser, channel: adminMembership?.channel };
   }
   async getAllChannel() {
     return await this.prismaService.channel.findMany({

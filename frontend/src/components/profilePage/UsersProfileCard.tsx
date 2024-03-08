@@ -113,8 +113,8 @@ function ProfileCard() {
                     fill={true}
                     sizes="100%"
                     priority={true}
-                    className="object-cover w-full h-full "
-                    draggable={false}
+                    className="object-cover w-full h-full hover:"
+                      draggable={false}
                   />
                 </div>
               )}

@@ -39,6 +39,7 @@ function Chat() {
     const [showFriendMenu, setShowFriendMenu] = useState(false);
     const [showChannelMenu, setShowChannelMenu] = useState(false);
     const [channelMembers, setChannelMembers] = useState([]);
+    
 
     const fetchData = async () => {
       try {
@@ -130,8 +131,9 @@ function Chat() {
       useEffect(() => {
         socket.on("userJoined", (data) => {
           addNewChannelToList(data.channel);
-          console.log("channel == ", data.channel);
-          console.log("channelClicked == ", channelClicked);
+        });
+        socket.on("", (data) => {
+          addNewChannelToList(data.channel);
         });
         return (() => {
             socket.off("userJoined")

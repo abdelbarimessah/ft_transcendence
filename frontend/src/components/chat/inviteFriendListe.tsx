@@ -40,6 +40,13 @@ function InviteFriendListe({ chat, friendLinst }: any) {
     }
   };
 
+  // const addUserToFriendListToList = () => {
+  //   const UserData = useContext(chatslistContext);
+  //   //check exist
+  //   UserData.friendsList = [];
+  //   const new
+  // }
+
   const addUserToFriendList = async (chatClicked: any) => {
     try {
       const newFriendresponse = await axios.post(
@@ -51,6 +58,17 @@ function InviteFriendListe({ chat, friendLinst }: any) {
           withCredentials: true,
         }
       );
+      // console.log('current friend list', UserData.friendsList)
+      // console.log('res after chat created: ', newFriendresponse.data)
+      // console.log('friend exists: ', friendExists)
+      
+      // const friendExists = UserData.friendsList.some(user => user.id === newFriendresponse.data.id)
+      // if(!friendExists){
+      //   const newList = [...UserData.friendsList, newFriendresponse.data]
+      //   console.log('new list: ', newList);
+      //   UserData.setFriendsList(newList);
+      // }
+      // UserData.setShowNewFriendsList(false);
     } catch (error: any) {
       if (error.response && error.response.status === 400) {
         toast.error(error.response.data.message);

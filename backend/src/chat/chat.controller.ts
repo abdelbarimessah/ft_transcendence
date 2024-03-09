@@ -63,6 +63,9 @@ export class ChatController {
         chatPairHash,
       );
     }
+    delete chat.chatPairHash
+    delete chat.updatedAt
+    delete chat.createdAt
     this.chatGateway.joinRoom(currentUser.id, chat.id);
     this.chatGateway.newChat(userToChatId, chat);
     return chat;

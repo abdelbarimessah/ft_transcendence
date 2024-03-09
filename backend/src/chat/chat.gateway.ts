@@ -87,9 +87,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const client = this.server.sockets.sockets.get(sockId);
       if (client) {
         client.join(chat.id);
-        this.server.to(sockId).emit('newChat', { chat });
       }
     }
+    this.server.to(chat.id).emit('newChat', chat );
   }
 
   sendMessage(room: string, message: Message) {

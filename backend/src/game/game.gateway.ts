@@ -19,14 +19,10 @@ import { NotificationService } from 'src/notification/notification.service';
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   nb: number = 0;
   private logger: Logger = new Logger('GameGateway');
-<<<<<<< HEAD
-  constructor(private gameService: GameService) {}
-=======
   constructor(
     private gameService: GameService,
     private notificationService: NotificationService
   ) { }
->>>>>>> 8ce03803d8cbda3afdfe4795850436b79889bd14
 
   @WebSocketServer()
   server: Server;
@@ -108,17 +104,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const roomName = `gameCard-${this.clientNOForCard}`;
       const player1 = this.playerQueue.shift();
       const player2 = this.playerQueue.shift();
-<<<<<<< HEAD
-      if (
-        player1.socket.data.user.providerId ===
-        player2.socket.data.user.providerId
-      ) {
-=======
       console.log('the two player ids :1  ', player1.socket.data.user.providerId);
       console.log('the two player ids :2  ', player2.socket.data.user.providerId);
 
       if (player1.socket.data.user.providerId === player2.socket.data.user.providerId) {
->>>>>>> 8ce03803d8cbda3afdfe4795850436b79889bd14
         this.playerQueue.push(player1);
         socket.emit('youAreInGameFromAntherPage');
         return;

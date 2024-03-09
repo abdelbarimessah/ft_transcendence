@@ -48,6 +48,18 @@ export class ChatService {
         },
         chatPairHash,
       },
+      include: {
+        members: {
+          include: {
+            blockedUsers: {
+              select: {
+                id: true,
+                providerId: true,
+              },
+            },
+          },
+        },
+      }
     });
   }
   async getUserChats(userId: string) {

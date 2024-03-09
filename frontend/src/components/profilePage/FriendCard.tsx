@@ -130,24 +130,26 @@ export default function FriendCard({
               Play With
             </span>
           </button>
-          <button
-            className="w-[80px] h-[28px] bg-color-6 rounded-[10px] cursor-pointer flex items-center justify-center gap-[5px]"
-            onClick={handleMessageToFriend}
-          >
-            <div className="w-[12px] h-[12px] relative overflow-hidden ">
-              <Image
-                src="/../../assets/sendMessageIcon.svg"
-                alt="Leader Board Icon"
-                fill={true}
-                priority={true}
-                className="object-cover w-full h-full"
-                draggable={false}
-              />
+          <Link href='/chat'>
+            <div
+              className="w-[80px] h-[28px] bg-color-6 rounded-[10px] cursor-pointer flex items-center justify-center gap-[5px]"
+              onClick={handleMessageToFriend}
+            >
+              <div className="w-[12px] h-[12px] relative overflow-hidden ">
+                <Image
+                  src="/../../assets/sendMessageIcon.svg"
+                  alt="Leader Board Icon"
+                  fill={true}
+                  priority={true}
+                  className="object-cover w-full h-full"
+                  draggable={false}
+                />
+              </div>
+              <span className="font-nico-moji text-[8px] text-color-0">
+                Message
+              </span>
             </div>
-            <span className="font-nico-moji text-[8px] text-color-0">
-              Message
-            </span>
-          </button>
+          </Link>
         </div>
       </div>
     </div>

@@ -6,7 +6,6 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 
-
 export type NotificationProps = {
   id: string;
   type: string;
@@ -20,14 +19,11 @@ export type NotificationProps = {
   };
 };
 
-export default function NotificationItem(
-  {
-    notification,
-  }: {
-    notification: NotificationProps;
-  },
-) {
-
+export default function NotificationItem({
+  notification,
+}: {
+  notification: NotificationProps;
+}) {
   const [me, setMe] = useState<any>();
 
   useEffect(() => {
@@ -37,50 +33,45 @@ export default function NotificationItem(
         setMe(res.data);
       })
       .catch((err) => {
+        // eslint-disable-next-line no-console
         console.error(err);
       });
   }, []);
 
   const handleAcceptInvite = () => {
-    
     const gamePair = {
-      sender : {
+      sender: {
         providerId: notification.user.providerId,
-
       },
-      receiver : {
+      receiver: {
         providerId: me.providerId,
       },
-      inviteNumber:  notification.gameId,
-    }
-    
+      inviteNumber: notification.gameId,
+    };
+
     socketClient.emit("acceptInviteGame", gamePair);
     router.push(
       `/game/match?room=InviteRoom-${notification.user.providerId}-${me.providerId}-${notification.gameId}`
     );
-
-  }
+  };
 
   const handleDeclineInvite = () => {
     const gamePair = {
-      sender : {
+      sender: {
         providerId: notification.user.providerId,
-
       },
-      receiver : {
+      receiver: {
         providerId: me.providerId,
       },
-      inviteNumber:  notification.gameId,
-    }
+      inviteNumber: notification.gameId,
+    };
     socketClient.emit("declineInviteGame", gamePair);
-  }
+  };
   const router = useRouter();
   const socketClient = useContext(SocketContext);
-  console.log("Notification received in NotificationItem -> ", notification);
 
   useEffect(() => {
     socketClient.on("playersReadyInvite", (data) => {
-      
       setTimeout(() => {
         router.push(
           `/game/match?room=InviteRoom-${data.sender.providerId}-${data.receiver.providerId}-${data.inviteNumber}`
@@ -90,7 +81,7 @@ export default function NotificationItem(
   });
 
   const goToChat = () => {
-    router.push(`/chat/${notification.chatId}`);
+    router.push(`/chat/`);
   };
   const goToProfile = () => {
     router.push(`/profile/${notification.user.providerId}`);
@@ -100,9 +91,7 @@ export default function NotificationItem(
     <div className="w-full flex items-center justify-between gap-2 border-b-2 border-gray-400 pb-2">
       <Image
         alt="alt-user"
-        src={
-          notification.user ? notification.user.avatar : "/assets/Add-User.png"
-        }
+        src={notification.user.avatar}
         width={40}
         height={40}
         className="rounded-full"
@@ -121,10 +110,11 @@ export default function NotificationItem(
             <div className="flex justify-center items-center">
               <Image
                 alt="alt-user"
-                src="/assets/NewMessage.png"
-                width={38}
-                height={15}
+                src="/assets/Message.svg"
+                width={35}
+                height={13}
                 priority={true}
+                draggable={false}
               />
             </div>
           </div>
@@ -143,10 +133,11 @@ export default function NotificationItem(
             <div className="flex justify-center items-center">
               <Image
                 alt="alt-user"
-                src="/assets/NewFollower.png"
-                width={38}
-                height={38}
+                src="/assets/AddUser.svg"
+                width={18}
+                height={30}
                 priority={true}
+                draggable={false}
               />
             </div>
           </div>
@@ -161,15 +152,15 @@ export default function NotificationItem(
                 {notification.user.nickName}
               </span>{" "}
               invited you to play
-              <div className="w-full text-color-6 text-[14px] flex justify-evenly gap-3 items-center">
+              <div className="w-full text-color-6 text-[11px] flex justify-center gap-3 py-2 items-center">
                 <button
-                  className="rounded-[15px] w-full p-2 bg-color-0"
+                  className="rounded-[15px] px-4 py-1 bg-color-6 text-color-0 hover:scale-105"
                   onClick={handleAcceptInvite}
                 >
                   Accept
                 </button>
                 <button
-                  className="rounded-[15px] w-full p-2 bg-color-23"
+                  className="rounded-[15px] py-1 px-4 border-[1px] hover:border-2 hover:scale-105 border-color-5 text-color-5"
                   onClick={handleDeclineInvite}
                 >
                   Decline
@@ -179,10 +170,11 @@ export default function NotificationItem(
             <div className="flex justify-center items-center">
               <Image
                 alt="alt-user"
-                src="/assets/GameInvite.png"
-                width={38}
-                height={38}
+                src="/assets/Game.svg"
+                width={25}
+                height={12}
                 priority={true}
+                draggable={false}
               />
             </div>
           </div>

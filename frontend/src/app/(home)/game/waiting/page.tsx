@@ -1,71 +1,30 @@
-'use client'
-import Lottie from 'lottie-react'
-import animationData from '../../../../../public/assets/Animation.json';
-import { useEffect, useState } from 'react';
-import { PlayerPairing } from '../../../../components/cards/ModeCard'
-import { useSearchParams } from 'next/navigation';
-import axios from 'axios';
-import { useRouter } from 'next/navigation';
-import ParticleBackground from '@/components/particles/Tsparticles';
-import { useContext } from 'react';
-import { SocketContext } from '@/app/SocketContext';
-import Image from 'next/image';
-import { toast } from 'sonner';
-
+"use client";
+import Lottie from "lottie-react";
+import animationData from "../../../../../public/assets/Animation.json";
+import { useEffect, useState } from "react";
+import { PlayerPairing } from "../../../../components/cards/ModeCard";
+import { useSearchParams } from "next/navigation";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import ParticleBackground from "@/components/particles/Tsparticles";
+import { useContext } from "react";
+import { SocketContext } from "@/app/SocketContext";
+import Image from "next/image";
 
 axios.defaults.withCredentials = true;
 
 export default function Wiating() {
-    const socketClient = useContext(SocketContext);
+  const socketClient = useContext(SocketContext);
 
-    const [isRandomMode, setIsRandomMode] = useState(true)
-    const params = useSearchParams();
-    const roomName: any = params.get("room");
-    const players = roomName.split('-');
-    const player1Id = players[1];
-    const player2Id = players[2];
-    const [player1, setPlayer1] = useState<any>();
-    const [player2, setplayer2] = useState<any>();
-    const router = useRouter();
-
-    useEffect(() => {
-        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`).then(res => {
-            setPlayer1(res.data);
-        }).catch(err => {
-            console.error(err);
-        })
-    }, [])
-    useEffect(() => {
-        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/${player2Id}`).then(res => {
-            setplayer2(res.data);
-        }).catch(err => {
-            console.error(err);
-        })
-
-    }, [])
-
-    useEffect(() => {
-        socketClient.on('OtherPlayerDeclineTheGame', (data) => {
-            console.log({ message: 'the other player decline the game invite ' }, { data });
-            toast.error('The other player declined your invitation')
-            router.push('/profile');
-        })
-    }, [socketClient])
-
-
-  useEffect(() => {
-    socketClient.on("playersReadyInvite", (data) => {
-      // console.log();
-      console.log("================= the game pair data is ========= ", data);
-      
-      setTimeout(() => {
-        router.push(
-          `/game/match?room=InviteRoom-${data.sender.providerId}-${data.receiver.providerId}-${data.inviteNumber}`
-        );
-      }, 500);
-    });
-  },[socketClient]);
-
+  const [isRandomMode, setIsRandomMode] = useState(true);
+  const params = useSearchParams();
+  const roomName: any = params.get("room");
+  const players = roomName.split("-");
+  const player1Id = players[1];
+  const player2Id = players[2];
+  const [player1, setPlayer1] = useState<any>();
+  const [player2, setplayer2] = useState<any>();
+  const router = useRouter();
 
   useEffect(() => {
     axios
@@ -132,7 +91,7 @@ export default function Wiating() {
               width={20}
               priority={true}
               draggable={false}
-            ></Image>
+            />
           </div>
         </div>
       )}

@@ -1,11 +1,27 @@
-import React from "react";
+'use client'
+import React, { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Image from "next/image";
 
 import userImgae from '../../../../public/assets/Profile.svg'
+import { useParams, usePathname } from "next/navigation";
 
 
 export default function App() {
+
+  // const param = usePathname();
+  // console.log('the param in the testing', param);
+  // const [pathAfterTesting, setPathAfterTesting] = useState('');
+  
+  // useEffect(() => {
+  //   if (typeof window !== 'undefined') {
+  //     const path = window.location.pathname + window.location.search;
+  //     setPathAfterTesting(path.split('/testing')[1]);
+      
+  //   }
+  // }, []);
+  // console.log('the data in the useEfffect ', pathAfterTesting);
+
   let user = {
     firstName: String,
     lastName: String,
@@ -23,8 +39,7 @@ export default function App() {
               fill={true}
               priority={true}
               className="w-full h-full object-cover"
-            >
-            </Image>
+            />
           </div>
           <div className="w-full h-[54px]  flex flex-col items-center justify-center">
             <span className='font-nico-moji text-color-6 sm:text-[24px] text-[18px] capitalize'>
@@ -48,8 +63,7 @@ export default function App() {
                   draggable={false}
                   fill={true}
                   priority={true}
-                >
-                </Image>
+                />
               </div>
             </div>
             <div className="w-[370px] h-[60px] bg-[#F3FAFF] rounded-[22px] flex items-center justify-between px-5 hover:scale-[1.01] hover:opacity-95 cursor-pointer">
@@ -63,8 +77,7 @@ export default function App() {
                   draggable={false}
                   fill={true}
                   priority={true}
-                >
-                </Image>
+                />
               </div>
             </div>
           </div>
@@ -81,8 +94,7 @@ export default function App() {
               draggable={false}
               fill={true}
               priority={true}
-            >
-            </Image>
+            />
           </div>
         </div>
       </div>

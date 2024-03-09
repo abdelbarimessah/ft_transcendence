@@ -19,14 +19,14 @@ function ChannelOption() {
   return (
     <>
       <div className="z-50 bg-opacity-25 bg-black  flex justify-center items-center fixed w-screen h-screen">
-          <Tabs defaultValue="joinChanenl" className=" flex mt-0 w-[400px] items-center justify-center flex-col">
+          <Tabs defaultValue="joinChannel" className=" flex mt-0 w-[400px] items-center justify-center flex-col">
 
             <TabsList>
-              <TabsTrigger value="joinChanenl"  > joinChanenl</TabsTrigger>
-              <TabsTrigger value="creatChannel">  creatChannel</TabsTrigger>
+              <TabsTrigger value="joinChannel"  > join Channel</TabsTrigger>
+              <TabsTrigger value="creatChannel">  create Channel</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="joinChanenl" className="flex justify-center items-center m-0">
+            <TabsContent value="joinChannel" className="flex justify-center items-center m-0">
              <JoinChannel />            
             </TabsContent>
 

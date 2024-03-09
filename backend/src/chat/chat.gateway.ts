@@ -7,7 +7,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { Channel, Chat, Message, User } from '@prisma/client';
+import { Channel, ChannelMembership, Chat, Message } from '@prisma/client';
 import * as cookie from 'cookie';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -53,7 +53,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   handleDisconnect(client: any) {
     const userId = this.appService.getUserIdFromSocketId(client.id);
-    console.log(`${userId} disconnected`);
     if (userId) this.appService.delete(userId);
   }
 
@@ -70,7 +69,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   joinRoom(userId: string, chatId: string) {
     const socketId = this.getSocketByUserId(userId);
     if (socketId) {
-      console.log('user have a socket', userId);
       const client = this.server.sockets.sockets.get(socketId);
       client.join(chatId);
     }
@@ -89,9 +87,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const client = this.server.sockets.sockets.get(sockId);
       if (client) {
         client.join(chat.id);
-        this.server.to(sockId).emit('newChat', { chat });
       }
     }
+    this.server.to(chat.id).emit('newChat', chat );
   }
 
   sendMessage(room: string, message: Message) {
@@ -106,24 +104,27 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.server.to(channelId).emit('deleteChannel', channelId);
   }
 
-  userJoined(channel: Channel, user: User) {
-    this.server.to(channel.id).emit('userJoined', { channel, user });
+  userJoined(channelId: string, user: ChannelMembership) {
+    this.server.to(channelId).emit('userJoined', { channelId, user });
   }
 
-  userLeft(channelId: string, user: User) {
-    this.server.to(channelId).emit('userLeft', { channelId, user });
+  userLeft(channelId: string, userId: string) {
+    this.server.to(channelId).emit('userLeft', { channelId, userId });
   }
-  addAdmin(channelId: string, userId: string) {
-    this.server.to(channelId).emit('addAdmin', { channelId, userId });
+  addAdmin(channelId: string, user: ChannelMembership) {
+    this.server.to(channelId).emit('addAdmin', { channelId, user });
   }
-  removeAdmin(channelId: string, userId: string) {
-    this.server.to(channelId).emit('removeAdmin', { channelId, userId });
+  removeAdmin(channelId: string, user: ChannelMembership) {
+    this.server.to(channelId).emit('removeAdmin', { channelId, user });
   }
-  muteUser(channelId: string, userId: string, mute: boolean) {
-    this.server.to(channelId).emit('muteUser', { channelId, userId, mute });
+  muteUser(channelId: string, user: ChannelMembership) {
+    this.server.to(channelId).emit('muteUser', { channelId, user });
   }
-  banUser(channelId: string, userId: string, ban: boolean) {
-    this.server.to(channelId).emit('banUser', { channelId, userId, ban });
+  unmuteUser(channelId: string, user: ChannelMembership) {
+    this.server.to(channelId).emit('unmuteUser', { channelId, user });
+  }
+  banUser(channelId: string, userId: string) {
+    this.server.to(channelId).emit('banUser', { channelId, userId });
   }
   kickUser(channelId: string, userId: string) {
     this.server.to(channelId).emit('kickUser', { channelId, userId });
@@ -131,7 +132,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   blockUser(targetId: string, userId: string) {
     const socketId = this.getSocketByUserId(targetId);
     if (socketId) {
-      console.log(targetId, "blocked user id")
       this.server.to(socketId).emit('blockUser', { userId });
     }
   }

@@ -15,12 +15,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="font-nico-moji">
-      <link rel="icon" href="../../assets/favicon.ico" sizes="any" />
+      <link rel="icon" href="/assets/favicon.ico" sizes="any" />
       <head>
         <title>Pong Game</title>
       </head>
       <body className="no-scrollbar bg-color-18 ">
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          </Providers>
         <Toaster closeButton />
       </body>
     </html>

@@ -75,7 +75,6 @@ export class AuthService {
   }
 
   async generateOTP(user: Prisma.UserCreateInput) {
-    if (!user) console.log('user not found');
     // eslint-disable-next-line prefer-const
     let { nickName, secretOpt } = user;
 
@@ -115,9 +114,7 @@ export class AuthService {
 
   async verifyOTP(user: Prisma.UserCreateInput, token: string) {
     if (!user.secretOpt) return false;
-    console.log('user.secretOpt', user.secretOpt);
     const rew = authenticator.verify({ secret: user.secretOpt, token });
-    console.log('rew', rew);
     return rew;
   }
 }

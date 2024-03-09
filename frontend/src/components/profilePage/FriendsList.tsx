@@ -32,6 +32,7 @@ function FriendsList() {
         setMe(res.data);
       })
       .catch((err) => {
+        // eslint-disable-next-line no-console
         console.error(err.message);
       });
   }, []);

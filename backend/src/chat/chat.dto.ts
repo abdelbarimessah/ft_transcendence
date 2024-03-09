@@ -50,9 +50,10 @@ export class UpdateChannelDto {
   @IsString()
   @MinLength(3)
   @MaxLength(25)
+  @IsOptional()
   @IsNotEmpty()
   name?: string;
-
+  @IsOptional()
   @IsNotEmpty()
   @IsEnum(AccessType)
   type?: AccessType;

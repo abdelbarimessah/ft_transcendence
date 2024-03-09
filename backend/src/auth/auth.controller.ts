@@ -152,7 +152,6 @@ export class AuthController {
       sameSite: 'lax',
       expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
     });
-    console.log('token ===>', token);
     return { otp: { enabled: true, verified: true } };
   }
 

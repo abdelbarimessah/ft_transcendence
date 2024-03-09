@@ -18,3 +18,8 @@ Listen ('notification')
 - [ ] Make Realtime
 - [X] Get User / Opponent Data (Full Name / Nickname)
 
+
+
+
+//  build
+- center the text in the game Card of the pairing before the start of the game 

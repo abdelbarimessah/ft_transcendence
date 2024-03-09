@@ -20,7 +20,7 @@ function ChannelsToJoin ({channelToJoin}: any) {
     }
 
     const addChannelToList = async(channelToJoin) => {
-        
+
         console.log("UserData.channelToJoin = >", channelToJoin.id);
         try {
             const joinResponse = await axios.post(
@@ -63,7 +63,7 @@ function ChannelsToJoin ({channelToJoin}: any) {
         <div    className=' flex justify-between items-center border-t-[2px] border-[#cdd7dd] p-3 min-h-[68px]'>
                 <div className='flex justify-between items-center p-[10px]'>
 
-                    <img    src="../../assets/friend_icon.png"
+                    <img    src="../../../assets/friend_icon.png"
                             alt="channel pic"
                             className=' rounded-full w-[60px] ' />
 

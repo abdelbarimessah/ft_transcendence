@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma, User } from '@prisma/client';
 import * as uuid from 'uuid';
@@ -51,6 +51,8 @@ export class UserService {
         },
       },
     });
+    if(!user )
+      throw new NotFoundException('not found user')
     delete user?.secretOpt;
     return user;
   }
@@ -155,9 +157,7 @@ export class UserService {
         }
       }
       return userWithFriends?.friends;
-    } catch (err) {
-      console.log(err.message);
-    }
+    } catch (err) {}
   }
 
   async getUserSearch(query: string, id: string) {
@@ -232,7 +232,6 @@ export class UserService {
     let user: User | null = null;
     let suffix = '';
 
-    console.log('data', data);
     const achievements = [
       'ach1',
       'ach2',

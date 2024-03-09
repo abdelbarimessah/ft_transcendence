@@ -19,7 +19,7 @@ function CreatChannel() {
     {
         return (
             <>
-                <div className='felx justify-center items-center'>
+                <div className='flex justify-center items-center'>
                 <div className='flex w-full flex-row gap-7 justify-center items-center'>
                                     <div className='flex justify-start items-center '>
                                             Enter password:

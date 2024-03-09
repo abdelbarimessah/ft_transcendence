@@ -1,17 +1,24 @@
-import React from 'react';
-import LeftSide from '../leftSide';
+"use client";
+import React from "react";
+import Image from "next/image";
 
-
-
-function Btns({icon, onClick}){
-
-    return (
-        <>
-            <button type='submit' className=' rounded-full w-[57px] h-[41px] p-[2px]' onClick={onClick}>
-                <img src={icon} alt="icon" />
-            </button>
-        </>
-    );
+function Btns({ icon, onClick }: any) {
+  return (
+    <>
+      <div
+        className=" rounded-full w-[36px] h-[36px] p-[2px] relative cursor-pointer object-cover hover:scale-[1.01] hover:opacity-95"
+        onClick={onClick}
+      >
+        <Image
+          src={icon}
+          alt="icon"
+          fill={true}
+          draggable={false}
+          priority={true}
+        ></Image>
+      </div>
+    </>
+  );
 }
 
 export default Btns;

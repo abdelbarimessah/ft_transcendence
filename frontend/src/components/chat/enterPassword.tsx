@@ -58,8 +58,8 @@ function EnterPassword() {
         return   (
             <>
                 <div className=" bg-opacity-55 bg-black  flex justify-center items-center fixed w-screen h-screen">
-                    <div className="felx justify-center items-center flex-col px-3 bg-[#e4f1fa] rounded-2xl"> 
-                        <button className="felx place-self-end text-[25px]" onClick={() => {UserData.setchannelType(""); UserData.setNeedPassword(false)}}>X</button>
+                    <div className="flex justify-center items-center flex-col px-3 bg-[#e4f1fa] rounded-2xl"> 
+                        <button className="flex place-self-end text-[25px]" onClick={() => {UserData.setchannelType(""); UserData.setNeedPassword(false)}}>X</button>
                         <div className= "w-fit px-2 flex flex-row gap-3 justify-center items-center rounded-lg">
                             Enter password:
                             <input  type="text"
@@ -69,7 +69,7 @@ function EnterPassword() {
                             />
                         </div>
                      
-                        <div className="felx justify-items-end pl-[335px] pb-3 items-end ">
+                        <div className="flex justify-items-end pl-[335px] pb-3 items-end ">
                             <button className='flex justify-center p-[15px]   rounded-lg w-[130px]
                                                     text-[#8194a3] bg-[#FFFFFF] border cursor-pointer hover:border-[#adf39d]  hover:text-gray-600
                                                     hover:bg-[#e5f6e1]'

@@ -63,6 +63,9 @@ export class ChatController {
         chatPairHash,
       );
     }
+    delete chat.chatPairHash;
+    delete chat.updatedAt;
+    delete chat.createdAt;
     this.chatGateway.joinRoom(currentUser.id, chat.id);
     this.chatGateway.newChat(userToChatId, chat);
     return chat;
@@ -106,8 +109,8 @@ export class ChatController {
       await this.chatService.isBlocked(chatId, userId);
       receiverId =
         targetId.members[1].id == user.id
-          ? targetId.members[1].id
-          : targetId.members[0].id;
+          ? targetId.members[0].id
+          : targetId.members[1].id;
     } else if (channelId) {
       await this.chatService.isBanned(channelId, userId);
       await this.chatService.isMuted(channelId, userId);
@@ -148,12 +151,10 @@ export class ChatController {
     @Body() data: createChannelDto,
     @CurrentUser() user: User,
   ) {
-    console.log('here in create channel');
     const userId = user.id;
     try {
       const channel = await this.chatService.createChannel(data, userId);
       this.chatGateway.joinRoom(userId, channel.id);
-      console.log('the created channel:', channel);
       delete channel.password;
       return channel;
     } catch (err) {
@@ -173,6 +174,7 @@ export class ChatController {
 
     return channels;
   }
+
   @Patch('channel/:id')
   async updateChannel(
     @Body() data: UpdateChannelDto,
@@ -189,6 +191,7 @@ export class ChatController {
     this.chatGateway.updateChannel(channelId, updatedChannel);
     return updatedChannel;
   }
+
   @Delete('channel/:id')
   async deleteChannel(
     @Param('id') channelId: string,
@@ -206,10 +209,14 @@ export class ChatController {
     @Body() body: JoinChannelDto,
   ) {
     const userId = user.id;
-    const channel = await this.chatService.joinChannel(channelId, userId, body);
+    const channelMembership = await this.chatService.joinChannel(
+      channelId,
+      userId,
+      body,
+    );
     this.chatGateway.joinRoom(userId, channelId);
-    this.chatGateway.userJoined(channel, user);
-    return channel;
+    this.chatGateway.userJoined(channelMembership.channelId, channelMembership);
+    return channelMembership.channel;
   }
 
   @Post('channel/:id/leave')
@@ -218,7 +225,7 @@ export class ChatController {
     @CurrentUser() user: User,
   ) {
     await this.chatService.leaveChannel(channelId, user.id);
-    this.chatGateway.userLeft(channelId, user);
+    this.chatGateway.userLeft(channelId, user.id);
     this.chatGateway.leaveRoom(user.id, channelId);
     return { message: `User has successfully left the channel.` };
   }
@@ -229,11 +236,13 @@ export class ChatController {
     @CurrentUser() user: User,
     @Body() body: userIdDto,
   ) {
-    await this.chatService.addAdmin(channelId, user.id, body.userId);
-    this.chatGateway.addAdmin(channelId, body.userId);
-    return {
-      message: `User has been made an admin of the channel .`,
-    };
+    const updatedMembership = await this.chatService.addAdmin(
+      channelId,
+      user.id,
+      body.userId,
+    );
+    this.chatGateway.addAdmin(channelId, updatedMembership);
+    return updatedMembership;
   }
 
   @Delete('channel/:id/admin')
@@ -242,9 +251,13 @@ export class ChatController {
     @CurrentUser() user: User,
     @Body() body: userIdDto,
   ) {
-    await this.chatService.removeAdmin(channelId, user.id, body.userId);
-    this.chatGateway.removeAdmin(channelId, body.userId);
-    return { message: 'Admin rights removed successfully.' };
+    const updatedMembership = await this.chatService.removeAdmin(
+      channelId,
+      user.id,
+      body.userId,
+    );
+    this.chatGateway.removeAdmin(channelId, updatedMembership);
+    return updatedMembership;
   }
 
   @Post('channel/:id/mute')
@@ -258,11 +271,22 @@ export class ChatController {
       user.id,
       body,
     );
-    this.chatGateway.muteUser(
+    this.chatGateway.muteUser(channelId, updatedMembership);
+    return updatedMembership;
+  }
+
+  @Post('channel/:id/unmute')
+  async unmuteMember(
+    @Param('id') channelId: string,
+    @CurrentUser() user: User,
+    @Body() body: userMuteDto,
+  ) {
+    const updatedMembership = await this.chatService.unmuteMember(
       channelId,
-      body.userId,
-      updatedMembership.isMuted,
+      user.id,
+      body,
     );
+    this.chatGateway.unmuteUser(channelId, updatedMembership);
     return updatedMembership;
   }
 
@@ -272,18 +296,15 @@ export class ChatController {
     @CurrentUser() user: User,
     @Body() targetId: userIdDto,
   ) {
-    console.log('in ban id:', targetId);
     const updatedMembership = await this.chatService.banMember(
       id,
       user.id,
       targetId.userId,
     );
-    this.chatGateway.banUser(id, targetId.userId, updatedMembership.isBanned);
-    this.chatGateway.leaveRoom(user.id, id);
+    this.chatGateway.banUser(id, targetId.userId);
+    this.chatGateway.leaveRoom(targetId.userId, id);
 
-    return updatedMembership.isBanned
-      ? { message: 'User has been banned successfully.' }
-      : { message: 'User has been unbanned successfully.' };
+    return updatedMembership;
   }
 
   @Post('channel/:id/kick')
@@ -323,14 +344,14 @@ export class ChatController {
     @CurrentUser() user: User,
     @Body() body: userIdDto,
   ) {
-    const { targetUser, channel } = await this.chatService.addUserChannel(
+    const channelMembership = await this.chatService.addUserChannel(
       channelId,
       user.id,
       body.userId,
     );
     this.chatGateway.joinRoom(body.userId, channelId);
-    this.chatGateway.userJoined(channel, targetUser);
-    return { message: 'User successfully added to the channel.' };
+    this.chatGateway.userJoined(channelMembership.channelId, channelMembership);
+    return channelMembership;
   }
   @Get('channel/all')
   async getAllChannel() {
@@ -344,19 +365,25 @@ export class ChatController {
   }
   @Post('block')
   async blockUser(@CurrentUser() user: User, @Body() targetUserId: userIdDto) {
-    await this.chatService.blockUser(user.id, targetUserId.userId);
+    const targetUser = await this.chatService.blockUser(
+      user.id,
+      targetUserId.userId,
+    );
     this.chatGateway.blockUser(targetUserId.userId, user.id);
 
-    return { message: 'user is blocked' };
+    return { id: targetUser.id, providerId: targetUser.providerId };
   }
   @Post('unblock')
   async unblockUser(
     @CurrentUser() user: User,
     @Body() targetUserId: userIdDto,
   ) {
-    await this.chatService.unblockUser(user.id, targetUserId.userId);
+    const targetUser = await this.chatService.unblockUser(
+      user.id,
+      targetUserId.userId,
+    );
     this.chatGateway.unblockUser(targetUserId.userId, user.id);
-    return { message: 'user is unblocked' };
+    return { id: targetUser.id, providerId: targetUser.providerId };
   }
 
   @Post('upload')
@@ -373,9 +400,11 @@ export class ChatController {
     }),
   )
   uploadChannelAvatar(@UploadedFile() file) {
+    console.log('the data in the backend ', file);
     if (!file) {
       throw new BadRequestException('No file uploaded.');
     }
+
     const backendUrl = process.env.BACKEND_URL || 'http://localhost:3000';
     const filePath = `${backendUrl}/uploads/${file.filename}`;
     return { avatar: filePath };

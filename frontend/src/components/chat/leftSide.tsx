@@ -1,49 +1,54 @@
-import React, { useState, useEffect, createContext, useContext } from 'react'
-import Btns from './commun_component/btns'
-import Link from 'next/link'
-import axios from 'axios'
-import Friend from './friend'
-import Channels from './channels'
-import { chatslistContext } from '../../app/(home)/chat/page'
-import FriendConversation from './friendConversation'
-import ChannelConversation from './channelConversation'
-
-// import { chatsData } from './data'
-// import { error } from 'console'
+"use client";
+import Btns from "./commun_component/btns";
+import React, { useContext } from "react";
+import Link from "next/link";
+import { chatslistContext } from "../../app/(home)/chat/page";
+import FriendConversation from "./friendConversation";
+import ChannelConversation from "./channelConversation";
+import Image from "next/image";
 
 function LeftSide() {
+  const UserData: any = useContext(chatslistContext);
 
-	const UserData: any = useContext(chatslistContext);
-
-
-	return (
-		//container
-		// userConte
-		
-		<div className='flex flex-col border-r-[4px] border-[#F3FAFF] w-full h-full '>
-			{/* profile */}
-			<div className='flex  justify-between items-center h-[130px]  border-b-[3px] border-[#F3FAFF] p-5'>
-				{/* image */}
-				<Link href="/profile">
-					<img	src={UserData.myId.avatar}
-							alt={UserData.myId.nickName}
-							className=' rounded-full object-center w-[86px] h-[86px] ' />
-				</Link>
-				{/* icons */}
-				<div className='flex justify-between items-center w-[146px]'>
-					<Btns icon={"../../assets/channel_icon.png"} onClick={() => { UserData.setWhatIcon('channel') }} />
-					<img src="../../assets/separator_icon.png" alt="separator" />
-					<Btns icon={"../../assets/friend_icon.png"} onClick={() => { UserData.setWhatIcon('friend') }} />
-				</div>
-			</div>
-			{/* search bar */}
-
-			{/* chat */}
-			<FriendConversation/>
-			<ChannelConversation/>
-
-		</div>
-	)
+  return (
+    <div className="flex flex-col border-r-[4px] border-[#F3FAFF] w-full h-full ">
+      <div className="flex  justify-between items-center h-[130px]  border-b-[3px] border-[#F3FAFF] p-5">
+        <Link href="/profile">
+          <div className="h-[60px] w-[60px] rounded-full object-cover overflow-hidden relative">
+            <Image
+              sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
+              src={UserData.myId?.avatar || "/assets/Profile.svg"}
+              alt={UserData.myId.nickName || "Final Error Here FIXED"}
+              fill={true}
+              draggable={false}
+              priority={true}
+            />
+          </div>
+        </Link>
+        <div className="flex justify-between items-center w-[146px]">
+          <Btns
+            icon={"../../assets/chatChannelUser.svg"}
+            onClick={() => {
+              UserData.setWhatIcon("channel");
+              UserData.setShowFriendMenu(false);
+              UserData.setChatClicked([]);
+            }}
+          />
+          <div className="h-[35px] w-[2px] bg-color-31 rounded-2 "></div>
+          <Btns
+            icon={"../../../assets/chatSingleUser.svg"}
+            onClick={() => {
+              UserData.setWhatIcon("friend");
+              UserData.setShowChannelMenu(false);
+              UserData.setChannelClicked([]);
+            }}
+          />
+        </div>
+      </div>
+      <FriendConversation />
+      <ChannelConversation />
+    </div>
+  );
 }
 
-export default LeftSide
+export default LeftSide;

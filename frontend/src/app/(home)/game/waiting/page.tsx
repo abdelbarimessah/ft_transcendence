@@ -91,7 +91,7 @@ export default function Wiating() {
               width={20}
               priority={true}
               draggable={false}
-            ></Image>
+            />
           </div>
         </div>
       )}

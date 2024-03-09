@@ -362,19 +362,19 @@ export class ChatController {
   }
   @Post('block')
   async blockUser(@CurrentUser() user: User, @Body() targetUserId: userIdDto) {
-    await this.chatService.blockUser(user.id, targetUserId.userId);
+    const targetUser = await this.chatService.blockUser(user.id, targetUserId.userId);
     this.chatGateway.blockUser(targetUserId.userId, user.id);
 
-    return { message: 'user is blocked' };
+    return { id: targetUser.id, providerId: targetUser.providerId };
   }
   @Post('unblock')
   async unblockUser(
     @CurrentUser() user: User,
     @Body() targetUserId: userIdDto,
   ) {
-    await this.chatService.unblockUser(user.id, targetUserId.userId);
+    const targetUser = await this.chatService.unblockUser(user.id, targetUserId.userId);
     this.chatGateway.unblockUser(targetUserId.userId, user.id);
-    return { message: 'user is unblocked' };
+    return { id: targetUser.id, providerId: targetUser.providerId };
   }
 
   @Post('upload')
@@ -391,9 +391,11 @@ export class ChatController {
     }),
   )
   uploadChannelAvatar(@UploadedFile() file) {
+    console.log('the data in the backend ', file);
     if (!file) {
       throw new BadRequestException('No file uploaded.');
     }
+    
     const backendUrl = process.env.BACKEND_URL || 'http://localhost:3000';
     const filePath = `${backendUrl}/uploads/${file.filename}`;
     return { avatar: filePath };

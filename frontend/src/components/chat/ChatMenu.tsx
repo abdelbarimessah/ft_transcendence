@@ -45,7 +45,8 @@ const ChatMenu = ({}) => {
         <Image
           className="rounded-full min-w-[220px]"
           src={user?.avatar}
-          alt={user.nickName}
+          alt="alt-img"
+          sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
           width={400}
           height={400}
         />

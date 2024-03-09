@@ -5,7 +5,7 @@ import axios from "axios";
 import { chatslistContext } from "../../app/(home)/chat/page";
 import { SocketContext } from "@/app/SocketContext";
 
-function RenderFromUser ({avatar, nickName, firstName, lastName, zIndex, userRef, admin, isMuted})
+function RenderFromUser ({avatar, nickName, firstName, lastName, zIndex, userRef, admin})
 {
 
   return (

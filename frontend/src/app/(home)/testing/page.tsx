@@ -23,8 +23,7 @@ export default function App() {
               fill={true}
               priority={true}
               className="w-full h-full object-cover"
-            >
-            </Image>
+            />
           </div>
           <div className="w-full h-[54px]  flex flex-col items-center justify-center">
             <span className='font-nico-moji text-color-6 sm:text-[24px] text-[18px] capitalize'>
@@ -48,8 +47,7 @@ export default function App() {
                   draggable={false}
                   fill={true}
                   priority={true}
-                >
-                </Image>
+                />
               </div>
             </div>
             <div className="w-[370px] h-[60px] bg-[#F3FAFF] rounded-[22px] flex items-center justify-between px-5 hover:scale-[1.01] hover:opacity-95 cursor-pointer">
@@ -63,8 +61,7 @@ export default function App() {
                   draggable={false}
                   fill={true}
                   priority={true}
-                >
-                </Image>
+                />
               </div>
             </div>
           </div>
@@ -81,8 +78,7 @@ export default function App() {
               draggable={false}
               fill={true}
               priority={true}
-            >
-            </Image>
+            />
           </div>
         </div>
       </div>

@@ -13,6 +13,9 @@ function Friend ({chat}: any) {
     const UserData: any	 = useContext(chatslistContext);
     function handelChahtConv (chatClicked: any){
         UserData.setChatClicked(chatClicked);
+        const myBlockedList = UserData.myId.id === chatClicked.members[0].id ? chatClicked.members[0]?.blockedUsers : chatClicked.members[1]?.blockedUsers;
+        UserData.setBlockList(myBlockedList)
+
         UserData.setChannelClicked([]);
     }
 

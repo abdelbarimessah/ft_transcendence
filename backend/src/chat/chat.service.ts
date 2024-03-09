@@ -59,16 +59,19 @@ export class ChatService {
         chats: {
           select: {
             id: true,
-            members: true,
+            members: {
+              include: {
+                blockedUsers: {
+                  select: {
+                    id: true,
+                    providerId: true,
+                  },
+                },
+              },
+            },
           },
           orderBy: {
             updatedAt: 'asc',
-          },
-        },
-        blockedUsers: {
-          select: {
-            id: true,
-            provider: true,
           },
         },
       },
@@ -156,9 +159,9 @@ export class ChatService {
         });
 
         if (blocked && blocked.blockedUsers.length > 0) {
-          throw new ForbiddenException('You blocked the user.');
-        } else if (blocked.blockedBy.length > 0)
           throw new ForbiddenException('You are blocked by the user.');
+        } else if (blocked.blockedBy.length > 0)
+          throw new ForbiddenException('You blocked the user.');
       }
     }
   }
@@ -276,6 +279,7 @@ export class ChatService {
       include: {
         channel: {
           select: {
+            avatar: true,
             id: true,
             name: true,
             type: true,
@@ -286,7 +290,7 @@ export class ChatService {
       },
     });
     if (!memberships || memberships.length === 0) {
-      throw new BadRequestException('No channels found for the user.');
+      return [];
     }
     const channels = memberships.map((membership) => {
       this.chatGateway.joinRoom(userId, membership.channel.id);
@@ -368,12 +372,10 @@ export class ChatService {
     });
 
     if (isMember) {
-    if (isMember.isBanned) {
-      throw new BadRequestException('User is banned form channel');
-    }
-    throw new BadRequestException(
-      'User is already a member of the channel',
-    );
+      if (isMember.isBanned) {
+        throw new BadRequestException('User is banned form channel');
+      }
+      throw new BadRequestException('User is already a member of the channel');
     }
     if (channel.type === 'PROTECTED') {
       if (!body.password) {
@@ -392,11 +394,13 @@ export class ChatService {
         'This channel is private and cannot be joined freely',
       );
     }
+    const isAdmin = channel.ownerId === userId;
     const channelMembership = await this.prismaService.channelMembership.create(
       {
         data: {
           channelId: channelId,
           userId: userId,
+          isAdmin,
         },
         include: {
           user: {
@@ -1020,12 +1024,12 @@ export class ChatService {
       data: {
         blockedUsers: {
           connect: {
-            id: targetUser.id,
+            id: targetId,
           },
         },
       },
     });
-    return alreadyBlocked;
+    return targetUser;
   }
   async unblockUser(userId: string, targetId: string) {
     // ? maybe this method should be optimized
@@ -1067,5 +1071,6 @@ export class ChatService {
         },
       },
     });
+    return targetUser;
   }
 }

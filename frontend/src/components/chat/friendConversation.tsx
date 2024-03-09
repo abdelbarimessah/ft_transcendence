@@ -20,7 +20,7 @@ function FriendConversation(){
                  onClick={handelAddNewConversation}>
 
                     <h1 className=' text-[#6D8CA3] text-lg' >  Find New Friend</h1>
-                    <Btns icon={"../../assets/addChannel.png"} onClick={undefined} />
+                    <Btns icon={"../../assets/chatAddUser.svg"} onClick={undefined} />
 
                 </div>
                     <div className='flex flex-col no-scrollbar overflow-y-scroll h-full w-full  px-3'>

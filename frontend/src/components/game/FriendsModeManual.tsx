@@ -55,8 +55,7 @@ const FriendsModeManual = () => {
                 priority={true}
                 sizes='(min-width: 480px) 445px, calc(90.63vw + 28px)'
                 draggable={false}
-              >
-              </Image>
+              />
             </div>
           </div>
           <span className="text-[12px] text-color-31"> You win when you reach{" "}
@@ -72,8 +71,7 @@ const FriendsModeManual = () => {
                 priority={true}
                 sizes='(min-width: 480px) 445px, calc(90.63vw + 28px)'
                 draggable={false}
-              >
-              </Image>
+              />
             </div>
           </div>
           <span className="text-[12px] text-color-31">The game start after 3 seconds</span>

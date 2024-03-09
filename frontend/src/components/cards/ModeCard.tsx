@@ -151,8 +151,7 @@ function ModeCard(me: any) {
                                             width={32}
                                             priority={true}
                                             draggable={false}
-                                        >
-                                        </Image>
+                                        />
                                     </div>
                                     <div className='flex flex-col '>
                                         <p className="text-[18px] text-color-3 font-poppins font-[400]" >ALPHA ZERO</p>
@@ -201,8 +200,7 @@ function ModeCard(me: any) {
                                                 priority={true}
                                                 sizes='(min-width: 480px) 445px, calc(90.63vw + 28px)'
                                                 draggable={false}
-                                            >
-                                            </Image>
+                                            />
                                         </div>
 
                                     </div>
@@ -249,8 +247,7 @@ function ModeCard(me: any) {
                                                 priority={true}
                                                 sizes='(min-width: 480px) 445px, calc(90.63vw + 28px)'
                                                 draggable={false}
-                                            >
-                                            </Image>
+                                            />
                                         </div>
                                     </div>
                                     <div className='flex flex-col'>
@@ -333,8 +330,7 @@ function ModeCard(me: any) {
                                     width={31}
                                     draggable={false}
                                     priority={true}
-                                >
-                                </Image>
+                                />
                             </div>
                             <div id='slider'
                                 className='w-full overflow-x-scroll scroll whitespace-nowrap no-scrollbar flex flex-row overflow-hidden scroll-smooth scrollbar-hide gap-4'>
@@ -354,9 +350,7 @@ function ModeCard(me: any) {
                                     width={31}
                                     draggable={false}
                                     priority={true}
-                                >
-
-                                </Image>
+                                />
 
                             </div>
                         </div>
@@ -517,8 +511,7 @@ function InivteModeCard() {
                         width={31}
                         draggable={false}
                         priority={true}
-                    >
-                    </Image>
+                    />
                 </div>
                 <div id='slider'
                     className='w-full overflow-x-scroll scroll whitespace-nowrap no-scrollbar flex flex-row overflow-hidden scroll-smooth scrollbar-hide gap-4'>
@@ -538,9 +531,7 @@ function InivteModeCard() {
                         width={31}
                         draggable={false}
                         priority={true}
-                    >
-
-                    </Image>
+                    />
 
                 </div>
             </div>

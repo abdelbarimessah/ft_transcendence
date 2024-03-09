@@ -13,6 +13,7 @@ export class GameController {
   @Post('gameData')
   async gameData(@Req() req: Request, @CurrentUser() user: any) {
     const gameData = req.body;
+    // const providderId = gameData.userId;
     await this.gameService.addGameData(user.providerId, gameData);
   }
 

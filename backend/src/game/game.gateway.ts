@@ -173,7 +173,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       tmpData.player2 = socket.data.user;
       this.roomSockets.set(roomName, tmpData);
     }
-    
+
     this.server.in(roomName).emit('playersReadyInvite', { sender: data.sender, receiver: data.receiver, inviteNumber: data.inviteNumber });
   }
 
@@ -212,7 +212,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('customDisconnectClient')
   handleCustomDisconnect(socket: Socket, data: any) {
-    if (!data.roomName || data.roomName.ww) return;
+    if (!data.roomName) return;
     this.playerQueue = this.playerQueue.filter(
       (player) => player.socket.id !== socket.id,
     );
@@ -221,14 +221,15 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     );
     const roomName = data.roomName;
     const sockets = this.roomSockets.get(roomName);
-    console.log('the OnePlayerLeaveTheRoom sent to the player ');
+    console.log('the OnePlayerLeaveTheRoom sent to the player 1111111', socket.id);
 
-    this.server.to(data.roomName).emit('OnePlayerLeaveTheRoom', {
+    socket.emit('OnePlayerLeaveTheRoom', {
       roomName: data.roomName,
       user: sockets.player1,
       oponent: sockets.player2,
       socketId: socket.id,
     });
+    this.server.to(data.roomName).emit('OnePlayerLeaveTheRoomCallback', {socketId: socket.id})
 
     this.connectedClients.delete(socket.id);
     this.server.socketsLeave(data.roomName);

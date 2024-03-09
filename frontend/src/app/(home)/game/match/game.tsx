@@ -76,7 +76,7 @@ import { Game as PhaserGame } from "phaser";
 import { useContext, useEffect, useRef, useState } from "react";
 import pongGame from "@/components/game/PongGame";
 import { SocketContext } from "@/app/SocketContext";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams} from "next/navigation";
 import { toast } from "sonner";
 
 export default function Game() {
@@ -85,6 +85,24 @@ export default function Game() {
   let [game, setGame] = useState<PhaserGame | null>(null);
   const params = useSearchParams();
   const roomName: any = params.get("room");
+  // const roomName: any = param.get("room");
+  
+  // const [roomName, setRoomName] = useState('');
+  
+  // useEffect(() => {
+  //   if (typeof window !== 'undefined') {
+  //     const path = window.location.pathname + window.location.search;
+  //     let paths  =path.split('/match')[1]
+  //     let room = paths.split('=')[1] 
+  //     setRoomName(room);
+  //   }
+  // }, []);
+
+  // console.log('roomName in the game [12312312313]', roomName);
+  
+  // console.log('the data in the useEfffect ', pathAfterTesting);
+  
+  // const roomName: any = '12312312';
   const router = useRouter();
 
   useEffect(() => {
@@ -97,7 +115,7 @@ export default function Game() {
       physics: {
         default: 'arcade',
         arcade: {
-          gravity: { y: 0 },
+          gravity: {x: 0,  y: 0 },
           fps: 120,
         }
       },
@@ -114,25 +132,19 @@ export default function Game() {
 
     return () => {
       newGame?.destroy(true);
-      console.log("🐲 DESTROY 🐲");
     };
 
-  }, []);
+  }, [roomName, socketClient]);
 
 
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.hidden) {
-        // The tab is not active, pause the game
-        console.log('pause the game until i return [333333]');
-        // alert('you left the game')
         toast.error('You left the game Page !')
         router.push('/game')
         
         game?.pause();
       } else {
-        console.log('resume the game [222222]');
-        // The tab is active, resume the game
         game?.resume();
       }
     };
@@ -142,7 +154,7 @@ export default function Game() {
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [game]);
+  }, [game, router]);
   
 
   useEffect(() => {

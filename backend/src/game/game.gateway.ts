@@ -8,6 +8,7 @@ import {
 import { Logger } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
 import { GameService } from './game.service';
+import { NotificationService } from 'src/notification/notification.service';
 
 @WebSocketGateway({
   cors: {
@@ -18,7 +19,14 @@ import { GameService } from './game.service';
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   nb: number = 0;
   private logger: Logger = new Logger('GameGateway');
+<<<<<<< HEAD
   constructor(private gameService: GameService) {}
+=======
+  constructor(
+    private gameService: GameService,
+    private notificationService: NotificationService
+  ) { }
+>>>>>>> 8ce03803d8cbda3afdfe4795850436b79889bd14
 
   @WebSocketServer()
   server: Server;
@@ -100,10 +108,17 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const roomName = `gameCard-${this.clientNOForCard}`;
       const player1 = this.playerQueue.shift();
       const player2 = this.playerQueue.shift();
+<<<<<<< HEAD
       if (
         player1.socket.data.user.providerId ===
         player2.socket.data.user.providerId
       ) {
+=======
+      console.log('the two player ids :1  ', player1.socket.data.user.providerId);
+      console.log('the two player ids :2  ', player2.socket.data.user.providerId);
+
+      if (player1.socket.data.user.providerId === player2.socket.data.user.providerId) {
+>>>>>>> 8ce03803d8cbda3afdfe4795850436b79889bd14
         this.playerQueue.push(player1);
         socket.emit('youAreInGameFromAntherPage');
         return;
@@ -144,6 +159,11 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       player1: socket.data.user,
       player2: null,
     });
+    this.notificationService.gameNotification(data.sender.id, data.receiver.id, this.inviteNumber);
+    setTimeout(() => {
+      socket.emit('inviteCallback', data);
+      console.log('send the callBack ;;;;;;');
+    }, 3000)
 
     this.server.to(data.receiver.providerId).emit('playRequestFromFriend', {
       sender: data.sender,
@@ -154,7 +174,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('acceptInviteGame')
   async handleAcceptInviteGame(socket: Socket, data: any) {
-    const roomName = `InviteRoom-${data.gamePair.sender.providerId}-${data.gamePair.receiver.providerId}-${data.gamePair.inviteNumber}`;
+    console.log('the data  geted on the acceptInviteGame [8888888] : ', data);
+    const roomName = `InviteRoom-${data.sender.providerId}-${data.receiver.providerId}-${data.inviteNumber}`;
+    console.log(' the roomName is : ', roomName);
+
     socket.join(roomName);
     const tmpData = this.roomSockets.get(roomName);
     if (tmpData) {
@@ -199,7 +222,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('customDisconnectClient')
   handleCustomDisconnect(socket: Socket, data: any) {
-    if (!data.roomName || data.roomName.ww) return;
+    if (!data.roomName) return;
     this.playerQueue = this.playerQueue.filter(
       (player) => player.socket.id !== socket.id,
     );
@@ -208,12 +231,15 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     );
     const roomName = data.roomName;
     const sockets = this.roomSockets.get(roomName);
-    this.server.to(data.roomName).emit('OnePlayerLeaveTheRoom', {
+    console.log('the OnePlayerLeaveTheRoom sent to the player 1111111', socket.id);
+
+    socket.emit('OnePlayerLeaveTheRoom', {
       roomName: data.roomName,
       user: sockets.player1,
       oponent: sockets.player2,
       socketId: socket.id,
     });
+    this.server.to(data.roomName).emit('OnePlayerLeaveTheRoomCallback', {socketId: socket.id})
 
     this.connectedClients.delete(socket.id);
     this.server.socketsLeave(data.roomName);
@@ -251,6 +277,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (this.playerScore.get(socket.id) < 5) {
       const initialVelocityX = Math.random() * 600 + 200;
       const initialVelocityY = Math.random() * 600 + 200;
+      const rand = Math.random() % 2 > 1 / 2 ? -1 : 1;
+      console.log('the random direction of the ball : .....', { rand });
+
       setTimeout(() => {
         this.server.in(roomName).emit('bothInRoom', {
           roomName: roomName,

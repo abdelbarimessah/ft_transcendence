@@ -7,6 +7,7 @@ import { SocketContext, SocketProvider } from "../SocketContext";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import AuthWrapper from "../authToken";
 
 axios.defaults.withCredentials = true;
 
@@ -21,13 +22,44 @@ export default function RootLayout({
   const socketClient = useContext(SocketContext);
   const [win, setWin] = useState(false);
   const [lose, setLose] = useState(false);
-  // socketClient.on("notification", (data) => {
-  //   console.log(data);
-  // });
+
+  const [user, setUser] = useState<any>();
+
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`);
+        setUser(res.data);
+      }
+      catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      }
+    }
+
+    getData();
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      const intervalId = setInterval(() => {
+        socketClient.emit('User-status', { status: 'online', providerId: user.providerId });
+      }, 2000);
+
+      return () => clearInterval(intervalId);
+    }
+  }, [socketClient]);
+
+
+
   useEffect(() => {
     const enterRoom = (data: any) => {
+      console.log('the data in the normal endGame ******', data);
+      
       setGameEnded(true);
       const gameData = {
+        userId: data.user.providerId,
         opponentId: data.oponent.providerId,
         userScore: data.game.userScore,
         opponentScore: data.game.opponentScore,
@@ -44,8 +76,9 @@ export default function RootLayout({
         .post(`${process.env.NEXT_PUBLIC_API_URL}/game/gameData`, gameData, {
           withCredentials: true,
         })
-        .then((res) => {})
+        .then((res) => { })
         .catch((err) => {
+          // eslint-disable-next-line no-console
           console.error(err.message);
         });
       setTimeout(() => {
@@ -57,38 +90,69 @@ export default function RootLayout({
     return () => {
       socketClient.off("endGameClient");
     };
-  }, [socketClient]);
+  }, [socketClient, lose, route]);
+
+
 
   useEffect(() => {
     if (gameEnded) {
       return;
     }
     socketClient.on("OnePlayerLeaveTheRoom", async (data) => {
-      if (data.socketId !== socketClient.id) return;
+      // console.log(socketClient.id, 'the data in the useEffect is 11111:', data);
+      if (socketClient.id !== data.socketId) return;
       const gameData = {
+        userId: data.user.providerId,
         opponentId: data.oponent.providerId,
+        userScore: 5,
+        opponentScore: 0,
+        status: "win",
+        gameName: data.roomName,
+        gameType: "randomMode",
+      };
+      console.log('game data user : ', gameData);
+
+      const gameDataOpponent = {
+        userId: data.oponent.providerId,
+        opponentId: data.user.providerId,
         userScore: 0,
         opponentScore: 5,
         status: "lose",
         gameName: data.roomName,
         gameType: "randomMode",
-      };
-      setLose(true);
-
+      }
+      console.log('game data oppoenent : ', gameDataOpponent);
       try {
+
         const url = process.env.NEXT_PUBLIC_API_URL;
-        await axios.post(`${url}/game/gameData`, gameData, {
-          withCredentials: true,
-        });
+        await axios.post(`${url}/game/gameData`, gameData)
+        await axios.post(`${url}/game/gameData`, gameDataOpponent)
+
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error(error);
       }
-      setTimeout(() => route.push("/game"), 3000);
-    });
-    return () => {
-      socketClient.off("OnePlayerLeaveTheRoom");
-    };
-  }, [socketClient]);
+
+    })
+
+  }, [socketClient])
+
+
+  useEffect(() => {
+    socketClient.on('OnePlayerLeaveTheRoomCallback', (data) => {
+      if (socketClient.id === data.socketId) {
+        setLose(true)
+        return;
+      }
+      setWin(true);
+    })
+    return (() => {
+      socketClient.off('OnePlayerLeaveTheRoomCallback');
+    })
+  }, [socketClient])
+
+
+
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
     if (win || lose) {
@@ -104,59 +168,32 @@ export default function RootLayout({
     };
   }, [win, lose]);
 
-  useEffect(() => {
-    if (gameEnded) {
-      return;
-    }
-    socketClient.on("OnePlayerLeaveTheRoom", async (data) => {
-      if (data.socketId === socketClient.id || !data.socketId) return;
-      const gameData = {
-        opponentId: data.user.providerId,
-        userScore: 5,
-        opponentScore: 0,
-        status: "win",
-        gameName: data.roomName,
-        gameType: "randomMode",
-      };
-      setWin(true);
-      toast.success("The other player left the game");
-
-      try {
-        const url = process.env.NEXT_PUBLIC_API_URL;
-        await axios.post(`${url}/game/gameData`, gameData);
-      } catch (error:any) {
-        console.error(error.message);
-      }
-      setTimeout(() => route.push("/game"), 3000);
-    });
-    return () => {
-      socketClient.off("OnePlayerLeaveTheRoom");
-    };
-  }, [socketClient]);
-
   return (
-    <div className="flex  w-screen min-h-screen ">
-      <SideNav setShow={setShow} />
-      <div className="flex items-center justify-center flex-1 w-10 ">
-        <SocketProvider>{children}</SocketProvider>
-        {win && (
-          <div className=" w-[282px] h-[195px] bg-color-30 rounded-[22px] flex flex-col items-center justify-center absolute top-1/2 left-[50%] ml-[70px] transform -translate-x-1/2 -translate-y-1/2 z-[1000]">
-            <span className="font-nico-moji text-[64px] text-color-6">you</span>
-            <span className="font-nico-moji text-[64px] text-color-6 -mt-7">
-              {" "}
-              win
-            </span>
-          </div>
-        )}
-        {lose && (
-          <div className=" w-[282px] h-[195px] bg-color-30 rounded-[22px] flex flex-col items-center justify-center absolute top-1/2 left-[50%] ml-[7´0px] transform -translate-x-1/2 -translate-y-1/2 z-[1000]">
-            <span className="font-nico-moji text-[64px] text-color-6">you</span>
-            <span className="font-nico-moji text-[64px] text-color-6 -mt-7">
-              lose
-            </span>
-          </div>
-        )}
+    <AuthWrapper>
+
+      <div className="flex  w-screen min-h-screen ">
+        <SideNav setShow={setShow} />
+        <div className="flex items-center justify-center flex-1 w-10 ">
+          <SocketProvider>{children}</SocketProvider>
+          {win && (
+            <div className=" w-[282px] h-[195px] bg-color-30 rounded-[22px] flex flex-col items-center justify-center absolute top-1/2 left-[50%] ml-[70px] transform -translate-x-1/2 -translate-y-1/2 z-[1000]">
+              <span className="font-nico-moji text-[64px] text-color-6">you</span>
+              <span className="font-nico-moji text-[64px] text-color-6 -mt-7">
+                {" "}
+                win
+              </span>
+            </div>
+          )}
+          {lose && (
+            <div className=" w-[282px] h-[195px] bg-color-30 rounded-[22px] flex flex-col items-center justify-center absolute top-1/2 left-[50%] ml-[7´0px] transform -translate-x-1/2 -translate-y-1/2 z-[1000]">
+              <span className="font-nico-moji text-[64px] text-color-6">you</span>
+              <span className="font-nico-moji text-[64px] text-color-6 -mt-7">
+                lose
+              </span>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </AuthWrapper>
   );
 }

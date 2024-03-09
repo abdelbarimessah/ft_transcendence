@@ -23,7 +23,6 @@ export class NotificationGateway {
   @SubscribeMessage('notification')
   async readNotification(client: any) {
     const userId = this.appService.getUserIdFromSocketId(client.id);
-
     const notificationUpdate = await this.prismaService.notification.updateMany(
       {
         where: {

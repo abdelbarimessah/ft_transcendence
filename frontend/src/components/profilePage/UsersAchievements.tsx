@@ -2,8 +2,9 @@
 import { Skeleton } from "@nextui-org/react";
 import axios from "axios";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { notFound, useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface Achievement {
   id: number;
@@ -13,6 +14,7 @@ interface Achievement {
 }
 
 function UsersAchievements() {
+
   const [achievements, setAchievements] = useState<any[]>([]);
   const [ach1, setAch1] = useState<Achievement>();
   const [ach2, setAch2] = useState<Achievement>();
@@ -21,29 +23,50 @@ function UsersAchievements() {
   const [ach5, setAch5] = useState<Achievement>();
   const [ach6, setAch6] = useState<Achievement>();
   const [ach7, setAch7] = useState<Achievement>();
+  const router = useRouter();
+  const [user, setUser] = useState<any>();
+
 
   const params = useParams<{ id: string; tag: string; item: string }>();
+
   useEffect(() => {
+    const getAchieveTest = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/user/${params?.id}`
+        );
+        setUser(res.data);
+      } catch (error) {
+        router.push('/profile')
+      }
+    }
+    getAchieveTest();
+  })
+  useEffect(() => {
+
     const getAchievements = async () => {
       try {
         const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/user/UsersAchievements/${params.id}`,
-          { withCredentials: true }
+          `${process.env.NEXT_PUBLIC_API_URL}/user/UsersAchievements/${params.id}`
         );
+        if (!res.data) {
+          return;
+        }
         setAchievements(res.data.achievements);
-        setAch1(achievements.find((ach) => ach.name === "ach1"));
-        setAch2(achievements.find((ach) => ach.name === "ach2"));
-        setAch3(achievements.find((ach) => ach.name === "ach3"));
-        setAch4(achievements.find((ach) => ach.name === "ach4"));
-        setAch5(achievements.find((ach) => ach.name === "ach5"));
-        setAch6(achievements.find((ach) => ach.name === "ach6"));
-        setAch7(achievements.find((ach) => ach.name === "ach7"));
+        setAch1(res.data.achievements.find((ach: any) => ach.name === "ach1"));
+        setAch2(res.data.achievements.find((ach: any) => ach.name === "ach2"));
+        setAch3(res.data.achievements.find((ach: any) => ach.name === "ach3"));
+        setAch4(res.data.achievements.find((ach: any) => ach.name === "ach4"));
+        setAch5(res.data.achievements.find((ach: any) => ach.name === "ach5"));
+        setAch6(res.data.achievements.find((ach: any) => ach.name === "ach6"));
+        setAch7(res.data.achievements.find((ach: any) => ach.name === "ach7"));
       } catch (err) {
-        console.error(err);
       }
     };
-    getAchievements();
-  }, [params.id]);
+    if (user)
+      getAchievements();
+
+  }, [params.id, achievements]);
 
   return (
     <div className="h-[619px] 2xl:w-[557px] xl:w-[1137px] w-full bg-color-0 rounded-[22px] flex flex-col gap-[40px]">
@@ -73,9 +96,8 @@ function UsersAchievements() {
               height={19}
               width={18}
               priority={true}
-              className={`${
-                ach5?.locked ? "hidden" : "block"
-              }  w-[18px] h-[19px] absolute top-[75px] z-[2000] left-1/2 transform -translate-x-1/2 -translate-y-1/2 `}
+              className={`${ach5?.locked ? "hidden" : "block"
+                }  w-[18px] h-[19px] absolute top-[75px] z-[2000] left-1/2 transform -translate-x-1/2 -translate-y-1/2 `}
               draggable={false}
             />
             <div className="w-[58px] h-[58px] absolute z-[1000]  top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
@@ -102,9 +124,8 @@ function UsersAchievements() {
               </div>
             </div>
             <div
-              className={`relative w-full h-[97px] overflow-hidden mt-[28px] ${
-                ach5?.locked ? "" : "blur-[1px]"
-              } `}
+              className={`relative w-full h-[97px] overflow-hidden mt-[28px] ${ach5?.locked ? "" : "blur-[1px]"
+                } `}
             >
               {ach5?.locked ? (
                 <Image
@@ -134,9 +155,8 @@ function UsersAchievements() {
               height={19}
               width={18}
               priority={true}
-              className={`${
-                ach6?.locked ? "hidden" : "block"
-              } w-[18px] h-[19px] absolute top-[75px] z-[2000] left-1/2 transform -translate-x-1/2 -translate-y-1/2 `}
+              className={`${ach6?.locked ? "hidden" : "block"
+                } w-[18px] h-[19px] absolute top-[75px] z-[2000] left-1/2 transform -translate-x-1/2 -translate-y-1/2 `}
               draggable={false}
             />
             <div className="w-[58px] h-[58px] absolute z-[1000]  top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
@@ -163,9 +183,8 @@ function UsersAchievements() {
               </div>
             </div>
             <div
-              className={`relative w-full h-[97px] overflow-hidden mt-[28px] ${
-                ach6?.locked ? "" : "blur-[1px]"
-              } `}
+              className={`relative w-full h-[97px] overflow-hidden mt-[28px] ${ach6?.locked ? "" : "blur-[1px]"
+                } `}
             >
               {ach6?.locked ? (
                 <Image
@@ -195,9 +214,8 @@ function UsersAchievements() {
               height={19}
               width={18}
               priority={true}
-              className={`${
-                ach1?.locked ? "hidden" : "block"
-              } w-[18px] h-[19px] absolute top-[75px] z-[2000] left-1/2 transform -translate-x-1/2 -translate-y-1/2 `}
+              className={`${ach1?.locked ? "hidden" : "block"
+                } w-[18px] h-[19px] absolute top-[75px] z-[2000] left-1/2 transform -translate-x-1/2 -translate-y-1/2 `}
               draggable={false}
             />
             <div className="w-[58px] h-[58px] absolute z-[1000]  top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
@@ -224,9 +242,8 @@ function UsersAchievements() {
               </div>
             </div>
             <div
-              className={`relative w-full h-[97px] overflow-hidden mt-[28px] ${
-                ach1?.locked ? "" : "blur-[1px]"
-              } `}
+              className={`relative w-full h-[97px] overflow-hidden mt-[28px] ${ach1?.locked ? "" : "blur-[1px]"
+                } `}
             >
               {ach1?.locked ? (
                 <Image
@@ -257,9 +274,8 @@ function UsersAchievements() {
             height={19}
             width={18}
             priority={true}
-            className={`${
-              ach7?.locked ? "hidden" : "block"
-            } w-[18px] h-[19px] absolute top-[75px] z-[2000] left-1/2 transform -translate-x-1/2 -translate-y-1/2 `}
+            className={`${ach7?.locked ? "hidden" : "block"
+              } w-[18px] h-[19px] absolute top-[75px] z-[2000] left-1/2 transform -translate-x-1/2 -translate-y-1/2 `}
             draggable={false}
           />
           <div className="w-[58px] h-[58px] absolute z-[1000]  top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
@@ -286,9 +302,8 @@ function UsersAchievements() {
             </div>
           </div>
           <div
-            className={`relative w-full h-[97px] overflow-hidden mt-[28px] ${
-              ach7?.locked ? "" : "blur-[1px]"
-            } `}
+            className={`relative w-full h-[97px] overflow-hidden mt-[28px] ${ach7?.locked ? "" : "blur-[1px]"
+              } `}
           >
             {ach7?.locked ? (
               <Image
@@ -319,9 +334,8 @@ function UsersAchievements() {
               height={19}
               width={18}
               priority={true}
-              className={`${
-                ach4?.locked ? "hidden" : "block"
-              } w-[18px] h-[19px] absolute top-[75px] z-[2000] left-1/2 transform -translate-x-1/2 -translate-y-1/2 `}
+              className={`${ach4?.locked ? "hidden" : "block"
+                } w-[18px] h-[19px] absolute top-[75px] z-[2000] left-1/2 transform -translate-x-1/2 -translate-y-1/2 `}
               draggable={false}
             />
             <div className="w-[58px] h-[58px] absolute z-[1000]  top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
@@ -348,9 +362,8 @@ function UsersAchievements() {
               </div>
             </div>
             <div
-              className={`relative w-full h-[97px] overflow-hidden mt-[28px]  ${
-                ach4?.locked ? "" : "blur-[1px]"
-              } `}
+              className={`relative w-full h-[97px] overflow-hidden mt-[28px]  ${ach4?.locked ? "" : "blur-[1px]"
+                } `}
             >
               {ach4?.locked ? (
                 <Image
@@ -380,9 +393,8 @@ function UsersAchievements() {
               height={19}
               width={18}
               priority={true}
-              className={`${
-                ach3?.locked ? "hidden" : "block"
-              } w-[18px] h-[19px] absolute top-[75px] z-[2000] left-1/2 transform -translate-x-1/2 -translate-y-1/2 `}
+              className={`${ach3?.locked ? "hidden" : "block"
+                } w-[18px] h-[19px] absolute top-[75px] z-[2000] left-1/2 transform -translate-x-1/2 -translate-y-1/2 `}
               draggable={false}
             />
             <div className="w-[58px] h-[58px] absolute z-[1000]  top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
@@ -409,9 +421,8 @@ function UsersAchievements() {
               </div>
             </div>
             <div
-              className={`relative w-full h-[97px] overflow-hidden mt-[28px]  ${
-                ach3?.locked ? "" : "blur-[1px]"
-              } `}
+              className={`relative w-full h-[97px] overflow-hidden mt-[28px]  ${ach3?.locked ? "" : "blur-[1px]"
+                } `}
             >
               {ach3?.locked ? (
                 <Image
@@ -434,16 +445,15 @@ function UsersAchievements() {
               )}
             </div>
           </div>
-          <div className="relative w-[97px] h-[125px] overflow-hidden   hover:scale-110 ">
+          <div className="relative w-[97px] h-[125px] overflow-hidden hover:scale-110 ">
             <Image
               src="/../../assets/lockIcon.svg"
               alt="Leader Board Icon"
               height={19}
               width={18}
               priority={true}
-              className={`${
-                ach2?.locked ? "hidden" : "block"
-              } w-[18px] h-[19px] absolute top-[75px] z-[2000] left-1/2 transform -translate-x-1/2 -translate-y-1/2 `}
+              className={`${ach2?.locked ? "hidden" : "block"
+                } w-[18px] h-[19px] absolute top-[75px] z-[2000] left-1/2 transform -translate-x-1/2 -translate-y-1/2 `}
               draggable={false}
             />
             <div className="w-[58px] h-[58px] absolute z-[1000]  top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
@@ -470,9 +480,8 @@ function UsersAchievements() {
               </div>
             </div>
             <div
-              className={`relative w-full h-[97px] overflow-hidden mt-[28px]  ${
-                ach2?.locked ? "" : "blur-[1px]"
-              } `}
+              className={`relative w-full h-[97px] overflow-hidden mt-[28px]  ${ach2?.locked ? "" : "blur-[1px]"
+                } `}
             >
               {ach2?.locked ? (
                 <Image

@@ -8,7 +8,7 @@ export class GameService {
   ) { }
 
   async addGameData(providerId: string, gameData: any) {
-    const { opponentId, userScore, opponentScore, status, gameName, gameType } =
+    const {userId, opponentId, userScore, opponentScore, status, gameName, gameType } =
       gameData;
     const count = await this.prismaService.game.count({
       where: {
@@ -16,6 +16,8 @@ export class GameService {
       },
     });
     if (count < 2) {
+      console.log('the game data in the services : ' , gameData);
+      
       const game = await this.prismaService.game.create({
         data: {
           opponentId,
@@ -24,15 +26,16 @@ export class GameService {
           status,
           gameName,
           gameType,
-          user: {
-            connect: {
-              providerId: providerId,
-            },
-          },
+          userId: userId
+          // user: {
+          //   connect: {
+          //     providerId: userId,
+          //   },
+          // },
         },
       });
 
-      if (status === 'win') await this.addUserLevel(providerId);
+      if (status === 'win') await this.addUserLevel(userId);
 
       const achievementsToUnlock = [
         { name: 'ach7', count: 50 },
@@ -43,12 +46,12 @@ export class GameService {
         { name: 'ach2', count: 1, gameType: 'randomMode' },
         { name: 'ach1', count: 1, gameType: 'friendMode' },
       ];
-      const friendMode = await this.getNumberOfWiningMatchFriendMode(providerId);
-      const randomMode = await this.getNumberOfWiningMatchRandomMode(providerId);
+      const friendMode = await this.getNumberOfWiningMatchFriendMode(userId);
+      const randomMode = await this.getNumberOfWiningMatchRandomMode(userId);
 
       for (const { name, count, gameType } of achievementsToUnlock) {
         const winCount = gameType
-          ? await this.getNumberOfWiningMatch(gameType, providerId)
+          ? await this.getNumberOfWiningMatch(gameType, userId)
           : Math.max(
             friendMode.friendModeCount,
             randomMode.randomModeCount
@@ -57,7 +60,7 @@ export class GameService {
         if (winCount >= count) {
           const achievement = await this.prismaService.achievement.findFirst({
             where: {
-              userId: providerId,
+              userId: userId,
               name: name,
             },
           });

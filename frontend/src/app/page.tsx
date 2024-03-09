@@ -73,7 +73,7 @@ export default function Home() {
         <div className="h-full flex flex-col justify-center gap-20 sm:gap-10 items-center">
           <Image
             alt="PongGame"
-            src="/assets/GameGif.gif"
+            src="/assets/gameImageLandingPage.svg"
             width={550}
             height={200}
             priority={true}

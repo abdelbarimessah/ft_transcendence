@@ -16,7 +16,6 @@ export default function Home() {
   const router = useRouter()
   useEffect(() => {
     socketClient.on('endGameAiMode', () => {
-      console.log('the ai mode game end ???');
       router.push('/game');
     })
     return(() => {

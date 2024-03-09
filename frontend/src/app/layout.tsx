@@ -20,7 +20,9 @@ export default function RootLayout({
         <title>Pong Game</title>
       </head>
       <body className="no-scrollbar bg-color-18 ">
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          </Providers>
         <Toaster closeButton />
       </body>
     </html>

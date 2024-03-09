@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma, User } from '@prisma/client';
 import * as uuid from 'uuid';
@@ -51,6 +51,8 @@ export class UserService {
         },
       },
     });
+    if(!user )
+      throw new NotFoundException('not found user')
     delete user?.secretOpt;
     return user;
   }
@@ -69,10 +71,10 @@ export class UserService {
 
       fs.writeFileSync(uploadPath, response.data);
     } catch (error) {
-      console.error(
-        'error in the upload of the image in the backend',
-        error.message,
-      );
+      // console.error(
+      //   'error in the upload of the image in the backend',
+      //   error.message,
+      // );
     }
   }
 

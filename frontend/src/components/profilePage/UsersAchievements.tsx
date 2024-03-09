@@ -14,6 +14,7 @@ interface Achievement {
 }
 
 function UsersAchievements() {
+
   const [achievements, setAchievements] = useState<any[]>([]);
   const [ach1, setAch1] = useState<Achievement>();
   const [ach2, setAch2] = useState<Achievement>();
@@ -46,8 +47,7 @@ function UsersAchievements() {
     const getAchievements = async () => {
       try {
         const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/user/UsersAchievements/${params.id}`,
-          { withCredentials: true }
+          `${process.env.NEXT_PUBLIC_API_URL}/user/UsersAchievements/${params.id}`
         );
         if (!res.data) {
           return;
@@ -61,8 +61,6 @@ function UsersAchievements() {
         setAch6(res.data.achievements.find((ach: any) => ach.name === "ach6"));
         setAch7(res.data.achievements.find((ach: any) => ach.name === "ach7"));
       } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error(err);
       }
     };
     if (user)
@@ -447,7 +445,7 @@ function UsersAchievements() {
               )}
             </div>
           </div>
-          <div className="relative w-[97px] h-[125px] overflow-hidden   hover:scale-110 ">
+          <div className="relative w-[97px] h-[125px] overflow-hidden hover:scale-110 ">
             <Image
               src="/../../assets/lockIcon.svg"
               alt="Leader Board Icon"

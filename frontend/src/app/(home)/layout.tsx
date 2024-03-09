@@ -23,11 +23,43 @@ export default function RootLayout({
   const [win, setWin] = useState(false);
   const [lose, setLose] = useState(false);
 
+  const [user, setUser] = useState<any>();
+
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`);
+        setUser(res.data);
+      }
+      catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      }
+    }
+
+    getData();
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      const intervalId = setInterval(() => {
+        socketClient.emit('User-status', { status: 'online', providerId: user.providerId });
+      }, 2000);
+
+      return () => clearInterval(intervalId);
+    }
+  }, [socketClient]);
+
+
 
   useEffect(() => {
     const enterRoom = (data: any) => {
+      console.log('the data in the normal endGame ******', data);
+      
       setGameEnded(true);
       const gameData = {
+        userId: data.user.providerId,
         opponentId: data.oponent.providerId,
         userScore: data.game.userScore,
         opponentScore: data.game.opponentScore,
@@ -61,40 +93,6 @@ export default function RootLayout({
   }, [socketClient, lose, route]);
 
 
-  // useEffect(() => {
-  //   if (gameEnded) {
-  //     return;
-  //   }
-  //   socketClient.on("OnePlayerLeaveTheRoom", async (data) => {
-  //     console.log(socketClient.id, 'the data came int the layout : 11111 ', data);
-
-  //     if (data.socketId !== socketClient.id) return;
-  //     const gameData = {
-  //       opponentId: data.user.providerId,
-  //       userScore: 0,
-  //       opponentScore: 5,
-  //       status: "lose",
-  //       gameName: data.roomName,
-  //       gameType: "randomMode",
-  //     };
-
-  //     setLose(true);
-
-  //     try {
-  //       const url = process.env.NEXT_PUBLIC_API_URL;
-  //       await axios.post(`${url}/game/gameData`, gameData, {
-  //         withCredentials: true,
-  //       });
-  //     } catch (error) {
-  //       // eslint-disable-next-line no-console
-  //       console.error(error);
-  //     }
-  //     setTimeout(() => route.push("/game"), 3000);
-  //   });
-  //   return () => {
-  //     socketClient.off("OnePlayerLeaveTheRoom");
-  //   };
-  // }, [socketClient, gameEnded, route]);
 
   useEffect(() => {
     if (gameEnded) {
@@ -146,9 +144,6 @@ export default function RootLayout({
         setLose(true)
         return;
       }
-      // console.log('OnePlayerLeaveTheRoomCallback ::::: [1111]');
-
-      // route.push('/game');
       setWin(true);
     })
     return (() => {
@@ -172,41 +167,6 @@ export default function RootLayout({
       }
     };
   }, [win, lose]);
-
-  // useEffect(() => {
-  //   if (gameEnded) {
-  //     return;
-  //   }
-  //   socketClient.on("OnePlayerLeaveTheRoom", async (data) => {
-  //     console.log(socketClient.id, 'the data came int the layout : 22222 ', data);
-  //     if (data.socketId === socketClient.id || !data.socketId) return;
-  //     const gameData = {
-  //       opponentId: data.oponent.providerId,
-  //       userScore: 5,
-  //       opponentScore: 0,
-  //       status: "win",
-  //       gameName: data.roomName,
-  //       gameType: "randomMode",
-  //     };
-  //     console.log('the data in the layout 222222', gameData);
-  //     setWin(true);
-  //     toast.success("The other player left the game");
-
-  //     try {
-  //       const url = process.env.NEXT_PUBLIC_API_URL;
-  //       await axios.post(`${url}/game/gameData`, gameData);
-  //     } catch (error: any) {
-  //       // eslint-disable-next-line no-console
-  //       console.error(error.message);
-  //     }
-  //     setTimeout(() => route.push("/game"), 3000);
-  //   });
-  //   return () => {
-  //     socketClient.off("OnePlayerLeaveTheRoom");
-  //   };
-  // }, [socketClient, gameEnded, route]);
-
-
 
   return (
     <AuthWrapper>

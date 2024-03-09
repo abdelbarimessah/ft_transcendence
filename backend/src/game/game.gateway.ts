@@ -206,7 +206,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         user: socket.data.user,
         oponent: sockets.player1,
       });
-
     }
   }
 

@@ -26,11 +26,12 @@ export class GameService {
           status,
           gameName,
           gameType,
-          user: {
-            connect: {
-              providerId: userId,
-            },
-          },
+          userId: userId
+          // user: {
+          //   connect: {
+          //     providerId: userId,
+          //   },
+          // },
         },
       });
 

@@ -12,9 +12,9 @@ export async function middleware(request: NextRequest) {
     },
     credentials: "include",
   });
-  console.log('in the middle ware: ', res.ok)
+  console.log("in the middle ware: ", res.ok);
 
-  if (!res.ok) return NextResponse.redirect("http://localhost:8000");
+  if (!res.ok) return NextResponse.redirect(frontendUrl);
 
   return NextResponse.next();
 }

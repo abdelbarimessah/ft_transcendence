@@ -17,6 +17,7 @@ const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 
 
 function ModeCard(me: any) {
+    const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
 
     const socketClient = useContext(SocketContext);
     const [roomName, setRoomName] = useState('')
@@ -43,7 +44,7 @@ function ModeCard(me: any) {
     }, [])
 
     useEffect(() => {
-        axios.get('http://localhost:3000/user/friends').then((res) => {
+        axios.get(`${backendUrl}/user/friends`).then((res) => {
             setIsloading(true)
             setFriends(res.data);
             setIsloading(false)
@@ -446,6 +447,8 @@ type Friend = {
 }
 
 function InivteModeCard() {
+    const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+
     const [friends, setFriends] = useState<Friend[]>([]);
     const [isLoading, setIsloading] = useState(false)
     const [my, setMy] = useState<any>();
@@ -460,7 +463,7 @@ function InivteModeCard() {
     }, [])
 
     useEffect(() => {
-        axios.get('http://localhost:3000/user/friends').then((res) => {
+        axios.get(`${backendUrl}/user/friends`).then((res) => {
             setIsloading(true)
             setFriends(res.data);
             setIsloading(false)

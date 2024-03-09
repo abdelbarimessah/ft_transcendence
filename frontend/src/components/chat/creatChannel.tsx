@@ -10,8 +10,11 @@ function CreatChannel() {
   const [avatar, setAvatar] = useState<File | null>(null);
   const [changeAvatar, setChangeAvatar] = useState(false);
   const UserData: any = useContext(chatslistContext);
-  const [avatarLink, setAvatarLink] = useState<any>('http://localhost:8000/assets/DefaultChannelImage.svg');
+  const [avatarLink, setAvatarLink] = useState<any>(
+    "http://localhost:8000/assets/DefaultChannelImage.svg"
+  );
   const inputMessageRef = useRef(null);
+  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
   const handelSubmitrefrech = (e: any) => {
     e.preventDefault();
   };
@@ -31,7 +34,7 @@ function CreatChannel() {
       return toast("Please enter a pasword");
     try {
       const creatChannelResponse = await axios.post(
-        "http://localhost:3000/chat/channel/create",
+        `${backendUrl}/chat/channel/create`,
         {
           avatar: avatarLink.avatar,
           name: inputMessageRef?.current.value,

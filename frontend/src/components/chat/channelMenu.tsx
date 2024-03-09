@@ -22,6 +22,7 @@ export default function ChannelMenu() {
   const [avatar, setAvatar] = useState<File | null>(null);
   const [changeAvatar, setChangeAvatar] = useState(false);
   const [avatarLink, setAvatarLink] = useState<any>();
+  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
 
   const handleSettingsClick = () => {
     setSettingModal(true);
@@ -68,7 +69,7 @@ export default function ChannelMenu() {
   const fetchChannelMembers = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/chat/channel/${userData.channelClicked.id}/members`
+        `${backendUrl}/chat/channel/${userData.channelClicked.id}/members`
       );
       userData.setChannelMembers(response.data);
     } catch (error: any) {
@@ -93,7 +94,7 @@ export default function ChannelMenu() {
   const handelLeaveChannel = async () => {
     try {
       const bankResponse = await axios.post(
-        `http://localhost:3000/chat/channel/${userData.channelClicked.id}/leave`,
+        `${backendUrl}/chat/channel/${userData.channelClicked.id}/leave`,
         {
           userId: userData.myId.id,
         },
@@ -119,7 +120,7 @@ export default function ChannelMenu() {
       }
       if (avatarLink?.avatar) data.avatar = avatarLink.avatar;
       const newSettingResponse = await axios.patch(
-        `http://localhost:3000/chat/channel/${userData.channelClicked.id}`,
+        `${backendUrl}/chat/channel/${userData.channelClicked.id}`,
         data,
         {
           withCredentials: true,
@@ -538,11 +539,13 @@ function TypePassword({ setPass }: any) {
 }
 
 function SetPublic() {
+  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+
   const userData: any = useContext(chatslistContext);
   const handleSetPublic = async () => {
     try {
       const newSettingResponse = await axios.patch(
-        `http://localhost:3000/chat/channel/${userData.channelClicked.id}`,
+        `${backendUrl}/chat/channel/${userData.channelClicked.id}`,
         {
           type: "PUBLIC",
         },
@@ -588,11 +591,13 @@ function SetPublic() {
   );
 }
 function SetPrivate() {
+  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+
   const userData: any = useContext(chatslistContext);
   const handleSetPrivate = async () => {
     try {
       const newSettingResponse = await axios.patch(
-        `http://localhost:3000/chat/channel/${userData.channelClicked.id}`,
+        `${backendUrl}/chat/channel/${userData.channelClicked.id}`,
         {
           type: "PRIVATE",
         },
@@ -695,9 +700,11 @@ function UsersSettingsPoint({ userId }) {
   };
 
   const handelAddAdmin = async () => {
+    const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+
     try {
       const addAdminResponse = await axios.post(
-        `http://localhost:3000/chat/channel/${userData.channelClicked.id}/admin`,
+        `${backendUrl}/chat/channel/${userData.channelClicked.id}/admin`,
         {
           userId: userId,
         },
@@ -716,9 +723,11 @@ function UsersSettingsPoint({ userId }) {
   };
 
   const handelMute = async () => {
+    const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+
     try {
       const muteResponse = await axios.post(
-        `http://localhost:3000/chat/channel/${userData.channelClicked.id}/mute`,
+        `${backendUrl}/chat/channel/${userData.channelClicked.id}/mute`,
         {
           userId: userId,
         },
@@ -737,9 +746,11 @@ function UsersSettingsPoint({ userId }) {
   };
 
   const handelUnMute = async () => {
+    const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+
     try {
       const muteResponse = await axios.post(
-        `http://localhost:3000/chat/channel/${userData.channelClicked.id}/unmute`,
+        `${backendUrl}/chat/channel/${userData.channelClicked.id}/unmute`,
         {
           userId: userId,
         },
@@ -759,9 +770,11 @@ function UsersSettingsPoint({ userId }) {
   };
 
   const handelKick = async () => {
+    const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+
     try {
       const kickResponse = await axios.post(
-        `http://localhost:3000/chat/channel/${userData.channelClicked.id}/kick`,
+        `${backendUrl}/chat/channel/${userData.channelClicked.id}/kick`,
         {
           userId: userId,
         },
@@ -780,9 +793,11 @@ function UsersSettingsPoint({ userId }) {
   };
   /* ban is not working cuzing server to get down   */
   const handelBan = async () => {
+    const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+
     try {
       const bankResponse = await axios.post(
-        `http://localhost:3000/chat/channel/${userData.channelClicked.id}/ban`,
+        `${backendUrl}/chat/channel/${userData.channelClicked.id}/ban`,
         {
           userId: userId,
         },

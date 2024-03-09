@@ -17,7 +17,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ closeModal }) => {
       <div className="z-50 w-[350px] h-fit p-4 flex flex-col items-center justify-between rounded-[22px] shadow-lg bg-color-6 ">
         <h1 className="text-2xl pb-4 ">Sign in</h1>
         <div className="py-4 w-full h-full flex items-center justify-evenly">
-          <Link href={"http://localhost:3000/auth/42"}>
+          <Link href={`${backendUrl}/auth/42`}>
             <div className="rounded-full bg-white h-[60px] w-[60px] flex items-center justify-center hover:scale-[1.02] duration-200">
               <Image
                 src="/assets/intraLogo.svg"
@@ -30,7 +30,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ closeModal }) => {
           </Link>
           <h1>Or</h1>
           <div className="rounded-full bg-white h-[60px] w-[60px] flex items-center justify-center hover:scale-[1.02] duration-200">
-            <Link href={"http://localhost:3000/auth/google"}>
+            <Link href={`${backendUrl}/auth/google`}>
               <Image
                 src="/assets/googleLogo.svg"
                 alt="Google Logo"

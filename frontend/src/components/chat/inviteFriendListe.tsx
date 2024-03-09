@@ -8,6 +8,7 @@ import { socket } from "@/app/SocketContext";
 
 function InviteFriendListe({ chat, friendLinst }: any) {
   const UserData: any = useContext(chatslistContext);
+  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
 
   let friend: any;
 
@@ -19,11 +20,11 @@ function InviteFriendListe({ chat, friendLinst }: any) {
     : UserData.showNewFriendsList === true && (friend = friendLinst);
 
   const addUserToChannel = async (chatClicked: any) => {
-    console.log("chatClicked", chatClicked);
-    console.log("UserData.channelClicked", UserData.channelClicked);
+    // console.log("chatClicked", chatClicked);
+    // console.log("UserData.channelClicked", UserData.channelClicked);
     try {
       const response = await axios.post(
-        `http://localhost:3000/chat/channel/${UserData.channelClicked.id}/add`,
+        `${backendUrl}/chat/channel/${UserData.channelClicked.id}/add`,
         {
           userId: chatClicked.id,
         },
@@ -50,7 +51,7 @@ function InviteFriendListe({ chat, friendLinst }: any) {
   const addUserToFriendList = async (chatClicked: any) => {
     try {
       const newFriendresponse = await axios.post(
-        "http://localhost:3000/chat/create",
+        `${backendUrl}/chat/create`,
         {
           userId: chatClicked.id,
         },
@@ -61,7 +62,7 @@ function InviteFriendListe({ chat, friendLinst }: any) {
       // console.log('current friend list', UserData.friendsList)
       // console.log('res after chat created: ', newFriendresponse.data)
       // console.log('friend exists: ', friendExists)
-      
+
       // const friendExists = UserData.friendsList.some(user => user.id === newFriendresponse.data.id)
       // if(!friendExists){
       //   const newList = [...UserData.friendsList, newFriendresponse.data]

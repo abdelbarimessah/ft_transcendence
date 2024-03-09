@@ -41,7 +41,7 @@ function ProfileCard() {
         setIsLoading(false);
       } catch (error) {
         setIsLoading(false);
-        toast.error('user not found !!')
+        toast.error("user not found !!");
         // console.error(error);
       }
     };
@@ -85,8 +85,7 @@ function ProfileCard() {
 
   return (
     <>
-    
-      {!sameProfile &&  user  && (
+      {!sameProfile && user && (
         <div className="  w-full 2xl:w-[557px] xl:w-[1137px] h-[386px] bg-color-0 rounded-[22px] relative overflow-hidden  ">
           <div className="w-full h-[150px] bg-color-6  relative group  overflow-hidden">
             {user && (
@@ -216,10 +215,11 @@ interface AddFriendProps {
 function AddFriend(props: AddFriendProps) {
   const params = useParams<{ id: string; tag: string; item: string }>();
   const socketClient = useContext(SocketContext);
+  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
 
   function handleAddFriend() {
     axios
-      .patch("http://localhost:3000/user/addFriend", { id: params.id })
+      .patch(`${backendUrl}/user/addFriend`, { id: params.id })
       .then((response) => {
         props.onSuccess();
         socketClient.emit("updateInfo", { providerId: params.id });
@@ -304,10 +304,11 @@ interface RemoveFriendProps {
 function RemoveFriend(props: RemoveFriendProps) {
   const params = useParams<{ id: string; tag: string; item: string }>();
   const socketClient = useContext(SocketContext);
+  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
 
   function handleRemoveFriend() {
     axios
-      .patch("http://localhost:3000/user/removeFriend", { id: params.id })
+      .patch(`${backendUrl}/user/removeFriend`, { id: params.id })
       .then((response) => {
         props.onSuccess();
         socketClient.emit("updateInfo", { providerId: params.id });
@@ -366,8 +367,6 @@ Progress.displayName = ProgressPrimitive.Root.displayName;
 
 export { Progress };
 
-
-
 // "use client";
 // import * as React from "react";
 // import * as ProgressPrimitive from "@radix-ui/react-progress";
@@ -402,7 +401,6 @@ export { Progress };
 //           `${process.env.NEXT_PUBLIC_API_URL}/user/${params?.id}`
 //         );
 
-
 //         if (res.data === 1) {
 //           setSameProfile(true);
 //           router.push("/profile");
@@ -425,7 +423,7 @@ export { Progress };
 //           setIds(res.data.providerId);
 //         })
 //         .catch((error) => {
-          
+
 //         });
 //     });
 

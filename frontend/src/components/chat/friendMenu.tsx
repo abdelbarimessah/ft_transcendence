@@ -17,17 +17,20 @@ export default function FriendMenu({
   friendId,
   myBlockedList,
   isBlocked,
-}) {
+}: any) {
   const userData: any = useContext(chatslistContext);
+  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
 
   if (userData.showFriendMenu === true) {
     // const isBlocked = myBlockedList.some((item :any) => item.id === friendId);
     // console.log("isBlocked [[111111]]", isBlocked);
 
-    const blocked = userData.blockList.some((user) => user.id === friendId);
-    console.log("list is : ", userData.blockList);
-    console.log(" and my friendId is : ", friendId);
-    console.log("and the user is blocked?: ", blocked);
+    const blocked = userData.blockList.some(
+      (user: any) => user.id === friendId
+    );
+    // console.log("list is : ", userData.blockList);
+    // console.log(" and my friendId is : ", friendId);
+    // console.log("and the user is blocked?: ", blocked);
     // isBlocked === false ? userData.setIsBlocked("Unblock") : userData.setIsBlocked("Block")
     // console.log('the isBlocked 1231231', isBlocked);
     // useEffect(() => {
@@ -36,30 +39,27 @@ export default function FriendMenu({
 
     const handlBlockUser = async () => {
       try {
-        const postMsgResponse = await axios.post(
-          "http://localhost:3000/chat/block",
-          {
-            userId: friendId,
-          }
-        );
+        const postMsgResponse = await axios.post(`${backendUrl}/chat/block`, {
+          userId: friendId,
+        });
         // userData.setIsBlocked("Unblock");
         toast.message("user is blocked");
         const newList = [postMsgResponse.data, ...userData.blockList];
-        console.log("res data in handle block: ", postMsgResponse.data);
-        console.log("newlist after block: ", newList);
+        // console.log("res data in handle block: ", postMsgResponse.data);
+        // console.log("newlist after block: ", newList);
 
         userData.setBlockList(newList);
       } catch (error: any) {
-        console.error(error.response.data);
+        // console.error(error.response.data);
       }
     };
     const handlUnBlockUser = async () => {
       // user
       try {
-        console.log("try to unblock");
+        // console.log("try to unblock");
 
         const postMsgResponse = await axios.post(
-          "http://localhost:3000/chat/unblock",
+          `${backendUrl}/chat/unblock`,
           {
             userId: friendId,
           },
@@ -67,17 +67,17 @@ export default function FriendMenu({
             withCredentials: true,
           }
         );
-        console.log("after res");
+        // console.log("after res");
         // userData.setIsBlocked("Block");
         const newList = userData.blockList?.filter(
-          (user) => user.id != friendId
+          (user: any) => user.id != friendId
         );
-        console.log("newList after unblock: ", newList);
+        // console.log("newList after unblock: ", newList);
 
         toast.message("user is unblocked");
         userData.setBlockList(newList);
       } catch (error: any) {
-        console.error(error.response);
+        // console.error(error.response);
       }
     };
 

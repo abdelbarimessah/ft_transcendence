@@ -12,6 +12,7 @@ import FriendMenu from "./friendMenu";
 import { toast } from "sonner";
 
 function FriendRightSide() {
+  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
   const inputMessageRef: any = useRef(null);
   const refToBottum: any = useRef(null);
   const UserData: any = useContext(chatslistContext);
@@ -79,7 +80,7 @@ function FriendRightSide() {
     const handelSubmit = async () => {
       try {
         const postMsgResponse = await axios.post(
-          "http://localhost:3000/chat/message",
+          `${backendUrl}/chat/message`,
           {
             content: inputMessageRef.current?.value,
             chatId: UserData.chatClicked.id,

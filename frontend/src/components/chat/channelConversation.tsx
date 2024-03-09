@@ -8,13 +8,13 @@ import Image from "next/image";
 import axios from "axios";
 
 function ChannelConversation() {
+  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+
   const UserData: any = useContext(chatslistContext);
 
   const fetchData = async () => {
     try {
-      const channelresponse = await axios.get(
-        "http://localhost:3000/chat/channel/all"
-      );
+      const channelresponse = await axios.get(`${backendUrl}/chat/channel/all`);
       UserData.setListChannelsToJoin(channelresponse.data);
     } catch (error: any) {
       if (error.response && error.response.status === 400) {

@@ -119,6 +119,7 @@ axios.defaults.withCredentials = true;
 
 export default function NotificationIcon() {
   const socketClient = useContext(SocketContext);
+    const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
 
 
   const [gamePair, setGamePair] = useState<any>();
@@ -150,7 +151,7 @@ export default function NotificationIcon() {
     const getData = async () => {
 
       const res = await axios.get<NotificationProps[]>(
-        "http://localhost:3000/notification"
+        `${backendUrl}/notification`
       );
       setNotificationLists(res.data);
     }

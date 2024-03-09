@@ -15,6 +15,7 @@ function ChannelRightSide() {
   const refToBottum = useRef(null);
   const UserData: any = useContext(chatslistContext);
   const socket = useContext(SocketContext);
+  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
 
   useEffect(() => {
     refToBottum.current?.scrollIntoView({ behavior: "smooth" });
@@ -54,7 +55,7 @@ function ChannelRightSide() {
     const handelSubmit = async () => {
       try {
         const postMsgResponse = await axios.post(
-          "http://localhost:3000/chat/message",
+          `${backendUrl}/chat/message`,
           {
             content: inputMessageRef.current?.value,
             channelId: UserData.channelClicked.id,

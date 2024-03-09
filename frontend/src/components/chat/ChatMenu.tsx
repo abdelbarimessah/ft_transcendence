@@ -17,9 +17,11 @@ interface User {
   cover?: string;
 }
 const ChatMenu = ({}) => {
+  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+
   useEffect(() => {
     const res = axios
-      .get("http://localhost:3000/user/me", { withCredentials: true })
+      .get(`${backendUrl}/user/me`, { withCredentials: true })
       .then((res) => {
         // console.log(res.data);
         setUser(res.data);

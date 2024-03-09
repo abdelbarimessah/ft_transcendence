@@ -1,7 +1,5 @@
-import { channel } from "diagnostics_channel";
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { createContext, useContext } from "react";
+import React from "react";
+import { useContext } from "react";
 
 import { chatslistContext } from "@/app/ChatContext";
 import InviteFriendListe from "./inviteFriendListe";
@@ -37,7 +35,6 @@ function ShowListNewFriend() {
 
               <div className="flex pt-5 flex-col justify-between items-center w-full h-fit px-3">
                 <div className="flex flex-col h-[360px] overflow-y-scroll no-scrollbar">
-
                   {userData.newFriendsList.map((friendLinst: any) => {
                     return (
                       <InviteFriendListe

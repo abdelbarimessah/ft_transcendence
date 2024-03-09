@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
-// import { Prisma } from '@prisma/client';
 import { Strategy } from 'passport-42';
 import { AuthService } from '../auth.service';
 

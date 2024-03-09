@@ -10,13 +10,14 @@ function CreatChannel() {
   const [avatar, setAvatar] = useState<File | null>(null);
   const [changeAvatar, setChangeAvatar] = useState(false);
   const UserData: any = useContext(chatslistContext);
-  const [avatarLink, setAvatarLink] = useState<any>('http://localhost:8000/assets/DefaultChannelImage.svg');
-  const inputMessageRef :any= useRef(null);
+  const [avatarLink, setAvatarLink] = useState<any>(
+    "http://localhost:8000/assets/DefaultChannelImage.svg"
+  );
+  const inputMessageRef: any = useRef(null);
   const handelSubmitrefrech = (e: any) => {
     e.preventDefault();
   };
-const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
-
+  const backendUrl = process.env.BACKEND_API || "http://localhost:3000";
 
   const addChannelToLits = (channel: any) => {
     const newChannelList = [...UserData.channelsList, channel];
@@ -141,7 +142,6 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
                   />
                 </div>
 
-                {/* chose name for channel */}
                 <div className="flex w-full flex-row gap-7 justify-center items-center">
                   <div className="flex justify-start items-center ">
                     chose name:
@@ -154,7 +154,6 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
                   />
                 </div>
 
-                {/* choose type of channel */}
                 <div className="">Choose type of your channel</div>
                 <ul className="flex items-center justify-center  w-full gap-6 md:grid-cols-2">
                   <li>
@@ -164,7 +163,7 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
                       name="typeOfChannel"
                       value="PRIVATE"
                       className="hidden peer"
-                      onClick={(e :any) => {
+                      onClick={(e: any) => {
                         UserData.setchannelType(e.target.value);
                       }}
                     />
@@ -183,7 +182,7 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
                       name="typeOfChannel"
                       value="PUBLIC"
                       className="hidden peer"
-                      onClick={(e:any) => {
+                      onClick={(e: any) => {
                         UserData.setchannelType(e.target.value);
                       }}
                     />
@@ -202,7 +201,7 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
                       name="typeOfChannel"
                       value="PROTECTED"
                       className="hidden peer"
-                      onClick={(e:any) => {
+                      onClick={(e: any) => {
                         UserData.setchannelType(e.target.value);
                       }}
                     />

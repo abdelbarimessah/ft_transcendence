@@ -1,5 +1,4 @@
-import React, { useContext, useEffect } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import React, { useContext } from "react";
 import Image from "next/image";
 import { chatslistContext } from "@/app/ChatContext";
 import { SocketContext } from "@/app/SocketContext";
@@ -18,24 +17,22 @@ export default function FriendMenu({
   friendId,
   myBlockedList,
   isBlocked,
-} :any) {
+}: any) {
   const userData: any = useContext(chatslistContext);
   const socketClient = useContext(SocketContext);
   const router = useRouter();
-const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+  const backendUrl = process.env.BACKEND_API || "http://localhost:3000";
 
   if (userData.showFriendMenu === true) {
-    const blocked = userData.blockList.some((user:any) => user.id === friendId);
+    const blocked = userData.blockList.some(
+      (user: any) => user.id === friendId
+    );
 
     const handlBlockUser = async () => {
       try {
-        const postMsgResponse = await axios.post(
-          `${backendUrl}/chat/block`,
-          {
-            userId: friendId,
-          }
-        );
-        // userData.setIsBlocked("Unblock");
+        const postMsgResponse = await axios.post(`${backendUrl}/chat/block`, {
+          userId: friendId,
+        });
         toast.message("user is blocked");
         const newList = [postMsgResponse.data, ...userData.blockList];
         userData.setBlockList(newList);
@@ -46,7 +43,6 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
     const handlUnBlockUser = async () => {
       // user
       try {
-
         const postMsgResponse = await axios.post(
           `${backendUrl}/chat/unblock`,
           {
@@ -56,9 +52,8 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
             withCredentials: true,
           }
         );
-        // userData.setIsBlocked("Block");
         const newList = userData.blockList?.filter(
-          (user:any) => user.id != friendId
+          (user: any) => user.id != friendId
         );
 
         toast.message("user is unblocked");
@@ -77,9 +72,14 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
         }
       }
 
-      socketClient.emit("playInvite", { sender: userData.myId, receiver: friendData });
-      router.push(`/game/waiting/${userData.myId.providerId}${friendData.providerId}`);
-    }
+      socketClient.emit("playInvite", {
+        sender: userData.myId,
+        receiver: friendData,
+      });
+      router.push(
+        `/game/waiting/${userData.myId.providerId}${friendData.providerId}`
+      );
+    };
 
     return (
       <div className=" h-[1077px] w-[422px] bg-color-0 flex items-center justify-between flex-col pt-[113px] pb-[19px]">
@@ -88,7 +88,7 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
             <Image
               sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
               src={avatar}
-              alt={nickName}
+              alt="alt-img"
               draggable={false}
               fill={true}
               className=" rounded-full w-full h-full object-cover"
@@ -96,9 +96,11 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
           </div>
           <div className="w-full h-[54px]  flex flex-col items-center justify-center">
             <span className="font-nico-moji text-color-6 sm:text-[24px] text-[18px] capitalize">
-              {`${firstName.substring(0, 10)}${firstName.length > 10 ? ".." : ""
-                } ${lastName.substring(0, 10)}${lastName.length > 10 ? ".." : ""
-                }`}
+              {`${firstName.substring(0, 10)}${
+                firstName.length > 10 ? ".." : ""
+              } ${lastName.substring(0, 10)}${
+                lastName.length > 10 ? ".." : ""
+              }`}
             </span>
             <span className="font-nico-moji -mt-1 sm:text-[16px] text-[12px]  text-color-29 capitalize">
               @{nickName.substring(0, 10)}
@@ -108,7 +110,10 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
           <div className="w-full h-[2px] bg-color-30"></div>
 
           <div className="w-full flex items-center justify-center gap-3 flex-col">
-            <div onClick={handlePlayInvite} className="w-[370px] h-[60px] bg-[#F3FAFF] rounded-[22px] flex items-center justify-between px-5 hover:scale-[1.01] hover:opacity-95 cursor-pointer">
+            <div
+              onClick={handlePlayInvite}
+              className="w-[370px] h-[60px] bg-[#F3FAFF] rounded-[22px] flex items-center justify-between px-5 hover:scale-[1.01] hover:opacity-95 cursor-pointer"
+            >
               <div className="flex items-center justify-center">
                 <span className="text-color-6 capitalize">Play With</span>
               </div>

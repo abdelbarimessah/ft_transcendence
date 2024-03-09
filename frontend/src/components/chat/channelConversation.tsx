@@ -1,8 +1,6 @@
 "use client";
 import React, { useContext, useEffect } from "react";
 import Channels from "./channels";
-// import { chatslistContext } from "@/app/ChatContext";
-import Btns from "./commun_component/btns";
 import { toast } from "sonner";
 import Image from "next/image";
 import axios from "axios";
@@ -13,11 +11,9 @@ function ChannelConversation() {
 
   const fetchData = async () => {
     try {
-const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+      const backendUrl = process.env.BACKEND_API || "http://localhost:3000";
 
-      const channelresponse = await axios.get(
-        `${backendUrl}/chat/channel/all`
-      );
+      const channelresponse = await axios.get(`${backendUrl}/chat/channel/all`);
       UserData.setListChannelsToJoin(channelresponse.data);
     } catch (error: any) {
       if (error.response && error.response.status === 400) {
@@ -54,7 +50,7 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
         </div>
 
         <div className="flex flex-col no-scrollbar overflow-y-scroll h-full w-full  px-3">
-          {UserData.channelsList.map((chat :any) => {
+          {UserData.channelsList.map((chat: any) => {
             return <Channels key={chat.id} chat={chat} />;
           })}
         </div>

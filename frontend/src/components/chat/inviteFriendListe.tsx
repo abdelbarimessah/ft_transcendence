@@ -1,22 +1,20 @@
-import { channel } from "diagnostics_channel";
-import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { createContext, useContext } from "react";
+import { useContext } from "react";
 import { chatslistContext } from "@/app/ChatContext";
 import { toast } from "sonner";
-import { socket } from "@/app/SocketContext";
+import Image from "next/image";
 
 function InviteFriendListe({ chat, friendLinst }: any) {
   const UserData: any = useContext(chatslistContext);
-  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+  const backendUrl = process.env.BACKEND_API || "http://localhost:3000";
 
   let friend: any;
 
   UserData.showInvite === true
     ? (friend =
-      UserData.myId.id != chat.members[0].id
-        ? chat.members[0]
-        : chat.members[1])
+        UserData.myId.id != chat.members[0].id
+          ? chat.members[0]
+          : chat.members[1])
     : UserData.showNewFriendsList === true && (friend = friendLinst);
 
   const addUserToChannel = async (chatClicked: any) => {
@@ -30,7 +28,6 @@ function InviteFriendListe({ chat, friendLinst }: any) {
           withCredentials: true,
         }
       );
-
     } catch (error: any) {
       if (error.response && error.response.status === 400) {
         toast.error(error.response.data.message);
@@ -49,7 +46,6 @@ function InviteFriendListe({ chat, friendLinst }: any) {
           withCredentials: true,
         }
       );
-
     } catch (error: any) {
       if (error.response && error.response.status === 400) {
         toast.error(error.response.data.message);
@@ -66,14 +62,16 @@ function InviteFriendListe({ chat, friendLinst }: any) {
     <div className="flex justify-between items-center border-t-[2px] border-[#cdd7dd] p-3 h-[65px] w-[320px] ">
       <div className="flex flex-row justify-between items-center">
         <div className="flex pr-4">
-          <img
+          <Image
             src={friend.avatar}
-            alt={friend.nickName}
-            className="flex justify-between items-center rounded-full w-[50px] "
+            alt="{nickName}"
+            className="flex justify-between items-center rounded-full w-[50px]"
           />
         </div>
-        <span className='font-nico-moji text-color-6 text-sm capitalize'>
-          {`${friend.nickName.substring(0, 10)}${friend.nickName.length > 10 ? '..' : ''} `}
+        <span className="font-nico-moji text-color-6 text-sm capitalize">
+          {`${friend.nickName.substring(0, 10)}${
+            friend.nickName.length > 10 ? ".." : ""
+          } `}
         </span>
       </div>
       <button

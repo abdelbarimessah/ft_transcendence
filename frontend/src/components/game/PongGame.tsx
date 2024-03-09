@@ -1,9 +1,7 @@
 
 'use client'
 import * as Phaser from "phaser";
-import { Socket, io } from "socket.io-client";
-import { useContext } from 'react';
-import { SocketContext } from '@/app/SocketContext';
+import { Socket } from "socket.io-client";
 
 export default class PongGame extends Phaser.Scene {
     p1: any;

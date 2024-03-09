@@ -1,13 +1,8 @@
 "use client";
 
-//  Dependencies
 import Image from "next/image";
-
 import { useState } from "react";
-
 import styles from "./Home.module.css";
-
-//  Components
 import Footer from "@/components/landingPage/Footer";
 import MemberCard from "@/components/landingPage/MemberCard";
 import LoginModal from "@/components/landingPage/LoginModal";
@@ -129,7 +124,7 @@ export default function Home() {
           {stackItems.map((item, index: number) => (
             <StackItem key={index} logo={item} />
           ))}
-          <Tailwind/>
+          <Tailwind />
         </div>
       </div>
 

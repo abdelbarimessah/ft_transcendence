@@ -1,21 +1,16 @@
 "use client";
-import { SocketContext, socket } from "@/app/SocketContext";
-import { useContext, useRef } from "react";
+import { socket } from "@/app/SocketContext";
+import { useRef } from "react";
 import LeftSide from "@/components/chat/leftSide";
 import RightSide from "@/components/chat/rightSide";
 import axios from "axios";
-import { useEffect, useState, createContext } from "react";
-import { log } from "console";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import ChannelOption from "@/components/chat/channelOption";
-import EnterPassword from "@/components/chat/enterPassword";
-import InviteFriendListe from "@/components/chat/inviteFriendListe";
 import InviteFriend from "@/components/chat/inviteFriend";
-import FriendMenu from "@/components/chat/friendMenu";
 import ShowListNewFriend from "@/components/chat/showListNewFriend";
 import AuthWrapper from "@/app/authToken";
 
-// export const chatslistContext = createContext("");
 import { chatslistContext } from "../../ChatContext";
 
 function Chat() {
@@ -23,16 +18,12 @@ function Chat() {
   const [newFriendsList, setNewFriendsList] = useState([]);
   const [showNewFriendsList, setShowNewFriendsList] = useState(false);
   const [channelsList, setChannelsList] = useState([]);
-  // const [channelsList, setChannelsList] = useState<{ id: string | number }[]>([]);
   const [myId, setMyId] = useState<any>([]);
-  // const [myId, setMyId] = useState<{ id: string | number } | null>(null);
   const [friendChatConversation, setFriendChatConversation] = useState([]);
   const [channelChatConversation, setChannelChatConversation] = useState([]);
   const [chatClicked, setChatClicked] = useState<any>([]);
-  // const [chatClicked, setChatClicked] = useState<{ id: string | number } | null>(null);
   const [listChannelsToJoin, setListChannelsToJoin] = useState([]);
   const [channelClicked, setChannelClicked] = useState<any>([]);
-  // const [channelClicked, setChannelClicked] = useState<{ id: string | number } | null>(null);
   const [channelToJoin, setChannelToJoin] = useState([]);
   const [typing, setTyping] = useState(true);
   const [popUpOn, setPopUpOn] = useState(false);
@@ -45,13 +36,12 @@ function Chat() {
   const [showFriendMenu, setShowFriendMenu] = useState(false);
   const [showChannelMenu, setShowChannelMenu] = useState(false);
   const [channelMembers, setChannelMembers] = useState<any>([]);
-  // const [channelMembers, setChannelMembers] = useState<{ members: any[] } | null>(null);
   const [isMuted, setIsMuted] = useState("Mute");
   const [isBlocked, setIsBlocked] = useState("Unblock");
   const [blockList, setBlockList] = useState([]);
 
   const fetchData = async () => {
-const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+    const backendUrl = process.env.BACKEND_API || "http://localhost:3000";
 
     try {
       const friendresponse = await axios.get(`${backendUrl}/chat/all`);
@@ -63,9 +53,7 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
     }
 
     try {
-      const channelresponse = await axios.get(
-        `${backendUrl}/chat/channel`
-      );
+      const channelresponse = await axios.get(`${backendUrl}/chat/channel`);
       setChannelsList(channelresponse.data);
     } catch (error: any) {
       if (error.response && error.response.status === 400) {
@@ -102,7 +90,7 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
 
   const fetchFriendConversation = async () => {
     try {
-const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+      const backendUrl = process.env.BACKEND_API || "http://localhost:3000";
 
       const messageResponse = await axios.get(
         `${backendUrl}/chat/message/${chatClicked?.id}`
@@ -115,17 +103,13 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
     }
   };
 
-
-  // useEffect(() => {
-  //   if (chatClicked.id) fetchFriendConversation();
-  // }, [chatClicked]);
   useEffect(() => {
     if (channelClicked && channelClicked.id) fetchChannelConversation();
   }, [channelClicked]);
 
   const fetchChannelConversation = async () => {
     try {
-const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+      const backendUrl = process.env.BACKEND_API || "http://localhost:3000";
 
       const messageResponse = await axios.get(
         `${backendUrl}/chat/channel/${channelClicked?.id}/messages`
@@ -139,32 +123,18 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
     }
   };
 
-  // useEffect(() => {
-  //   if (channelClicked.id) fetchChannelConversation();
-  // }, [channelClicked]);
-
   const addNewChannelToList = (channel: any) => {
-    const exists = channelsList.some((item:any) => item.id === channel?.id);
+    const exists = channelsList.some((item: any) => item.id === channel?.id);
 
     if (exists === false) {
-      const newChannelToAdd:any = [...channelsList, channel];
+      const newChannelToAdd: any = [...channelsList, channel];
       setChannelsList(newChannelToAdd);
     }
   };
 
-  // const updateMembers = (updatedMember: any) => {
-  //   const userMembers = channelMembers?.members?.map((member) => {
-  //     return member.userId === updatedMember?.userId
-  //       ? { ...member, ...updatedMember }
-  //       : member;
-  //   });
-  //   const newUpdate = { ...channelMembers, members: userMembers };
-  //   setChannelMembers(newUpdate);
-  // };
-
   const updateMembers = (updatedMember: any) => {
     if (channelMembers && channelMembers.members) {
-      const userMembers = channelMembers.members.map((member:any) => {
+      const userMembers = channelMembers.members.map((member: any) => {
         return member.userId === updatedMember?.userId
           ? { ...member, ...updatedMember }
           : member;
@@ -174,32 +144,24 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
     }
   };
 
-
   const updateChannelList = (channelId: any) => {
-    const newChannelList = channelsList.filter((channel:any) => {
+    const newChannelList = channelsList.filter((channel: any) => {
       return channel?.id != channelId;
     });
 
     setChannelsList(newChannelList);
     if (channelClicked && channelClicked.id === channelId)
       setChannelClicked(null);
-    // if (channelClicked.id === channelId)
-    //   setChannelClicked([]);
   };
 
-  const removeUserFromMembers = (userId:any) => {
-    const newChannelMember = channelMembers?.members?.filter((member:any) => {
+  const removeUserFromMembers = (userId: any) => {
+    const newChannelMember = channelMembers?.members?.filter((member: any) => {
       return member?.userId != userId;
     });
     if (newChannelMember) {
       const newUpdate = { ...channelMembers, members: newChannelMember };
       setChannelMembers(newUpdate);
     }
-    // const newChannelMember = channelMembers?.members?.filter((member) => {
-    //   return member?.userId != userId;
-    // });
-    // const newUpdate = { ...channelMembers, members: newChannelMember };
-    // setChannelMembers(newUpdate);
   };
 
   useEffect(() => {
@@ -210,11 +172,11 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
     socket.on("addAdmin", (data) => {
       updateMembers(data.user);
     });
-    
+
     socket.on("newChat", (data) => {
-      const friendExists = friendsList.some((user :any) => user.id === data.id)
+      const friendExists = friendsList.some((user: any) => user.id === data.id);
       if (!friendExists) {
-        const newList: any = [...friendsList, data]
+        const newList: any = [...friendsList, data];
         setFriendsList(newList);
       }
       setShowNewFriendsList(false);
@@ -240,7 +202,6 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
     });
 
     socket.on("userLeft", (data) => {
-
       if (myId && myId.id === data.userId) {
         updateChannelList(data.channelId);
       } else {
@@ -264,54 +225,56 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
     <>
       <AuthWrapper>
         <chatslistContext.Provider
-          value={{
-            friendsList,
-            channelsList,
-            myId,
-            friendChatConversation,
-            chatClicked,
-            typing,
-            setTyping,
-            setFriendChatConversation,
-            setChatClicked,
-            popUpOn,
-            setPopUpOn,
-            channelType,
-            setchannelType,
-            setChannelsList,
-            whatIcon,
-            setWhatIcon,
-            channelChatConversation,
-            setChannelChatConversation,
-            channelClicked,
-            setChannelClicked,
-            listChannelsToJoin,
-            setListChannelsToJoin,
-            channelToJoin,
-            setChannelToJoin,
-            inputPassRef,
-            needPassword,
-            setNeedPassword,
-            inputEnterPassRef,
-            showInvite,
-            setShowInvite,
-            showFriendMenu,
-            setShowFriendMenu,
-            showChannelMenu,
-            setShowChannelMenu,
-            channelMembers,
-            setChannelMembers,
-            isMuted,
-            setIsMuted,
-            newFriendsList,
-            setNewFriendsList,
-            showNewFriendsList,
-            setShowNewFriendsList,
-            isBlocked,
-            setIsBlocked,
-            blockList,
-            setBlockList,
-          }as any}
+          value={
+            {
+              friendsList,
+              channelsList,
+              myId,
+              friendChatConversation,
+              chatClicked,
+              typing,
+              setTyping,
+              setFriendChatConversation,
+              setChatClicked,
+              popUpOn,
+              setPopUpOn,
+              channelType,
+              setchannelType,
+              setChannelsList,
+              whatIcon,
+              setWhatIcon,
+              channelChatConversation,
+              setChannelChatConversation,
+              channelClicked,
+              setChannelClicked,
+              listChannelsToJoin,
+              setListChannelsToJoin,
+              channelToJoin,
+              setChannelToJoin,
+              inputPassRef,
+              needPassword,
+              setNeedPassword,
+              inputEnterPassRef,
+              showInvite,
+              setShowInvite,
+              showFriendMenu,
+              setShowFriendMenu,
+              showChannelMenu,
+              setShowChannelMenu,
+              channelMembers,
+              setChannelMembers,
+              isMuted,
+              setIsMuted,
+              newFriendsList,
+              setNewFriendsList,
+              showNewFriendsList,
+              setShowNewFriendsList,
+              isBlocked,
+              setIsBlocked,
+              blockList,
+              setBlockList,
+            } as any
+          }
         >
           <div className="relative flex justify-start chat-bp:justify-center items-center w-screen h-screen overflow-hidden  ">
             <InviteFriend />

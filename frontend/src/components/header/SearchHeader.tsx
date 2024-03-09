@@ -16,7 +16,7 @@ interface Result {
 }
 
 const SearchBareHeader = () => {
-  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+  const backendUrl = process.env.BACKEND_API || "http://localhost:3000";
   const frontendUrl = process.env.FRONTEND_URL || "http://localhost:8000";
 
   const socketClient = useContext(SocketContext);

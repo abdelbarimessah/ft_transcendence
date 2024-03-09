@@ -1,12 +1,10 @@
 "use client";
 import "../globals.css";
 import SideNav from "@/components/sidebare/SideBare";
-import { useContext, useEffect, useRef, useState } from "react";
-import { Providers } from "../providers";
+import { useContext, useEffect, useState } from "react";
 import { SocketContext, SocketProvider } from "../SocketContext";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import AuthWrapper from "../authToken";
 
 axios.defaults.withCredentials = true;
@@ -25,18 +23,18 @@ export default function RootLayout({
 
   const [user, setUser] = useState<any>();
 
-
   useEffect(() => {
     const getData = async () => {
       try {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`);
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/user/me`
+        );
         setUser(res.data);
-      }
-      catch (error) {
+      } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error);
       }
-    }
+    };
 
     getData();
   }, []);
@@ -44,18 +42,18 @@ export default function RootLayout({
   useEffect(() => {
     if (user) {
       const intervalId = setInterval(() => {
-        socketClient.emit('User-status', { status: 'online', providerId: user.providerId });
+        socketClient.emit("User-status", {
+          status: "online",
+          providerId: user.providerId,
+        });
       }, 2000);
 
       return () => clearInterval(intervalId);
     }
   }, [socketClient]);
 
-
-
   useEffect(() => {
     const enterRoom = (data: any) => {
-      
       setGameEnded(true);
       const gameData = {
         userId: data.user.providerId,
@@ -66,8 +64,6 @@ export default function RootLayout({
         gameName: data.roomName,
         gameType: "randomMode",
       };
-      if (data.game.status == lose) setLose(true);
-      else setWin(true);
       if (data.roomName.startsWith("InviteRoom")) {
         gameData.gameType = "friendMode";
       }
@@ -75,7 +71,7 @@ export default function RootLayout({
         .post(`${process.env.NEXT_PUBLIC_API_URL}/game/gameData`, gameData, {
           withCredentials: true,
         })
-        .then((res) => { })
+        .then((res) => {})
         .catch((err) => {
           // eslint-disable-next-line no-console
           console.error(err.message);
@@ -90,8 +86,6 @@ export default function RootLayout({
       socketClient.off("endGameClient");
     };
   }, [socketClient, lose, route]);
-
-
 
   useEffect(() => {
     if (gameEnded) {
@@ -117,37 +111,32 @@ export default function RootLayout({
         status: "lose",
         gameName: data.roomName,
         gameType: "randomMode",
-      }
+      };
       try {
-
         const url = process.env.NEXT_PUBLIC_API_URL;
-        await axios.post(`${url}/game/gameData`, gameData)
-        await axios.post(`${url}/game/gameData`, gameDataOpponent)
-
+        await axios.post(`${url}/game/gameData`, gameData);
+        await axios.post(`${url}/game/gameData`, gameDataOpponent);
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error);
       }
-
-    })
-
-  }, [socketClient])
-
+    });
+  }, [socketClient]);
 
   useEffect(() => {
-    socketClient.on('OnePlayerLeaveTheRoomCallback', (data) => {
+    socketClient.on("OnePlayerLeaveTheRoomCallback", (data) => {
       if (socketClient.id === data.socketId) {
-        setLose(true)
+        setLose(true);
+        return;
+      } else {
+        setWin(true);
         return;
       }
-      setWin(true);
-    })
-    return (() => {
-      socketClient.off('OnePlayerLeaveTheRoomCallback');
-    })
-  }, [socketClient])
-
-
+    });
+    return () => {
+      socketClient.off("OnePlayerLeaveTheRoomCallback");
+    };
+  }, [socketClient]);
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
@@ -166,14 +155,15 @@ export default function RootLayout({
 
   return (
     <AuthWrapper>
-
       <div className="flex  w-screen min-h-screen ">
         <SideNav setShow={setShow} />
         <div className="flex items-center justify-center flex-1 w-10 ">
           <SocketProvider>{children}</SocketProvider>
           {win && (
             <div className=" w-[282px] h-[195px] bg-color-30 rounded-[22px] flex flex-col items-center justify-center absolute top-1/2 left-[50%] ml-[70px] transform -translate-x-1/2 -translate-y-1/2 z-[1000]">
-              <span className="font-nico-moji text-[64px] text-color-6">you</span>
+              <span className="font-nico-moji text-[64px] text-color-6">
+                you
+              </span>
               <span className="font-nico-moji text-[64px] text-color-6 -mt-7">
                 {" "}
                 win
@@ -182,7 +172,9 @@ export default function RootLayout({
           )}
           {lose && (
             <div className=" w-[282px] h-[195px] bg-color-30 rounded-[22px] flex flex-col items-center justify-center absolute top-1/2 left-[50%] ml-[7´0px] transform -translate-x-1/2 -translate-y-1/2 z-[1000]">
-              <span className="font-nico-moji text-[64px] text-color-6">you</span>
+              <span className="font-nico-moji text-[64px] text-color-6">
+                you
+              </span>
               <span className="font-nico-moji text-[64px] text-color-6 -mt-7">
                 lose
               </span>

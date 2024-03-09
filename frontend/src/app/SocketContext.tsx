@@ -4,7 +4,7 @@ import { createContext, useEffect } from "react";
 import { io } from "socket.io-client";
 import AuthWrapper from "./authToken";
 
-const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+const backendUrl = process.env.BACKEND_API || "http://localhost:3000";
 export const socket = io(backendUrl, { withCredentials: true });
 export const SocketContext = createContext(socket);
 
@@ -25,10 +25,6 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <SocketContext.Provider value={socket}>
-      {/* <AuthWrapper> */}
-        {children}
-      {/* </AuthWrapper> */}
-    </SocketContext.Provider>
+    <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
   );
 };

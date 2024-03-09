@@ -3,11 +3,10 @@ import AiModeManual from "./AiModeManual";
 import FriendsModeManual from "./FriendsModeManual";
 import RandomModeManual from "./RandomModeManual";
 import Image from "next/image";
-import img from "../../../public/assets/infoIconModeCard.svg";
 
 const GameManual = () => {
   const [manual, setManual] = useState(0);
-  const [isOpen, setIsOpen] = useState(false); // Manage open/close state internally
+  const [isOpen, setIsOpen] = useState(false);
 
   const changeManual = (e: any) => {
     setManual(Number(e.target.value));

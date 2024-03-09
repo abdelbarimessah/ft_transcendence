@@ -14,6 +14,7 @@ const nextConfig = {
       { hostname: "loremflickr.com" },
       { hostname: "picsum.photos" },
       { hostname: "images.pexels.com" },
+      { hostname: "backend" },
     ],
   },
   async headers() {

@@ -38,8 +38,3 @@ function profile() {
 }
 
 export default profile;
-
-
-// Todo complute the decline of the game invite 
-// Todo fixe the issue in the invite game in the modeCard 
-// Todo add the icon to the three point settings in the profile page

@@ -1,6 +1,6 @@
 import axios from "axios";
 import Image from "next/image";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface User {
   id: string;
@@ -17,7 +17,7 @@ interface User {
   cover?: string;
 }
 const ChatMenu = ({}) => {
-  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+  const backendUrl = process.env.BACKEND_API || "http://localhost:3000";
 
   useEffect(() => {
     const res = axios
@@ -26,11 +26,11 @@ const ChatMenu = ({}) => {
         setUser(res.data);
       })
       .catch((err) => {
+        console.error(err);
       });
   }, []);
 
-  function handleClick() {
-  }
+  function handleClick() {}
   const [user, setUser] = useState({
     nickName: "user image",
     avatar: "/assets/1.png",

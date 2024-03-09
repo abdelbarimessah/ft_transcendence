@@ -2,16 +2,16 @@
 import Image from "next/image";
 import styles from "./Otp.module.css";
 import { useState } from "react";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { useRouter } from "next/navigation";
-import { Toaster, toast } from "sonner";
+import { toast } from "sonner";
 
 axios.defaults.withCredentials = true;
 
 function OtpVerifyCard() {
   const router = useRouter();
   const [otp, setOtp] = useState("");
-  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+  const backendUrl = process.env.BACKEND_API || "http://localhost:3000";
 
   const handleEnableClick = async () => {
     if (otp.length === 6) {

@@ -5,8 +5,6 @@ import FriendCard, { FriendCardProps } from "./FriendCard";
 import { useQuery, useQueryClient } from "react-query";
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
-// import Lottie from "lottie-react";
-// import animationData from '../../../public/assets/EmptyFriends.json';
 import animationData from "../../../public/assets/EmptyFriends.json";
 
 import dynamic from "next/dynamic";
@@ -15,7 +13,7 @@ import { SocketContext } from "@/app/SocketContext";
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
 axios.defaults.withCredentials = true;
-const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+const backendUrl = process.env.BACKEND_API || "http://localhost:3000";
 const getFriendsList = async () => {
   const res = await axios.get<FriendCardProps[]>(`${backendUrl}/user/friends`);
   return res.data;
@@ -73,7 +71,14 @@ function FriendsList() {
         </div>
       </div>
       {!isLoading && friendsList?.length === 0 && (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+          }}
+        >
           <Lottie
             autoPlay
             loop

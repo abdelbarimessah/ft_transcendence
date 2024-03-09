@@ -1,5 +1,4 @@
 "use client";
-import { Skeleton } from "@nextui-org/react";
 import axios from "axios";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -569,7 +568,6 @@ function Achievements() {
       )}
     </div>
   );
-  // }
 }
 
 export default Achievements;

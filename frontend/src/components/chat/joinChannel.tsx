@@ -1,18 +1,8 @@
-import React, { useContext, useRef, useEffect } from "react";
-import Btns from "./commun_component/btns";
-import Link from "next/link";
+import React, { useContext } from "react";
 import { chatslistContext } from "@/app/ChatContext";
 import Image from "next/image";
-import Messages from "./messages";
-import Moment from "react-moment";
 import "moment-timezone";
-import axios from "axios";
-import { SocketContext, socket } from "@/app/SocketContext";
-import FriendRightSide from "./friendRightSide";
-import ChannelRightSide from "./channelRightSide";
-import Channels from "./channels";
 import ChannelsToJoin from "./listJoinChannel";
-import { toast } from "sonner";
 
 function JoinChannel() {
   const UserData: any = useContext(chatslistContext);
@@ -48,7 +38,7 @@ function JoinChannel() {
             </div>
             <div className="flex w-full overflow-hidden flex-col gap-9 mt-4">
               <div className="flex flex-col no-scrollbar overflow-y-scroll  h-full w-full  px-3">
-                {UserData.listChannelsToJoin.map((chat:any) => {
+                {UserData.listChannelsToJoin.map((chat: any) => {
                   return <ChannelsToJoin key={chat.id} channelToJoin={chat} />;
                 })}
               </div>

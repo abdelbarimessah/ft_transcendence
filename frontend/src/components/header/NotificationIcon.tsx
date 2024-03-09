@@ -18,13 +18,10 @@ axios.defaults.withCredentials = true;
 
 export default function NotificationIcon() {
   const socketClient = useContext(SocketContext);
-    const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
-
+  const backendUrl = process.env.BACKEND_API || "http://localhost:3000";
 
   const [gamePair, setGamePair] = useState<any>();
   const [notificationLists, setNotificationLists] = useState<any[]>([]);
-
-
 
   useEffect(() => {
     socketClient.on("notification", (data) => {
@@ -41,22 +38,19 @@ export default function NotificationIcon() {
         },
       };
 
-      setNotificationLists(prev => [...prev, newNotification]);
-
+      setNotificationLists((prev) => [...prev, newNotification]);
     });
   }, [socketClient]);
 
   useEffect(() => {
     const getData = async () => {
-
       const res = await axios.get<NotificationProps[]>(
         `${backendUrl}/notification`
       );
       setNotificationLists(res.data);
-    }
+    };
     getData();
-
-  }, [])
+  }, []);
 
   useEffect(() => {
     socketClient.on("playRequestFromFriend", (data) => {
@@ -64,9 +58,9 @@ export default function NotificationIcon() {
 
       const newGameInviteNotification: NotificationProps = {
         id: data.sender.providerId,
-        type: 'GAME_INVITE',
+        type: "GAME_INVITE",
         gameId: data.inviteNumber,
-        chatId: '',
+        chatId: "",
         user: {
           id: data.sender.id,
           providerId: data.sender.providerId,
@@ -75,15 +69,14 @@ export default function NotificationIcon() {
         },
       };
 
-      setNotificationLists(prev => [...prev, newGameInviteNotification]);
+      setNotificationLists((prev) => [...prev, newGameInviteNotification]);
     });
   }, [socketClient]);
-
 
   // Handling READ_NOTIFICATIONS
   const handleUnreadNotifications = () => {
     socket.emit("notification");
-    setNotificationLists([])
+    setNotificationLists([]);
   };
 
   return (

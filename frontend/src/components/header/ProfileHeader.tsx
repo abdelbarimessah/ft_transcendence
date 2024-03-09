@@ -12,7 +12,7 @@ const ProfileHeader = () => {
   const [user, setUser] = useState<any>();
   const socketClient = useContext(SocketContext);
 
-  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+  const backendUrl = process.env.BACKEND_API || "http://localhost:3000";
 
   useEffect(() => {
     const getData = async () => {
@@ -33,7 +33,6 @@ const ProfileHeader = () => {
 
   useEffect(() => {
     socketClient.on("updateInfo", async (data) => {
-      
       if (user && data.providerId === user.providerId) {
         try {
           setIsLoading(true);
@@ -74,7 +73,6 @@ const ProfileHeader = () => {
           {isLoading ? (
             <Skeleton className="w-[165px] h-[20px] rounded-full bg-color-25" />
           ) : (
-            // <span className='font-nico-moji text-color-6 text-[16px] capitalize'>{`${user.firstName} ${user.lastName}`}</span>
             <span className="font-nico-moji text-color-6 text-[16px] capitalize">
               {`${user.firstName.substring(0, 5)}${
                 user.firstName.length > 5 ? ".." : ""

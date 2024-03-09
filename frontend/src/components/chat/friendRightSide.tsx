@@ -16,8 +16,7 @@ function FriendRightSide() {
   const refToBottum: any = useRef(null);
   const UserData: any = useContext(chatslistContext);
   const socket = useContext(SocketContext);
-const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
-
+  const backendUrl = process.env.BACKEND_API || "http://localhost:3000";
 
   useEffect(() => {
     refToBottum.current?.scrollIntoView({ behavior: "smooth" });
@@ -53,7 +52,6 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
       UserData.myId.id !== UserData.chatClicked.members[0].id
         ? UserData.chatClicked.members[0].id
         : UserData.chatClicked.members[1].id;
-    // const myBlockedList = UserData.myId.id === UserData.chatClicked.members[0].id ? UserData.chatClicked.members[0]?.blockedUsers : UserData.chatClicked.members[1]?.blockedUsers;
     const friendProviderId =
       UserData.myId.id !== UserData.chatClicked.members[0].id
         ? UserData.chatClicked.members[0].providerId
@@ -66,7 +64,6 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
       UserData.myId.id !== UserData.chatClicked.members[0].id
         ? UserData.chatClicked.members[0].lastName
         : UserData.chatClicked.members[1].lastName;
-    // const isBlocked = myBlockedList.some((item :any) => item.id === friendId);
 
     const handelSubmitrefrech = (e: any) => {
       e.preventDefault();
@@ -102,26 +99,22 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
     const messages = UserData.friendChatConversation;
 
     return (
-      //chat
       <div className="flex flex-row w-full h-full ">
         <div className="flex flex-col h-full w-full">
-          {/* up nav */}
           <div className="flex justify-between w-full  bg-[#ffff] h-[130px] border-b-[3px] border-[#F3FAFF] p-5">
             <div className="flex items-center">
-              {/* todo: profile need to redirect to: /profile/friend */}
               <div className="h-[60px] w-[60px] rounded-full object-cover overflow-hidden relative">
                 <Link href={`/profile/${friendProviderId}`}>
                   <Image
                     sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
                     src={friendSrcImg}
-                    alt={friendNickName}
+                    alt="alt-img"
                     width={1024}
                     height={1080}
                   />
                 </Link>
               </div>
 
-              {/* info */}
               <div className="flex gap-1 items-center flex-col px-3">
                 <span className="font-nico-moji text-[20px]  text-color-6">
                   {`${firstName.substring(0, 10)}${
@@ -149,9 +142,8 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
             </div>
           </div>
 
-          {/* messages */}
           <div className="no-scrollbar h-full w-full bg-[#F3FAFF] bg-[url('../../public/assets/chat-bg.png')] overflow-y-scroll p-[38px]">
-            {messages.map((msg:any) => (
+            {messages.map((msg: any) => (
               <Messages
                 key={msg.id}
                 msg={msg.content}
@@ -164,8 +156,6 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
             ))}
             <div ref={refToBottum} />
           </div>
-
-          {/* bott nav */}
 
           <form onSubmit={handelSubmitrefrech}>
             <div className="flex items-center bg-[#F3FAFF] h-[90px] p-4 rounded-[22px]">
@@ -202,8 +192,6 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
             lastName={lastName}
             friendProviderId={friendProviderId}
             friendId={friendId}
-            // myBlockedList={myBlockedList}
-            // isBlocked={isBlocked}
           />
         </div>
       </div>

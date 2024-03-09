@@ -48,8 +48,7 @@ export function MatchesHistory() {
   const pathname = usePathname();
   const params = pathname.split("/");
   const router = useRouter();
-  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
-
+  const backendUrl = process.env.BACKEND_API || "http://localhost:3000";
 
   useEffect(() => {
     const getUserToFetch = async () => {

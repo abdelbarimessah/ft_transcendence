@@ -14,7 +14,7 @@ function OtpCard() {
   const [otpDisable, setOtpDisable] = useState(false);
   const [otp, setOtp] = useState("");
   const [id, setId] = useState("");
-  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+  const backendUrl = process.env.BACKEND_API || "http://localhost:3000";
   const handleEnableClick = () => {
     if (otp.length === 6) {
       axios

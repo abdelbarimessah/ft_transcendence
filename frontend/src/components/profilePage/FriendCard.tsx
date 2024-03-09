@@ -1,6 +1,6 @@
 "use client";
 
-import { SocketContext, socket } from "@/app/SocketContext";
+import { SocketContext } from "@/app/SocketContext";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

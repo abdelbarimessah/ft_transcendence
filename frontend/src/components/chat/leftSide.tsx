@@ -18,7 +18,7 @@ function LeftSide() {
             <Image
               sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
               src={UserData.myId?.avatar || "/assets/Profile.svg"}
-              alt={UserData.myId.nickName || "Final Error Here FIXED"}
+              alt="alt-img"
               fill={true}
               draggable={false}
               priority={true}

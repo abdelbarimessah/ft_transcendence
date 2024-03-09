@@ -9,7 +9,7 @@ import RenderFromUser from "@/components/chat/renderFromUser";
 axios.defaults.withCredentials = true;
 
 export default function ChannelMenu() {
-const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+  const backendUrl = process.env.BACKEND_API || "http://localhost:3000";
 
   const userData: any = useContext(chatslistContext);
 
@@ -51,17 +51,12 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
       await axios
         .post(`${process.env.NEXT_PUBLIC_API_URL}/chat/upload`, formData)
         .then((res) => {
-
           setAvatarLink(res.data);
         })
         .catch((error) => {
           console.error(error.message);
         });
     }
-    // if (avatar ) {
-    //   const formData = new FormData();
-    //   formData.append("avatar", avatar);
-    // }
   };
 
   const fetchChannelMembers = async () => {
@@ -77,11 +72,13 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
     }
   };
   let amdinId: string = "";
-  const myStatus: string = userData.channelMembers?.members?.map((member:any) => {
-    if (member.userId === userData.myId.id && member.isAdmin === true) {
-      return (amdinId = member.userId);
+  const myStatus: string = userData.channelMembers?.members?.map(
+    (member: any) => {
+      if (member.userId === userData.myId.id && member.isAdmin === true) {
+        return (amdinId = member.userId);
+      }
     }
-  });
+  );
 
   useEffect(() => {
     if (userData.showChannelMenu === true) fetchChannelMembers();
@@ -418,7 +415,6 @@ function User({
       />
     );
   } else if (myId === amdinId) {
-
     return (
       <div
         ref={userRef}
@@ -426,17 +422,15 @@ function User({
       >
         <div className="flex items-center justify-center">
           <div className="h-[43px] w-[43px] relative object-cover cursor-pointer">
-            {/* <Link href={`/profile/${friendProviderId}`}> */}
             <Image
               sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
               src={avatar}
-              alt={nickName}
+              alt="alt-img"
               draggable={false}
               fill={true}
               priority={true}
               className="w-full h-full rounded-full object-cover"
             />
-            {/* </Link> */}
           </div>
           <div className="Chat_names flex flex-col items-start justify-center pl-[10px]">
             <span className="text-color-6 text-[14px]">
@@ -533,7 +527,7 @@ function TypePassword({ setPass }: any) {
 }
 
 function SetPublic() {
-  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+  const backendUrl = process.env.BACKEND_API || "http://localhost:3000";
 
   const userData: any = useContext(chatslistContext);
   const handleSetPublic = async () => {
@@ -585,7 +579,7 @@ function SetPublic() {
   );
 }
 function SetPrivate() {
-  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+  const backendUrl = process.env.BACKEND_API || "http://localhost:3000";
 
   const userData: any = useContext(chatslistContext);
   const handleSetPrivate = async () => {
@@ -680,11 +674,11 @@ function TypeChannelName({ setName }: any) {
   );
 }
 
-function UsersSettingsPoint({ userId }:any) {
+function UsersSettingsPoint({ userId }: any) {
   const userData: any = useContext(chatslistContext);
 
   const updateMembers = (updatedMember: any) => {
-    const userMembers = userData.channelMembers?.members?.map((member :any) => {
+    const userMembers = userData.channelMembers?.members?.map((member: any) => {
       return member.userId === updatedMember?.userId
         ? { ...member, ...updatedMember }
         : member;
@@ -694,7 +688,7 @@ function UsersSettingsPoint({ userId }:any) {
   };
 
   const handelAddAdmin = async () => {
-const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+    const backendUrl = process.env.BACKEND_API || "http://localhost:3000";
 
     try {
       const addAdminResponse = await axios.post(
@@ -716,7 +710,7 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
   };
 
   const handelMute = async () => {
-const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+    const backendUrl = process.env.BACKEND_API || "http://localhost:3000";
 
     try {
       const muteResponse = await axios.post(
@@ -729,7 +723,6 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
         }
       );
       userData.setIsMuted("Unmute");
-      // toast.message(muteResponse.data);
     } catch (error: any) {
       if (error.response && error.response.status === 400) {
         toast.error(error.response.data.message);
@@ -738,7 +731,7 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
   };
 
   const handelUnMute = async () => {
-const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+    const backendUrl = process.env.BACKEND_API || "http://localhost:3000";
 
     try {
       const muteResponse = await axios.post(
@@ -752,7 +745,6 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
       );
       userData.setIsMuted("Mute");
 
-      // toast.message(muteResponse.data);
     } catch (error: any) {
       if (error.response && error.response.status === 400) {
         toast.error(error.response.data.message);
@@ -761,7 +753,7 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
   };
 
   const handelKick = async () => {
-const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+    const backendUrl = process.env.BACKEND_API || "http://localhost:3000";
 
     try {
       const kickResponse = await axios.post(
@@ -774,16 +766,14 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
         }
       );
 
-      // toast.message(kickResponse.data);
     } catch (error: any) {
       if (error.response && error.response.status === 400) {
         toast.error(error.response.data.message);
       }
     }
   };
-  /* ban is not working cuzing server to get down   */
   const handelBan = async () => {
-const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+    const backendUrl = process.env.BACKEND_API || "http://localhost:3000";
 
     try {
       const bankResponse = await axios.post(
@@ -796,7 +786,6 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
         }
       );
 
-      // toast.message(bankResponse.data);
     } catch (error: any) {
       if (error.response && error.response.status === 400) {
         toast.error(error.response.data.message);
@@ -851,8 +840,6 @@ const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
       >
         <span className="text-color-31 text-[13px]">Ban</span>
       </div>
-
-      {/* to-do request play game */}
     </div>
   );
 }

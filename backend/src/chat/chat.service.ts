@@ -59,7 +59,7 @@ export class ChatService {
             },
           },
         },
-      }
+      },
     });
   }
   async getUserChats(userId: string) {
@@ -744,7 +744,6 @@ export class ChatService {
     if (targetMembership.userId === membership.channel.ownerId) {
       throw new ForbiddenException('Cannot ban the owner of the channel.');
     }
-    // To-do kick target user from channel
     const updatedMembership = await this.prismaService.channelMembership.update(
       {
         where: {
@@ -851,7 +850,7 @@ export class ChatService {
                 lastName: true,
                 avatar: true,
               },
-            }, // To-do select the useful fields
+            },
           },
         },
       },
@@ -881,7 +880,6 @@ export class ChatService {
           },
         },
         members: {
-          // To-do remove this later maybe if i kick banned users
           where: {
             userId: userId,
             isBanned: false,

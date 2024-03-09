@@ -1,6 +1,5 @@
 "use client";
 import AuthWrapper from "@/app/authToken";
-import withAuth from "@/app/authToken";
 import ModeCard from "@/components/cards/ModeCard";
 import GameManual from "@/components/game/GameManual";
 import Header from "@/components/header/header";
@@ -9,7 +8,6 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 function ChoseMode() {
-  const [close, setClose] = useState(true);
   const [me, setMe] = useState<any>();
 
   useEffect(() => {
@@ -25,14 +23,9 @@ function ChoseMode() {
         console.error(err.message);
       });
   }, []);
-  function closeMenu() {
-    setClose(!close);
-  }
   return (
-
     <>
       <AuthWrapper>
-
         <GameManual />
         <div className="w-full  h-full bg-color-18 flex flex-col  items-center  overflow-scroll no-scrollbar ">
           <div className="w-full z-[2000] pt-12">

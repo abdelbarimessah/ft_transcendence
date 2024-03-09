@@ -11,17 +11,17 @@ import ChannelMenu from "./channelMenu";
 import Image from "next/image";
 
 function ChannelRightSide() {
-  const inputMessageRef :any= useRef(null);
-  const refToBottum :any = useRef(null);
+  const inputMessageRef: any = useRef(null);
+  const refToBottum: any = useRef(null);
   const UserData: any = useContext(chatslistContext);
   const socket = useContext(SocketContext);
-  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+  const backendUrl = process.env.BACKEND_API || "http://localhost:3000";
 
   useEffect(() => {
     refToBottum.current?.scrollIntoView({ behavior: "smooth" });
   }, [UserData.channelChatConversation]);
 
-  const addMessageToChannel = (message :any) => {
+  const addMessageToChannel = (message: any) => {
     if (UserData.channelClicked.id === message.channelId) {
       UserData.setChannelChatConversation(null);
       const newMessageArray = [...UserData.channelChatConversation, message];
@@ -40,7 +40,7 @@ function ChannelRightSide() {
     [];
 
   if (UserData.channelClicked?.id != undefined) {
-    const handelSubmitrefrech = (e :any) => {
+    const handelSubmitrefrech = (e: any) => {
       e.preventDefault();
     };
 
@@ -76,13 +76,10 @@ function ChannelRightSide() {
     };
 
     return (
-      //chat
       <div className="flex flex-row w-full h-full ">
         <div className="flex flex-col h-full w-full">
-          {/* up nav */}
           <div className="flex justify-between w-full  bg-[#ffff] h-[130px] border-b-[3px] border-[#F3FAFF] p-5">
             <div className="flex items-center">
-              {/* todo:   !!!!!! channel avatar !!!!!1*/}
               <div className="h-[60px] w-[60px] rounded-full object-cover overflow-hidden relative">
                 <Image
                   src={
@@ -96,7 +93,6 @@ function ChannelRightSide() {
                   sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
                 ></Image>
               </div>
-              {/* info */}
               <div className="flex gap-1 items-center flex-col px-3">
                 <span className="font-nico-moji text-[18px]  text-color-6">
                   {`${UserData.channelClicked.name.substring(0, 14)}${
@@ -123,7 +119,7 @@ function ChannelRightSide() {
           </div>
 
           <div className="no-scrollbar h-full bg-[#F3FAFF] bg-[url('../../public/assets/chat-bg.png')] overflow-y-scroll p-[38px]">
-            {UserData.channelChatConversation.map((msg:any) => (
+            {UserData.channelChatConversation.map((msg: any) => (
               <Messages
                 key={msg.id}
                 msg={msg.content}
@@ -137,7 +133,6 @@ function ChannelRightSide() {
 
             <div ref={refToBottum} />
           </div>
-
 
           <form onSubmit={handelSubmitrefrech}>
             <div className="flex items-center bg-[#F3FAFF] h-[90px] p-4 rounded-[22px]">

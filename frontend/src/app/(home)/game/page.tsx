@@ -1,4 +1,6 @@
 "use client";
+import AuthWrapper from "@/app/authToken";
+import withAuth from "@/app/authToken";
 import ModeCard from "@/components/cards/ModeCard";
 import GameManual from "@/components/game/GameManual";
 import Header from "@/components/header/header";
@@ -27,19 +29,23 @@ function ChoseMode() {
     setClose(!close);
   }
   return (
+
     <>
-      <GameManual />
-      <div className="w-full  h-full bg-color-18 flex flex-col  items-center  overflow-scroll no-scrollbar ">
-        <div className="w-full z-[2000] pt-12">
-          <Header />
+      <AuthWrapper>
+
+        <GameManual />
+        <div className="w-full  h-full bg-color-18 flex flex-col  items-center  overflow-scroll no-scrollbar ">
+          <div className="w-full z-[2000] pt-12">
+            <Header />
+          </div>
+          <div className="w-full h-full absolute ">
+            <ParticleBackground />
+          </div>
+          <div className="w-full h-full flex justify-center items-center">
+            <ModeCard me={me} />
+          </div>
         </div>
-        <div className="w-full h-full absolute ">
-          <ParticleBackground />
-        </div>
-        <div className="w-full h-full flex justify-center items-center">
-          <ModeCard me={me} />
-        </div>
-      </div>
+      </AuthWrapper>
     </>
   );
 }

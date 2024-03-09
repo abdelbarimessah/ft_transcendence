@@ -8,7 +8,7 @@ import animationData from "../../../public/assets/EmptyFriends.json";
 
 import dynamic from "next/dynamic";
 import { useContext, useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import { notFound, usePathname, useRouter } from "next/navigation";
 import { SocketContext } from "@/app/SocketContext";
 
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
@@ -47,8 +47,9 @@ export function MatchesHistory() {
 
   const pathname = usePathname();
   const params = pathname.split("/");
+  const router = useRouter();
 
-  
+
   useEffect(() => {
     const getUserToFetch = async () => {
       try {
@@ -77,11 +78,15 @@ export function MatchesHistory() {
   }, [socketClient, queryClient]);
 
   const getMatchHistoryList = async (userId: string) => {
-    if(!userId) return [];
+    if (!userId) return [];
     const res = await axios.get<MatchHistoryProps[]>(
       `http://localhost:3000/game/matchHistory/${userId}`
     );
 
+    // if (!res) {
+    //   router.push('/profile')
+    //   notFound();
+    // }
     return res.data;
   };
 

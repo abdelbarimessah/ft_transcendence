@@ -13,6 +13,9 @@
 // import InviteFriend from '@/components/chat/InviteFriend';
 // import FriendMenu from '@/components/chat/friendMenu';
 
+import AuthWrapper from "@/app/authToken";
+import withAuth from "@/app/authToken";
+
 
 
 // export const chatslistContext = createContext();
@@ -50,11 +53,11 @@
 //                 toast.error(error.response.data.message);
 //             }
 //         }
-        
+
 //         try{
 //           const channelresponse = await axios.get('http://localhost:3000/chat/channel');
 //           setChannelsList(channelresponse.data);
-          
+
 //         }
 //         catch (error: any) {
 //           if (error.response && error.response.status === 400) {
@@ -64,7 +67,7 @@
 //         try{
 //           const myIdResponse = await axios.get('http://localhost:3000/user/me');
 //           setMyId(myIdResponse.data);
-          
+
 //         }
 //         catch (error: any) {
 //           if (error.response && error.response.status === 400) {
@@ -92,10 +95,10 @@
 //         if (chatClicked.id)
 //           fetchFriendConversation();
 //       }, [chatClicked]);
-      
-      
+
+
 //       const fetchChannelConversation = async () =>{
-        
+
 //         try {
 //           const messageResponse = await axios.get(`http://localhost:3000/chat/channel/${channelClicked.id}/messages`);
 //           setChannelChatConversation(messageResponse.data);
@@ -119,14 +122,14 @@
 
 //       const addNewChannelToList = (channel :any) => {   
 //         const exists = channelsList.some(item  => item.id === channel.id);
-        
+
 //         if (exists === false)
 //         {
 //           const newChannelToAdd = [...channelsList, channel];
 //           setChannelsList(newChannelToAdd);
 //         }
 //       }
-    
+
 //       useEffect(() => {
 //         socket.on("userJoined", (data) => {
 //           addNewChannelToList(data.channel);
@@ -137,7 +140,7 @@
 //             socket.off("userJoined")
 //         })
 //       }), [];
-      
+
 //     return (
 //         <>
 //         <chatslistContext.Provider value={{ friendsList, channelsList, myId, friendChatConversation, chatClicked, typing, 
@@ -148,7 +151,7 @@
 //                                             needPassword, setNeedPassword, inputEnterPassRef, showInvite, setShowInvite, showFriendMenu,
 //                                             setShowFriendMenu, showChannelMenu, setShowChannelMenu, channelMembers, setChannelMembers}}>
 //         <div className='relative flex justify-start chat-bp:justify-center items-center w-screen h-screen overflow-hidden '>
-          
+
 //           <InviteFriend />
 //           <ChannelOption />
 //           <div className="flex justify-start chat-bp:justify-center items-center w-[1731px] h-[1080px] bg-[#FFFFFF] ">
@@ -159,7 +162,7 @@
 
 //               <div className="bg-[#FFFFFF]  h-full w-full rounded-[0px_29px_29px_0px]">
 //                 <RightSide  />
-                
+
 //               </div>
 //             </div>
 //             </div>
@@ -171,12 +174,17 @@
 // export default Chat;
 
 function Chat() {
-  return(
-    <div>
-    <span>hello</span>
-    </div>
+  return (
+    <AuthWrapper>
+      <div>
+
+        <span>hello</span>
+      </div>
+    </AuthWrapper>
   )
 }
 
 
 export default Chat;
+
+// withAuth

@@ -7,6 +7,7 @@ import { SocketContext, SocketProvider } from "../SocketContext";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import AuthWrapper from "../authToken";
 
 axios.defaults.withCredentials = true;
 
@@ -60,41 +61,103 @@ export default function RootLayout({
   }, [socketClient, lose, route]);
 
 
+  // useEffect(() => {
+  //   if (gameEnded) {
+  //     return;
+  //   }
+  //   socketClient.on("OnePlayerLeaveTheRoom", async (data) => {
+  //     console.log(socketClient.id, 'the data came int the layout : 11111 ', data);
+
+  //     if (data.socketId !== socketClient.id) return;
+  //     const gameData = {
+  //       opponentId: data.user.providerId,
+  //       userScore: 0,
+  //       opponentScore: 5,
+  //       status: "lose",
+  //       gameName: data.roomName,
+  //       gameType: "randomMode",
+  //     };
+
+  //     setLose(true);
+
+  //     try {
+  //       const url = process.env.NEXT_PUBLIC_API_URL;
+  //       await axios.post(`${url}/game/gameData`, gameData, {
+  //         withCredentials: true,
+  //       });
+  //     } catch (error) {
+  //       // eslint-disable-next-line no-console
+  //       console.error(error);
+  //     }
+  //     setTimeout(() => route.push("/game"), 3000);
+  //   });
+  //   return () => {
+  //     socketClient.off("OnePlayerLeaveTheRoom");
+  //   };
+  // }, [socketClient, gameEnded, route]);
+
   useEffect(() => {
     if (gameEnded) {
       return;
     }
     socketClient.on("OnePlayerLeaveTheRoom", async (data) => {
-      if (data.socketId !== socketClient.id) return;
+      // console.log(socketClient.id, 'the data in the useEffect is 11111:', data);
+      if (socketClient.id !== data.socketId) return;
       const gameData = {
+        userId: data.user.providerId,
+        opponentId: data.oponent.providerId,
+        userScore: 5,
+        opponentScore: 0,
+        status: "win",
+        gameName: data.roomName,
+        gameType: "randomMode",
+      };
+      console.log('game data user : ', gameData);
+
+      const gameDataOpponent = {
+        userId: data.oponent.providerId,
         opponentId: data.user.providerId,
         userScore: 0,
         opponentScore: 5,
         status: "lose",
         gameName: data.roomName,
         gameType: "randomMode",
-      };
-      console.log('the data in the layout 1111', gameData);
-      
-      setLose(true);
-      
+      }
+      console.log('game data oppoenent : ', gameDataOpponent);
       try {
+
         const url = process.env.NEXT_PUBLIC_API_URL;
-        await axios.post(`${url}/game/gameData`, gameData, {
-          withCredentials: true,
-        });
+        await axios.post(`${url}/game/gameData`, gameData)
+        await axios.post(`${url}/game/gameData`, gameDataOpponent)
+
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error);
       }
-      setTimeout(() => route.push("/game"), 3000);
-    });
-    return () => {
-      socketClient.off("OnePlayerLeaveTheRoom");
-    };
-  }, [socketClient, gameEnded, route]);
 
-  
+    })
+
+  }, [socketClient])
+
+
+  useEffect(() => {
+    socketClient.on('OnePlayerLeaveTheRoomCallback', (data) => {
+      if (socketClient.id === data.socketId) {
+        setLose(true)
+        return;
+      }
+      // console.log('OnePlayerLeaveTheRoomCallback ::::: [1111]');
+
+      // route.push('/game');
+      setWin(true);
+    })
+    return (() => {
+      socketClient.off('OnePlayerLeaveTheRoomCallback');
+    })
+  }, [socketClient])
+
+
+
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
     if (win || lose) {
@@ -110,63 +173,67 @@ export default function RootLayout({
     };
   }, [win, lose]);
 
-  useEffect(() => {
-    if (gameEnded) {
-      return;
-    }
-    socketClient.on("OnePlayerLeaveTheRoom", async (data) => {
-      if (data.socketId === socketClient.id || !data.socketId) return;
-      const gameData = {
-        opponentId: data.oponent.providerId,
-        userScore: 5,
-        opponentScore: 0,
-        status: "win",
-        gameName: data.roomName,
-        gameType: "randomMode",
-      };
-      console.log('the data in the layout 222222', gameData);
-      setWin(true);
-      toast.success("The other player left the game");
-      
-      try {
-        const url = process.env.NEXT_PUBLIC_API_URL;
-        await axios.post(`${url}/game/gameData`, gameData);
-      } catch (error: any) {
-        // eslint-disable-next-line no-console
-        console.error(error.message);
-      }
-      setTimeout(() => route.push("/game"), 3000);
-    });
-    return () => {
-      socketClient.off("OnePlayerLeaveTheRoom");
-    };
-  }, [socketClient, gameEnded, route]);
+  // useEffect(() => {
+  //   if (gameEnded) {
+  //     return;
+  //   }
+  //   socketClient.on("OnePlayerLeaveTheRoom", async (data) => {
+  //     console.log(socketClient.id, 'the data came int the layout : 22222 ', data);
+  //     if (data.socketId === socketClient.id || !data.socketId) return;
+  //     const gameData = {
+  //       opponentId: data.oponent.providerId,
+  //       userScore: 5,
+  //       opponentScore: 0,
+  //       status: "win",
+  //       gameName: data.roomName,
+  //       gameType: "randomMode",
+  //     };
+  //     console.log('the data in the layout 222222', gameData);
+  //     setWin(true);
+  //     toast.success("The other player left the game");
+
+  //     try {
+  //       const url = process.env.NEXT_PUBLIC_API_URL;
+  //       await axios.post(`${url}/game/gameData`, gameData);
+  //     } catch (error: any) {
+  //       // eslint-disable-next-line no-console
+  //       console.error(error.message);
+  //     }
+  //     setTimeout(() => route.push("/game"), 3000);
+  //   });
+  //   return () => {
+  //     socketClient.off("OnePlayerLeaveTheRoom");
+  //   };
+  // }, [socketClient, gameEnded, route]);
 
 
 
   return (
-    <div className="flex  w-screen min-h-screen ">
-      <SideNav setShow={setShow} />
-      <div className="flex items-center justify-center flex-1 w-10 ">
-        <SocketProvider>{children}</SocketProvider>
-        {win && (
-          <div className=" w-[282px] h-[195px] bg-color-30 rounded-[22px] flex flex-col items-center justify-center absolute top-1/2 left-[50%] ml-[70px] transform -translate-x-1/2 -translate-y-1/2 z-[1000]">
-            <span className="font-nico-moji text-[64px] text-color-6">you</span>
-            <span className="font-nico-moji text-[64px] text-color-6 -mt-7">
-              {" "}
-              win
-            </span>
-          </div>
-        )}
-        {lose && (
-          <div className=" w-[282px] h-[195px] bg-color-30 rounded-[22px] flex flex-col items-center justify-center absolute top-1/2 left-[50%] ml-[7´0px] transform -translate-x-1/2 -translate-y-1/2 z-[1000]">
-            <span className="font-nico-moji text-[64px] text-color-6">you</span>
-            <span className="font-nico-moji text-[64px] text-color-6 -mt-7">
-              lose
-            </span>
-          </div>
-        )}
+    <AuthWrapper>
+
+      <div className="flex  w-screen min-h-screen ">
+        <SideNav setShow={setShow} />
+        <div className="flex items-center justify-center flex-1 w-10 ">
+          <SocketProvider>{children}</SocketProvider>
+          {win && (
+            <div className=" w-[282px] h-[195px] bg-color-30 rounded-[22px] flex flex-col items-center justify-center absolute top-1/2 left-[50%] ml-[70px] transform -translate-x-1/2 -translate-y-1/2 z-[1000]">
+              <span className="font-nico-moji text-[64px] text-color-6">you</span>
+              <span className="font-nico-moji text-[64px] text-color-6 -mt-7">
+                {" "}
+                win
+              </span>
+            </div>
+          )}
+          {lose && (
+            <div className=" w-[282px] h-[195px] bg-color-30 rounded-[22px] flex flex-col items-center justify-center absolute top-1/2 left-[50%] ml-[7´0px] transform -translate-x-1/2 -translate-y-1/2 z-[1000]">
+              <span className="font-nico-moji text-[64px] text-color-6">you</span>
+              <span className="font-nico-moji text-[64px] text-color-6 -mt-7">
+                lose
+              </span>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </AuthWrapper>
   );
 }

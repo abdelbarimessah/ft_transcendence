@@ -1,7 +1,7 @@
 import React, { useContext, useRef, useEffect } from "react";
 import Btns from "./commun_component/btns";
 import Link from "next/link";
-import { chatslistContext } from "../../app/(home)/chat/page";
+import { chatslistContext } from "@/app/ChatContext";
 import Image from "next/image";
 import Messages from "./messages";
 import Moment from "react-moment";
@@ -88,8 +88,6 @@ function FriendRightSide() {
             withCredentials: true,
           }
         );
-        // console.log("postMsgResponse.data = ", postMsgResponse.data);
-
         addMessageToChat(postMsgResponse.data);
         inputMessageRef.current.value = "";
         UserData.setTyping(false);

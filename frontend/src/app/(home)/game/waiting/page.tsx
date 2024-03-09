@@ -49,10 +49,6 @@ export default function Wiating() {
 
   useEffect(() => {
     socketClient.on("OtherPlayerDeclineTheGame", (data) => {
-      console.log(
-        { message: "the other player decline the game invite " },
-        { data }
-      );
       router.push("/profile");
     });
   });

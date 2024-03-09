@@ -1,6 +1,6 @@
 import {createContext, useContext, useRef } from 'react'
 
-import { chatslistContext } from '../../app/(home)/chat/page'
+import { chatslistContext } from "@/app/ChatContext";
 import { toast } from 'sonner';
 import { socket } from '@/app/SocketContext';
 import axios from 'axios';
@@ -19,9 +19,8 @@ function ChannelsToJoin ({channelToJoin}: any) {
         UserData.setChannelsList(newChannelToAdd);
     }
 
-    const addChannelToList = async(channelToJoin) => {
+    const addChannelToList = async(channelToJoin:any) => {
 
-        console.log("UserData.channelToJoin = >", channelToJoin.id);
         try {
             const joinResponse = await axios.post(
               `http://localhost:3000/chat/channel/${channelToJoin.id}/join`,
@@ -32,7 +31,6 @@ function ChannelsToJoin ({channelToJoin}: any) {
                 withCredentials: true,
               }
             );
-            console.log("joinResponse.data here here:", joinResponse.data);
             UserData.setChannelClicked(joinResponse.data);
             addNewChannelToList(joinResponse.data)
         } 
@@ -56,7 +54,6 @@ function ChannelsToJoin ({channelToJoin}: any) {
             addChannelToList(channelToJoin);
             UserData.setPopUpOn(false);
         }
-        console.log("channelToJoin im at handelChanneltoJoin <= =>", channelToJoin.id);
     }
 
     return(

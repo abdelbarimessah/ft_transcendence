@@ -1,13 +1,5 @@
-import React, { useState, useEffect, createContext, useContext, useRef } from 'react'
-import Btns from './commun_component/btns'
-import Link from 'next/link'
-import axios from 'axios'
-import Friend from './friend'
-import Channels from './channels'
-import { chatslistContext } from '../../app/(home)/chat/page'
-import { Truck } from 'lucide-react'
-import { log } from 'console'
-import { toast } from 'sonner'
+import React, { useContext } from 'react'
+import { chatslistContext } from '@/app/ChatContext'
 
 
 function CreatChannel() {

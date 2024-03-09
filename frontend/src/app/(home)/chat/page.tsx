@@ -15,19 +15,24 @@ import FriendMenu from "@/components/chat/friendMenu";
 import ShowListNewFriend from "@/components/chat/showListNewFriend";
 import AuthWrapper from "@/app/authToken";
 
-export const chatslistContext = createContext("");
+// export const chatslistContext = createContext("");
+import { chatslistContext } from "../../ChatContext";
 
 function Chat() {
   const [friendsList, setFriendsList] = useState([]);
   const [newFriendsList, setNewFriendsList] = useState([]);
   const [showNewFriendsList, setShowNewFriendsList] = useState(false);
   const [channelsList, setChannelsList] = useState([]);
+  // const [channelsList, setChannelsList] = useState<{ id: string | number }[]>([]);
   const [myId, setMyId] = useState([]);
+  // const [myId, setMyId] = useState<{ id: string | number } | null>(null);
   const [friendChatConversation, setFriendChatConversation] = useState([]);
   const [channelChatConversation, setChannelChatConversation] = useState([]);
   const [chatClicked, setChatClicked] = useState([]);
+  // const [chatClicked, setChatClicked] = useState<{ id: string | number } | null>(null);
   const [listChannelsToJoin, setListChannelsToJoin] = useState([]);
   const [channelClicked, setChannelClicked] = useState([]);
+  // const [channelClicked, setChannelClicked] = useState<{ id: string | number } | null>(null);
   const [channelToJoin, setChannelToJoin] = useState([]);
   const [typing, setTyping] = useState(true);
   const [popUpOn, setPopUpOn] = useState(false);
@@ -40,6 +45,7 @@ function Chat() {
   const [showFriendMenu, setShowFriendMenu] = useState(false);
   const [showChannelMenu, setShowChannelMenu] = useState(false);
   const [channelMembers, setChannelMembers] = useState([]);
+  // const [channelMembers, setChannelMembers] = useState<{ members: any[] } | null>(null);
   const [isMuted, setIsMuted] = useState("Mute");
   const [isBlocked, setIsBlocked] = useState("Unblock");
   const [blockList, setBlockList] = useState([]);
@@ -68,7 +74,6 @@ function Chat() {
       const NewFriendsListResponse = await axios.get(
         "http://localhost:3000/user/friends"
       );
-      console.log("NewFriendsListResponse: -----", NewFriendsListResponse.data);
 
       setNewFriendsList(NewFriendsListResponse.data);
     } catch (error: any) {
@@ -89,10 +94,14 @@ function Chat() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    if (chatClicked && chatClicked.id) fetchFriendConversation();
+  }, [chatClicked]);
+
   const fetchFriendConversation = async () => {
     try {
       const messageResponse = await axios.get(
-        `http://localhost:3000/chat/message/${chatClicked.id}`
+        `http://localhost:3000/chat/message/${chatClicked?.id}`
       );
       setFriendChatConversation(messageResponse.data);
     } catch (error: any) {
@@ -102,14 +111,18 @@ function Chat() {
     }
   };
 
+
+  // useEffect(() => {
+  //   if (chatClicked.id) fetchFriendConversation();
+  // }, [chatClicked]);
   useEffect(() => {
-    if (chatClicked.id) fetchFriendConversation();
-  }, [chatClicked]);
+    if (channelClicked && channelClicked.id) fetchChannelConversation();
+  }, [channelClicked]);
 
   const fetchChannelConversation = async () => {
     try {
       const messageResponse = await axios.get(
-        `http://localhost:3000/chat/channel/${channelClicked.id}/messages`
+        `http://localhost:3000/chat/channel/${channelClicked?.id}/messages`
       );
       setChannelChatConversation(messageResponse.data);
     } catch (error: any) {
@@ -120,9 +133,9 @@ function Chat() {
     }
   };
 
-  useEffect(() => {
-    if (channelClicked.id) fetchChannelConversation();
-  }, [channelClicked]);
+  // useEffect(() => {
+  //   if (channelClicked.id) fetchChannelConversation();
+  // }, [channelClicked]);
 
   const addNewChannelToList = (channel: any) => {
     const exists = channelsList.some((item) => item.id === channel?.id);
@@ -133,51 +146,69 @@ function Chat() {
     }
   };
 
+  // const updateMembers = (updatedMember: any) => {
+  //   const userMembers = channelMembers?.members?.map((member) => {
+  //     return member.userId === updatedMember?.userId
+  //       ? { ...member, ...updatedMember }
+  //       : member;
+  //   });
+  //   const newUpdate = { ...channelMembers, members: userMembers };
+  //   setChannelMembers(newUpdate);
+  // };
+
   const updateMembers = (updatedMember: any) => {
-    const userMembers = channelMembers?.members?.map((member) => {
-      return member.userId === updatedMember?.userId
-        ? { ...member, ...updatedMember }
-        : member;
-    });
-    const newUpdate = { ...channelMembers, members: userMembers };
-    setChannelMembers(newUpdate);
+    if (channelMembers && channelMembers.members) {
+      const userMembers = channelMembers.members.map((member) => {
+        return member.userId === updatedMember?.userId
+          ? { ...member, ...updatedMember }
+          : member;
+      });
+      const newUpdate = { ...channelMembers, members: userMembers };
+      setChannelMembers(newUpdate);
+    }
   };
 
-  const updateChannelList = (channelId) => {
-    console.log("channel members", channelMembers);
+
+  const updateChannelList = (channelId: any) => {
     const newChannelList = channelsList.filter((channel) => {
       return channel?.id != channelId;
     });
 
     setChannelsList(newChannelList);
-    if (channelClicked.id === channelId)
-      setChannelClicked([]);
+    if (channelClicked && channelClicked.id === channelId)
+      setChannelClicked(null);
+    // if (channelClicked.id === channelId)
+    //   setChannelClicked([]);
   };
 
-  const removeUserFromMembers = (userId) => {
-    console.log("channel members", channelMembers);
+  const removeUserFromMembers = (userId:any) => {
     const newChannelMember = channelMembers?.members?.filter((member) => {
       return member?.userId != userId;
     });
-    const newUpdate = { ...channelMembers, members: newChannelMember };
-    setChannelMembers(newUpdate);
+    if (newChannelMember) {
+      const newUpdate = { ...channelMembers, members: newChannelMember };
+      setChannelMembers(newUpdate);
+    }
+    // const newChannelMember = channelMembers?.members?.filter((member) => {
+    //   return member?.userId != userId;
+    // });
+    // const newUpdate = { ...channelMembers, members: newChannelMember };
+    // setChannelMembers(newUpdate);
   };
 
   useEffect(() => {
     socket.on("userJoined", (data) => {
       addNewChannelToList(data.user.channel);
       updateMembers(data.user);
-      console.log("data", data);
     });
     socket.on("addAdmin", (data) => {
       updateMembers(data.user);
     });
+    
     socket.on("newChat", (data) => {
-      console.log('in newchat event: ', data)
-      const friendExists = friendsList.some(user => user.id === data.id)
-      if(!friendExists){
-        const newList:any = [...friendsList, data]
-        console.log('new list: ', newList);
+      const friendExists = friendsList.some((user :any) => user.id === data.id)
+      if (!friendExists) {
+        const newList: any = [...friendsList, data]
         setFriendsList(newList);
       }
       setShowNewFriendsList(false);
@@ -185,8 +216,9 @@ function Chat() {
     socket.on("muteUser", (data) => {
       updateMembers(data.user);
     });
+
     socket.on("banUser", (data) => {
-      if (myId.id === data.userId) {
+      if (myId && myId.id === data.userId) {
         updateChannelList(data.channelId);
       } else {
         removeUserFromMembers(data.userId);
@@ -194,7 +226,7 @@ function Chat() {
     });
 
     socket.on("kickUser", (data) => {
-      if (myId.id === data.userId) {
+      if (myId && myId.id === data.userId) {
         updateChannelList(data.channelId);
       } else {
         removeUserFromMembers(data.userId);
@@ -202,9 +234,8 @@ function Chat() {
     });
 
     socket.on("userLeft", (data) => {
-      console.log("on event listner usrleft: ", channelMembers);
 
-      if (myId.id === data.userId) {
+      if (myId && myId.id === data.userId) {
         updateChannelList(data.channelId);
       } else {
         removeUserFromMembers(data.userId);
@@ -275,7 +306,7 @@ function Chat() {
             setIsBlocked,
             blockList,
             setBlockList,
-          }}
+          }as any}
         >
           <div className="relative flex justify-start chat-bp:justify-center items-center w-screen h-screen overflow-hidden  ">
             <InviteFriend />

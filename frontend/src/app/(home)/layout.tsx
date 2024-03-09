@@ -55,7 +55,6 @@ export default function RootLayout({
 
   useEffect(() => {
     const enterRoom = (data: any) => {
-      console.log('the data in the normal endGame ******', data);
       
       setGameEnded(true);
       const gameData = {
@@ -99,7 +98,6 @@ export default function RootLayout({
       return;
     }
     socketClient.on("OnePlayerLeaveTheRoom", async (data) => {
-      // console.log(socketClient.id, 'the data in the useEffect is 11111:', data);
       if (socketClient.id !== data.socketId) return;
       const gameData = {
         userId: data.user.providerId,
@@ -110,7 +108,6 @@ export default function RootLayout({
         gameName: data.roomName,
         gameType: "randomMode",
       };
-      console.log('game data user : ', gameData);
 
       const gameDataOpponent = {
         userId: data.oponent.providerId,
@@ -121,7 +118,6 @@ export default function RootLayout({
         gameName: data.roomName,
         gameType: "randomMode",
       }
-      console.log('game data oppoenent : ', gameDataOpponent);
       try {
 
         const url = process.env.NEXT_PUBLIC_API_URL;

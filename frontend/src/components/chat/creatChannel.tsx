@@ -1,6 +1,6 @@
 import React, { useContext, useRef, useState } from "react";
 import axios from "axios";
-import { chatslistContext } from "../../app/(home)/chat/page";
+import { chatslistContext } from "@/app/ChatContext";
 import { toast } from "sonner";
 import CreatProtected from "./creatProtected";
 import Image from "next/image";
@@ -11,7 +11,7 @@ function CreatChannel() {
   const [changeAvatar, setChangeAvatar] = useState(false);
   const UserData: any = useContext(chatslistContext);
   const [avatarLink, setAvatarLink] = useState<any>('http://localhost:8000/assets/DefaultChannelImage.svg');
-  const inputMessageRef = useRef(null);
+  const inputMessageRef :any= useRef(null);
   const handelSubmitrefrech = (e: any) => {
     e.preventDefault();
   };
@@ -66,12 +66,10 @@ function CreatChannel() {
       setAvatar(file);
       const formData = new FormData();
       formData.append("avatar", file);
-      console.log("file before the send of the data", file);
 
       await axios
         .post(`${process.env.NEXT_PUBLIC_API_URL}/chat/upload`, formData)
         .then((res) => {
-          console.log("the data came in the upload ::: ", res.data);
           setAvatarLink(res.data);
         })
         .catch((error) => {
@@ -164,7 +162,7 @@ function CreatChannel() {
                       name="typeOfChannel"
                       value="PRIVATE"
                       className="hidden peer"
-                      onClick={(e) => {
+                      onClick={(e :any) => {
                         UserData.setchannelType(e.target.value);
                       }}
                     />
@@ -183,7 +181,7 @@ function CreatChannel() {
                       name="typeOfChannel"
                       value="PUBLIC"
                       className="hidden peer"
-                      onClick={(e) => {
+                      onClick={(e:any) => {
                         UserData.setchannelType(e.target.value);
                       }}
                     />
@@ -202,7 +200,7 @@ function CreatChannel() {
                       name="typeOfChannel"
                       value="PROTECTED"
                       className="hidden peer"
-                      onClick={(e) => {
+                      onClick={(e:any) => {
                         UserData.setchannelType(e.target.value);
                       }}
                     />

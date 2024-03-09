@@ -2,7 +2,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import axios from "axios";
-import { chatslistContext } from "../../app/(home)/chat/page";
+import { chatslistContext } from "@/app/ChatContext";
 import { SocketContext } from "@/app/SocketContext";
 
 function RenderFromUser ({avatar, nickName, firstName, lastName, zIndex, userRef, admin})

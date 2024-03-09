@@ -2,7 +2,7 @@
 import Btns from "./commun_component/btns";
 import React, { useContext } from "react";
 import Link from "next/link";
-import { chatslistContext } from "../../app/(home)/chat/page";
+import { chatslistContext } from "@/app/ChatContext";
 import FriendConversation from "./friendConversation";
 import ChannelConversation from "./channelConversation";
 import Image from "next/image";

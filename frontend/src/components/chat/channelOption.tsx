@@ -1,11 +1,10 @@
  import React from "react";
 import { useState, useContext } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { chatslistContext } from '../../app/(home)/chat/page'
 import CreatChannel from "./creatChannel";
 import JoinChannel from "./joinChannel";
 import EnterPassword from "./enterPassword";
-import CreatPrivate from "./creatPrivate";
+import { chatslistContext } from "@/app/ChatContext";
 
 
 function ChannelOption() {

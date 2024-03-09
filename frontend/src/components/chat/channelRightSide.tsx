@@ -1,6 +1,6 @@
 import React, { useContext, useRef, useEffect } from "react";
 import Btns from "./commun_component/btns";
-import { chatslistContext } from "../../app/(home)/chat/page";
+import { chatslistContext } from "@/app/ChatContext";
 import Messages from "./messages";
 import Moment from "react-moment";
 import "moment-timezone";
@@ -11,8 +11,8 @@ import ChannelMenu from "./channelMenu";
 import Image from "next/image";
 
 function ChannelRightSide() {
-  const inputMessageRef = useRef(null);
-  const refToBottum = useRef(null);
+  const inputMessageRef :any= useRef(null);
+  const refToBottum :any = useRef(null);
   const UserData: any = useContext(chatslistContext);
   const socket = useContext(SocketContext);
 
@@ -20,7 +20,7 @@ function ChannelRightSide() {
     refToBottum.current?.scrollIntoView({ behavior: "smooth" });
   }, [UserData.channelChatConversation]);
 
-  const addMessageToChannel = (message) => {
+  const addMessageToChannel = (message :any) => {
     if (UserData.channelClicked.id === message.channelId) {
       UserData.setChannelChatConversation(null);
       const newMessageArray = [...UserData.channelChatConversation, message];
@@ -39,9 +39,7 @@ function ChannelRightSide() {
     [];
 
   if (UserData.channelClicked.id != undefined) {
-    // console.log("UserData.channelClicked =>", UserData.channelClicked);
-
-    const handelSubmitrefrech = (e) => {
+    const handelSubmitrefrech = (e :any) => {
       e.preventDefault();
     };
 
@@ -123,9 +121,8 @@ function ChannelRightSide() {
             </div>
           </div>
 
-          {/* UserData.channelChatConversation */}
           <div className="no-scrollbar h-full bg-[#F3FAFF] bg-[url('../../public/assets/chat-bg.png')] overflow-y-scroll p-[38px]">
-            {UserData.channelChatConversation.map((msg) => (
+            {UserData.channelChatConversation.map((msg:any) => (
               <Messages
                 key={msg.id}
                 msg={msg.content}
@@ -136,18 +133,10 @@ function ChannelRightSide() {
                 myId={UserData.myId.id}
               />
             ))}
-            {/* {messages.map((msg) => (
-                console.log("message array: ", msg)
-              ))} */}
 
             <div ref={refToBottum} />
           </div>
 
-          {/* {messages.map((chat) => {
-              console.log(chat);
-            })} */}
-
-          {/* bott nav */}
 
           <form onSubmit={handelSubmitrefrech}>
             <div className="flex items-center bg-[#F3FAFF] h-[90px] p-4 rounded-[22px]">

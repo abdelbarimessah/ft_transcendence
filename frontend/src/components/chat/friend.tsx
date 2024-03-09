@@ -3,7 +3,7 @@ import { channel } from 'diagnostics_channel'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import {createContext, useContext } from 'react'
-import { chatslistContext } from '../../app/(home)/chat/page'
+import { chatslistContext } from "@/app/ChatContext";
 
 
 

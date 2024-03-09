@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import axios from "axios";
-import { chatslistContext } from "../../app/(home)/chat/page";
+import { chatslistContext } from "@/app/ChatContext";
 import { toast } from "sonner";
 import Owner from "@/components/chat/ownerId";
 import RenderFromUser from "@/components/chat/renderFromUser";
@@ -11,7 +11,6 @@ axios.defaults.withCredentials = true;
 export default function ChannelMenu() {
   const userData: any = useContext(chatslistContext);
 
-  console.log("channel clicked == ", userData.channelClicked);
   const [settingModal, setSettingModal] = useState(false);
   const [passwordState, setPasswordState] = useState(false);
   const [changeChannelNameState, setChangeChannelNameState] = useState(false);
@@ -46,12 +45,10 @@ export default function ChannelMenu() {
       setAvatar(file);
       const formData = new FormData();
       formData.append("avatar", file);
-      console.log("file before the send of the data", file);
 
       await axios
         .post(`${process.env.NEXT_PUBLIC_API_URL}/chat/upload`, formData)
         .then((res) => {
-          console.log("the data came in the upload ::: ", res.data);
 
           setAvatarLink(res.data);
         })
@@ -78,7 +75,7 @@ export default function ChannelMenu() {
     }
   };
   let amdinId: string = "";
-  const myStatus: string = userData.channelMembers?.members?.map((member) => {
+  const myStatus: string = userData.channelMembers?.members?.map((member:any) => {
     if (member.userId === userData.myId.id && member.isAdmin === true) {
       return (amdinId = member.userId);
     }
@@ -113,7 +110,6 @@ export default function ChannelMenu() {
       const data: any = {};
       if (name) data.name = name;
       if (pass) {
-        console.log("new pass", pass);
         data.password = pass;
         data.type = "PROTECTED";
       }
@@ -222,7 +218,6 @@ export default function ChannelMenu() {
                       fill={true}
                       className="object-cover w-full h-full"
                       priority={true}
-                      sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
                     />
                   </div>
 
@@ -421,7 +416,6 @@ function User({
       />
     );
   } else if (myId === amdinId) {
-    console.log("here here");
 
     return (
       <div
@@ -478,7 +472,6 @@ function User({
       </div>
     );
   } else {
-    console.log("isAdmin == ", admin);
     return (
       <RenderFromUser
         avatar={avatar}
@@ -681,11 +674,11 @@ function TypeChannelName({ setName }: any) {
   );
 }
 
-function UsersSettingsPoint({ userId }) {
+function UsersSettingsPoint({ userId }:any) {
   const userData: any = useContext(chatslistContext);
 
   const updateMembers = (updatedMember: any) => {
-    const userMembers = userData.channelMembers?.members?.map((member) => {
+    const userMembers = userData.channelMembers?.members?.map((member :any) => {
       return member.userId === updatedMember?.userId
         ? { ...member, ...updatedMember }
         : member;
@@ -705,7 +698,6 @@ function UsersSettingsPoint({ userId }) {
           withCredentials: true,
         }
       );
-      console.log("addAdminResponse at handelAddAdmin ==");
       updateMembers(addAdminResponse.data);
       toast.message(addAdminResponse.data.message);
     } catch (error: any) {
@@ -726,7 +718,6 @@ function UsersSettingsPoint({ userId }) {
           withCredentials: true,
         }
       );
-      console.log("MuteResponse.data =", muteResponse.data);
       userData.setIsMuted("Unmute");
       // toast.message(muteResponse.data);
     } catch (error: any) {
@@ -748,7 +739,6 @@ function UsersSettingsPoint({ userId }) {
         }
       );
       userData.setIsMuted("Mute");
-      console.log("unMuteResponse.data =", muteResponse.data);
 
       // toast.message(muteResponse.data);
     } catch (error: any) {
@@ -769,7 +759,6 @@ function UsersSettingsPoint({ userId }) {
           withCredentials: true,
         }
       );
-      console.log("kickResponse.data =", kickResponse.data);
 
       // toast.message(kickResponse.data);
     } catch (error: any) {
@@ -790,7 +779,6 @@ function UsersSettingsPoint({ userId }) {
           withCredentials: true,
         }
       );
-      console.log("bankResponse.data =", bankResponse.data);
 
       // toast.message(bankResponse.data);
     } catch (error: any) {

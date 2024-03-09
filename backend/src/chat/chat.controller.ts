@@ -394,7 +394,6 @@ export class ChatController {
     }),
   )
   uploadChannelAvatar(@UploadedFile() file) {
-    console.log('the data in the backend ', file);
     if (!file) {
       throw new BadRequestException('No file uploaded.');
     }

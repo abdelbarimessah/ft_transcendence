@@ -21,24 +21,18 @@ const ChatMenu = ({}) => {
     const res = axios
       .get("http://localhost:3000/user/me", { withCredentials: true })
       .then((res) => {
-        // console.log(res.data);
         setUser(res.data);
       })
       .catch((err) => {
-        // console.log("error in fetch user: ", err.message);
       });
   }, []);
 
   function handleClick() {
-    console.log("you blocked the mother fucker");
   }
   const [user, setUser] = useState({
     nickName: "user image",
     avatar: "/assets/1.png",
   } as any);
-  const firstName = "test";
-  const lastName = "bo 9lwa";
-  console.log("updated");
   return (
     <div className="bg-white flex flex-col items-center gap-4 h-full px-8 py-8 text-[#325876] text-lg w-full">
       <div className="w-full px-8">

@@ -1,11 +1,12 @@
 "use client";
 import React, { useContext, useEffect } from "react";
 import Channels from "./channels";
-import { chatslistContext } from "../../app/(home)/chat/page";
+// import { chatslistContext } from "@/app/ChatContext";
 import Btns from "./commun_component/btns";
 import { toast } from "sonner";
 import Image from "next/image";
 import axios from "axios";
+import { chatslistContext } from "@/app/ChatContext";
 
 function ChannelConversation() {
   const UserData: any = useContext(chatslistContext);
@@ -50,10 +51,8 @@ function ChannelConversation() {
           </div>
         </div>
 
-        {console.log("here")}
-
         <div className="flex flex-col no-scrollbar overflow-y-scroll h-full w-full  px-3">
-          {UserData.channelsList.map((chat) => {
+          {UserData.channelsList.map((chat :any) => {
             return <Channels key={chat.id} chat={chat} />;
           })}
         </div>

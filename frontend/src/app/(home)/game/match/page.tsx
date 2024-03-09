@@ -37,24 +37,9 @@ export default function Home() {
   }, [showFirstComponent]);
 
 
-  // const [roomName, setRoomName] = useState('');
-  
-  // useEffect(() => {
-  //   if (typeof window !== 'undefined') {
-  //     const path = window.location.pathname + window.location.search;
-      
-  //     let paths  =path.split('/match')[1]
-  //     let room = paths.split('=')[1] 
-  //     setRoomName(room);
-  //   }
-  // }, []);
-  // console.log('roomName in the game [12312312313]', roomName);
-
   const params = useSearchParams();
   const roomName: any = params.get("room");
   
-  // const roomName: any = '1231231';
-
 
   useEffect(() => {
 
@@ -73,7 +58,6 @@ export default function Home() {
     socketClient.on('endGameClient', enterRoom);
 
     const handleUnload = () => {
-      console.log('send the customDisconnectClient to the server :::', roomName);
       
       socketClient.emit('customDisconnectClient', { roomName });
     };

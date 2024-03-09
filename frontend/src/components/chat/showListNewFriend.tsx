@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { createContext, useContext } from "react";
 
-import { chatslistContext } from "../../app/(home)/chat/page";
+import { chatslistContext } from "@/app/ChatContext";
 import InviteFriendListe from "./inviteFriendListe";
 import Image from "next/image";
 
@@ -35,16 +35,19 @@ function ShowListNewFriend() {
                 <span className="text-color-6 text-[20px]">start new chat</span>
               </div>
 
-              <div className="flex pt-5 flex-col justify-between items-center w-full h-[65px] px-3">
-                {userData.newFriendsList.map((friendLinst: any) => {
-                  return (
-                    <InviteFriendListe
-                      key={friendLinst.id}
-                      chat={undefined}
-                      friendLinst={friendLinst}
-                    />
-                  );
-                })}
+              <div className="flex pt-5 flex-col justify-between items-center w-full h-fit px-3">
+                <div className="flex flex-col h-[360px] overflow-y-scroll no-scrollbar">
+
+                  {userData.newFriendsList.map((friendLinst: any) => {
+                    return (
+                      <InviteFriendListe
+                        key={friendLinst.id}
+                        chat={undefined}
+                        friendLinst={friendLinst}
+                      />
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>

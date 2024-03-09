@@ -1,7 +1,7 @@
 import React, { useContext, useRef, useEffect } from "react";
 import Btns from "./commun_component/btns";
 import Link from "next/link";
-import { chatslistContext } from "../../app/(home)/chat/page";
+import { chatslistContext } from "@/app/ChatContext";
 import Image from "next/image";
 import Messages from "./messages";
 import Moment from "react-moment";
@@ -12,11 +12,12 @@ import FriendMenu from "./friendMenu";
 import { toast } from "sonner";
 
 function FriendRightSide() {
-  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
   const inputMessageRef: any = useRef(null);
   const refToBottum: any = useRef(null);
   const UserData: any = useContext(chatslistContext);
   const socket = useContext(SocketContext);
+const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+
 
   useEffect(() => {
     refToBottum.current?.scrollIntoView({ behavior: "smooth" });
@@ -89,8 +90,6 @@ function FriendRightSide() {
             withCredentials: true,
           }
         );
-        // console.log("postMsgResponse.data = ", postMsgResponse.data);
-
         addMessageToChat(postMsgResponse.data);
         inputMessageRef.current.value = "";
         UserData.setTyping(false);
@@ -152,7 +151,7 @@ function FriendRightSide() {
 
           {/* messages */}
           <div className="no-scrollbar h-full w-full bg-[#F3FAFF] bg-[url('../../public/assets/chat-bg.png')] overflow-y-scroll p-[38px]">
-            {messages.map((msg) => (
+            {messages.map((msg:any) => (
               <Messages
                 key={msg.id}
                 msg={msg.content}

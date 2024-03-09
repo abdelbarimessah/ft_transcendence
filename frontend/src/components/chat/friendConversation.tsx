@@ -1,6 +1,6 @@
 import React, {useContext} from "react";
 import Friend from "./friend";
-import { chatslistContext } from '../../app/(home)/chat/page'
+import { chatslistContext } from "@/app/ChatContext";
 import Btns from "./commun_component/btns";
 
 
@@ -24,7 +24,7 @@ function FriendConversation(){
 
                 </div>
                     <div className='flex flex-col no-scrollbar overflow-y-scroll h-full w-full  px-3'>
-                         {UserData.friendsList.map((chat) => {								
+                         {UserData.friendsList.map((chat:any) => {								
                             return <Friend key={chat.id} chat={chat}/>;
                         })}
                     </div>

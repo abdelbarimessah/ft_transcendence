@@ -1,6 +1,6 @@
 import React from "react";
 
-function Messages({msg, avatar, nickname, authorId, time, myId}){
+function Messages({msg, avatar, nickname, authorId, time, myId}: any){
 
     
     

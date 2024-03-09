@@ -63,9 +63,9 @@ export class ChatController {
         chatPairHash,
       );
     }
-    delete chat.chatPairHash;
-    delete chat.updatedAt;
-    delete chat.createdAt;
+    delete chat.chatPairHash
+    delete chat.updatedAt
+    delete chat.createdAt
     this.chatGateway.joinRoom(currentUser.id, chat.id);
     this.chatGateway.newChat(userToChatId, chat);
     return chat;
@@ -365,10 +365,7 @@ export class ChatController {
   }
   @Post('block')
   async blockUser(@CurrentUser() user: User, @Body() targetUserId: userIdDto) {
-    const targetUser = await this.chatService.blockUser(
-      user.id,
-      targetUserId.userId,
-    );
+    const targetUser = await this.chatService.blockUser(user.id, targetUserId.userId);
     this.chatGateway.blockUser(targetUserId.userId, user.id);
 
     return { id: targetUser.id, providerId: targetUser.providerId };
@@ -378,10 +375,7 @@ export class ChatController {
     @CurrentUser() user: User,
     @Body() targetUserId: userIdDto,
   ) {
-    const targetUser = await this.chatService.unblockUser(
-      user.id,
-      targetUserId.userId,
-    );
+    const targetUser = await this.chatService.unblockUser(user.id, targetUserId.userId);
     this.chatGateway.unblockUser(targetUserId.userId, user.id);
     return { id: targetUser.id, providerId: targetUser.providerId };
   }
@@ -400,11 +394,10 @@ export class ChatController {
     }),
   )
   uploadChannelAvatar(@UploadedFile() file) {
-    console.log('the data in the backend ', file);
     if (!file) {
       throw new BadRequestException('No file uploaded.');
     }
-
+    
     const backendUrl = process.env.BACKEND_URL || 'http://localhost:3000';
     const filePath = `${backendUrl}/uploads/${file.filename}`;
     return { avatar: filePath };

@@ -15,19 +15,24 @@ import FriendMenu from "@/components/chat/friendMenu";
 import ShowListNewFriend from "@/components/chat/showListNewFriend";
 import AuthWrapper from "@/app/authToken";
 
-export const chatslistContext = createContext("");
+// export const chatslistContext = createContext("");
+import { chatslistContext } from "../../ChatContext";
 
 function Chat() {
   const [friendsList, setFriendsList] = useState([]);
   const [newFriendsList, setNewFriendsList] = useState([]);
   const [showNewFriendsList, setShowNewFriendsList] = useState(false);
   const [channelsList, setChannelsList] = useState([]);
+  // const [channelsList, setChannelsList] = useState<{ id: string | number }[]>([]);
   const [myId, setMyId] = useState<any>([]);
+  // const [myId, setMyId] = useState<{ id: string | number } | null>(null);
   const [friendChatConversation, setFriendChatConversation] = useState([]);
   const [channelChatConversation, setChannelChatConversation] = useState([]);
   const [chatClicked, setChatClicked] = useState<any>([]);
+  // const [chatClicked, setChatClicked] = useState<{ id: string | number } | null>(null);
   const [listChannelsToJoin, setListChannelsToJoin] = useState([]);
   const [channelClicked, setChannelClicked] = useState<any>([]);
+  // const [channelClicked, setChannelClicked] = useState<{ id: string | number } | null>(null);
   const [channelToJoin, setChannelToJoin] = useState([]);
   const [typing, setTyping] = useState(true);
   const [popUpOn, setPopUpOn] = useState(false);
@@ -40,15 +45,17 @@ function Chat() {
   const [showFriendMenu, setShowFriendMenu] = useState(false);
   const [showChannelMenu, setShowChannelMenu] = useState(false);
   const [channelMembers, setChannelMembers] = useState<any>([]);
+  // const [channelMembers, setChannelMembers] = useState<{ members: any[] } | null>(null);
   const [isMuted, setIsMuted] = useState("Mute");
   const [isBlocked, setIsBlocked] = useState("Unblock");
   const [blockList, setBlockList] = useState([]);
 
   const fetchData = async () => {
-    const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+
     try {
-      const friendResponse = await axios.get(`${backendUrl}/chat/all`);
-      setFriendsList(friendResponse.data);
+      const friendresponse = await axios.get(`${backendUrl}/chat/all`);
+      setFriendsList(friendresponse.data);
     } catch (error: any) {
       if (error.response && error.response.status === 400) {
         toast.error(error.response.data.message);
@@ -56,8 +63,10 @@ function Chat() {
     }
 
     try {
-      const channelResponse = await axios.get(`${backendUrl}/chat/channel`);
-      setChannelsList(channelResponse.data);
+      const channelresponse = await axios.get(
+        `${backendUrl}/chat/channel`
+      );
+      setChannelsList(channelresponse.data);
     } catch (error: any) {
       if (error.response && error.response.status === 400) {
         toast.error(error.response.data.message);
@@ -67,7 +76,6 @@ function Chat() {
       const NewFriendsListResponse = await axios.get(
         `${backendUrl}/user/friends`
       );
-      // console.log(`NewFriendsListResponse: -----`, NewFriendsListResponse.data);
 
       setNewFriendsList(NewFriendsListResponse.data);
     } catch (error: any) {
@@ -88,12 +96,16 @@ function Chat() {
     fetchData();
   }, []);
 
-  const fetchFriendConversation = async () => {
-    const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+  useEffect(() => {
+    if (chatClicked && chatClicked.id) fetchFriendConversation();
+  }, [chatClicked]);
 
+  const fetchFriendConversation = async () => {
     try {
+const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+
       const messageResponse = await axios.get(
-        `${backendUrl}/chat/message/${chatClicked.id}`
+        `${backendUrl}/chat/message/${chatClicked?.id}`
       );
       setFriendChatConversation(messageResponse.data);
     } catch (error: any) {
@@ -103,85 +115,106 @@ function Chat() {
     }
   };
 
+
+  // useEffect(() => {
+  //   if (chatClicked.id) fetchFriendConversation();
+  // }, [chatClicked]);
   useEffect(() => {
-    if (chatClicked.id) fetchFriendConversation();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chatClicked]);
+    if (channelClicked && channelClicked.id) fetchChannelConversation();
+  }, [channelClicked]);
 
   const fetchChannelConversation = async () => {
-    const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
-
     try {
+const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+
       const messageResponse = await axios.get(
-        `${backendUrl}/chat/channel/${channelClicked.id}/messages`
+        `${backendUrl}/chat/channel/${channelClicked?.id}/messages`
       );
       setChannelChatConversation(messageResponse.data);
     } catch (error: any) {
       if (error.response && error.response.status === 400) {
-        // console.error(`ERROR AT BEGIN: no channel found:`, error.response.data);
+        // console.error("ERROR AT BEGIN: no channel found:", error.response.data);
         toast.error(error.response.data.message);
       }
     }
   };
 
-  useEffect(() => {
-    if (channelClicked.id) fetchChannelConversation();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [channelClicked]);
+  // useEffect(() => {
+  //   if (channelClicked.id) fetchChannelConversation();
+  // }, [channelClicked]);
 
   const addNewChannelToList = (channel: any) => {
-    const exists = channelsList.some((item: any) => item.id === channel?.id);
+    const exists = channelsList.some((item:any) => item.id === channel?.id);
 
     if (exists === false) {
-      const newChannelToAdd: any = [...channelsList, channel];
+      const newChannelToAdd:any = [...channelsList, channel];
       setChannelsList(newChannelToAdd);
     }
   };
 
+  // const updateMembers = (updatedMember: any) => {
+  //   const userMembers = channelMembers?.members?.map((member) => {
+  //     return member.userId === updatedMember?.userId
+  //       ? { ...member, ...updatedMember }
+  //       : member;
+  //   });
+  //   const newUpdate = { ...channelMembers, members: userMembers };
+  //   setChannelMembers(newUpdate);
+  // };
+
   const updateMembers = (updatedMember: any) => {
-    const userMembers = channelMembers?.members?.map((member: any) => {
-      return member.userId === updatedMember?.userId
-        ? { ...member, ...updatedMember }
-        : member;
-    });
-    const newUpdate = { ...channelMembers, members: userMembers };
-    setChannelMembers(newUpdate);
+    if (channelMembers && channelMembers.members) {
+      const userMembers = channelMembers.members.map((member:any) => {
+        return member.userId === updatedMember?.userId
+          ? { ...member, ...updatedMember }
+          : member;
+      });
+      const newUpdate = { ...channelMembers, members: userMembers };
+      setChannelMembers(newUpdate);
+    }
   };
 
-  const updateChannelList = (channelId: string) => {
-    // console.log("channel members", channelMembers);
-    const newChannelList = channelsList.filter((channel: any) => {
+
+  const updateChannelList = (channelId: any) => {
+    const newChannelList = channelsList.filter((channel:any) => {
       return channel?.id != channelId;
     });
 
     setChannelsList(newChannelList);
-    if (channelClicked.id === channelId) setChannelClicked([]);
+    if (channelClicked && channelClicked.id === channelId)
+      setChannelClicked(null);
+    // if (channelClicked.id === channelId)
+    //   setChannelClicked([]);
   };
 
-  const removeUserFromMembers = (userId: string) => {
-    // console.log("channel members", channelMembers);
-    const newChannelMember = channelMembers?.members?.filter((member: any) => {
+  const removeUserFromMembers = (userId:any) => {
+    const newChannelMember = channelMembers?.members?.filter((member:any) => {
       return member?.userId != userId;
     });
-    const newUpdate = { ...channelMembers, members: newChannelMember };
-    setChannelMembers(newUpdate);
+    if (newChannelMember) {
+      const newUpdate = { ...channelMembers, members: newChannelMember };
+      setChannelMembers(newUpdate);
+    }
+    // const newChannelMember = channelMembers?.members?.filter((member) => {
+    //   return member?.userId != userId;
+    // });
+    // const newUpdate = { ...channelMembers, members: newChannelMember };
+    // setChannelMembers(newUpdate);
   };
 
   useEffect(() => {
     socket.on("userJoined", (data) => {
       addNewChannelToList(data.user.channel);
       updateMembers(data.user);
-      // console.log("data", data);
     });
     socket.on("addAdmin", (data) => {
       updateMembers(data.user);
     });
+    
     socket.on("newChat", (data) => {
-      // console.log("in newchat event: ", data);
-      const friendExists = friendsList.some((user: any) => user.id === data.id);
+      const friendExists = friendsList.some((user :any) => user.id === data.id)
       if (!friendExists) {
-        const newList: any = [...friendsList, data];
-        // console.log("new list: ", newList);
+        const newList: any = [...friendsList, data]
         setFriendsList(newList);
       }
       setShowNewFriendsList(false);
@@ -189,8 +222,9 @@ function Chat() {
     socket.on("muteUser", (data) => {
       updateMembers(data.user);
     });
+
     socket.on("banUser", (data) => {
-      if (myId.id === data.userId) {
+      if (myId && myId.id === data.userId) {
         updateChannelList(data.channelId);
       } else {
         removeUserFromMembers(data.userId);
@@ -198,7 +232,7 @@ function Chat() {
     });
 
     socket.on("kickUser", (data) => {
-      if (myId.id === data.userId) {
+      if (myId && myId.id === data.userId) {
         updateChannelList(data.channelId);
       } else {
         removeUserFromMembers(data.userId);
@@ -206,9 +240,8 @@ function Chat() {
     });
 
     socket.on("userLeft", (data) => {
-      // console.log("on event listner usrleft: ", channelMembers);
 
-      if (myId.id === data.userId) {
+      if (myId && myId.id === data.userId) {
         updateChannelList(data.channelId);
       } else {
         removeUserFromMembers(data.userId);
@@ -278,7 +311,7 @@ function Chat() {
             setIsBlocked,
             blockList,
             setBlockList,
-          }}
+          }as any}
         >
           <div className="relative flex justify-start chat-bp:justify-center items-center w-screen h-screen overflow-hidden  ">
             <InviteFriend />

@@ -59,7 +59,7 @@ export class ChatService {
             },
           },
         },
-      },
+      }
     });
   }
   async getUserChats(userId: string) {

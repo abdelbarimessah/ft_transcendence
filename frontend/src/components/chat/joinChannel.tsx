@@ -1,7 +1,7 @@
 import React, { useContext, useRef, useEffect } from "react";
 import Btns from "./commun_component/btns";
 import Link from "next/link";
-import { chatslistContext } from "../../app/(home)/chat/page";
+import { chatslistContext } from "@/app/ChatContext";
 import Image from "next/image";
 import Messages from "./messages";
 import Moment from "react-moment";
@@ -48,7 +48,7 @@ function JoinChannel() {
             </div>
             <div className="flex w-full overflow-hidden flex-col gap-9 mt-4">
               <div className="flex flex-col no-scrollbar overflow-y-scroll  h-full w-full  px-3">
-                {UserData.listChannelsToJoin.map((chat) => {
+                {UserData.listChannelsToJoin.map((chat:any) => {
                   return <ChannelsToJoin key={chat.id} channelToJoin={chat} />;
                 })}
               </div>

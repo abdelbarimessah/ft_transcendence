@@ -32,7 +32,7 @@ function ProfileCard() {
         );
 
         if (res.data === 1) {
-          console.log("the res of the profile page", res.data);
+          // console.log("the res of the profile page", res.data);
           setSameProfile(true);
           router.push("/profile");
         }
@@ -41,7 +41,7 @@ function ProfileCard() {
         setIsLoading(false);
       } catch (error) {
         setIsLoading(false);
-        toast.error("user not found !!");
+        toast.error('user not found !!')
         // console.error(error);
       }
     };
@@ -73,8 +73,8 @@ function ProfileCard() {
 
   const handlePlayWith = () => {
     socketClient.emit("playInvite", { sender: me, receiver: user });
-    console.log("the user is : ", user);
-    console.log("me in the invite ", me);
+    // console.log("the user is : ", user);
+    // console.log("me in the invite ", me);
 
     setTimeout(() => {
       router.push(
@@ -85,7 +85,8 @@ function ProfileCard() {
 
   return (
     <>
-      {!sameProfile && user && (
+    
+      {!sameProfile &&  user  && (
         <div className="  w-full 2xl:w-[557px] xl:w-[1137px] h-[386px] bg-color-0 rounded-[22px] relative overflow-hidden  ">
           <div className="w-full h-[150px] bg-color-6  relative group  overflow-hidden">
             {user && (
@@ -367,6 +368,8 @@ Progress.displayName = ProgressPrimitive.Root.displayName;
 
 export { Progress };
 
+
+
 // "use client";
 // import * as React from "react";
 // import * as ProgressPrimitive from "@radix-ui/react-progress";
@@ -401,6 +404,7 @@ export { Progress };
 //           `${process.env.NEXT_PUBLIC_API_URL}/user/${params?.id}`
 //         );
 
+
 //         if (res.data === 1) {
 //           setSameProfile(true);
 //           router.push("/profile");
@@ -423,7 +427,7 @@ export { Progress };
 //           setIds(res.data.providerId);
 //         })
 //         .catch((error) => {
-
+          
 //         });
 //     });
 

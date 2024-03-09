@@ -1,11 +1,12 @@
 import React, { useContext, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
-import { chatslistContext } from "../../app/(home)/chat/page";
+import { chatslistContext } from "@/app/ChatContext";
 import { SocketContext } from "@/app/SocketContext";
 import Link from "next/link";
 import axios from "axios";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 axios.defaults.withCredentials = true;
 export default function FriendMenu({
@@ -17,46 +18,34 @@ export default function FriendMenu({
   friendId,
   myBlockedList,
   isBlocked,
-}: any) {
+} :any) {
   const userData: any = useContext(chatslistContext);
-  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+  const socketClient = useContext(SocketContext);
+  const router = useRouter();
+const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
 
   if (userData.showFriendMenu === true) {
-    // const isBlocked = myBlockedList.some((item :any) => item.id === friendId);
-    // console.log("isBlocked [[111111]]", isBlocked);
-
-    const blocked = userData.blockList.some(
-      (user: any) => user.id === friendId
-    );
-    // console.log("list is : ", userData.blockList);
-    // console.log(" and my friendId is : ", friendId);
-    // console.log("and the user is blocked?: ", blocked);
-    // isBlocked === false ? userData.setIsBlocked("Unblock") : userData.setIsBlocked("Block")
-    // console.log('the isBlocked 1231231', isBlocked);
-    // useEffect(() => {
-    // userData.setIsBlocked('Block')
-    // }, [userData.isBlocked])
+    const blocked = userData.blockList.some((user:any) => user.id === friendId);
 
     const handlBlockUser = async () => {
       try {
-        const postMsgResponse = await axios.post(`${backendUrl}/chat/block`, {
-          userId: friendId,
-        });
+        const postMsgResponse = await axios.post(
+          `${backendUrl}/chat/block`,
+          {
+            userId: friendId,
+          }
+        );
         // userData.setIsBlocked("Unblock");
         toast.message("user is blocked");
         const newList = [postMsgResponse.data, ...userData.blockList];
-        // console.log("res data in handle block: ", postMsgResponse.data);
-        // console.log("newlist after block: ", newList);
-
         userData.setBlockList(newList);
       } catch (error: any) {
-        // console.error(error.response.data);
+        console.error(error.response.data);
       }
     };
     const handlUnBlockUser = async () => {
       // user
       try {
-        // console.log("try to unblock");
 
         const postMsgResponse = await axios.post(
           `${backendUrl}/chat/unblock`,
@@ -67,19 +56,30 @@ export default function FriendMenu({
             withCredentials: true,
           }
         );
-        // console.log("after res");
         // userData.setIsBlocked("Block");
         const newList = userData.blockList?.filter(
-          (user: any) => user.id != friendId
+          (user:any) => user.id != friendId
         );
-        // console.log("newList after unblock: ", newList);
 
         toast.message("user is unblocked");
         userData.setBlockList(newList);
       } catch (error: any) {
-        // console.error(error.response);
+        console.error(error.response);
       }
     };
+
+    const handlePlayInvite = () => {
+      let friendData;
+      for (let member of userData.chatClicked.members) {
+        if (userData.myId.providerId !== member.providerId) {
+          friendData = member;
+          break;
+        }
+      }
+
+      socketClient.emit("playInvite", { sender: userData.myId, receiver: friendData });
+      router.push(`/game/waiting/${userData.myId.providerId}${friendData.providerId}`);
+    }
 
     return (
       <div className=" h-[1077px] w-[422px] bg-color-0 flex items-center justify-between flex-col pt-[113px] pb-[19px]">
@@ -96,11 +96,9 @@ export default function FriendMenu({
           </div>
           <div className="w-full h-[54px]  flex flex-col items-center justify-center">
             <span className="font-nico-moji text-color-6 sm:text-[24px] text-[18px] capitalize">
-              {`${firstName.substring(0, 10)}${
-                firstName.length > 10 ? ".." : ""
-              } ${lastName.substring(0, 10)}${
-                lastName.length > 10 ? ".." : ""
-              }`}
+              {`${firstName.substring(0, 10)}${firstName.length > 10 ? ".." : ""
+                } ${lastName.substring(0, 10)}${lastName.length > 10 ? ".." : ""
+                }`}
             </span>
             <span className="font-nico-moji -mt-1 sm:text-[16px] text-[12px]  text-color-29 capitalize">
               @{nickName.substring(0, 10)}
@@ -110,7 +108,7 @@ export default function FriendMenu({
           <div className="w-full h-[2px] bg-color-30"></div>
 
           <div className="w-full flex items-center justify-center gap-3 flex-col">
-            <div className="w-[370px] h-[60px] bg-[#F3FAFF] rounded-[22px] flex items-center justify-between px-5 hover:scale-[1.01] hover:opacity-95 cursor-pointer">
+            <div onClick={handlePlayInvite} className="w-[370px] h-[60px] bg-[#F3FAFF] rounded-[22px] flex items-center justify-between px-5 hover:scale-[1.01] hover:opacity-95 cursor-pointer">
               <div className="flex items-center justify-center">
                 <span className="text-color-6 capitalize">Play With</span>
               </div>

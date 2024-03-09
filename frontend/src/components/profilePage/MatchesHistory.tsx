@@ -48,6 +48,7 @@ export function MatchesHistory() {
   const pathname = usePathname();
   const params = pathname.split("/");
   const router = useRouter();
+  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
 
 
   useEffect(() => {
@@ -80,7 +81,7 @@ export function MatchesHistory() {
   const getMatchHistoryList = async (userId: string) => {
     if (!userId) return [];
     const res = await axios.get<MatchHistoryProps[]>(
-      `http://localhost:3000/game/matchHistory/${userId}`
+      `${backendUrl}/game/matchHistory/${userId}`
     );
 
     // if (!res) {

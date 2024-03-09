@@ -2,7 +2,7 @@
 import React from "react";
 import { useContext } from "react";
 
-import { chatslistContext } from "../../app/(home)/chat/page";
+import { chatslistContext } from "@/app/ChatContext";
 import Image from "next/image";
 
 function Channels({ chat }: any) {

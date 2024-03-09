@@ -13,32 +13,32 @@ services:
       - trans
     # volumes:
     #   - db:/var/lib/postgresql/data
-  frontend:
-    build: ./frontend
-    restart: on-failure
-    container_name: frontend
-    ports:
-      - 8000:8000
-    env_file:
-      - ./frontend/.env
-    networks:
-      - trans
-    depends_on:
-      - backend
-  backend:
-    build: ./backend
-    restart: on-failure
-    container_name: backend
-    ports:
-      - 3000:3000
-    env_file:
-      - ./backend/.env
-    environment:
-      - HOST=database
-    networks:
-      - trans
-    depends_on:
-      - database
+  # frontend:
+  #   build: ./frontend
+  #   restart: on-failure
+  #   container_name: frontend
+  #   ports:
+  #     - 8000:8000
+  #   env_file:
+  #     - ./frontend/.env
+  #   networks:
+  #     - trans
+  #   depends_on:
+  #     - backend
+  # backend:
+  #   build: ./backend
+  #   restart: on-failure
+  #   container_name: backend
+  #   ports:
+  #     - 3000:3000
+  #   env_file:
+  #     - ./backend/.env
+  #   environment:
+  #     - HOST=database
+  #   networks:
+  #     - trans
+  #   depends_on:
+  #     - database
 
 networks:
   trans:

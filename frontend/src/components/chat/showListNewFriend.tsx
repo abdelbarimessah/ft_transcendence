@@ -11,7 +11,7 @@ function ShowListNewFriend() {
     return (
       <>
         <div className="bg-opacity-25 bg-black  flex justify-center items-center fixed w-screen h-screen ">
-          <div className="flex flex-col items-center w-[520px] h-[500px] bg-color-0 rounded-[22px] relative">
+          <div className="flex flex-col items-center w-[520px] h-[500px] bg-[#ffff] rounded-[22px] relative">
             <div
               onClick={() => {
                 userData.setShowNewFriendsList(false);

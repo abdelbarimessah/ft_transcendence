@@ -140,8 +140,8 @@ export default function ChannelMenu() {
 
   if (userData.showChannelMenu === true) {
     return (
-      <div className="flex w-full flex-col  items-center justify-center relative bg-color-0 rounded-[22px] ">
-        <div className="select-none h-[1077px] w-[422px] bg-color-0 flex items-center justify-between flex-col pt-[113px] pb-[19px] relative rounded-[22px]">
+      <div className="flex w-full flex-col h-full items-center justify-center relative bg-color-0 rounded-[22px] ">
+        <div className="select-none h-[1077px] w-[422px] bg-color-0 flex items-center justify-between flex-col py-[25px] relative rounded-[22px]">
           {userData.channelClicked.ownerId === userData.myId.id &&
             !settingModal && (
               <div
@@ -176,7 +176,7 @@ export default function ChannelMenu() {
                 />
               </div>
             )}
-          <div className="w-full flex flex-col  items-center justify-center gap-[10px] relative">
+          <div className="w-full h-full flex flex-col  items-center justify-center  relative">
             {!settingModal && (
               <div className="flex items-center justify-center flex-col">
                 <div className="w-[156px] h-[156px] rounded-full bg-color-30 relative object-cover overflow-hidden hover:scale-[1.01]">
@@ -319,7 +319,7 @@ export default function ChannelMenu() {
                 </div>
               </div>
 
-              <div className="Chat_members_tab w-full h-[473px] flex items-center py-3 overflow-y-auto gap-1 flex-col  no-scrollbar overflow-hidden bg-color-6 rounded-[10px]">
+              <div className="Chat_members_tab w-full min-h-[200px] flex items-center py-3 overflow-y-auto gap-1 flex-col  no-scrollbar overflow-hidden bg-color-6 rounded-[10px]">
                 {userData.channelMembers?.members?.map((members: any) =>
                   members.user.id === ownerId ? (
                     <Owner

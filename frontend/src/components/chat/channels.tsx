@@ -24,10 +24,11 @@ function Channels({ chat }: any) {
         <Image
           src={chat.avatar || "../../../assets/DefaultChannelImage.svg"}
           alt="DefaultChannelImage"
-          fill={true}
           draggable={false}
           priority={true}
-          sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
+          // sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
+          width={400}
+          height={400}
         />
       </div>
       <h1 className=" font-medium text-[#325876] ">{chat.name}</h1>

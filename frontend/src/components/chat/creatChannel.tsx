@@ -84,7 +84,7 @@ function CreatChannel() {
   return (
     <>
       <div className="flex justify-center items-center">
-        <div className="relative flex flex-col ">
+        <div className="relative flex flex-col w-[571px] max-h-[700px]">
           <div
             onClick={() => {
               UserData.setchannelType("");
@@ -103,8 +103,8 @@ function CreatChannel() {
           </div>
 
           <form onSubmit={handelSubmitrefrech}>
-            <div className="flex flex-col  items-center w-[571px] h-[897px] bg-[#F3FAFF] rounded-[29px] border border-black">
-              <div className=" flex mb-[36px] items-center justify-center text-[20px] h-[120px] w-full bg-[#FFFFFF] rounded-[29px_29px_0px_0px]">
+            <div className="flex flex-col  items-center max-h-[700px] bg-[#F3FAFF] rounded-[29px] border border-black">
+              <div className=" flex mb-[36px] items-center justify-center text-[20px] h-[80px] w-full bg-[#FFFFFF] rounded-[29px_29px_0px_0px] ">
                 Creat your channel
               </div>
               <div className="flex flex-col  gap-9 items-center">
@@ -114,10 +114,12 @@ function CreatChannel() {
                       <Image
                         src={photoPath || "/assets/DefaultChannelImage.svg"}
                         alt="Add image icon"
-                        fill={true}
+                        // fill={true}
                         className="object-cover w-full h-full"
                         priority={true}
-                        sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
+                        // sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
+                        width={400}
+                        height={400}
                       />
                     </div>
                   </div>
@@ -218,15 +220,17 @@ function CreatChannel() {
                 <CreatProtected />
               </div>
 
-              <button
-                className="flex absolute bottom-0 right-0 m-[30px] p-[15px] w-fit justify-end items-end rounded-lg
-                                            text-[#8194a3] bg-[#FFFFFF] border cursor-pointer hover:border-[#adf39d]  hover:text-gray-600
-                                            hover:bg-[#e5f6e1]"
-                onClick={handelCreatChannel}
-              >
-                {" "}
-                submit
-              </button>
+              <div className="flex w-full justify-end">
+                <button
+                  className="flex  m-[30px] p-[15px] w-fit justify-end items-end rounded-lg
+                text-[#8194a3] bg-[#FFFFFF] border cursor-pointer hover:border-[#adf39d]  hover:text-gray-600
+                hover:bg-[#e5f6e1]"
+                  onClick={handelCreatChannel}
+                >
+                  {" "}
+                  submit
+                </button>
+              </div>
             </div>
           </form>
         </div>

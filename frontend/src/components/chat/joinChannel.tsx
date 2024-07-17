@@ -11,7 +11,7 @@ function JoinChannel() {
   return (
     <>
       <div className="flex justify-center items-center ">
-        <div className=" relative flex flex-col">
+        <div className=" relative flex flex-col  w-[571px] max-h-[800px]">
           <div
             onClick={() => {
               UserData.setPopUpOn(false);
@@ -28,7 +28,7 @@ function JoinChannel() {
             />
           </div>
 
-          <div className="flex flex-col items-center w-[571px] h-[897px] bg-[#F3FAFF] rounded-[29px] border border-black">
+          <div className="flex flex-col items-center max-h-[700px] bg-[#f3faff] rounded-[29px] border border-black">
             <div className="flex mb-[36px] items-center justify-center text-[20px] h-[120px] w-full bg-[#FFFFFF] rounded-[29px_29px_0px_0px] ">
               Join Channel
             </div>

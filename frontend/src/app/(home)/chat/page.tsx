@@ -276,11 +276,11 @@ function Chat() {
             } as any
           }
         >
-          <div className="relative flex justify-start chat-bp:justify-center items-center w-screen h-screen overflow-hidden  ">
+          <div className="relative flex justify-start chat-bp:justify-center items-center w-screen h-screen overflow-hidden p-[25px]">
             <InviteFriend />
             <ShowListNewFriend />
             <ChannelOption />
-            <div className="flex justify-start chat-bp:justify-center items-center w-[1731px] h-[1080px] bg-color-0 rounded-[22px]">
+            <div className="flex justify-start chat-bp:justify-center items-center w-full h-full bg-color-0 rounded-[22px]">
               <div className=" bg-[#FFFFFF] min-w-[340px] max-w-[460px] h-full w-full rounded-[29px_0px_0px_29px]">
                 <LeftSide />
               </div>

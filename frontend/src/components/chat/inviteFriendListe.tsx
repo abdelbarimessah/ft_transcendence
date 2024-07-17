@@ -63,6 +63,8 @@ function InviteFriendListe({ chat, friendLinst }: any) {
       <div className="flex flex-row justify-between items-center">
         <div className="flex pr-4">
           <Image
+          width={400}
+          height={400}
             src={friend.avatar}
             alt="{nickName}"
             className="flex justify-between items-center rounded-full w-[50px]"

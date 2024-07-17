@@ -16,6 +16,8 @@ function Messages({ msg, avatar, nickname, authorId, time, myId }: any) {
           src={avatar}
           alt="alt-nickname"
           className="w-[40px] h-[40px] rounded-full mr-4"
+          width={400}
+          height={400}
         />
       )}
       <div className="">

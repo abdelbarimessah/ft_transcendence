@@ -106,7 +106,7 @@ function FriendRightSide() {
               <div className="h-[60px] w-[60px] rounded-full object-cover overflow-hidden relative">
                 <Link href={`/profile/${friendProviderId}`}>
                   <Image
-                    sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
+                    // sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
                     src={friendSrcImg}
                     alt="alt-img"
                     width={1024}

@@ -86,7 +86,9 @@ export default function FriendMenu({
         <div className="w-full flex flex-col  items-center justify-center gap-[20px] ">
           <div className="w-[156px] h-[156px] rounded-full bg-color-30 relative object-cover hover:scale-[1.01]">
             <Image
-              sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
+              // sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
+              width={400}
+              height={400}
               src={avatar}
               alt="alt-img"
               draggable={false}
@@ -96,11 +98,9 @@ export default function FriendMenu({
           </div>
           <div className="w-full h-[54px]  flex flex-col items-center justify-center">
             <span className="font-nico-moji text-color-6 sm:text-[24px] text-[18px] capitalize">
-              {`${firstName.substring(0, 10)}${
-                firstName.length > 10 ? ".." : ""
-              } ${lastName.substring(0, 10)}${
-                lastName.length > 10 ? ".." : ""
-              }`}
+              {`${firstName.substring(0, 10)}${firstName.length > 10 ? ".." : ""
+                } ${lastName.substring(0, 10)}${lastName.length > 10 ? ".." : ""
+                }`}
             </span>
             <span className="font-nico-moji -mt-1 sm:text-[16px] text-[12px]  text-color-29 capitalize">
               @{nickName.substring(0, 10)}

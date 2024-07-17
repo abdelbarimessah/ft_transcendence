@@ -16,10 +16,11 @@ function LeftSide() {
         <Link href="/profile">
           <div className="h-[60px] w-[60px] rounded-full object-cover overflow-hidden relative">
             <Image
-              sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
+              // sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
+              width={400}
+              height={400}
               src={UserData.myId?.avatar || "/assets/Profile.svg"}
               alt="alt-img"
-              fill={true}
               draggable={false}
               priority={true}
             />

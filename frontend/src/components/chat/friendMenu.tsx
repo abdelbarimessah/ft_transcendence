@@ -92,7 +92,6 @@ export default function FriendMenu({
               src={avatar}
               alt="alt-img"
               draggable={false}
-              fill={true}
               className=" rounded-full w-full h-full object-cover"
             ></Image>
           </div>
@@ -122,8 +121,10 @@ export default function FriendMenu({
                   src="../../../../assets/gameIcon.svg"
                   alt="avatar"
                   draggable={false}
-                  fill={true}
-                  sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
+                  width={100}
+                  height={100}
+                  // fill={true}
+                  // sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
                 />
               </div>
             </div>
@@ -135,11 +136,13 @@ export default function FriendMenu({
 
                 <div className="w-[25px] h-[25px] relative flex items-center justify-center object-cover">
                   <Image
-                    sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
                     src="../../../../assets/visiteProfileIcon.svg"
                     alt="avatar"
                     draggable={false}
-                    fill={true}
+                    width={100}
+                    height={100}
+                    // fill={true}
+                    // sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
                   />
                 </div>
               </div>
@@ -157,11 +160,13 @@ export default function FriendMenu({
             </div>
             <div className="w-[25px] h-[25px] relative flex items-center justify-center object-cover">
               <Image
-                sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
                 src="../../../../assets/blockUserIcon.svg"
                 alt="avatar"
                 draggable={false}
-                fill={true}
+                width={100}
+                height={100}
+                // fill={true}
+                // sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
               />
             </div>
           </div>
@@ -175,11 +180,13 @@ export default function FriendMenu({
             </div>
             <div className="w-[25px] h-[25px] relative flex items-center justify-center object-cover">
               <Image
-                sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
                 src="../../../../assets/blockUserIcon.svg"
                 alt="avatar"
                 draggable={false}
-                fill={true}
+                width={100}
+                height={100}
+                // fill={true}
+                // sizes="(min-width: 480px) 445px, calc(90.63vw + 28px)"
               />
             </div>
           </div>

@@ -26,7 +26,7 @@ function LeftSide() {
             />
           </div>
         </Link>
-        <div className="flex justify-between items-center w-[146px]">
+        <div className="flex justify-between items-center min-w-[146px]">
           <Btns
             icon={"../../assets/chatChannelUser.svg"}
             onClick={() => {

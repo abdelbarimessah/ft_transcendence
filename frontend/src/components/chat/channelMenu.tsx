@@ -141,7 +141,7 @@ export default function ChannelMenu() {
   if (userData.showChannelMenu === true) {
     return (
       <div className="flex w-full flex-col h-full items-center justify-center relative bg-color-0 rounded-[22px] ">
-        <div className="select-none h-[1077px] w-[422px] bg-color-0 flex items-center justify-between flex-col py-[25px] relative rounded-[22px]">
+        <div className="select-none h-full w-[422px] bg-color-0 flex items-center justify-between flex-col py-[25px] relative rounded-[22px]">
           {userData.channelClicked.ownerId === userData.myId.id &&
             !settingModal && (
               <div

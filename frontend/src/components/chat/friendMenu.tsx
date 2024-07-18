@@ -82,7 +82,7 @@ export default function FriendMenu({
     };
 
     return (
-      <div className=" h-[1077px] w-[422px] bg-color-0 flex items-center justify-between flex-col pt-[113px] pb-[19px]">
+      <div className = "select-none h-full w-[422px] bg-color-0 flex items-center justify-between flex-col py-[25px] relative rounded-[22px]">
         <div className="w-full flex flex-col  items-center justify-center gap-[20px] ">
           <div className="w-[156px] h-[156px] rounded-full bg-color-30 relative object-cover hover:scale-[1.01]">
             <Image

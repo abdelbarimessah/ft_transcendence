@@ -276,7 +276,16 @@ function Chat() {
             } as any
           }
         >
-          <div className="relative flex justify-start chat-bp:justify-center items-center w-screen h-screen  p-[25px]">
+          <div className=" flex justify-start chat-bp:justify-center items-center  " 
+          style={{ 
+            position: 'absolute',
+            top: '19px',
+            width: 'calc(100% - 38px)',
+            maxWidth: '1600px',
+            height: 'calc(100% - 38px)',
+           /*  margin: '0 auto',  */
+            padding : '19px',
+            }}>
             <InviteFriend />
             <ShowListNewFriend />
             <ChannelOption />

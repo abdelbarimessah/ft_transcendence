@@ -78,7 +78,7 @@ function ChannelRightSide() {
     return (
       <div className="flex flex-row w-full h-full ">
         <div className="flex flex-col h-full w-full">
-          <div className="flex justify-between w-full  bg-[#ffff] h-[130px] border-b-[3px] border-[#F3FAFF] p-5">
+          <div className="flex justify-between w-full  bg-[#ffff] h-[130px] border-b-[3px] border-[#F3FAFF] p-5 rounded-[0px_29px_0px_0px]">
             <div className="flex items-center">
               <div className="h-[60px] w-[60px] rounded-full object-cover overflow-hidden relative">
                 <Image

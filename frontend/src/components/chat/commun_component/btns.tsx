@@ -6,7 +6,7 @@ function Btns({ icon, onClick }: any) {
   return (
     <>
       <div
-        className=" rounded-full w-[36px] h-[36px] p-[2px]  cursor-pointer object-cover hover:scale-[1.01] hover:opacity-95"
+        className=" rounded-full  p-[2px]  cursor-pointer  hover:scale-[1.01] hover:opacity-95"
         onClick={onClick}
       >
         <Image
@@ -14,7 +14,7 @@ function Btns({ icon, onClick }: any) {
           alt="icon"
           width={32}
           height={32}
-          className=" "
+          
         ></Image>
       </div>
     </>

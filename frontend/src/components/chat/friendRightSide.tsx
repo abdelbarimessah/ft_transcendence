@@ -161,7 +161,7 @@ function FriendRightSide() {
             <div className="flex items-center bg-[#F3FAFF] h-[90px] p-4 rounded-[22px]">
               <input
                 type="text"
-                className=" bg-[#325876] pl-5 rounded-[22px] outline-none text-[17px] text-color-0 w-full h-[50px] m-3 p-3 placeholder:text-[16px] placeholder:text-color-29 "
+                className="  bg-[#71a1c7] pl-5 rounded-[22px] outline-none text-[17px] text-color-0 w-full h-[50px] m-3 p-3 placeholder:text-[16px] placeholder:text-color-0 "
                 placeholder="type a message"
                 onChange={handelMessageInput}
                 ref={inputMessageRef}

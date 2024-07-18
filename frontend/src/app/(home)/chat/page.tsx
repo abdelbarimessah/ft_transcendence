@@ -276,7 +276,7 @@ function Chat() {
             } as any
           }
         >
-          <div className=" flex justify-start chat-bp:justify-center items-center  " 
+          <div className=" flex justify-start chat-bp:justify-center items-center min-h-[600px] " 
           style={{ 
             position: 'absolute',
             top: '19px',
